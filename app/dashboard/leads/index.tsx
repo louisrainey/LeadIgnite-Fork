@@ -22,12 +22,14 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Coordinate, MapFormSchemaType } from '@/types/maps';
+import { Coordinate, MapFormSchemaType, PropertyResults } from '@/types/maps';
 import { mapFormSchema } from '@/types/zod/propertyList';
 import {
   mockFetchAddressesFromApi,
   calculateCenter
 } from '@/constants/utility/maps';
+import { fetchedPropertiesMockData } from '@/constants/data/properties';
+import PropertyListView from '@/components/maps/properties/propertyList';
 
 export default function LeadsComponent() {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -39,6 +41,10 @@ export default function LeadsComponent() {
     lat: 39.7392,
     lng: -104.9903
   });
+
+  const [properties, setProperties] = useState<PropertyResults[]>(
+    fetchedPropertiesMockData
+  ); // Add this state
 
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(mapFormSchema),
@@ -434,6 +440,7 @@ export default function LeadsComponent() {
           center={center}
           markers={markers}
           zoom={10}
+          propertyResults={properties}
         />
       </div>
     </form>
