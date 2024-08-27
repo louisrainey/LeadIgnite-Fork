@@ -50,11 +50,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
   const handleApply = () => {
     if (shapeRef.current) {
-      shapeRef.current.setMap(null); // Hide shape from the map after applying
+      setBoundaryApplied(true);
+      setShapeDrawn(false);
+      console.log('Drawing applied');
     }
-    setBoundaryApplied(true);
-    setShapeDrawn(false);
-    console.log('Drawing applied');
   };
 
   const handleRemoveBoundaries = () => {
