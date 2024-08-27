@@ -4,14 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Rnd } from 'react-rnd';
-import { X, Maximize2, Minimize2 } from 'lucide-react';
+import { X } from 'lucide-react';
 import { PropertyResults } from '@/types/maps';
 
 interface PropertyListProps {
   properties: PropertyResults[];
-  onClose: () => void; // Function to handle closing the list
-  onOpen: () => void; // Function to handle opening the list
+  onClose: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onOpen: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 const PropertyListView: React.FC<PropertyListProps> = ({
@@ -19,52 +18,66 @@ const PropertyListView: React.FC<PropertyListProps> = ({
   onClose,
   onOpen
 }) => {
-  const [isFullScreen, setIsFullScreen] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
+  const [panelHeight, setPanelHeight] = useState(300); // Initial height
 
   useEffect(() => {
     if (isPanelOpen) {
-      onOpen();
+      onOpen(
+        new MouseEvent('click') as unknown as React.MouseEvent<
+          HTMLButtonElement,
+          MouseEvent
+        >
+      );
     } else {
-      onClose();
+      onClose(
+        new MouseEvent('click') as unknown as React.MouseEvent<
+          HTMLButtonElement,
+          MouseEvent
+        >
+      );
     }
   }, [isPanelOpen, onOpen, onClose]);
 
-  const toggleFullScreen = () => setIsFullScreen(!isFullScreen);
-  const togglePanel = () => {
+  const togglePanel = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
     setIsPanelOpen(!isPanelOpen);
   };
 
+  const startResizing = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    window.addEventListener('mousemove', resizePanel);
+    window.addEventListener('mouseup', stopResizing);
+  };
+
+  const resizePanel = (event: MouseEvent) => {
+    const newY = window.innerHeight - event.clientY;
+    if (newY >= 100 && newY <= window.innerHeight) {
+      setPanelHeight(newY);
+    }
+  };
+
+  const stopResizing = () => {
+    window.removeEventListener('mousemove', resizePanel);
+    window.removeEventListener('mouseup', stopResizing);
+  };
+
   return (
-    <Rnd
-      default={{
-        x: 0,
-        y: window.innerHeight - (isPanelOpen ? 300 : 40), // Adjust y to stay at the bottom
-        width: '100%',
-        height: isPanelOpen ? '300px' : '40px' // Start with a 300px height when open
-      }}
-      minWidth="300px"
-      minHeight="40px"
-      bounds="window"
-      disableDragging={isFullScreen}
-      enableResizing={false} // Disable resizing to ensure consistent behavior
-      className="fixed bottom-0 left-0 right-0 z-50"
+    <div
+      style={{ height: `${isPanelOpen ? panelHeight : 40}px`, width: '100%' }}
     >
-      <Card
-        className={`h-full w-full overflow-hidden ${
-          isFullScreen ? 'fixed inset-0' : 'rounded-t-lg'
-        }`}
-      >
-        <div className="flex items-center justify-between bg-secondary p-2">
+      <Card className="h-full overflow-hidden rounded-none">
+        {/* Top bar for dragging */}
+        <div
+          className="flex cursor-pointer items-center justify-between bg-secondary p-2"
+          onMouseDown={startResizing}
+        >
           <h2 className="text-lg font-semibold">List View</h2>
           <div className="flex gap-2">
-            <Button variant="ghost" size="icon" onClick={toggleFullScreen}>
-              {isFullScreen ? (
-                <Minimize2 className="h-4 w-4" />
-              ) : (
-                <Maximize2 className="h-4 w-4" />
-              )}
-            </Button>
             <Button variant="ghost" size="icon" onClick={togglePanel}>
               <X className="h-4 w-4" />
             </Button>
@@ -73,7 +86,9 @@ const PropertyListView: React.FC<PropertyListProps> = ({
         {isPanelOpen && (
           <CardContent
             className="overflow-auto p-4"
-            style={{ height: 'calc(100% - 40px)' }}
+            style={{
+              height: isPanelOpen ? `calc(${panelHeight}px - 40px)` : '40px'
+            }}
           >
             <div className="space-y-4">
               <div className="space-y-2">
@@ -121,7 +136,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({
           </CardContent>
         )}
       </Card>
-    </Rnd>
+    </div>
   );
 };
 
