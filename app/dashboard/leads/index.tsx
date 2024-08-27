@@ -19,11 +19,10 @@ import {
 import MapComponent from '@/components/maps';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { convertAddressesToMarkers } from '@/api/coordinates';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { AddressCoordinate, Coordinate, MapFormSchemaType } from '@/types/maps';
+
+import { Coordinate, MapFormSchemaType } from '@/types/maps';
 import { mapFormSchema } from '@/types/zod/propertyList';
 import {
   mockFetchAddressesFromApi,
@@ -211,15 +210,33 @@ export default function LeadsComponent() {
                 <Controller
                   name="advanced.radius"
                   control={control}
-                  render={({ field }) => (
+                  render={({ field, fieldState: { error } }) => (
                     <div className="grid grid-cols-2 items-center gap-4">
                       <Label htmlFor="radius">Radius</Label>
                       <Input
                         id="radius"
-                        type="number"
+                        type="text"
+                        inputMode="decimal"
                         placeholder="Enter radius"
                         {...field}
+                        value={field.value} // Ensure the controlled value is used
+                        onChange={(e) => {
+                          // Optionally, you can sanitize the input or allow the Zod validation to handle it
+                          const value = e.target.value;
+
+                          // Allow only valid numeric input up to 6 characters
+                          if (/^\d{0,6}(\.\d{0,5})?$/.test(value)) {
+                            field.onChange(value);
+                          }
+                        }}
+                        onBlur={(e) => {
+                          // Optionally, clear invalid input when the field loses focus
+                          if (!/^\d{1,6}(\.\d{1,5})?$/.test(e.target.value)) {
+                            field.onChange(''); // Clear the field if the input is invalid
+                          }
+                        }}
                       />
+                      {error && <p className="text-red-500">{error.message}</p>}
                     </div>
                   )}
                 />
@@ -227,15 +244,28 @@ export default function LeadsComponent() {
                 <Controller
                   name="advanced.pastDays"
                   control={control}
-                  render={({ field }) => (
+                  render={({ field, fieldState: { error } }) => (
                     <div className="grid grid-cols-2 items-center gap-4">
                       <Label htmlFor="past_days">Past Days</Label>
                       <Input
                         id="past_days"
-                        type="number"
+                        type="text" // Changed to text to match better control over the input
+                        inputMode="numeric" // Helps mobile browsers show numeric keyboards
                         placeholder="Enter days"
                         {...field}
+                        value={field.value} // Ensure the controlled value is used
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Optional: Allow only up to 5 digits
+                          if (/^\d{0,5}$/.test(value)) {
+                            field.onChange(value);
+                          }
+                        }}
+                        onBlur={() => {
+                          field.onBlur(); // Trigger any additional validation onBlur
+                        }}
                       />
+                      {error && <p className="text-red-500">{error.message}</p>}
                     </div>
                   )}
                 />
@@ -297,10 +327,29 @@ export default function LeadsComponent() {
                 <Controller
                   name="advanced.proxy"
                   control={control}
-                  render={({ field }) => (
+                  render={({ field, fieldState: { error } }) => (
                     <div className="grid grid-cols-2 items-center gap-4">
                       <Label htmlFor="proxy">Proxy</Label>
-                      <Input id="proxy" placeholder="Enter proxy" {...field} />
+                      <Input
+                        id="proxy"
+                        type="text"
+                        placeholder="Ex: http://user:pass@host:port"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e.target.value); // Allow user to type freely
+                        }}
+                        onBlur={(e) => {
+                          const value = e.target.value;
+                          // Validate the input on blur to ensure it starts with http or https
+                          if (/^https?:\/\/.*/.test(value) || value === '') {
+                            field.onChange(value);
+                          } else {
+                            field.onChange(''); // Clear the field if it doesn't start with http or https
+                          }
+                          field.onBlur();
+                        }}
+                      />
+                      {error && <p className="text-red-500">{error.message}</p>}
                     </div>
                   )}
                 />
@@ -342,15 +391,34 @@ export default function LeadsComponent() {
                 <Controller
                   name="advanced.limit"
                   control={control}
-                  render={({ field }) => (
+                  render={({ field, fieldState: { error } }) => (
                     <div className="grid grid-cols-2 items-center gap-4">
                       <Label htmlFor="limit">Limit</Label>
                       <Input
                         id="limit"
-                        type="number"
-                        placeholder="Enter limit"
+                        type="text" // Restrict input to numeric values
+                        placeholder="Enter a number between 1 and 10,000"
                         {...field}
+                        value={field.value || ''} // Ensure value is a string or empty string
+                        min={1}
+                        max={10000}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const numericValue = parseInt(value, 10);
+
+                          // Ensure the input is a number between 1 and 10,000
+                          if (
+                            !isNaN(numericValue) &&
+                            numericValue >= 1 &&
+                            numericValue <= 10000
+                          ) {
+                            field.onChange(value);
+                          } else if (value === '') {
+                            field.onChange(''); // Allow clearing the input
+                          }
+                        }}
                       />
+                      {error && <p className="text-red-500">{error.message}</p>}
                     </div>
                   )}
                 />
