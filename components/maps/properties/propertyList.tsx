@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress'; // Import the Progress component
+import { Progress } from '@/components/ui/progress';
 import { X } from 'lucide-react';
 import { PropertyDetails } from '@/types/maps';
 import PropertyCard from './propertyCard';
+import { Loader2 } from 'lucide-react'; // Import a loading spinner icon from lucide-react
 
 interface PropertyListProps {
   properties: PropertyDetails[];
@@ -21,14 +21,23 @@ const PropertyListView: React.FC<PropertyListProps> = ({
   onOpen
 }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(true);
-  const [panelHeight, setPanelHeight] = useState(300); // Initial height
-  const [progressValue, setProgressValue] = useState(0); // Progress value (will be calculated)
-  const [listSizeLabel, setListSizeLabel] = useState(''); // Label to show Specific, Moderate, Broad
+  const [panelHeight, setPanelHeight] = useState(300);
+  const [progressValue, setProgressValue] = useState(0);
+  const [listSizeLabel, setListSizeLabel] = useState('');
+  const [visibleProperties, setVisibleProperties] = useState<PropertyDetails[]>(
+    []
+  );
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  const maxCardsPerLoad = 6;
 
   useEffect(() => {
     const propertyCount = properties.length;
 
-    // Determine the progress value based on property count
     if (propertyCount <= 100) {
       setProgressValue(25);
       setListSizeLabel('Specific');
@@ -86,12 +95,57 @@ const PropertyListView: React.FC<PropertyListProps> = ({
     window.removeEventListener('mouseup', stopResizing);
   };
 
+  const loadMoreProperties = useCallback(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setVisibleProperties((prev) => {
+        const nextProperties = properties.slice(
+          prev.length,
+          prev.length + maxCardsPerLoad
+        );
+        if (nextProperties.length < maxCardsPerLoad) {
+          setHasMore(false);
+        }
+        setIsLoading(false);
+        return [...prev, ...nextProperties];
+      });
+    }, 1000); // Simulate network delay
+  }, [properties]);
+
+  useEffect(() => {
+    if (visibleProperties.length === 0 && properties.length > 0) {
+      loadMoreProperties(); // Load initial set of properties
+    }
+  }, [loadMoreProperties, properties]);
+
+  useEffect(() => {
+    if (!hasMore) return;
+
+    const loadMoreObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoading) {
+          loadMoreProperties();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (loadMoreRef.current) {
+      loadMoreObserver.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        loadMoreObserver.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [hasMore, loadMoreProperties, isLoading]);
+
   return (
     <div
       style={{ height: `${isPanelOpen ? panelHeight : 40}px`, width: '100%' }}
     >
       <Card className="h-full overflow-hidden rounded-none">
-        {/* Top bar for dragging */}
         <div
           className="flex cursor-pointer items-center justify-between bg-secondary p-2"
           onMouseDown={startResizing}
@@ -128,14 +182,21 @@ const PropertyListView: React.FC<PropertyListProps> = ({
                     Your list is too broad.
                   </p>
                 )}
-                <Button>Create List</Button>
+                <div className="flex justify-center">
+                  <Button>Create List</Button>
+                </div>
               </div>
               <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-                {properties.map((property, index) => (
+                {visibleProperties.map((property, index) => (
                   <div key={index} className="p-4">
                     <PropertyCard property={property} />
                   </div>
                 ))}
+                {hasMore && (
+                  <div ref={loadMoreRef} className="flex justify-center p-4">
+                    <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
