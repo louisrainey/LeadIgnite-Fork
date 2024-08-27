@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress'; // Import the Progress component
 import { X } from 'lucide-react';
 import { PropertyDetails } from '@/types/maps';
 import PropertyCard from './propertyCard';
@@ -21,6 +22,24 @@ const PropertyListView: React.FC<PropertyListProps> = ({
 }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [panelHeight, setPanelHeight] = useState(300); // Initial height
+  const [progressValue, setProgressValue] = useState(0); // Progress value (will be calculated)
+  const [listSizeLabel, setListSizeLabel] = useState(''); // Label to show Specific, Moderate, Broad
+
+  useEffect(() => {
+    const propertyCount = properties.length;
+
+    // Determine the progress value based on property count
+    if (propertyCount <= 100) {
+      setProgressValue(25);
+      setListSizeLabel('Specific');
+    } else if (propertyCount <= 10000) {
+      setProgressValue(50);
+      setListSizeLabel('Moderate');
+    } else {
+      setProgressValue(75);
+      setListSizeLabel('Broad');
+    }
+  }, [properties.length]);
 
   useEffect(() => {
     if (isPanelOpen) {
@@ -95,6 +114,20 @@ const PropertyListView: React.FC<PropertyListProps> = ({
           >
             <div className="space-y-4">
               <div className="space-y-2">
+                <h3 className="text-lg font-semibold">
+                  List Size ({listSizeLabel})
+                </h3>
+                <div className="flex items-center space-x-4">
+                  <span>Specific</span>
+                  <Progress value={progressValue} className="flex-1" />
+                  <span>Broad</span>
+                </div>
+                <p>Your list size is defined by your search and filters.</p>
+                {progressValue === 75 && (
+                  <p className="font-semibold text-red-600">
+                    Your list is too broad.
+                  </p>
+                )}
                 <Button>Create List</Button>
               </div>
               <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
