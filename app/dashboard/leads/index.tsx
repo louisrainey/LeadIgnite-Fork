@@ -141,7 +141,7 @@ export default function LeadsComponent() {
                   <SelectItem value="2">2 Beds</SelectItem>
                   <SelectItem value="3">3 Beds</SelectItem>
                   <SelectItem value="4">4 Beds</SelectItem>
-                  <SelectItem value="5">5+ Beds</SelectItem>
+                  <SelectItem value="5+">5+ Beds</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -160,7 +160,7 @@ export default function LeadsComponent() {
                   <SelectItem value="2">2 Baths</SelectItem>
                   <SelectItem value="3">3 Baths</SelectItem>
                   <SelectItem value="4">4 Baths</SelectItem>
-                  <SelectItem value="5">5+ Baths</SelectItem>
+                  <SelectItem value="5+">5+ Baths</SelectItem>
                 </SelectContent>
               </Select>
             )}
