@@ -9,6 +9,7 @@ import {
   CarouselPrevious
 } from '@/components/ui/carousel';
 import { PropertyDetails } from '@/types/maps';
+
 const PropertyCard: React.FC<{ property: PropertyDetails }> = ({
   property
 }) => {
@@ -17,7 +18,7 @@ const PropertyCard: React.FC<{ property: PropertyDetails }> = ({
   return (
     <Card className="mx-auto max-w-lg">
       <CardContent className="p-4">
-        <div className="mb-4">
+        <div className="relative mb-4">
           <Carousel className="w-full">
             <CarouselContent className="w-full">
               {[property.primary_photo, ...altPhotos].map((photo, index) => (
@@ -27,13 +28,16 @@ const PropertyCard: React.FC<{ property: PropertyDetails }> = ({
                     alt={`Property Image ${index + 1}`}
                     width={600}
                     height={400}
-                    className="h-full w-full rounded-md object-cover"
+                    className="h-64 w-full rounded-md object-cover"
+                    style={{ height: '300px' }} // Ensure all images have the same height
                   />
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <div className="absolute inset-x-0 bottom-2 flex justify-center space-x-4">
+              <CarouselPrevious className="rounded-full bg-gray-900 p-2 text-white" />
+              <CarouselNext className="rounded-full bg-gray-900 p-2 text-white" />
+            </div>
           </Carousel>
         </div>
         <div>
