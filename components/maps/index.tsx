@@ -5,7 +5,6 @@ interface MapComponentProps {
   apiKey: string;
   center: { lat: number; lng: number };
   markers: { lat: number; lng: number }[];
-  mapType: 'roadmap' | 'satellite';
   zoom: number;
 }
 
@@ -18,7 +17,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
   apiKey,
   center,
   markers,
-  mapType,
   zoom
 }) => {
   return (
@@ -27,7 +25,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
         mapContainerStyle={mapContainerStyle}
         center={center}
         zoom={zoom}
-        mapTypeId={mapType}
       >
         {markers.map((marker, index) => (
           <Marker key={index} position={marker} />

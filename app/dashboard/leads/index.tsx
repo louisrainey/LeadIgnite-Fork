@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Sliders, MapPin, Layers } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Search, Sliders } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -13,11 +13,38 @@ import {
 import MapComponent from '@/components/maps';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { convertAddressesToMarkers } from '@/api/coordinates';
 
 export default function LeadsComponent() {
-  const [view, setView] = useState<'roadmap' | 'satellite'>('roadmap');
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [markers, setMarkers] = useState([{ lat: 39.7392, lng: -104.9903 }]); // Example markers
+  const [markers, setMarkers] = useState([
+    { lat: 39.7392, lng: -104.9903 },
+    { lat: 39.7294, lng: -104.8319 }
+  ]); // Example markers
+  const addresses = [
+    '1000 16th St Mall, Denver, CO 80202', // Denver Pavilions
+    '200 E Colfax Ave, Denver, CO 80203', // Colorado State Capitol
+    '1701 Wynkoop St, Denver, CO 80202', // Union Station
+    '100 W 14th Ave Pkwy, Denver, CO 80204', // Denver Art Museum
+    '2001 Colorado Blvd, Denver, CO 80205' // Denver Museum of Nature & Science
+  ];
+
+  useEffect(() => {
+    const fetchMarkers = async () => {
+      const apiKey = process.env.NEXT_PUBLIC_GMAPS_KEY || '';
+      const newMarkers = await convertAddressesToMarkers(addresses, apiKey);
+
+      // Log the newMarkers array to the console for debugging
+      console.log('New Markers:', newMarkers);
+
+      // Only set markers if newMarkers is not empty
+      if (newMarkers && newMarkers.length > 0) {
+        setMarkers(newMarkers);
+      }
+    };
+
+    fetchMarkers();
+  }, [addresses, markers]);
 
   const center = {
     lat: 39.7392, // Example: Denver's Latitude
@@ -118,7 +145,6 @@ export default function LeadsComponent() {
           apiKey={process.env.NEXT_PUBLIC_GMAPS_KEY || ''}
           center={center}
           markers={markers}
-          mapType={view}
           zoom={10}
         />
       </div>
