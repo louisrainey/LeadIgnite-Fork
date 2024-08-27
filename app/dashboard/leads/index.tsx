@@ -119,10 +119,10 @@ export default function LeadsComponent() {
                   <SelectValue>{field.value || 'Market Status'}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="for_rent">For Rent</SelectItem>
-                  <SelectItem value="for_sale">For Sale</SelectItem>
-                  <SelectItem value="sold">Sold</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="For Rent">For Rent</SelectItem>
+                  <SelectItem value="For Sale">For Sale</SelectItem>
+                  <SelectItem value="Sold">Sold</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -178,19 +178,19 @@ export default function LeadsComponent() {
                   <SelectItem value="single_family">
                     Single Family Home
                   </SelectItem>
-                  <SelectItem value="condo">Condo</SelectItem>
-                  <SelectItem value="townhouse">Townhouse</SelectItem>
-                  <SelectItem value="multi_family">
+                  <SelectItem value="Condo">Condo</SelectItem>
+                  <SelectItem value="Townhouse">Townhouse</SelectItem>
+                  <SelectItem value="Multi-Family">
                     Multi-Family Home
                   </SelectItem>
-                  <SelectItem value="apartment">Apartment</SelectItem>
-                  <SelectItem value="commercial">Commercial</SelectItem>
-                  <SelectItem value="land">Land</SelectItem>
-                  <SelectItem value="new_construction">
+                  <SelectItem value="Apartment">Apartment</SelectItem>
+                  <SelectItem value="Commercial">Commercial</SelectItem>
+                  <SelectItem value="Land">Land</SelectItem>
+                  <SelectItem value="New Construction">
                     New Construction
                   </SelectItem>
-                  <SelectItem value="mobile_home">Mobile Home</SelectItem>
-                  <SelectItem value="farm_ranch">Farm/Ranch</SelectItem>
+                  <SelectItem value="Mobile Home">Mobile Home</SelectItem>
+                  <SelectItem value="Farm/Ranch">Farm/Ranch</SelectItem>
                 </SelectContent>
               </Select>
             )}
