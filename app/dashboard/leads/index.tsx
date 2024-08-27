@@ -22,7 +22,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Coordinate, MapFormSchemaType, PropertyResults } from '@/types/maps';
+import { Coordinate, MapFormSchemaType, PropertyDetails } from '@/types/maps';
 import { mapFormSchema } from '@/types/zod/propertyList';
 import {
   mockFetchAddressesFromApi,
@@ -42,7 +42,7 @@ export default function LeadsComponent() {
     lng: -104.9903
   });
 
-  const [properties, setProperties] = useState<PropertyResults[]>(
+  const [properties, setProperties] = useState<PropertyDetails[]>(
     detailed_properties_saved
   ); // Add this state
 
@@ -71,7 +71,7 @@ export default function LeadsComponent() {
 
   const onSubmit = async (data: MapFormSchemaType) => {
     const apiKey = process.env.NEXT_PUBLIC_GMAPS_KEY || '';
-
+    alert('Submitted');
     // Use the location from form data to fetch addresses from the mock API
     const fetchedCoordinates = await mockFetchAddressesFromApi([data.location]);
     console.log('Fetched Coordinates:', fetchedCoordinates);

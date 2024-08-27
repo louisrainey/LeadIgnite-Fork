@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { PropertyResults } from '../../types/maps';
 import {
   GoogleMap,
   LoadScript,
@@ -7,13 +6,14 @@ import {
   DrawingManager
 } from '@react-google-maps/api';
 import PropertyListView from './properties/propertyList';
+import { PropertyDetails } from '@/types/maps';
 
 interface MapComponentProps {
   apiKey: string;
   center: { lat: number; lng: number };
   markers: { lat: number; lng: number }[];
   zoom: number;
-  propertyResults: PropertyResults[]; // Ensure you pass this prop correctly
+  propertyResults: PropertyDetails[]; // Ensure you pass this prop correctly
 }
 
 const mapContainerStyle = {
@@ -193,7 +193,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
             {isPropertyListVisible && propertyResults.length > 1 && (
               <div
-                className="absolute bottom-0 left-0 w-full"
+                className="absolute bottom-0 left-0 z-50 w-full"
                 style={{ maxWidth: '100%', overflow: 'hidden' }}
               >
                 <PropertyListView
