@@ -88,7 +88,6 @@ export default function LeadsComponent() {
       console.log('New Center:', newCenter);
     }
   };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -115,7 +114,7 @@ export default function LeadsComponent() {
             name="marketStatus"
             control={control}
             render={({ field }) => (
-              <Select {...field} value={field.value || ''}>
+              <Select value={field.value || ''} onValueChange={field.onChange}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue>{field.value || 'Market Status'}</SelectValue>
                 </SelectTrigger>
@@ -133,7 +132,7 @@ export default function LeadsComponent() {
             name="beds"
             control={control}
             render={({ field }) => (
-              <Select {...field} value={field.value || ''}>
+              <Select value={field.value || ''} onValueChange={field.onChange}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue>{field.value || 'Beds'}</SelectValue>
                 </SelectTrigger>
@@ -152,7 +151,7 @@ export default function LeadsComponent() {
             name="baths"
             control={control}
             render={({ field }) => (
-              <Select {...field} value={field.value || ''}>
+              <Select value={field.value || ''} onValueChange={field.onChange}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue>{field.value || 'Baths'}</SelectValue>
                 </SelectTrigger>
@@ -171,7 +170,7 @@ export default function LeadsComponent() {
             name="propertyType"
             control={control}
             render={({ field }) => (
-              <Select {...field}>
+              <Select value={field.value || ''} onValueChange={field.onChange}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue>{field.value || 'Property Type'}</SelectValue>
                 </SelectTrigger>
@@ -271,9 +270,8 @@ export default function LeadsComponent() {
                       <Checkbox
                         id="mls_only"
                         checked={field.value}
-                        onChange={field.onChange}
+                        onCheckedChange={field.onChange}
                         onBlur={field.onBlur}
-                        ref={field.ref}
                       />
                       <Label htmlFor="mls_only">MLS Only</Label>
                     </div>
@@ -288,9 +286,8 @@ export default function LeadsComponent() {
                       <Checkbox
                         id="foreclosure"
                         checked={field.value}
-                        onChange={field.onChange}
+                        onCheckedChange={field.onChange}
                         onBlur={field.onBlur}
-                        ref={field.ref}
                       />
                       <Label htmlFor="foreclosure">Foreclosure</Label>
                     </div>
@@ -316,9 +313,8 @@ export default function LeadsComponent() {
                       <Checkbox
                         id="extra_property_data"
                         checked={field.value}
-                        onChange={field.onChange}
+                        onCheckedChange={field.onChange}
                         onBlur={field.onBlur}
-                        ref={field.ref}
                       />
                       <Label htmlFor="extra_property_data">
                         Extra Property Data
@@ -335,14 +331,14 @@ export default function LeadsComponent() {
                       <Checkbox
                         id="exclude_pending"
                         checked={field.value}
-                        onChange={field.onChange}
+                        onCheckedChange={field.onChange}
                         onBlur={field.onBlur}
-                        ref={field.ref}
                       />
                       <Label htmlFor="exclude_pending">Exclude Pending</Label>
                     </div>
                   )}
                 />
+
                 <Controller
                   name="advanced.limit"
                   control={control}
