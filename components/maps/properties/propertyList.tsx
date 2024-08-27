@@ -5,10 +5,11 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { X } from 'lucide-react';
-import { PropertyResults } from '@/types/maps';
+import { PropertyDetails } from '@/types/maps';
+import PropertyCard from './propertyCard';
 
 interface PropertyListProps {
-  properties: PropertyResults[];
+  properties: PropertyDetails[];
   onClose: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   onOpen: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
@@ -76,7 +77,9 @@ const PropertyListView: React.FC<PropertyListProps> = ({
           className="flex cursor-pointer items-center justify-between bg-secondary p-2"
           onMouseDown={startResizing}
         >
-          <h2 className="text-lg font-semibold">List View</h2>
+          <h2 className="text-lg font-semibold">
+            {properties.length} Properties Fetched
+          </h2>
           <div className="flex gap-2">
             <Button variant="ghost" size="icon" onClick={togglePanel}>
               <X className="h-4 w-4" />
@@ -92,44 +95,13 @@ const PropertyListView: React.FC<PropertyListProps> = ({
           >
             <div className="space-y-4">
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold">List Size</h3>
-                <p className="text-sm text-muted-foreground">
-                  Your list size is defined by your search and filters.
-                </p>
-                <p className="font-semibold">Your list is too broad.</p>
-              </div>
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">
-                  Results: {properties.length}
-                </h3>
                 <Button>Create List</Button>
               </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                 {properties.map((property, index) => (
-                  <Card key={index}>
-                    <CardContent className="flex p-4">
-                      <Image
-                        src={property.property_url || '/placeholder.svg'}
-                        alt={property.street || 'Property Image'}
-                        width={150}
-                        height={150}
-                        className="mr-4 rounded-md object-cover"
-                      />
-                      <div>
-                        <h4 className="font-semibold">
-                          {property.street}, {property.city}, {property.state}{' '}
-                          {property.zip_code}
-                        </h4>
-                        <p>Est. Value: {property.list_price}</p>
-                        <p>Last Sale: {property.last_sold_date}</p>
-                        <p>Sold Price: {property.sold_price}</p>
-                        <p>
-                          {property.beds} bed | {property.full_baths} full bath
-                          | {property.sqft} sqft
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div key={index} className="p-4">
+                    <PropertyCard property={property} />
+                  </div>
                 ))}
               </div>
             </div>

@@ -28,8 +28,8 @@ import {
   mockFetchAddressesFromApi,
   calculateCenter
 } from '@/constants/utility/maps';
-import { fetchedPropertiesMockData } from '@/constants/data/properties';
 import PropertyListView from '@/components/maps/properties/propertyList';
+import { detailed_properties_saved } from '@/constants/data/properties';
 
 export default function LeadsComponent() {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -43,7 +43,7 @@ export default function LeadsComponent() {
   });
 
   const [properties, setProperties] = useState<PropertyResults[]>(
-    fetchedPropertiesMockData
+    detailed_properties_saved
   ); // Add this state
 
   const { control, handleSubmit } = useForm({
