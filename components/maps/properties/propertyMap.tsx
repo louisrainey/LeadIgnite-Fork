@@ -61,20 +61,27 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
           onClick={() => setSelected({ lat: latitude, lng: longitude })}
         />
 
-        {selected && homeAnimation && (
+        {selected && (
           <InfoWindow
             position={selected}
-            onCloseClick={() => setSelected(null)}
+            onCloseClick={() => setSelected(null)} // Keep this for closing the InfoWindow when custom close button is clicked
           >
-            <div style={{ color: 'black' }}>
-              {' '}
-              {/* Ensure text is black */}
+            <div
+              style={{ color: 'black', display: 'flex', alignItems: 'center' }}
+            >
               <Lottie
                 animationData={homeAnimation}
-                style={{ height: 50, width: 50, marginBottom: 10 }}
+                style={{ height: 30, width: 30, marginRight: 10 }}
               />
-              <h2>{address}</h2>
-              <p>{details}</p>
+              <div style={{ flex: 1 }}>
+                <h2
+                  className="font-bold"
+                  style={{ fontSize: '1rem', margin: 0 }}
+                >
+                  {address}
+                </h2>
+                <p style={{ fontSize: '0.875rem', margin: 0 }}>{details}</p>
+              </div>
             </div>
           </InfoWindow>
         )}

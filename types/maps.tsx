@@ -63,4 +63,10 @@ export type PropertyDetails = {
   unit: string | null;
   year_built: number;
   zip_code: string;
+  //Needed
+  mortgage_balance?: number;
+};
+
+export type NeededPropertyDetails = PropertyDetails & {
+  mortgage_balance: number | null; // New field for mortgage balance
 };
