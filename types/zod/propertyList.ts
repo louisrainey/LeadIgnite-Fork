@@ -1,7 +1,16 @@
 import * as z from 'zod';
+const locationRegex =
+  /^(?:(?:\d{5}(?:-\d{4})?)|(?:[A-Za-z ]+,\s?[A-Za-z]{2})|(?:[A-Za-z ]+),\s?\d{5}(?:-\d{4})?)$/;
 
 export const mapFormSchema = z.object({
-  location: z.string().nonempty('Location is required'),
+  location: z
+    .string()
+    .min(1, 'Location is required')
+    .refine((val) => locationRegex.test(val), {
+      message:
+        'Please enter a valid State, Zip, County, Street, Neighborhood, or Address'
+    }),
+
   marketStatus: z
     .string()
     .max(10, 'Market status must be 10 characters or less')

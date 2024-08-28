@@ -7,6 +7,7 @@ import { detailed_properties_saved } from '@/constants/data/properties';
 import { notFound } from 'next/navigation';
 import PropertyMap from '@/components/maps/properties/propertyMap';
 import { Progress } from '@/components/ui/progress';
+import PropertyHeader from '@/components/property/propertyHeader';
 // Async function to fetch property data
 async function fetchProperty(id: string): Promise<PropertyDetails | null> {
   try {
@@ -67,6 +68,7 @@ export default async function PropertyPage({
     <div className="mx-auto w-full max-w-full">
       {' '}
       {/* Full-width container */}
+      <PropertyHeader property={property} />
       {/* Google Maps replacing Placeholder Image */}
       <div className="relative mb-4 h-64 w-full">
         <PropertyMap
