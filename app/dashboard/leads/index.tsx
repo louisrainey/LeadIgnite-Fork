@@ -96,7 +96,7 @@ export default function LeadsComponent() {
   };
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={() => handleSubmit(onSubmit)}
       className="flex h-screen w-full flex-col"
     >
       <div className="border-b p-4">
@@ -124,7 +124,7 @@ export default function LeadsComponent() {
                       field.onBlur();
                     }}
                   />
-                  {error && <p className="text-red-500">{error.message}</p>}
+                  {/* {error && <p className="text-red-500">{error.message}</p>} */}
                 </div>
               )}
             />

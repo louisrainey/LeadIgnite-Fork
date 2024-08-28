@@ -109,40 +109,47 @@ const MapComponent: React.FC<MapComponentProps> = ({
                   <div className="mb-2 flex justify-center space-x-2">
                     <button
                       className="rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
-                      onClick={() =>
-                        setDrawingMode(google.maps.drawing.OverlayType.POLYGON)
-                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+                      }}
                     >
                       Polygon
                     </button>
                     <button
                       className="rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.preventDefault();
                         setDrawingMode(
                           google.maps.drawing.OverlayType.RECTANGLE
-                        )
-                      }
+                        );
+                      }}
                     >
                       Rectangle
                     </button>
                     <button
                       className="rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
-                      onClick={() =>
-                        setDrawingMode(google.maps.drawing.OverlayType.CIRCLE)
-                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setDrawingMode(google.maps.drawing.OverlayType.CIRCLE);
+                      }}
                     >
                       Circle
                     </button>
                     <button
                       className="rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
-                      onClick={() =>
-                        setDrawingMode(google.maps.drawing.OverlayType.POLYLINE)
-                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setDrawingMode(
+                          google.maps.drawing.OverlayType.POLYLINE
+                        );
+                      }}
                     >
                       Polyline
                     </button>
                   </div>
                 )}
+
                 {shapeDrawn && (
                   <div className="flex justify-center space-x-4">
                     <button

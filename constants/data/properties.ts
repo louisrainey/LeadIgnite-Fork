@@ -1,4 +1,5 @@
 import { PropertyDetails } from '@/types/maps';
+import { v4 as uuidv4 } from 'uuid';
 
 export let detailed_properties_saved: PropertyDetails[] = [
   {
@@ -505,3 +506,12 @@ export let detailed_properties_saved: PropertyDetails[] = [
     zip_code: '92115'
   }
 ];
+
+export const assignIdsToProperties = (properties: PropertyDetails[]) => {
+  return properties.map((property) => ({
+    ...property,
+    id: uuidv4() // Assign a unique UUID to each property
+  }));
+};
+
+detailed_properties_saved = assignIdsToProperties(detailed_properties_saved);
