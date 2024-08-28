@@ -59,6 +59,7 @@
     "embla-carousel-react": "^8.2.0",
     "eslint": "8.48.0",
     "eslint-config-next": "^14.0.1",
+    "lottie-react": "^2.4.0",
     "lucide-react": "^0.291.0",
     "next": "^14.2.3",
     "next-auth": "^5.0.0-beta.18",
