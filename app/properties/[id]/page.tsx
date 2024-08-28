@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { detailed_properties_saved } from '@/constants/data/properties';
 import { notFound } from 'next/navigation';
 import PropertyMap from '@/components/maps/properties/propertyMap';
-
+import { Progress } from '@/components/ui/progress';
 // Async function to fetch property data
 async function fetchProperty(id: string): Promise<PropertyDetails | null> {
   try {
@@ -47,107 +47,150 @@ export default async function PropertyPage({
   if (!property) {
     notFound();
   }
+  const equity =
+    property.estimated_value && property.mortgage_balance
+      ? property.estimated_value - property.mortgage_balance
+      : 0;
+
+  const equityPercentage = property.estimated_value
+    ? (equity / property.estimated_value) * 100
+    : 0;
+
+  let equityStatus = 'Low';
+  if (equityPercentage > 70) {
+    equityStatus = 'High';
+  } else if (equityPercentage > 40) {
+    equityStatus = 'Medium';
+  }
 
   return (
-    <div className="mx-auto w-full max-w-4xl">
+    <div className="mx-auto w-full max-w-full">
+      {' '}
+      {/* Full-width container */}
       {/* Google Maps replacing Placeholder Image */}
-      <div className="relative mb-4 h-48 w-full">
+      <div className="relative mb-4 h-64 w-full">
         <PropertyMap
           latitude={property.latitude}
           longitude={property.longitude}
           address={`${property.street}, ${property.city}, ${property.state} ${property.zip_code}`}
-          details={`${property.beds} bed | ${property.full_baths} bath | ${property.sqft} sqft`}
-        />{' '}
+          details={`${property.beds} bed | ${property.full_baths} bath | ${property.sqft} sqft | ${property.year_built} year built`}
+        />
       </div>
-
       {/* Property Details */}
       <Card>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-3 gap-6">
-            {/* Owner Name */}
-            {property.agent && (
-              <div>
-                <h2 className="mb-2 font-semibold">Owner Name</h2>
-                <div className="flex items-center">
-                  {property.agent}{' '}
-                  <PencilIcon className="ml-2 h-4 w-4 text-blue-500" />
-                </div>
+        <CardContent className="p-10">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 2xl:grid-cols-8">
+            <div>
+              <h2 className="mb-2 font-semibold">Owner Name</h2>
+              <div className="flex items-center">
+                {property.agent}{' '}
+                <PencilIcon className="ml-2 h-4 w-4 text-blue-500" />
               </div>
-            )}
-
-            {/* Mortgages */}
-            {/* Assuming mortgages data would be available separately. If not, you can remove this section */}
-
-            {/* Equity */}
-            {property.estimated_value !== null && (
-              <div>
-                <h2 className="mb-2 font-semibold">
-                  Equity <span className="text-sm text-gray-500">(est.)</span>
-                </h2>
-                <div className="flex items-center">
-                  ${property.estimated_value.toLocaleString()}
-                  <span className="ml-2 text-sm text-blue-500">
-                    100% | High
-                  </span>
-                </div>
+            </div>
+            <div>
+              <h2 className="mb-2 font-semibold">
+                Mortgages{' '}
+                <span className="rounded-full bg-gray-200 px-2 text-sm">0</span>
+              </h2>
+              <div>-</div>
+            </div>
+            <div>
+              <h2 className="mb-2 font-semibold">
+                Equity <span className="text-sm text-gray-500">(est.)</span>
+              </h2>
+              <div className="flex items-center">
+                {property.estimated_value
+                  ? `$${equity.toLocaleString()} | ${equityPercentage.toFixed(
+                      2
+                    )}%`
+                  : 'N/A'}{' '}
+                <span
+                  className={`ml-2 text-sm text-${
+                    equityStatus === 'High'
+                      ? 'green'
+                      : equityStatus === 'Medium'
+                      ? 'yellow'
+                      : 'red'
+                  }-500`}
+                >
+                  {equityStatus}
+                </span>
               </div>
-            )}
+              <Progress
+                value={equityPercentage}
+                className="mt-2 h-2 rounded-full bg-blue-500"
+              />
+            </div>
 
-            {/* Occupancy */}
-            {/* Assuming occupancy information is static as "Owner Occupied". If dynamic, update accordingly */}
-
-            {/* Taxes */}
-            {property.hoa_fee !== null && (
+            <div>
+              <h2 className="mb-2 font-semibold">Occupancy</h2>
+              <div>Owner Occupied</div>
+            </div>
+            <div>
+              <h2 className="mb-2 font-semibold">Taxes</h2>
               <div>
-                <h2 className="mb-2 font-semibold">Taxes</h2>
-                <div>${property.hoa_fee.toLocaleString()}/mo</div>
+                $
+                {property.hoa_fee
+                  ? `${property.hoa_fee.toLocaleString()}/mo`
+                  : 'N/A'}
               </div>
-            )}
-
-            {/* Est. Value */}
-            {property.estimated_value !== null && (
+            </div>
+            <div>
+              <h2 className="mb-2 font-semibold">Est. Value</h2>
               <div>
-                <h2 className="mb-2 font-semibold">Est. Value</h2>
-                <div>${property.estimated_value.toLocaleString()}</div>
+                $
+                {property.estimated_value
+                  ? property.estimated_value.toLocaleString()
+                  : 'N/A'}
               </div>
-            )}
-
-            {/* Last Sale */}
-            {property.last_sold_date && (
-              <div>
-                <h2 className="mb-2 font-semibold">Last Sale</h2>
-                <div>{property.last_sold_date}</div>
-              </div>
-            )}
-
-            {/* MLS */}
-            {property.mls_id && (
-              <div>
-                <h2 className="mb-2 font-semibold">MLS</h2>
-                <div>{property.mls_id}</div>
-              </div>
-            )}
-            {/* FMR (HUD) */}
-            {/* Assuming FMR data would be static or available separately */}
-
-            {/* Rent (est.) */}
-            {/* Assuming Rent (est.) is static. If dynamic, update accordingly */}
+            </div>
+            <div>
+              <h2 className="mb-2 font-semibold">Last Sale</h2>
+              <div>{property.last_sold_date || '-'}</div>
+            </div>
+            <div>
+              <h2 className="mb-2 font-semibold">MLS</h2>
+              <div>{property.mls_id || 'Inactive'}</div>
+            </div>
+            <div>
+              <h2 className="mb-2 font-semibold">
+                FMR <span className="text-sm text-gray-500">(HUD)</span>
+              </h2>
+              <div>$2,750.00/mo</div>
+            </div>
+            <div>
+              <h2 className="mb-2 font-semibold">
+                Rent <span className="text-sm text-gray-500">(est.)</span>
+              </h2>
+              <div>$2,750.00/mo</div>
+            </div>
           </div>
         </CardContent>
       </Card>
-
       {/* Tabs */}
       <Tabs defaultValue="overview" className="mt-6">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="property-details">Property Details</TabsTrigger>
-          <TabsTrigger value="mls-details">MLS Details</TabsTrigger>
-          <TabsTrigger value="tax-information">Tax Information</TabsTrigger>
-          <TabsTrigger value="linked-properties">Linked Properties</TabsTrigger>
-          <TabsTrigger value="foreclosures-liens">
+        <TabsList className="flex overflow-auto">
+          {' '}
+          {/* Added classes to handle overflow */}
+          <TabsTrigger value="overview" className="flex-1">
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="property-details" className="flex-1">
+            Property Details
+          </TabsTrigger>
+          <TabsTrigger value="mls-details" className="flex-1">
+            MLS Details
+          </TabsTrigger>
+          <TabsTrigger value="tax-information" className="flex-1">
+            Tax Information
+          </TabsTrigger>
+          <TabsTrigger value="linked-properties" className="flex-1">
+            Linked Properties
+          </TabsTrigger>
+          <TabsTrigger value="foreclosures-liens" className="flex-1">
             Foreclosures & Liens
           </TabsTrigger>
-          <TabsTrigger value="mortgage-transactions">
+          <TabsTrigger value="mortgage-transactions" className="flex-1">
             Mortgage & Transactions
           </TabsTrigger>
         </TabsList>
