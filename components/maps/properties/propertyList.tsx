@@ -183,7 +183,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({
                   </p>
                 )}
                 <div className="flex justify-center">
-                  <Button>Create List</Button>
+                  <Button type="button">Create List</Button>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-8 md:grid-cols-3">

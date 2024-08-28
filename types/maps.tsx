@@ -20,6 +20,7 @@ type Phone = {
 };
 
 export type PropertyDetails = {
+  id?: string;
   agent: string;
   agent_email: string | null;
   agent_phones: Phone[] | null;

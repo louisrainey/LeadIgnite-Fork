@@ -9,6 +9,7 @@ import {
   CarouselPrevious
 } from '@/components/ui/carousel';
 import { PropertyDetails } from '@/types/maps';
+import Link from 'next/link';
 
 const PropertyCard: React.FC<{ property: PropertyDetails }> = ({
   property
@@ -16,7 +17,7 @@ const PropertyCard: React.FC<{ property: PropertyDetails }> = ({
   const altPhotos = property.alt_photos.split(', ');
 
   return (
-    <Card className="mx-auto max-w-lg">
+    <Card className="mx-auto max-w-lg hover:border-orange-800 dark:hover:border-amber-200">
       <CardContent className="p-4">
         <div className="relative mb-4">
           <Carousel className="w-full">
@@ -35,15 +36,23 @@ const PropertyCard: React.FC<{ property: PropertyDetails }> = ({
               ))}
             </CarouselContent>
             <div className="absolute inset-x-0 bottom-2 flex justify-center space-x-4">
-              <CarouselPrevious className="rounded-full bg-gray-900 p-2 text-white" />
-              <CarouselNext className="rounded-full bg-gray-900 p-2 text-white" />
+              <CarouselPrevious
+                type="button"
+                className="rounded-full bg-gray-900 p-2 text-white"
+              />
+              <CarouselNext
+                type="button"
+                className="rounded-full bg-gray-900 p-2 text-white"
+              />
             </div>
           </Carousel>
         </div>
-        <div>
+        <div className="text-center">
           <h4 className="font-semibold">
-            {property.street}, {property.city}, {property.state}{' '}
-            {property.zip_code}
+            <Link href={`/properties/${property.id}`}>
+              {property.street}, {property.city}, {property.state}{' '}
+              {property.zip_code}
+            </Link>
           </h4>
           <p>Est. Value: ${property.list_price.toLocaleString()}</p>
           <p>Last Sale: {property.last_sold_date}</p>
