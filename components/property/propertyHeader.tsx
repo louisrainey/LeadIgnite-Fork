@@ -13,16 +13,44 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
-import { CalendarIcon, ChevronDownIcon, InfoIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  ChevronDownIcon,
+  CopyPlus,
+  InfoIcon
+} from 'lucide-react';
 import { useState } from 'react';
 import { PropertyDetails } from '@/types/maps'; // Ensure you import the PropertyDetails type
 
-export default function PropertyHeader({
-  property
-}: {
+interface PropertyHeaderProps {
   property: PropertyDetails;
-}) {
-  const [date, setDate] = useState<Date>();
+  initialDate: Date | undefined;
+  initialStatus: string;
+  setDate: (date: Date) => void;
+  setStatus: (status: string) => void;
+}
+
+export default function PropertyHeader({
+  property,
+  initialDate,
+  initialStatus,
+  setDate,
+  setStatus
+}: PropertyHeaderProps) {
+  const [date, updateDate] = useState<Date | undefined>(initialDate);
+  const [status, updateStatus] = useState<string>(initialStatus);
+
+  const handleDateChange = (selectedDate: Date | undefined) => {
+    if (selectedDate) {
+      updateDate(selectedDate);
+      setDate(selectedDate); // Update the date in the parent component
+    }
+  };
+
+  const handleStatusChange = (selectedStatus: string) => {
+    updateStatus(selectedStatus);
+    setStatus(selectedStatus); // Update the status in the parent component
+  };
 
   return (
     <div className="w-full bg-white p-4 shadow-sm dark:bg-gray-900">
@@ -45,17 +73,21 @@ export default function PropertyHeader({
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="w-[280px] justify-start text-left font-normal dark:border-gray-700 dark:text-gray-100"
+                className=" justify-start text-left font-normal dark:border-gray-700 dark:text-gray-100"
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? date.toLocaleDateString() : <span>MM/DD/YYYY</span>}
+                {date ? (
+                  date.toLocaleDateString('en-US')
+                ) : (
+                  <span>MM/DD/YYYY</span>
+                )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 dark:bg-gray-800">
+            <PopoverContent className=" p-0 dark:bg-gray-800">
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={setDate}
+                onSelect={handleDateChange}
                 initialFocus
               />
             </PopoverContent>
@@ -64,23 +96,46 @@ export default function PropertyHeader({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="w-[150px] dark:border-gray-700 dark:text-gray-100"
+                className=" dark:border-gray-700 dark:text-gray-100"
               >
-                Status <ChevronDownIcon className="ml-2 h-4 w-4" />
+                {status ? status : 'Status'}{' '}
+                <ChevronDownIcon className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="dark:bg-gray-800 dark:text-gray-100">
-              <DropdownMenuItem>New Lead</DropdownMenuItem>
-              <DropdownMenuItem>Follow Up</DropdownMenuItem>
-              <DropdownMenuItem>Contract Sent</DropdownMenuItem>
-              <DropdownMenuItem>Make Offer</DropdownMenuItem>
-              <DropdownMenuItem>In Contract</DropdownMenuItem>
-              <DropdownMenuItem>Closed Deal</DropdownMenuItem>
-              <DropdownMenuItem>Dead Deal</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleStatusChange('New Lead')}>
+                New Lead
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleStatusChange('Follow Up')}>
+                Follow Up
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange('Contract Sent')}
+              >
+                Contract Sent
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange('Make Offer')}
+              >
+                Make Offer
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange('In Contract')}
+              >
+                In Contract
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange('Closed Deal')}
+              >
+                Closed Deal
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleStatusChange('Dead Deal')}>
+                Dead Deal
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Button className="bg-blue-600 text-white hover:bg-blue-700">
-            Lead Activity
+            <CopyPlus className="mx-2" /> Lead Activity
           </Button>
         </div>
       </div>
