@@ -30,6 +30,7 @@ import {
 } from '@/constants/utility/maps';
 import PropertyListView from '@/components/maps/properties/propertyList';
 import { detailed_properties_saved } from '@/constants/data/properties';
+import { checkForSQLInjection } from '@/constants/utility/sqlCheck';
 
 export default function LeadsComponent() {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -105,12 +106,26 @@ export default function LeadsComponent() {
             <Controller
               name="location"
               control={control}
-              render={({ field }) => (
-                <Input
-                  className="w-full py-2 pl-10 pr-4"
-                  placeholder="State, Zip, County, Street, Neighborhood, or Address"
-                  {...field}
-                />
+              render={({ field, fieldState: { error } }) => (
+                <div>
+                  <Input
+                    className="w-full py-2 pl-10 pr-4"
+                    placeholder="State, Zip, County, Street, Neighborhood, or Address"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (checkForSQLInjection(value)) {
+                        field.onChange(''); // Clear the field if it contains SQL injection patterns
+                      } else {
+                        field.onChange(value); // Keep the value if it's safe
+                      }
+                    }}
+                    onBlur={() => {
+                      field.onBlur();
+                    }}
+                  />
+                  {error && <p className="text-red-500">{error.message}</p>}
+                </div>
               )}
             />
           </div>
@@ -231,13 +246,21 @@ export default function LeadsComponent() {
                           const value = e.target.value;
 
                           // Allow only valid numeric input up to 6 characters
-                          if (/^\d{0,6}(\.\d{0,5})?$/.test(value)) {
+                          if (
+                            /^\d{0,6}(\.\d{0,5})?$/.test(value) &&
+                            !checkForSQLInjection(value)
+                          ) {
                             field.onChange(value);
                           }
                         }}
                         onBlur={(e) => {
+                          const value = e.target.value;
+
                           // Optionally, clear invalid input when the field loses focus
-                          if (!/^\d{1,6}(\.\d{1,5})?$/.test(e.target.value)) {
+                          if (
+                            !/^\d{1,6}(\.\d{1,5})?$/.test(e.target.value) &&
+                            checkForSQLInjection(value)
+                          ) {
                             field.onChange(''); // Clear the field if the input is invalid
                           }
                         }}
@@ -263,7 +286,10 @@ export default function LeadsComponent() {
                         onChange={(e) => {
                           const value = e.target.value;
                           // Optional: Allow only up to 5 digits
-                          if (/^\d{0,5}$/.test(value)) {
+                          if (
+                            /^\d{0,5}$/.test(value) &&
+                            !checkForSQLInjection(value)
+                          ) {
                             field.onChange(value);
                           }
                         }}
@@ -347,7 +373,10 @@ export default function LeadsComponent() {
                         onBlur={(e) => {
                           const value = e.target.value;
                           // Validate the input on blur to ensure it starts with http or https
-                          if (/^https?:\/\/.*/.test(value) || value === '') {
+                          if (
+                            /^https?:\/\/.*/.test(value) ||
+                            (value === '' && !checkForSQLInjection(value))
+                          ) {
                             field.onChange(value);
                           } else {
                             field.onChange(''); // Clear the field if it doesn't start with http or https
@@ -416,7 +445,8 @@ export default function LeadsComponent() {
                           if (
                             !isNaN(numericValue) &&
                             numericValue >= 1 &&
-                            numericValue <= 10000
+                            numericValue <= 10000 &&
+                            !checkForSQLInjection(value)
                           ) {
                             field.onChange(value);
                           } else if (value === '') {
