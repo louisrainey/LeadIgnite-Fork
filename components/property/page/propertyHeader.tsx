@@ -24,32 +24,26 @@ import { PropertyDetails } from '@/types/maps'; // Ensure you import the Propert
 
 interface PropertyHeaderProps {
   property: PropertyDetails;
-  initialDate: Date | undefined;
-  initialStatus: string;
-  setDate: (date: Date) => void;
-  setStatus: (status: string) => void;
+  initialDate?: Date; // Optional prop for initial date
+  initialStatus?: string; // Optional prop for initial status
 }
 
 export default function PropertyHeader({
   property,
   initialDate,
-  initialStatus,
-  setDate,
-  setStatus
+  initialStatus = 'New Lead' // Default to 'New Lead' if no status is provided
 }: PropertyHeaderProps) {
-  const [date, updateDate] = useState<Date | undefined>(initialDate);
-  const [status, updateStatus] = useState<string>(initialStatus);
+  const [date, setDate] = useState<Date | undefined>(initialDate);
+  const [status, setStatus] = useState<string>(initialStatus);
 
   const handleDateChange = (selectedDate: Date | undefined) => {
     if (selectedDate) {
-      updateDate(selectedDate);
-      setDate(selectedDate); // Update the date in the parent component
+      setDate(selectedDate);
     }
   };
 
   const handleStatusChange = (selectedStatus: string) => {
-    updateStatus(selectedStatus);
-    setStatus(selectedStatus); // Update the status in the parent component
+    setStatus(selectedStatus);
   };
 
   return (
@@ -98,8 +92,7 @@ export default function PropertyHeader({
                 variant="outline"
                 className=" dark:border-gray-700 dark:text-gray-100"
               >
-                {status ? status : 'Status'}{' '}
-                <ChevronDownIcon className="ml-2 h-4 w-4" />
+                {status} <ChevronDownIcon className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="dark:bg-gray-800 dark:text-gray-100">
