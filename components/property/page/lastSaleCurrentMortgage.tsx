@@ -17,7 +17,9 @@ interface LastSaleProps {
 export const LastSaleTable: React.FC<LastSaleProps> = ({ sale }) => {
   return (
     <div className="w-full overflow-x-auto">
-      <h3 className="mb-4 text-lg font-semibold dark:text-white">Last Sale </h3>
+      <h3 className="mb-4 text-center text-lg font-semibold dark:text-white">
+        Last Sale{' '}
+      </h3>
 
       <table className="min-w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
         <thead>
@@ -97,7 +99,7 @@ export const CurrentMortgageTable: React.FC<CurrentMortgageProps> = ({
 }) => {
   return (
     <div className="w-full overflow-x-auto">
-      <h3 className="mb-4 text-lg font-semibold dark:text-white">
+      <h3 className="mb-4 text-center text-lg font-semibold dark:text-white">
         Current Mortage{' '}
       </h3>
 
