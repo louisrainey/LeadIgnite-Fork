@@ -20,7 +20,7 @@ export const MortgageHistoryTable: React.FC<MortgageHistoryProps> = ({
 }) => {
   return (
     <div className="w-full">
-      <h3 className="mb-4 text-lg font-semibold dark:text-white">
+      <h3 className="mb-4 text-center text-lg font-semibold dark:text-white">
         Mortgage History
       </h3>
       <div className="overflow-x-auto">
@@ -116,7 +116,7 @@ interface SaleHistoryProps {
 export const SaleHistoryTable: React.FC<SaleHistoryProps> = ({ sales }) => {
   return (
     <div className="mt-6 w-full">
-      <h3 className="mb-4 text-lg font-semibold dark:text-white">
+      <h3 className="mb-4 text-center text-lg font-semibold dark:text-white">
         Sale History
       </h3>
       <div className="overflow-x-auto">
