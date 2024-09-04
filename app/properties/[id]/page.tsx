@@ -16,6 +16,19 @@ import {
   convertSqftToAcres
 } from '@/constants/utility/property';
 import OwnershipInformationComponent from '@/components/property/page/ownerInformation';
+import TaxInformationComponent from '@/components/property/page/taxInformation';
+import MLSTableComponent from '@/components/property/page/mlsData';
+import LinkedPropertiesComponent from '@/components/property/page/linkedProperties';
+import ForeclosuresComponent from '@/components/property/page/forclusureLiens';
+import TransactionTable from '@/components/property/page/transactionsTable';
+import {
+  MortgageHistoryTable,
+  SaleHistoryTable
+} from '@/components/property/page/mortgageHistory';
+import {
+  CurrentMortgageTable,
+  LastSaleTable
+} from '@/components/property/page/lastSaleCurrentMortgage';
 // Async function to fetch property data
 async function fetchProperty(id: string): Promise<PropertyDetails | null> {
   try {
@@ -94,6 +107,114 @@ export default async function PropertyPage({
     neighborhood_type: 'Subdivision' // Assumed from the property type
     // legal_description: property.legal_description,
   };
+
+  const mlsData = {
+    mls: property.mls,
+    mls_id: property.mls_id,
+    list_date: property.list_date,
+    list_price: property.list_price,
+    sold_price: property.sold_price,
+    status: property.status,
+    property_url: property.property_url
+  };
+  const taxInfo = {
+    // apn: property.apn,
+    tax_year: 2024, // Hardcoded or dynamically set
+    tax_amount: property.hoa_fee
+      ? `$${property.hoa_fee.toLocaleString()}`
+      : 'N/A',
+    assessment_year: 2024, // Hardcoded or dynamically set
+    total_assessed_value: property.assessed_value
+      ? `$${property.assessed_value.toLocaleString()}`
+      : 'N/A',
+    market_land_value: property.assessed_value
+      ? `$${property.assessed_value.toLocaleString()}`
+      : 'N/A',
+    market_value: property.estimated_value
+      ? `$${property.estimated_value.toLocaleString()}`
+      : 'N/A',
+    market_improvement_value: '-', // Placeholder
+    assessed_land_value: '-', // Placeholder
+    assessed_improvement_value: '-', // Placeholder
+    county: property.county ?? 'N/A'
+  };
+
+  const linkedPropertyData = {
+    totalProperties: 3,
+    totalOpenLoanAmount: 300000,
+    totalEstimatedValue: 1500000,
+    totalEquity: 1200000,
+    linkedProperties: [
+      {
+        id: '1',
+        address: '123 Main St',
+        estimatedValue: 500000,
+        openLoanAmount: 100000,
+        equity: 400000
+      },
+      {
+        id: '2',
+        address: '456 Elm St',
+        estimatedValue: 700000,
+        openLoanAmount: 200000,
+        equity: 500000
+      },
+      {
+        id: '3',
+        address: '789 Oak St',
+        estimatedValue: 300000,
+        openLoanAmount: 0,
+        equity: 300000
+      }
+    ]
+  };
+
+  const foreclosureData = {
+    active: null,
+    documentType: null,
+    recordingDate: null,
+    originalLoanAmount: null,
+    estimatedBankValue: null
+  };
+
+  const liensData = {
+    taxLiens: 'No' // Assume we know there are no tax liens
+  };
+
+  const mortgageData = [
+    {
+      loan_position: 'First',
+      recording_date: '01/02/2021',
+      loan_amount: '$880,000',
+      est_rate: '-',
+      document_number: '949555205',
+      deed_type: 'Deed Of Trust',
+      lender_name: 'First Centennial Mortgage Corp',
+      lender_type: 'Mortgage Company',
+      grantee_names: 'Fredric M Winocur, Patricia S Winocur',
+      loan_type: 'Conventional'
+    }
+  ];
+  const saleData = {
+    date_of_sale: '23/10/2012',
+    amount: 1150000, // Sale amount in dollars
+    purchase_method: 'Financed',
+    document_type: 'Warranty Deed',
+    transaction_type: 'Transfer',
+    seller_names: 'Harvey, Gary E', // Seller's name
+    buyer_names: 'Fredric M Winocur, Patricia S Winocur' // Buyer's name
+  };
+  const saleHistoryData = [
+    {
+      date_of_sale: '23/10/2012',
+      amount: '$1,150,000',
+      purchase_method: 'Financed',
+      document_type: 'Warranty Deed',
+      transaction_type: 'Transfer',
+      seller_names: 'Harvey, Gary E',
+      buyer_names: 'Fredric M Winocur, Patricia S Winocur'
+    }
+  ];
   return (
     <div className="mx-auto w-full max-w-full">
       {' '}
@@ -246,6 +367,33 @@ export default async function PropertyPage({
           <OwnershipInformationComponent ownership={ownershipData} />
           <PropertyCardDataComponent property={property} />
           <LandLocationInformationComponent landLocation={landLocationData} />
+        </TabsContent>
+        <TabsContent value="mls-details">
+          <MLSTableComponent mlsData={mlsData} />
+        </TabsContent>
+        <TabsContent value="tax-information">
+          <TaxInformationComponent taxInfo={taxInfo} />
+        </TabsContent>
+        <TabsContent value="linked-properties">
+          <LinkedPropertiesComponent
+            totalProperties={linkedPropertyData.totalProperties}
+            totalOpenLoanAmount={linkedPropertyData.totalOpenLoanAmount}
+            totalEstimatedValue={linkedPropertyData.totalEstimatedValue}
+            totalEquity={linkedPropertyData.totalEquity}
+            linkedProperties={linkedPropertyData.linkedProperties}
+          />
+        </TabsContent>
+        <TabsContent value="foreclosures-liens">
+          <ForeclosuresComponent
+            foreclosureData={foreclosureData}
+            liensData={liensData}
+          />
+        </TabsContent>
+        <TabsContent value="mortgage-transactions">
+          <LastSaleTable sale={saleData} />
+          <CurrentMortgageTable mortgage={mortgageData[0]} />
+          <MortgageHistoryTable mortgages={mortgageData} />
+          <SaleHistoryTable sales={saleHistoryData} />
         </TabsContent>
         {/* Add other TabsContent components for the remaining tabs */}
       </Tabs>
