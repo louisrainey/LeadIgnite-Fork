@@ -7,7 +7,15 @@ import { detailed_properties_saved } from '@/constants/data/properties';
 import { notFound } from 'next/navigation';
 import PropertyMap from '@/components/maps/properties/propertyMap';
 import { Progress } from '@/components/ui/progress';
-import PropertyHeader from '@/components/property/propertyHeader';
+import PropertyHeader from '@/components/property/page/propertyHeader';
+import PropertyCard from '@/components/maps/properties/propertyCard';
+import PropertyCardDataComponent from '@/components/property/page/propertyDetailsCard';
+import LandLocationInformationComponent from '@/components/property/page/landLocationInformation';
+import {
+  calculateOwnershipLength,
+  convertSqftToAcres
+} from '@/constants/utility/property';
+import OwnershipInformationComponent from '@/components/property/page/ownerInformation';
 // Async function to fetch property data
 async function fetchProperty(id: string): Promise<PropertyDetails | null> {
   try {
@@ -64,6 +72,28 @@ export default async function PropertyPage({
     equityStatus = 'Medium';
   }
 
+  const ownershipData = {
+    owner1_name: 'Not Available', // Placeholder if owner information is not available
+    owner2_name: 'Not Available', // Placeholder if owner information is not available
+    ownership_length: calculateOwnershipLength(property.last_sold_date),
+    mailing_address: `${property.full_street_line}, ${property.city}, ${property.state} ${property.zip_code}`
+  };
+
+  const landLocationData = {
+    lot_size: `${convertSqftToAcres(property.lot_sqft)} acres`, // Convert sqft to acres
+    lot_area: property.lot_sqft
+      ? `${property.lot_sqft.toLocaleString()} sqft`
+      : 'N/A', // Safe handling for lot_sqft
+    property_class: property.style,
+    // apn: property.apn,
+    // zoning: property.zoning,
+    census_tract: '-', // Placeholder if not available
+    block: '-', // Placeholder if not available
+    lot_number: '-', // Placeholder if not available
+    neighborhood_name: property.neighborhoods,
+    neighborhood_type: 'Subdivision' // Assumed from the property type
+    // legal_description: property.legal_description,
+  };
   return (
     <div className="mx-auto w-full max-w-full">
       {' '}
@@ -211,6 +241,11 @@ export default async function PropertyPage({
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+        <TabsContent value="property-details">
+          <OwnershipInformationComponent ownership={ownershipData} />
+          <PropertyCardDataComponent property={property} />
+          <LandLocationInformationComponent landLocation={landLocationData} />
         </TabsContent>
         {/* Add other TabsContent components for the remaining tabs */}
       </Tabs>
