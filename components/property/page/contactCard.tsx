@@ -41,7 +41,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
   };
 
   return (
-    <div className="w-full rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
+    <div className="my-2 w-full rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           Contact Information

@@ -22,9 +22,9 @@ const ForeclosuresComponent: React.FC<ForeclosuresProps> = ({
   liensData
 }) => {
   return (
-    <div className="space-y-8">
+    <div>
       {/* Foreclosures Section */}
-      <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-lg">
+      <div className="my-2 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-lg">
         <h3 className="mb-2 text-lg font-semibold dark:text-white">
           Foreclosures
         </h3>
