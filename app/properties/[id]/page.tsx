@@ -238,31 +238,30 @@ export default async function PropertyPage({
       <PropertyOverviewCard property={property} />
       {/* Tabs */}
       <Tabs defaultValue="overview" className="mt-6">
-        <TabsList className="flex overflow-x-auto">
-          {' '}
-          {/* Added classes to handle overflow */}
-          <TabsTrigger value="overview" className="flex-1">
+        <TabsList className="scrollbar-hide flex space-x-4 overflow-x-auto">
+          <TabsTrigger value="overview" className="flex-shrink-0">
             Overview
           </TabsTrigger>
-          <TabsTrigger value="property-details" className="flex-1">
+          <TabsTrigger value="property-details" className="flex-shrink-0">
             Property Details
           </TabsTrigger>
-          <TabsTrigger value="mls-details" className="flex-1">
+          <TabsTrigger value="mls-details" className="flex-shrink-0">
             MLS Details
           </TabsTrigger>
-          <TabsTrigger value="tax-information" className="flex-1">
+          <TabsTrigger value="tax-information" className="flex-shrink-0">
             Tax Information
           </TabsTrigger>
-          <TabsTrigger value="linked-properties" className="flex-1">
+          <TabsTrigger value="linked-properties" className="flex-shrink-0">
             Linked Properties
           </TabsTrigger>
-          <TabsTrigger value="foreclosures-liens" className="flex-1">
+          <TabsTrigger value="foreclosures-liens" className="flex-shrink-0">
             Foreclosures & Liens
           </TabsTrigger>
-          <TabsTrigger value="mortgage-transactions" className="flex-1">
+          <TabsTrigger value="mortgage-transactions" className="flex-shrink-0">
             Mortgage & Transactions
           </TabsTrigger>
         </TabsList>
+
         <TabsContent value="overview">
           <ContactInformationCard property={emptyAgentProperty} />
           <WholesaleCalculator />
