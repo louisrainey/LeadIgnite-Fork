@@ -24,19 +24,21 @@ const ForeclosuresComponent: React.FC<ForeclosuresProps> = ({
   return (
     <div className="space-y-8">
       {/* Foreclosures Section */}
-      <div className="rounded-lg bg-white p-6 shadow-md">
-        <h3 className="mb-2 text-lg font-semibold">Foreclosures</h3>
-        <p className="mb-4 text-sm text-gray-500">
+      <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-lg">
+        <h3 className="mb-2 text-lg font-semibold dark:text-white">
+          Foreclosures
+        </h3>
+        <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
           Foreclosures recorded against the property.
         </p>
-        <div className="grid grid-cols-2 gap-4 text-center text-sm font-semibold md:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 text-center text-sm font-semibold md:grid-cols-6 dark:text-gray-300">
           <div>Active</div>
           <div>Document Type</div>
           <div>Recording Date</div>
           <div>Original Loan Amount</div>
           <div>Est. Bank Value</div>
         </div>
-        <div className="mt-2 grid grid-cols-2 gap-4 text-center text-sm md:grid-cols-6">
+        <div className="mt-2 grid grid-cols-2 gap-4 text-center text-sm md:grid-cols-6 dark:text-gray-400">
           <div>
             {foreclosureData.active !== null
               ? foreclosureData.active
@@ -60,15 +62,15 @@ const ForeclosuresComponent: React.FC<ForeclosuresProps> = ({
       </div>
 
       {/* Liens Section */}
-      <div className="rounded-lg bg-white p-6 shadow-md">
-        <h3 className="mb-2 text-lg font-semibold">Liens</h3>
-        <p className="mb-4 text-sm text-gray-500">
+      <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-lg">
+        <h3 className="mb-2 text-lg font-semibold dark:text-white">Liens</h3>
+        <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
           Liens recorded against the property.
         </p>
-        <div className="grid grid-cols-2 gap-4 text-center text-sm font-semibold md:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 text-center text-sm font-semibold md:grid-cols-6 dark:text-gray-300">
           <div>Tax Lien(s)</div>
         </div>
-        <div className="mt-2 grid grid-cols-2 gap-4 text-center text-sm md:grid-cols-6">
+        <div className="mt-2 grid grid-cols-2 gap-4 text-center text-sm md:grid-cols-6 dark:text-gray-400">
           <div>{liensData.taxLiens || 'No'}</div>
         </div>
       </div>
