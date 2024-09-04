@@ -29,6 +29,10 @@ import {
   CurrentMortgageTable,
   LastSaleTable
 } from '@/components/property/page/lastSaleCurrentMortgage';
+import WholesaleCalculator from '@/components/property/page/calculations/wholesale';
+import AmortizationCalculator from '../../../components/property/page/calculations/amortizationCalculator';
+import ContactInformationCard from '@/components/property/page/contactCard';
+import { emptyAgentProperty } from '@/constants/data/testProperties';
 // Async function to fetch property data
 async function fetchProperty(id: string): Promise<PropertyDetails | null> {
   try {
@@ -348,20 +352,9 @@ export default async function PropertyPage({
           </TabsTrigger>
         </TabsList>
         <TabsContent value="overview">
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact Information</CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-100">
-                <SearchIcon className="h-12 w-12 text-gray-400" />
-              </div>
-              <div className="space-x-2">
-                <Button variant="outline">Add Contact Info</Button>
-                <Button variant="outline">Skip Trace</Button>
-              </div>
-            </CardContent>
-          </Card>
+          <ContactInformationCard property={emptyAgentProperty} />
+          <WholesaleCalculator />
+          <AmortizationCalculator />
         </TabsContent>
         <TabsContent value="property-details">
           <OwnershipInformationComponent ownership={ownershipData} />
