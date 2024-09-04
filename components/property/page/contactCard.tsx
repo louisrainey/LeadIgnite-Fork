@@ -41,7 +41,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
   };
 
   return (
-    <div className="w-full rounded-lg bg-white p-4 shadow-sm">
+    <div className="w-full rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           Contact Information
@@ -65,16 +65,26 @@ const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
           <table className="min-w-full table-auto border-collapse">
             <thead>
               <tr className="border-b">
-                <th className="p-2 text-left">Agent</th>
-                <th className="p-2 text-left">Email</th>
-                <th className="p-2 text-left">Phones</th>
+                <th className="p-2 text-left text-gray-700 dark:text-gray-300">
+                  Agent
+                </th>
+                <th className="p-2 text-left text-gray-700 dark:text-gray-300">
+                  Email
+                </th>
+                <th className="p-2 text-left text-gray-700 dark:text-gray-300">
+                  Phones
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr className="border-b">
-                <td className="p-2">{agent || 'N/A'}</td>
-                <td className="p-2">{agent_email || 'N/A'}</td>
-                <td className="p-2">
+                <td className="p-2 text-gray-900 dark:text-gray-100">
+                  {agent || 'N/A'}
+                </td>
+                <td className="p-2 text-gray-900 dark:text-gray-100">
+                  {agent_email || 'N/A'}
+                </td>
+                <td className="p-2 text-gray-900 dark:text-gray-100">
                   {agent_phones?.length ? (
                     <ul>
                       {agent_phones.map((phone, index) => (
@@ -100,7 +110,9 @@ const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
             loop={true}
             className="h-32 w-32"
           />
-          <p className="mt-4 text-gray-500">No contact information found</p>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">
+            No contact information found
+          </p>
         </div>
       )}
 
