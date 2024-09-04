@@ -33,6 +33,7 @@ import WholesaleCalculator from '@/components/property/page/calculations/wholesa
 import AmortizationCalculator from '../../../components/property/page/calculations/amortizationCalculator';
 import ContactInformationCard from '@/components/property/page/contactCard';
 import { emptyAgentProperty } from '@/constants/data/testProperties';
+import PropertyOverviewCard from '@/components/property/page/propertyOverviewCard';
 // Async function to fetch property data
 async function fetchProperty(id: string): Promise<PropertyDetails | null> {
   try {
@@ -143,7 +144,7 @@ export default async function PropertyPage({
     county: property.county ?? 'N/A'
   };
 
-  const linkedPropertyData = {
+  const exampleLinkedPropertyData = {
     totalProperties: 3,
     totalOpenLoanAmount: 300000,
     totalEstimatedValue: 1500000,
@@ -220,7 +221,7 @@ export default async function PropertyPage({
     }
   ];
   return (
-    <div className="mx-auto w-full max-w-full">
+    <div className="mx-auto h-auto w-full max-w-full">
       {' '}
       {/* Full-width container */}
       <PropertyHeader property={property} />
@@ -234,99 +235,10 @@ export default async function PropertyPage({
         />
       </div>
       {/* Property Details */}
-      <Card>
-        <CardContent className="p-10">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 2xl:grid-cols-8">
-            <div>
-              <h2 className="mb-2 font-semibold">Owner Name</h2>
-              <div className="flex items-center">
-                {property.agent}{' '}
-                <PencilIcon className="ml-2 h-4 w-4 text-blue-500" />
-              </div>
-            </div>
-            <div>
-              <h2 className="mb-2 font-semibold">
-                Mortgages{' '}
-                <span className="rounded-full bg-gray-200 px-2 text-sm">0</span>
-              </h2>
-              <div>-</div>
-            </div>
-            <div>
-              <h2 className="mb-2 font-semibold">
-                Equity <span className="text-sm text-gray-500">(est.)</span>
-              </h2>
-              <div className="flex items-center">
-                {property.estimated_value
-                  ? `$${equity.toLocaleString()} | ${equityPercentage.toFixed(
-                      2
-                    )}%`
-                  : 'N/A'}{' '}
-                <span
-                  className={`ml-2 text-sm text-${
-                    equityStatus === 'High'
-                      ? 'green'
-                      : equityStatus === 'Medium'
-                      ? 'yellow'
-                      : 'red'
-                  }-500`}
-                >
-                  {equityStatus}
-                </span>
-              </div>
-              <Progress
-                value={equityPercentage}
-                className="mt-2 h-2 rounded-full bg-blue-500"
-              />
-            </div>
-
-            <div>
-              <h2 className="mb-2 font-semibold">Occupancy</h2>
-              <div>Owner Occupied</div>
-            </div>
-            <div>
-              <h2 className="mb-2 font-semibold">Taxes</h2>
-              <div>
-                $
-                {property.hoa_fee
-                  ? `${property.hoa_fee.toLocaleString()}/mo`
-                  : 'N/A'}
-              </div>
-            </div>
-            <div>
-              <h2 className="mb-2 font-semibold">Est. Value</h2>
-              <div>
-                $
-                {property.estimated_value
-                  ? property.estimated_value.toLocaleString()
-                  : 'N/A'}
-              </div>
-            </div>
-            <div>
-              <h2 className="mb-2 font-semibold">Last Sale</h2>
-              <div>{property.last_sold_date || '-'}</div>
-            </div>
-            <div>
-              <h2 className="mb-2 font-semibold">MLS</h2>
-              <div>{property.mls_id || 'Inactive'}</div>
-            </div>
-            <div>
-              <h2 className="mb-2 font-semibold">
-                FMR <span className="text-sm text-gray-500">(HUD)</span>
-              </h2>
-              <div>$2,750.00/mo</div>
-            </div>
-            <div>
-              <h2 className="mb-2 font-semibold">
-                Rent <span className="text-sm text-gray-500">(est.)</span>
-              </h2>
-              <div>$2,750.00/mo</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <PropertyOverviewCard property={property} />
       {/* Tabs */}
       <Tabs defaultValue="overview" className="mt-6">
-        <TabsList className="flex overflow-auto">
+        <TabsList className="flex overflow-x-auto">
           {' '}
           {/* Added classes to handle overflow */}
           <TabsTrigger value="overview" className="flex-1">
@@ -369,11 +281,11 @@ export default async function PropertyPage({
         </TabsContent>
         <TabsContent value="linked-properties">
           <LinkedPropertiesComponent
-            totalProperties={linkedPropertyData.totalProperties}
-            totalOpenLoanAmount={linkedPropertyData.totalOpenLoanAmount}
-            totalEstimatedValue={linkedPropertyData.totalEstimatedValue}
-            totalEquity={linkedPropertyData.totalEquity}
-            linkedProperties={linkedPropertyData.linkedProperties}
+            totalProperties={exampleLinkedPropertyData.totalProperties}
+            totalOpenLoanAmount={exampleLinkedPropertyData.totalOpenLoanAmount}
+            totalEstimatedValue={exampleLinkedPropertyData.totalEstimatedValue}
+            totalEquity={exampleLinkedPropertyData.totalEquity}
+            linkedProperties={exampleLinkedPropertyData.linkedProperties}
           />
         </TabsContent>
         <TabsContent value="foreclosures-liens">
