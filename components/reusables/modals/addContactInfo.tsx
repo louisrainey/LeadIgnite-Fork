@@ -1,4 +1,5 @@
 'use client';
+
 import * as Dialog from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -26,13 +27,13 @@ export const AddContactInfoModal: React.FC<AddContactInfoModalProps> = ({
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50" />
+        <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm dark:bg-black/70" />
         <Dialog.Content className="fixed inset-0 flex items-center justify-center p-4">
-          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-md">
-            <Dialog.Title className="text-lg font-medium text-gray-900">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+            <Dialog.Title className="text-lg font-medium text-gray-900 dark:text-gray-100">
               Add Contact Info
             </Dialog.Title>
-            <Dialog.Description className="mt-2 text-sm text-gray-500">
+            <Dialog.Description className="mt-2 text-sm text-gray-500 dark:text-gray-300">
               Let`s add an email or phone number to your lead.
             </Dialog.Description>
 
@@ -54,12 +55,12 @@ export const AddContactInfoModal: React.FC<AddContactInfoModalProps> = ({
 
             {/* Input Field */}
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {contactType === 'phone' ? 'Phone Number*' : 'Email*'}
               </label>
               <input
                 type={contactType === 'phone' ? 'tel' : 'email'}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 placeholder={
                   contactType === 'phone'
                     ? 'Enter phone number'
