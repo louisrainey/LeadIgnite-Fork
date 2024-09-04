@@ -56,7 +56,7 @@ export default function AmortizationCalculator() {
   };
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:text-gray-100">
+    <div className="my-2 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:text-gray-100">
       <h2 className="mb-4 text-xl font-bold">Amortization Calculator</h2>
       <p className="mb-4">Modify the values to quickly analyze a deal.</p>
 
