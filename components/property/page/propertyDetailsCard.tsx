@@ -24,7 +24,9 @@ const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
   const renderPropertyDetails = (label: string, value: any) => {
     return (
       <div className="mb-4 flex flex-col items-start">
-        <span className="font-semibold text-gray-500">{label}</span>
+        <span className="font-semibold text-gray-500 dark:text-gray-400">
+          {label}
+        </span>
         <span>
           {value !== null && value !== undefined && value !== '' ? value : '-'}
         </span>
@@ -33,8 +35,10 @@ const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
   };
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow-md">
-      <h2 className="mb-4 text-xl font-bold">Property Information</h2>
+    <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-lg">
+      <h2 className="mb-4 text-xl font-bold dark:text-white">
+        Property Information
+      </h2>
       <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
         {renderPropertyDetails('Bedrooms', property.beds)}
         {renderPropertyDetails('Full Bathrooms', property.full_baths)}
