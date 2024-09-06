@@ -1,5 +1,6 @@
+'use client';
 import { Search } from 'lucide-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import StatCard from './statCard';
 
 interface DashboardStatsProps {
@@ -18,6 +19,7 @@ type Stat = {
   title: string;
   value: number;
   statType: string;
+  click: boolean;
   rowSpan?: number; // Optional rowSpan value
   colSpan?: number; // Optional rowSpan value
 };
@@ -34,24 +36,38 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
   setActiveFilter
 }) => {
   // Array of stats to render dynamically
+
+  const [activeIndex, setActiveIndex] = useState(0); // Track the currently animated card
+  const [animationComplete, setAnimationComplete] = useState(false); // Track if the animation is completed
   const stats: Stat[] = [
     {
       title: 'Total Campaigns',
       value: totalCampaigns,
       statType: 'campaigns',
-      colSpan: 2
+      colSpan: 2,
+      click: false
     },
     {
       title: 'Total Conversations',
       value: totalConversations,
       statType: 'conversations',
-      colSpan: 2
+      colSpan: 2,
+      click: false
     },
-    { title: 'Total Calls', value: totalCalls, statType: 'calls' },
-    { title: 'Total Texts', value: totalTexts, statType: 'texts' },
-    { title: 'Total Emails', value: totalEmails, statType: 'emails' },
-    { title: 'Total DMs', value: totalDMs, statType: 'dms' },
-    { title: 'Credits Remaining', value: creditsRemaining, statType: 'credits' }
+    {
+      title: 'Total Calls',
+      value: totalCalls,
+      statType: 'calls',
+      click: true
+    },
+    { title: 'Total Texts', value: totalTexts, statType: 'texts', click: true },
+    {
+      title: 'Total Emails',
+      value: totalEmails,
+      statType: 'emails',
+      click: true
+    },
+    { title: 'Total DMs', value: totalDMs, statType: 'dms', click: true }
   ];
 
   const handleCardClick = (stat: string) => {
@@ -60,6 +76,32 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
     // Example: You could use React Router or a similar navigation solution
     // history.push(`/stats/${stat.toLowerCase()}`);
   };
+
+  useEffect(() => {
+    let currentIndex = 2; // Start from the third card (skip the first two)
+
+    const interval = setInterval(() => {
+      // Update active index
+      setActiveIndex(currentIndex);
+
+      // Stop the loop after reaching the last card
+      if (currentIndex === stats.length - 1) {
+        // Clear the interval right after reaching the last card
+        clearInterval(interval);
+
+        // Let the last card animate for 3 more seconds
+        setTimeout(() => {
+          setAnimationComplete(true); // Mark animation as complete
+        }, 3000); // Keep the last card animated for 3 seconds
+      } else {
+        // Increment index for the next card
+        currentIndex++;
+      }
+    }, 3000); // Switch active card every 3 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, [stats.length]);
+
   return (
     <div className="p-4 dark:bg-gray-900">
       {/* Credits Remaining Text */}
@@ -130,27 +172,21 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
         {stats.map((stat, index) => (
           <div
             key={stat.title}
-            className={`${
-              index < 2 && stat.colSpan && stat.colSpan > 1
-                ? 'md:col-span-2'
-                : ''
-            }`} // First two cards take 2 columns
+            className={`${stat.colSpan && index < 2 ? 'md:col-span-2' : ''}`} // First two cards take 2 columns
           >
             <StatCard
               title={stat.title}
               value={stat.value}
-              onClick={() => handleCardClick(stat.statType)}
+              onClick={() => console.log(`Clicked on ${stat.statType}`)}
+              isActive={index === activeIndex} // Active if index matches activeIndex
+              click={stat.click} // Control whether the card is clickable
+              animationComplete={animationComplete} // Control whether the animation is complete
             />
           </div>
         ))}
       </div>
 
       {/* View Call Recordings Button */}
-      <div className="mt-6 flex justify-center">
-        <button className="rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700">
-          View Call Recordings
-        </button>
-      </div>
     </div>
   );
 };
