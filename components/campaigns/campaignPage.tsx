@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import CampaignHeader from './utils/campaignHeader';
+import NoCampaigns from './utils/campaignTable';
 
 const CampaignPage: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState('All Campaigns');
@@ -17,6 +18,7 @@ const CampaignPage: React.FC = () => {
         activeFilter={activeFilter}
         setActiveFilter={setActiveFilter}
       />
+      <NoCampaigns totalCampaigns={0} />
     </div>
   );
 };
