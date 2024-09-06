@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Lottie from 'lottie-react';
 import { RefreshCw } from 'lucide-react'; // You can also use FontAwesome if needed
 import * as OutReachAnimation from '@/public/lottie/CampaignPing.json'; // Path to the Lottie animation
 import CampaignsTable from './tables/main';
 import { exampleCampaignsData } from '@/constants/data/campaigns';
+import MultiStepCampaign from '@/components/reusables/modals/startCampaigns';
 
 interface NoCampaignsProps {
   totalCampaigns: number; // Number of total campaigns
@@ -12,12 +13,20 @@ interface NoCampaignsProps {
 const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
   totalCampaigns
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state management
+
+  const openModal = () => setIsModalOpen(true); // Open modal
+  const closeModal = () => setIsModalOpen(false); // Close modal
+
   return (
     <div className="h-full w-full rounded-md bg-white dark:bg-gray-900 ">
       {/* Header with Create Campaign button, Last updated, and Export to CSV */}
       <div className="flex items-center justify-between p-4">
         {/* Create Campaign Button */}
-        <button className="rounded-md bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <button
+          onClick={openModal}
+          className="rounded-md bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        >
           <i className="fas fa-rocket mr-2"></i>
           Create Campaign
         </button>
@@ -60,7 +69,10 @@ const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
             </p>
 
             {/* Create Campaign Button */}
-            <button className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <button
+              onClick={openModal}
+              className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            >
               <i className="fas fa-rocket mr-2"></i> Create Campaign
             </button>
           </div>
@@ -71,6 +83,9 @@ const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
           />
         )}
       </div>
+
+      {/* Modal for multi-step campaign */}
+      {isModalOpen && <MultiStepCampaign closeModal={closeModal} />}
     </div>
   );
 };
