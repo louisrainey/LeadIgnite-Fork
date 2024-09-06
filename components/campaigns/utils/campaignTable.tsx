@@ -2,6 +2,8 @@ import React from 'react';
 import Lottie from 'lottie-react';
 import { RefreshCw } from 'lucide-react'; // You can also use FontAwesome if needed
 import * as OutReachAnimation from '@/public/lottie/CampaignPing.json'; // Path to the Lottie animation
+import CampaignsTable from './tables/main';
+import { exampleCampaignsData } from '@/constants/data/campaigns';
 
 interface NoCampaignsProps {
   totalCampaigns: number; // Number of total campaigns
@@ -63,12 +65,10 @@ const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
             </button>
           </div>
         ) : (
-          <div className="p-8">
-            {/* Replace this with the actual campaigns list when totalCampaigns > 0 */}
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">
-              Your campaigns will be listed here.
-            </h2>
-          </div>
+          <CampaignsTable
+            campaigns={exampleCampaignsData.calls}
+            campaignType="call"
+          />
         )}
       </div>
     </div>

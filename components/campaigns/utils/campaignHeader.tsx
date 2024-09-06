@@ -2,6 +2,7 @@
 import { Search } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import StatCard from './statCard';
+import { Stat } from '@/types/campaign';
 
 interface DashboardStatsProps {
   totalCampaigns: number;
@@ -14,15 +15,6 @@ interface DashboardStatsProps {
   activeFilter: string;
   setActiveFilter: (filter: string) => void;
 }
-
-type Stat = {
-  title: string;
-  value: number;
-  statType: string;
-  click: boolean;
-  rowSpan?: number; // Optional rowSpan value
-  colSpan?: number; // Optional rowSpan value
-};
 
 const CampaignHeader: React.FC<DashboardStatsProps> = ({
   totalCampaigns,
@@ -43,31 +35,47 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
     {
       title: 'Total Campaigns',
       value: totalCampaigns,
-      statType: 'campaigns',
+      statType: 'total',
       colSpan: 2,
-      click: false
+      click: false,
+      past24hours: 300
     },
     {
       title: 'Total Conversations',
       value: totalConversations,
       statType: 'conversations',
       colSpan: 2,
-      click: false
+      click: false,
+      past24hours: 300
     },
     {
       title: 'Total Calls',
       value: totalCalls,
-      statType: 'calls',
-      click: true
+      statType: 'call',
+      click: true,
+      past24hours: 300
     },
-    { title: 'Total Texts', value: totalTexts, statType: 'texts', click: true },
+    {
+      title: 'Total Texts',
+      value: totalTexts,
+      statType: 'text',
+      click: true,
+      past24hours: 300
+    },
     {
       title: 'Total Emails',
       value: totalEmails,
-      statType: 'emails',
-      click: true
+      statType: 'email',
+      click: true,
+      past24hours: 300
     },
-    { title: 'Total DMs', value: totalDMs, statType: 'dms', click: true }
+    {
+      title: 'Total DMs',
+      value: totalDMs,
+      statType: 'dm',
+      click: true,
+      past24hours: 300
+    }
   ];
 
   const handleCardClick = (stat: string) => {
@@ -176,6 +184,7 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
           >
             <StatCard
               title={stat.title}
+              addedToday={stat.past24hours}
               value={stat.value}
               onClick={() => console.log(`Clicked on ${stat.statType}`)}
               isActive={index === activeIndex} // Active if index matches activeIndex
