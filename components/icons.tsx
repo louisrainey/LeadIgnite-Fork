@@ -21,11 +21,13 @@ import {
   MoreVertical,
   Pizza,
   Plus,
+  Search,
   Settings,
   SunMedium,
   Trash,
   Twitter,
-  User,
+  Unplug,
+  UserCircle,
   User2Icon,
   UserX2Icon,
   X
@@ -35,6 +37,8 @@ export type Icon = LucideIcon;
 
 export const Icons = {
   dashboard: LayoutDashboardIcon,
+  search: Search,
+  campaigns: Unplug,
   logo: Command,
   login: LogIn,
   close: X,
@@ -53,7 +57,8 @@ export const Icons = {
   ellipsis: MoreVertical,
   add: Plus,
   warning: AlertTriangle,
-  user: User,
+  user: UserCircle,
+
   arrowRight: ArrowRight,
   help: HelpCircle,
   pizza: Pizza,
