@@ -1,30 +1,55 @@
+import { Search } from 'lucide-react';
 import React from 'react';
+import StatCard from './statCard';
 
 interface DashboardStatsProps {
   totalCampaigns: number;
   totalCalls: number;
   totalConversations: number;
+  totalTexts: number;
+  totalEmails: number;
+  totalDMs: number;
   creditsRemaining: number;
   activeFilter: string;
   setActiveFilter: (filter: string) => void;
 }
 
-const DashboardStats: React.FC<DashboardStatsProps> = ({
+const CampaignHeader: React.FC<DashboardStatsProps> = ({
   totalCampaigns,
   totalCalls,
   totalConversations,
+  totalTexts,
+  totalEmails,
+  totalDMs,
   creditsRemaining,
   activeFilter,
   setActiveFilter
 }) => {
+  // Array of stats to render dynamically
+  const stats = [
+    { title: 'Total Campaigns', value: totalCampaigns },
+    { title: 'Total Calls', value: totalCalls },
+    { title: 'Total Conversations', value: totalConversations },
+    { title: 'Total Texts', value: totalTexts },
+    { title: 'Total Emails', value: totalEmails },
+    { title: 'Total DMs', value: totalDMs },
+    { title: 'Credits Remaining', value: creditsRemaining }
+  ];
+
   return (
     <div className="p-4 dark:bg-gray-900">
+      {/* Credits Remaining Text */}
+      <div className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+        Credits Remaining: {creditsRemaining}
+      </div>
+
       {/* Search Bar */}
-      <div className="mb-4">
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-500 dark:text-gray-400" />
         <input
           type="text"
           placeholder="Search"
-          className="w-full rounded-md border px-4 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          className="w-full rounded-md border px-4 py-2 pl-10 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
         />
       </div>
 
@@ -78,32 +103,19 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
 
       {/* Statistics Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        {/* Total Campaigns */}
-        <div className="rounded-md bg-white p-4 text-center shadow-md dark:bg-gray-800 dark:text-white">
-          <p>Total Campaigns</p>
-          <h2 className="text-3xl font-bold">{totalCampaigns}</h2>
-        </div>
+        {stats.map((stat) => (
+          <StatCard key={stat.title} title={stat.title} value={stat.value} />
+        ))}
+      </div>
 
-        {/* Total Calls */}
-        <div className="rounded-md bg-white p-4 text-center shadow-md dark:bg-gray-800 dark:text-white">
-          <p>Total Calls</p>
-          <h2 className="text-3xl font-bold">{totalCalls}</h2>
-        </div>
-
-        {/* Total Conversations */}
-        <div className="rounded-md bg-white p-4 text-center shadow-md dark:bg-gray-800 dark:text-white">
-          <p>Total Conversations</p>
-          <h2 className="text-3xl font-bold">{totalConversations}</h2>
-        </div>
-
-        {/* Credits Remaining */}
-        <div className="rounded-md bg-white p-4 text-center shadow-md dark:bg-gray-800 dark:text-white">
-          <p>Credits Remaining</p>
-          <h2 className="text-3xl font-bold">{creditsRemaining}</h2>
-        </div>
+      {/* View Call Recordings Button */}
+      <div className="mt-6 flex justify-center">
+        <button className="rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700">
+          View Call Recordings
+        </button>
       </div>
     </div>
   );
 };
 
-export default DashboardStats;
+export default CampaignHeader;
