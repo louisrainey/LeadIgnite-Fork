@@ -3,32 +3,49 @@ import {
   Dialog,
   DialogOverlay,
   DialogContent,
-  DialogClose,
   DialogPortal
-} from '@radix-ui/react-dialog'; // Radix UI Dialog components
+} from '@radix-ui/react-dialog'; // Radix UI Dialog components for modal
 import { Button } from '@/components/ui/button'; // ShadCN Button
 import { Input } from '@/components/ui/input'; // ShadCN Input
 import {
   Select,
-  SelectItem,
   SelectTrigger,
-  SelectContent
-} from '@radix-ui/react-select'; // Radix UI Select
+  SelectContent,
+  SelectItem,
+  SelectValue
+} from '@/components/ui/select'; // ShadCN Select
 import { X } from 'lucide-react'; // Close Icon
 
 interface MultiStepCampaignProps {
   closeModal: () => void; // Correctly typed closeModal prop
 }
 
+const socialMediaPlatforms = ['facebook', 'instagram', 'linkedin'];
+const allChannels = ['phone', 'email', 'facebook', 'instagram', 'linkedin'];
+
 const MultiStepCampaign: React.FC<MultiStepCampaignProps> = ({
   closeModal
 }) => {
   const [step, setStep] = useState(1);
-  const [selectedChannel, setSelectedChannel] = useState<string>('');
+  const [primaryChannel, setPrimaryChannel] = useState<string>('');
+  const [secondaryChannel, setSecondaryChannel] = useState<string>('');
   const [campaignName, setCampaignName] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
 
-  const handleNext = () => setStep(step + 1);
+  const isSocialMedia = (channel: string) =>
+    socialMediaPlatforms.includes(channel);
+
+  const handleNext = () => {
+    // Check if both primary and secondary channels are social media platforms
+    if (isSocialMedia(primaryChannel) && isSocialMedia(secondaryChannel)) {
+      alert(
+        'Primary and secondary channels cannot both be social media platforms.'
+      );
+      return;
+    }
+    setStep(step + 1);
+  };
+
   const handleBack = () => setStep(step - 1);
   const handleLaunch = () => {
     alert(`Campaign "${campaignName}" launched!`);
@@ -52,35 +69,69 @@ const MultiStepCampaign: React.FC<MultiStepCampaignProps> = ({
 
             {step === 1 && (
               <div>
-                <h2 className="mb-4 text-lg font-semibold">
-                  Select Communication Channel
+                <h2 className="mb-4 text-center text-lg font-semibold dark:text-white">
+                  Select Communication Channels
                 </h2>
-                <Select onValueChange={setSelectedChannel}>
-                  <SelectTrigger className="mb-4 w-full p-2">
-                    {selectedChannel || 'Choose a channel'}
+                <p className="mb-4 text-center text-gray-500 dark:text-gray-400">
+                  Choose primary and secondary channels
+                </p>
+
+                {/* Primary Channel Select */}
+                <label className="mb-2 block text-sm font-semibold dark:text-gray-200">
+                  Primary Channel
+                </label>
+                <Select onValueChange={setPrimaryChannel}>
+                  <SelectTrigger className="mb-4 w-full rounded-md bg-gray-800 p-2 text-white">
+                    <SelectValue placeholder="Choose a primary channel" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="phone">Phone Number</SelectItem>
-                    <SelectItem value="email">Email</SelectItem>
-                    <SelectItem value="facebook">Facebook</SelectItem>
-                    <SelectItem value="instagram">Instagram</SelectItem>
-                    <SelectItem value="linkedin">LinkedIn</SelectItem>
+                    {allChannels.map((channel) => (
+                      <SelectItem key={channel} value={channel}>
+                        {channel.charAt(0).toUpperCase() + channel.slice(1)}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={handleNext} className="mt-4 w-full">
+
+                {/* Secondary Channel Select */}
+                <label className="mb-2 block text-sm font-semibold dark:text-gray-200">
+                  Secondary Channel
+                </label>
+                <Select onValueChange={setSecondaryChannel}>
+                  <SelectTrigger className="mb-4 w-full rounded-md bg-gray-800 p-2 text-white">
+                    <SelectValue placeholder="Choose a secondary channel" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {allChannels.map((channel) => (
+                      <SelectItem key={channel} value={channel}>
+                        {channel.charAt(0).toUpperCase() + channel.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Button
+                  onClick={handleNext}
+                  disabled={!primaryChannel || !secondaryChannel} // Disable if channels are not selected
+                  className={`mt-4 w-full ${
+                    !primaryChannel || !secondaryChannel
+                      ? 'cursor-not-allowed bg-gray-600'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
+                >
                   Next
                 </Button>
               </div>
             )}
 
-            {step === 2 && selectedChannel && (
+            {step === 2 && (
               <div>
-                <h2 className="mb-4 text-lg font-semibold">
-                  Customize your {selectedChannel}
+                <h2 className="mb-4 text-lg font-semibold dark:text-white">
+                  Customize your {primaryChannel}
                 </h2>
-                {selectedChannel === 'phone' && (
+                {primaryChannel === 'phone' && (
                   <>
-                    <label className="mb-1 block text-sm">
+                    <label className="mb-1 block text-sm dark:text-white">
                       Callback phone number
                     </label>
                     <Input
@@ -89,9 +140,11 @@ const MultiStepCampaign: React.FC<MultiStepCampaignProps> = ({
                     />
                   </>
                 )}
-                {selectedChannel === 'email' && (
+                {primaryChannel === 'email' && (
                   <>
-                    <label className="mb-1 block text-sm">Email Address</label>
+                    <label className="mb-1 block text-sm dark:text-white">
+                      Email Address
+                    </label>
                     <Input
                       placeholder="Enter your email"
                       className="mb-4 w-full"
@@ -109,24 +162,28 @@ const MultiStepCampaign: React.FC<MultiStepCampaignProps> = ({
 
             {step === 3 && (
               <div>
-                <h2 className="mb-4 text-lg font-semibold">
+                <h2 className="mb-4 text-lg font-semibold dark:text-white">
                   Finalize your campaign
                 </h2>
-                <label className="mb-1 block text-sm">Campaign Name</label>
+                <label className="mb-1 block text-sm dark:text-white">
+                  Campaign Name
+                </label>
                 <Input
                   value={campaignName}
                   onChange={(e) => setCampaignName(e.target.value)}
                   placeholder="Enter campaign name"
                   className="mb-4 w-full"
                 />
-                <label className="mb-1 block text-sm">Start Date</label>
+                <label className="mb-1 block text-sm dark:text-white">
+                  Start Date
+                </label>
                 <Input
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   placeholder="MM/DD/YYYY"
                   className="mb-4 w-full"
                 />
-                <p className="mb-4 text-sm text-gray-500">
+                <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
                   This campaign will cost 2192 credits.
                 </p>
                 <Button onClick={handleLaunch} className="w-full">
