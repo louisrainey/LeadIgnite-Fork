@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowUpRight } from 'lucide-react'; // You can use any icon library
 
 interface StatCardProps {
   title: string;
@@ -7,6 +8,7 @@ interface StatCardProps {
   isActive: boolean; // Prop to check if the card is active
   click: boolean; // Prop to check if the card can be clicked
   animationComplete: boolean; // Prop to check if the animation should stop
+  addedToday?: number; // New prop for how many were added today
 }
 
 const StatCard: React.FC<StatCardProps> = ({
@@ -15,7 +17,8 @@ const StatCard: React.FC<StatCardProps> = ({
   onClick,
   isActive,
   click,
-  animationComplete
+  animationComplete,
+  addedToday
 }) => {
   return (
     <div
@@ -30,6 +33,14 @@ const StatCard: React.FC<StatCardProps> = ({
     >
       <p>{title}</p>
       <h2 className="text-3xl font-bold">{value}</h2>
+
+      {/* Added today badge */}
+      {addedToday && (
+        <div className="mt-2 flex items-center justify-center rounded-full bg-green-100 px-2 py-1 text-sm text-green-600 dark:bg-green-900 dark:text-green-400">
+          <ArrowUpRight className="mr-1" size={16} />
+          <span>{addedToday.toLocaleString()} just today</span>
+        </div>
+      )}
     </div>
   );
 };
