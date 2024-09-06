@@ -14,6 +14,14 @@ interface DashboardStatsProps {
   setActiveFilter: (filter: string) => void;
 }
 
+type Stat = {
+  title: string;
+  value: number;
+  statType: string;
+  rowSpan?: number; // Optional rowSpan value
+  colSpan?: number; // Optional rowSpan value
+};
+
 const CampaignHeader: React.FC<DashboardStatsProps> = ({
   totalCampaigns,
   totalCalls,
@@ -26,16 +34,32 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
   setActiveFilter
 }) => {
   // Array of stats to render dynamically
-  const stats = [
-    { title: 'Total Campaigns', value: totalCampaigns },
-    { title: 'Total Calls', value: totalCalls },
-    { title: 'Total Conversations', value: totalConversations },
-    { title: 'Total Texts', value: totalTexts },
-    { title: 'Total Emails', value: totalEmails },
-    { title: 'Total DMs', value: totalDMs },
-    { title: 'Credits Remaining', value: creditsRemaining }
+  const stats: Stat[] = [
+    {
+      title: 'Total Campaigns',
+      value: totalCampaigns,
+      statType: 'campaigns',
+      colSpan: 2
+    },
+    {
+      title: 'Total Conversations',
+      value: totalConversations,
+      statType: 'conversations',
+      colSpan: 2
+    },
+    { title: 'Total Calls', value: totalCalls, statType: 'calls' },
+    { title: 'Total Texts', value: totalTexts, statType: 'texts' },
+    { title: 'Total Emails', value: totalEmails, statType: 'emails' },
+    { title: 'Total DMs', value: totalDMs, statType: 'dms' },
+    { title: 'Credits Remaining', value: creditsRemaining, statType: 'credits' }
   ];
 
+  const handleCardClick = (stat: string) => {
+    // Navigate to the specific stat page, or log the clicked stat
+    console.log(`Clicked on: ${stat}`);
+    // Example: You could use React Router or a similar navigation solution
+    // history.push(`/stats/${stat.toLowerCase()}`);
+  };
   return (
     <div className="p-4 dark:bg-gray-900">
       {/* Credits Remaining Text */}
@@ -103,8 +127,21 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
 
       {/* Statistics Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        {stats.map((stat) => (
-          <StatCard key={stat.title} title={stat.title} value={stat.value} />
+        {stats.map((stat, index) => (
+          <div
+            key={stat.title}
+            className={`${
+              index < 2 && stat.colSpan && stat.colSpan > 1
+                ? 'md:col-span-2'
+                : ''
+            }`} // First two cards take 2 columns
+          >
+            <StatCard
+              title={stat.title}
+              value={stat.value}
+              onClick={() => handleCardClick(stat.statType)}
+            />
+          </div>
         ))}
       </div>
 
