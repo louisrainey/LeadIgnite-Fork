@@ -43,14 +43,42 @@ export interface CallCampaign extends CampaignBase {
   dnc: number;
 }
 
+export type Action = {
+  type:
+    | 'Comment'
+    | 'Like'
+    | 'Follow'
+    | 'Story'
+    | 'ConnectionRequest'
+    | 'Invite'
+    | 'Share'
+    | '📩 Connections'
+    | '📩 Groups'
+    | '📩 Followers'
+    | '👁️ Story'
+    | 'Connect + Follow Up'
+    | 'Invite to follow';
+  status: 'pending' | 'successful' | 'failed'; // Status of each action
+  attempt: number; // Number of attempts
+  successful: number; // Number of successful executions
+  failed: number; // Number of failed executions
+
+  // Only for actions with 📩 in the type, if the action was successful
+  replyMessage?: string; // Optional message reply
+  viewLink?: string; // Optional link to view details
+};
+
 // Specific types for DM Campaigns
-export interface DMCampaign extends CampaignBase {
-  platform: 'Twitter' | 'Instagram' | 'Facebook';
+export interface SocialMediaCampaign extends CampaignBase {
+  platform: 'Twitter' | 'Instagram' | 'LinkedIn';
   senderHandle: string;
   receiverHandle: string;
-  message: string;
+  hashtags: string[]; // List of relevant hashtags
   sentAt: Date;
-  status: 'read' | 'unread' | 'failed'; // Overrides status for DM-specific values
+  startDate: string;
+  endDate: string;
+  status: 'pending' | 'completed' | 'failed'; // General status for the campaign
+  actions: Action[]; // Array of actions using the Action type
 }
 
 // Specific types for Email Campaigns
@@ -83,4 +111,8 @@ export type Stat = {
 };
 
 // Reusable type for campaign data
-export type Campaign = TextCampaign | CallCampaign | DMCampaign | EmailCampaign;
+export type Campaign =
+  | TextCampaign
+  | CallCampaign
+  | SocialMediaCampaign
+  | EmailCampaign;

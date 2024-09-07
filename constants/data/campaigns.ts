@@ -1,9 +1,108 @@
 import {
   TextCampaign,
   CallCampaign,
-  DMCampaign,
-  EmailCampaign
+  EmailCampaign,
+  SocialMediaCampaign,
+  Action
 } from '@/types/campaign';
+
+// Social media actions dataset
+const exampleSocialMediaActions: {
+  instagram: Action[];
+  linkedin: Action[];
+  twitter: Action[];
+} = {
+  instagram: [
+    {
+      type: 'Comment',
+      status: 'pending',
+      attempt: 1,
+      successful: 0,
+      failed: 0
+    },
+    {
+      type: 'Like',
+      status: 'successful',
+      attempt: 1,
+      successful: 1,
+      failed: 0
+    },
+    {
+      type: '👁️ Story',
+      status: 'pending',
+      attempt: 2,
+      successful: 0,
+      failed: 0
+    },
+    { type: 'Follow', status: 'failed', attempt: 1, successful: 0, failed: 1 }
+  ],
+  linkedin: [
+    {
+      type: '📩 Connections',
+      status: 'successful',
+      attempt: 5,
+      successful: 5,
+      failed: 0,
+      replyMessage: 'Thanks for connecting!',
+      viewLink: 'https://linkedin.com/message/123'
+    },
+    {
+      type: 'Comment',
+      status: 'pending',
+      attempt: 2,
+      successful: 0,
+      failed: 0
+    },
+    {
+      type: 'Follow',
+      status: 'successful',
+      attempt: 3,
+      successful: 3,
+      failed: 0
+    },
+    {
+      type: 'Like',
+      status: 'successful',
+      attempt: 4,
+      successful: 4,
+      failed: 0
+    },
+    {
+      type: '📩 Groups',
+      status: 'failed',
+      attempt: 2,
+      successful: 0,
+      failed: 2
+    },
+    {
+      type: 'Connect + Follow Up',
+      status: 'pending',
+      attempt: 3,
+      successful: 0,
+      failed: 0
+    },
+    {
+      type: 'Invite to follow',
+      status: 'successful',
+      attempt: 2,
+      successful: 2,
+      failed: 0
+    }
+  ],
+  twitter: [
+    {
+      type: '📩 Followers',
+      status: 'successful',
+      attempt: 3,
+      successful: 3,
+      failed: 0,
+      replyMessage: 'Thank you for following!',
+      viewLink: 'https://twitter.com/message/456'
+    },
+    { type: 'Follow', status: 'pending', attempt: 1, successful: 0, failed: 0 },
+    { type: 'Like', status: 'successful', attempt: 2, successful: 2, failed: 0 }
+  ]
+};
 
 export const exampleCampaignsData = {
   textMessages: [
@@ -73,31 +172,42 @@ export const exampleCampaignsData = {
       dnc: 0
     }
   ] as CallCampaign[],
-  dms: [
+
+  SocialCampaigns: [
     {
       id: '1',
-      name: 'Twitter DM Campaign',
+      name: 'Twitter Promotion Campaign',
       platform: 'Twitter',
       senderHandle: '@user123',
-      receiverHandle: '@business456',
-      message: 'Hey, I have a question about your product.',
-      sentAt: new Date('2024-01-18T10:15:00'),
-      status: 'read',
-      startDate: '2024-01-18'
+      hashtags: ['#promotion', '#sale'],
+      status: 'completed', // Updated to match new status types
+      startDate: '2024-01-18',
+      endDate: '2024-01-19',
+      actions: exampleSocialMediaActions.twitter // Twitter-specific actions with individual statuses
     },
     {
       id: '2',
-      name: 'Instagram DM Campaign',
+      name: 'Instagram Product Launch Campaign',
       platform: 'Instagram',
       senderHandle: '@client789',
-      receiverHandle: '@business456',
-      message: 'Thanks for the update!',
-      sentAt: new Date('2024-01-18T11:45:00'),
-      status: 'unread',
-      startDate: '2024-01-18'
+      hashtags: ['#newproduct', '#launch'],
+      status: 'pending', // Updated status
+      startDate: '2024-01-18',
+      endDate: '2024-01-20',
+      actions: exampleSocialMediaActions.instagram // Instagram-specific actions with individual statuses
+    },
+    {
+      id: '3',
+      name: 'LinkedIn Networking Campaign',
+      platform: 'LinkedIn',
+      senderHandle: '@professional123',
+      hashtags: ['#networking', '#connections'],
+      status: 'pending', // Updated status
+      startDate: '2024-01-18',
+      endDate: '2024-01-22', // Adjusted end date for LinkedIn campaign
+      actions: exampleSocialMediaActions.linkedin // LinkedIn-specific actions with individual statuses
     }
-  ] as DMCampaign[],
-
+  ] as SocialMediaCampaign[], // Cast as SMCampaign array
   emails: [
     {
       id: '1',
