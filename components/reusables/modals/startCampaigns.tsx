@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogOverlay,
@@ -17,7 +17,7 @@ import {
 import { X } from 'lucide-react'; // Close Icon
 
 const socialMediaPlatforms = ['twitter', 'instagram', 'linkedin'];
-const allChannels = ['phone', 'email', 'facebook', 'instagram', 'linkedin'];
+const allChannels = ['phone', 'email', 'twitter', 'instagram', 'linkedin'];
 
 interface ChannelSelectionModalProps {
   closeModal: () => void;
@@ -142,6 +142,20 @@ interface ChannelCustomizationModalProps {
   onConnectAccount?: (platform: string) => void; // Function to connect a new account
 }
 // Step 2 Modal: Channel Customization
+
+// Mapping of actions based on the platform type
+const platformActions: { [key: string]: string[] } = {
+  instagram: ['Comment', 'Like', '👁️ Story', 'Follow'],
+  linkedin: [
+    '📩 Connections',
+    'Comment',
+    'Follow',
+    'Like',
+    '📩 Groups',
+    'Invite to follow'
+  ],
+  twitter: ['📩 Followers', 'Follow', 'Like']
+};
 const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
   primaryChannel,
   secondaryChannel,
@@ -161,21 +175,21 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
   const [selectedSecondaryAccount, setSelectedSecondaryAccount] =
     useState<string>('');
   const [selectedActions, setSelectedActions] = useState<string[]>([]);
+  const [isNextEnabled, setIsNextEnabled] = useState<boolean>(false);
+  const [connectedAccounts, setConnectedAccounts] =
+    useState<string[]>(socialAccounts); // Manage connected accounts
 
-  // Phone number input restriction to exactly 11 characters (with '+1' country code)
   // Phone number input restriction to exactly 11 characters (with '+1' country code)
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
 
-    // Ensure the input always starts with '+1' if not provided
     if (!value.startsWith('+1')) {
       value = '+1' + value.replace(/[^\d]/g, ''); // Remove non-digits and prepend '+1'
     } else {
-      value = value.replace(/[^\d]/g, ''); // Remove non-digit characters except '+'
+      value = value.replace(/[^\d]/g, ''); // Remove non-digit characters
       value = '+1' + value.slice(1); // Ensure it keeps the '+1' prefix and allows digits after it
     }
 
-    // Limit input to 12 characters: '+1' (2 chars) + 10 digits
     if (value.length > 12) {
       value = value.slice(0, 12);
     }
@@ -203,104 +217,171 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
     );
   };
 
+  // Enable or disable the "Next" button based on fields
+  useEffect(() => {
+    const isPrimaryValid =
+      primaryChannel === 'phone'
+        ? inputPhoneNumber.length === 12
+        : primaryChannel === 'email'
+        ? isEmailValid(inputEmail)
+        : selectedPrimaryAccount.length > 0 && selectedActions.length > 0;
+
+    const isSecondaryValid =
+      secondaryChannel === 'phone'
+        ? inputPhoneNumber.length === 12
+        : secondaryChannel === 'email'
+        ? isEmailValid(inputEmail)
+        : selectedSecondaryAccount.length > 0 && selectedActions.length > 0;
+
+    setIsNextEnabled(isPrimaryValid && isSecondaryValid);
+  }, [
+    primaryChannel,
+    secondaryChannel,
+    inputPhoneNumber,
+    inputEmail,
+    selectedPrimaryAccount,
+    selectedSecondaryAccount,
+    selectedActions
+  ]);
+
+  // Detect when a new account is connected and update the state
+  useEffect(() => {
+    console.log(`Connected accounts count: ${connectedAccounts.length}`); // Log the count of connected accounts
+
+    if (connectedAccounts.length > 0) {
+      setIsNextEnabled(true); // Enable "Next" button if any account is connected
+    }
+  }, [connectedAccounts]);
+
   // Render customization options based on the channel type
   const renderCustomization = (
     channel: string,
     channelType: 'primary' | 'secondary'
   ) => {
-    switch (channel) {
-      case 'phone':
-        return (
-          <>
-            <label className="mb-1 block text-sm dark:text-white">
-              {channelType === 'primary' ? 'Primary' : 'Secondary'} Phone Number
-            </label>
-            <Input
-              value={inputPhoneNumber}
-              onChange={handlePhoneNumberChange}
-              placeholder="Enter phone number"
-              className="mb-4 w-full"
-              type="text"
-              maxLength={11} // Ensure maximum length of 11 characters
-            />
-          </>
-        );
+    const actions = platformActions[channel.toLowerCase()] || [];
 
-      case 'email':
-        return (
-          <>
-            <label className="mb-1 block text-sm dark:text-white">
-              {channelType === 'primary' ? 'Primary' : 'Secondary'} Email
-              Address
-            </label>
-            <Input
-              value={inputEmail}
-              onChange={handleEmailChange}
-              placeholder="Enter your email"
-              className="mb-4 w-full"
-              type="email"
-            />
-            {!isEmailValid(inputEmail) && inputEmail && (
-              <p className="text-red-500">
-                Please enter a valid email address.
-              </p>
-            )}
-          </>
-        );
-
-      default:
-        return (
-          <>
-            <label className="mb-1 block text-sm dark:text-white">
-              {channelType === 'primary' ? 'Primary' : 'Secondary'}{' '}
-              {channel.charAt(0).toUpperCase() + channel.slice(1)} Account
-            </label>
-            {socialAccounts.length > 0 ? (
-              <Select
-                onValueChange={
-                  channelType === 'primary'
-                    ? setSelectedPrimaryAccount
-                    : setSelectedSecondaryAccount
-                }
-              >
-                <SelectTrigger className="mb-4 w-full rounded-md bg-gray-800 p-2 text-white">
-                  <SelectValue placeholder="Choose an account" />
-                </SelectTrigger>
-                <SelectContent>
-                  {socialAccounts.map((account, index) => (
-                    <SelectItem key={index} value={account}>
-                      {account}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : (
-              <Button
-                onClick={() => onConnectAccount && onConnectAccount(channel)}
-                className="mb-4 w-full bg-blue-600 text-white hover:bg-blue-700"
-              >
-                Connect {channel.charAt(0).toUpperCase() + channel.slice(1)}{' '}
-                Account
-              </Button>
-            )}
-
-            {/* Horizontal checkboxes for actions */}
-            <div className="mt-4 flex justify-between space-x-2">
-              {['Comment', 'Like', '👁️ Story', 'Follow'].map((action) => (
-                <label key={action} className="flex items-center space-x-1">
-                  <input
-                    type="checkbox"
-                    checked={selectedActions.includes(action)}
-                    onChange={() => handleActionChange(action)}
-                    className="form-checkbox"
-                  />
-                  <span className="text-white">{action}</span>
-                </label>
-              ))}
-            </div>
-          </>
-        );
+    if (channel === 'phone') {
+      return (
+        <>
+          <label className="mb-1 block text-sm dark:text-white">
+            {channelType === 'primary' ? 'Primary' : 'Secondary'} Phone Number
+          </label>
+          <Input
+            value={inputPhoneNumber}
+            onChange={handlePhoneNumberChange}
+            placeholder="Enter phone number"
+            className="mb-4 w-full"
+            type="text"
+            maxLength={12} // Ensure maximum length of 12 characters
+          />
+        </>
+      );
     }
+
+    if (channel === 'email') {
+      return (
+        <>
+          <label className="mb-1 block text-sm dark:text-white">
+            {channelType === 'primary' ? 'Primary' : 'Secondary'} Email Address
+          </label>
+          <Input
+            value={inputEmail}
+            onChange={handleEmailChange}
+            placeholder="Enter your email"
+            className="mb-4 w-full"
+            type="email"
+          />
+          {!isEmailValid(inputEmail) && inputEmail && (
+            <p className="text-red-500">Please enter a valid email address.</p>
+          )}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <label className="mb-1 block text-sm dark:text-white">
+          {channelType === 'primary' ? 'Primary' : 'Secondary'}{' '}
+          {channel.charAt(0).toUpperCase() + channel.slice(1)} Account
+        </label>
+        {connectedAccounts.length > 0 ? (
+          <Select
+            onValueChange={
+              channelType === 'primary'
+                ? setSelectedPrimaryAccount
+                : setSelectedSecondaryAccount
+            }
+          >
+            <SelectTrigger className="mb-4 w-full rounded-md bg-gray-800 p-2 text-white">
+              <SelectValue placeholder="Choose an account" />
+            </SelectTrigger>
+            <SelectContent>
+              {connectedAccounts.map((account, index) => (
+                <SelectItem key={index} value={account}>
+                  {account}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <Button
+            onClick={() => {
+              const mockAccount = 'connected-account';
+
+              // Check if onConnectAccount is provided
+              if (onConnectAccount) {
+                // Call the onConnectAccount function
+                onConnectAccount(channel);
+
+                // Simulate account connection by updating connected accounts
+                setConnectedAccounts((prev) => [...prev, mockAccount]);
+
+                // Set the primary or secondary account depending on channel type
+                if (channelType === 'primary') {
+                  setSelectedPrimaryAccount(mockAccount);
+                } else {
+                  setSelectedSecondaryAccount(mockAccount);
+                }
+              } else {
+                // If onConnectAccount is not provided, simulate the connection directly
+                setConnectedAccounts((prev) => {
+                  const updatedAccounts = [...prev, channel.toUpperCase()];
+                  console.log('Connected accounts updated:', updatedAccounts); // Log the updated accounts
+                  return updatedAccounts;
+                });
+
+                // Set the primary or secondary account as connected
+                if (channelType === 'primary') {
+                  setSelectedPrimaryAccount(mockAccount);
+                } else {
+                  setSelectedSecondaryAccount(mockAccount);
+                }
+              }
+            }}
+            className="mb-4 w-full bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Connect {channel.charAt(0).toUpperCase() + channel.slice(1)} Account
+          </Button>
+        )}
+
+        {/* Show actions only when an account is connected */}
+        {connectedAccounts.length > 0 && actions.length > 0 && (
+          <div className="mt-4 flex justify-between space-x-2">
+            {actions.map((action) => (
+              <label key={action} className="flex items-center space-x-1">
+                <input
+                  type="checkbox"
+                  checked={selectedActions.includes(action)}
+                  onChange={() => handleActionChange(action)}
+                  className="form-checkbox"
+                />
+                <span className="text-white">{action}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </>
+    );
   };
 
   return (
@@ -326,7 +407,11 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
       </div>
 
       {/* Next and Back Buttons */}
-      <Button onClick={handleNext} className="mt-4 w-full">
+      <Button
+        onClick={handleNext}
+        className="mt-4 w-full"
+        disabled={!isNextEnabled}
+      >
         Next
       </Button>
       <Button onClick={handleBack} className="mt-2 w-full">
