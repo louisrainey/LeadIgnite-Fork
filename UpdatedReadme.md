@@ -4,4 +4,8 @@
 
 # Add Dynamic Modals
 
-# Update Location cards to have dark mode
+# Fix Date range picker
+
+# Update campaigns to show secondary contact method
+
+# Update Location cards to have dark mode ✅

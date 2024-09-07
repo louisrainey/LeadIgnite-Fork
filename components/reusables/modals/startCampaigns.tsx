@@ -308,56 +308,50 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
           {channel.charAt(0).toUpperCase() + channel.slice(1)} Account
         </label>
         {connectedAccounts.length > 0 ? (
-          <Select
-            onValueChange={
-              channelType === 'primary'
-                ? setSelectedPrimaryAccount
-                : setSelectedSecondaryAccount
-            }
-          >
-            <SelectTrigger className="mb-4 w-full rounded-md bg-gray-800 p-2 text-white">
-              <SelectValue placeholder="Choose an account" />
-            </SelectTrigger>
-            <SelectContent>
-              {connectedAccounts.map((account, index) => (
-                <SelectItem key={index} value={account}>
-                  {account}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div>
+            {/* Automatically display the connected account without requiring selection */}
+            <Input
+              value={
+                channelType === 'primary'
+                  ? selectedPrimaryAccount
+                  : selectedSecondaryAccount
+              }
+              readOnly
+              className="mb-4 w-full rounded-md bg-gray-800 p-2 text-white"
+            />
+          </div>
         ) : (
           <Button
             onClick={() => {
               const mockAccount = 'connected-account';
-
+              const shown_account = channel.toUpperCase();
               // Check if onConnectAccount is provided
               if (onConnectAccount) {
                 // Call the onConnectAccount function
                 onConnectAccount(channel);
 
                 // Simulate account connection by updating connected accounts
-                setConnectedAccounts((prev) => [...prev, mockAccount]);
+                setConnectedAccounts((prev) => [...prev, shown_account]);
 
-                // Set the primary or secondary account depending on channel type
+                // Automatically set the connected account for primary or secondary
                 if (channelType === 'primary') {
-                  setSelectedPrimaryAccount(mockAccount);
+                  setSelectedPrimaryAccount(shown_account);
                 } else {
-                  setSelectedSecondaryAccount(mockAccount);
+                  setSelectedSecondaryAccount(shown_account);
                 }
               } else {
                 // If onConnectAccount is not provided, simulate the connection directly
                 setConnectedAccounts((prev) => {
-                  const updatedAccounts = [...prev, channel.toUpperCase()];
+                  const updatedAccounts = [...prev, shown_account];
                   console.log('Connected accounts updated:', updatedAccounts); // Log the updated accounts
                   return updatedAccounts;
                 });
 
-                // Set the primary or secondary account as connected
+                // Automatically set the connected account as primary or secondary
                 if (channelType === 'primary') {
-                  setSelectedPrimaryAccount(mockAccount);
+                  setSelectedPrimaryAccount(shown_account);
                 } else {
-                  setSelectedSecondaryAccount(mockAccount);
+                  setSelectedSecondaryAccount(shown_account);
                 }
               }
             }}
