@@ -15,7 +15,10 @@ import {
   SelectValue
 } from '@/components/ui/select'; // ShadCN Select
 import { X } from 'lucide-react'; // Close Icon
-
+import { format } from 'date-fns';
+import { DatePickerWithRange } from './dateRangePicker';
+import { Textarea } from '@/components/ui/textarea';
+import router from 'next/router';
 const socialMediaPlatforms = ['twitter', 'instagram', 'linkedin'];
 const allChannels = ['phone', 'email', 'twitter', 'instagram', 'linkedin'];
 
@@ -427,47 +430,252 @@ interface FinalizeCampaignModalProps {
   setCampaignName: (name: string) => void;
   startDate: string;
   setStartDate: (date: string) => void;
+  endDate: string;
+  setEndDate: (date: string) => void;
   handleLaunch: () => void;
   handleBack: () => void;
+  estimatedCredits: number; // Estimated credits for the campaign
 }
 
 // Step 3 Modal: Finalize Campaign
+
+interface FinalizeCampaignModalProps {
+  campaignName: string;
+  setCampaignName: (name: string) => void;
+  startDate: string;
+  setStartDate: (date: string) => void;
+  endDate: string;
+  setEndDate: (date: string) => void;
+  handleLaunch: () => void;
+  handleBack: () => void;
+  estimatedCredits: number; // Estimated credits for the campaign
+}
 const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
   campaignName,
   setCampaignName,
   startDate,
   setStartDate,
+  endDate,
+  setEndDate,
   handleLaunch,
-  handleBack
+  handleBack,
+  estimatedCredits
 }) => {
+  const [campaignGoal, setCampaignGoal] = useState(''); // State for campaign goal
+  const [selectedVoice, setSelectedVoice] = useState('AI Voice 1'); // State for AI voice selection
+  const [selectedScript, setSelectedScript] = useState('Sales Script 1'); // State for sales script selection
+  const [selectedAgent, setSelectedAgent] = useState('Avatar Agent 1'); // State for avatar agent selection
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [goalError, setGoalError] = useState<string | null>(null); // Error for campaign goal
+
+  const aiVoices = ['AI Voice 1', 'AI Voice 2', 'AI Voice 3']; // AI Voice options
+  const salesScripts = ['Sales Script 1', 'Sales Script 2', 'Sales Script 3']; // Sales Script options
+  const avatarAgents = ['Avatar Agent 1', 'Avatar Agent 2', 'Avatar Agent 3']; // Avatar Agent options
+
+  // Handle input change for the campaign name
+  const handleCampaignNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.value;
+    setCampaignName(name);
+
+    // Only validate if the user has typed at least one character
+    if (name.length > 0) {
+      if (
+        name.length < 5 ||
+        name.length > 30 ||
+        !/^[A-Za-z0-9. ]+$/.test(name)
+      ) {
+        setErrorMessage(
+          'Campaign name must be between 5-30 characters and can only contain letters, numbers, spaces, and dots.'
+        );
+      } else {
+        setErrorMessage(null);
+      }
+    } else {
+      setErrorMessage(null); // Reset error if input is cleared
+    }
+  };
+
+  // Validate campaign goal: 1 sentence minimum (10 characters with at least one period) and max 300 characters
+  const handleCampaignGoalChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const goal = e.target.value;
+    setCampaignGoal(goal);
+
+    if (goal.length < 10 || !goal.includes('.')) {
+      setGoalError('Campaign goal must be at least one sentence.');
+    } else if (goal.length > 300) {
+      setGoalError(
+        'Campaign goal cannot exceed two paragraphs (~300 characters).'
+      );
+    } else {
+      setGoalError(null); // Clear error if valid
+    }
+  };
+  const handleCreateOption = (path: string) => {
+    router.push(path); // Navigate to the "create" page
+  };
+
+  // Check if both campaign name, goal, and date range are selected to enable the button
+  const isNextEnabled =
+    campaignName.length >= 5 &&
+    !errorMessage &&
+    !goalError &&
+    startDate &&
+    endDate &&
+    campaignGoal.length > 0;
+
   return (
     <div>
       <h2 className="mb-4 text-lg font-semibold dark:text-white">
         Finalize your campaign
       </h2>
+
+      {/* Campaign Name Input */}
       <label className="mb-1 block text-sm dark:text-white">
         Campaign Name
       </label>
       <Input
         value={campaignName}
-        onChange={(e) => setCampaignName(e.target.value)}
+        onChange={handleCampaignNameChange}
         placeholder="Enter campaign name"
         className="mb-4 w-full"
+        maxLength={30}
       />
-      <label className="mb-1 block text-sm dark:text-white">Start Date</label>
-      <Input
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        placeholder="MM/DD/YYYY"
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+
+      {/* Campaign Goal Textarea */}
+      <label className="mb-1 block text-sm dark:text-white">
+        Campaign Goal
+      </label>
+      <Textarea
+        value={campaignGoal}
+        onChange={handleCampaignGoalChange}
+        placeholder="Enter your campaign goal (1 sentence min, 1-2 paragraphs max)"
         className="mb-4 w-full"
+        rows={4}
+        maxLength={300} // Limit to 300 characters
       />
+      {goalError && <p className="text-red-500">{goalError}</p>}
+
+      {/* AI Voice Selector */}
+      <label className="mb-1 block text-sm dark:text-white">
+        Select AI Voice
+      </label>
+      <Select
+        onValueChange={(value) =>
+          value === 'create'
+            ? handleCreateOption('/create-ai-voice')
+            : setSelectedVoice(value)
+        }
+        defaultValue={selectedVoice}
+      >
+        <SelectTrigger className="mb-4 w-full">
+          <SelectValue placeholder="Select AI Voice" />
+        </SelectTrigger>
+        <SelectContent>
+          {aiVoices.map((voice) => (
+            <SelectItem className="cursor-pointer" key={voice} value={voice}>
+              {voice}
+            </SelectItem>
+          ))}
+          <SelectItem className="cursor-pointer" value="create">
+            Create AI Voice
+          </SelectItem>{' '}
+          {/* Create AI Voice Option */}
+        </SelectContent>
+      </Select>
+
+      {/* Sales Script Selector */}
+      <label className="mb-1 block text-sm dark:text-white">
+        Select Sales Script
+      </label>
+      <Select
+        onValueChange={(value) =>
+          value === 'create'
+            ? handleCreateOption('/create-sales-script')
+            : setSelectedScript(value)
+        }
+        defaultValue={selectedScript}
+      >
+        <SelectTrigger className="mb-4 w-full">
+          <SelectValue placeholder="Select Sales Script" />
+        </SelectTrigger>
+        <SelectContent>
+          {salesScripts.map((script) => (
+            <SelectItem className="cursor-pointer" key={script} value={script}>
+              {script}
+            </SelectItem>
+          ))}
+          <SelectItem className="cursor-pointer" value="create">
+            Create Sales Script
+          </SelectItem>{' '}
+          {/* Create Sales Script Option */}
+        </SelectContent>
+      </Select>
+
+      {/* Avatar Agent Selector */}
+      <label className="mb-1 block text-sm dark:text-white">
+        Select Avatar Agent
+      </label>
+      <Select
+        onValueChange={(value) =>
+          value === 'create'
+            ? handleCreateOption('/create-avatar-agent')
+            : setSelectedAgent(value)
+        }
+        defaultValue={selectedAgent}
+      >
+        <SelectTrigger className="mb-4 w-full">
+          <SelectValue placeholder="Select Avatar Agent" />
+        </SelectTrigger>
+        <SelectContent>
+          {avatarAgents.map((agent) => (
+            <SelectItem className="cursor-pointer" key={agent} value={agent}>
+              {agent}
+            </SelectItem>
+          ))}
+          <SelectItem className="cursor-pointer" value="create">
+            Create Avatar Agent
+          </SelectItem>{' '}
+          {/* Create Avatar Agent Option */}
+        </SelectContent>
+      </Select>
+
+      {/* Date Range Picker */}
+      <label className="mb-1 block text-sm dark:text-white">
+        Select Date Range
+      </label>
+      <DatePickerWithRange
+        from={startDate ? new Date(startDate) : undefined}
+        to={endDate ? new Date(endDate) : undefined}
+        setDateRange={(range) => {
+          if (range?.from) {
+            setStartDate(format(range.from, 'yyyy-MM-dd'));
+          }
+          if (range?.to) {
+            setEndDate(format(range.to, 'yyyy-MM-dd'));
+          } else {
+            setEndDate('');
+          }
+        }}
+      />
+
       <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-        This campaign will cost 2192 credits.
+        This campaign will cost {estimatedCredits} credits.
       </p>
-      <Button onClick={handleLaunch} className="w-full">
+
+      {/* Only show Launch button if campaign name, goal, and date range are valid */}
+      <Button
+        onClick={handleLaunch}
+        className="w-full"
+        type="button"
+        disabled={!isNextEnabled}
+      >
         Launch Campaign
       </Button>
-      <Button onClick={handleBack} className="mt-2 w-full">
+
+      <Button onClick={handleBack} className="mt-2 w-full" type="button">
         Back
       </Button>
     </div>
@@ -483,7 +691,9 @@ const MultiStepCampaign: React.FC<{ closeModal: () => void }> = ({
   const [secondaryChannel, setSecondaryChannel] = useState<string>('');
   const [campaignName, setCampaignName] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
+  const estimatedCredits = 500;
   const isSocialMedia = (channel: string) =>
     socialMediaPlatforms.includes(channel);
 
@@ -539,8 +749,11 @@ const MultiStepCampaign: React.FC<{ closeModal: () => void }> = ({
                 setCampaignName={setCampaignName}
                 startDate={startDate}
                 setStartDate={setStartDate}
+                endDate={endDate} // Add this missing prop
+                setEndDate={setEndDate} // Add this missing prop
                 handleLaunch={handleLaunch}
                 handleBack={handleBack}
+                estimatedCredits={estimatedCredits} // Add this missing prop
               />
             )}
           </div>

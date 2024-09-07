@@ -2,6 +2,7 @@
 export interface CampaignBase {
   id: string;
   name: string;
+  goal?: string;
   status:
     | 'delivered'
     | 'failed'
@@ -12,6 +13,10 @@ export interface CampaignBase {
     | 'read'
     | 'unread';
   startDate: string;
+  endDate?: string;
+  aiVoice?: string;
+  aiScript?: string;
+  aiAvatarAgent?: string;
 }
 
 // Specific types for Text Campaigns
