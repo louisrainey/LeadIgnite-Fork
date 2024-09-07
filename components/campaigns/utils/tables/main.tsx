@@ -10,13 +10,15 @@ import {
 import {
   TextCampaign,
   CallCampaign,
-  DMCampaign,
+  SocialMediaCampaign,
   EmailCampaign,
   CampaignType
 } from '@/types/campaign';
 
 interface CampaignsTableProps {
-  campaigns: Array<TextCampaign | CallCampaign | DMCampaign | EmailCampaign>;
+  campaigns: Array<
+    TextCampaign | CallCampaign | SocialMediaCampaign | EmailCampaign
+  >;
   campaignType: CampaignType;
 }
 
@@ -66,7 +68,7 @@ const getHeadersByType = (campaignType: CampaignType) => {
 
 // Helper function to render table cells dynamically
 const renderTableRowCells = (
-  campaign: TextCampaign | CallCampaign | DMCampaign | EmailCampaign,
+  campaign: TextCampaign | CallCampaign | SocialMediaCampaign | EmailCampaign,
   campaignType: CampaignType
 ) => {
   switch (campaignType) {
@@ -127,7 +129,7 @@ const renderTableRowCells = (
         </>
       );
     case 'dm':
-      const dmCampaign = campaign as DMCampaign;
+      const dmCampaign = campaign as SocialMediaCampaign;
       return (
         <>
           <TableCell className="p-2 text-center">
@@ -140,7 +142,7 @@ const renderTableRowCells = (
             {dmCampaign.receiverHandle}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {dmCampaign.message}
+            {dmCampaign.platform}
           </TableCell>
           <TableCell className="p-2 text-center">
             {dmCampaign.sentAt.toLocaleString()}

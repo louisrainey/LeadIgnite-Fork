@@ -19,7 +19,7 @@ const CampaignPage: React.FC = () => {
         activeFilter={activeFilter}
         setActiveFilter={setActiveFilter}
       />
-      <CampaignsMainContent totalCampaigns={0} />
+      <CampaignsMainContent totalCampaigns={1} />
     </div>
   );
 };

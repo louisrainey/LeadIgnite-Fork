@@ -7,7 +7,7 @@ import {
 } from '@/types/campaign';
 
 // Social media actions dataset
-const exampleSocialMediaActions: {
+export const exampleSocialMediaActions: {
   instagram: Action[];
   linkedin: Action[];
   twitter: Action[];
