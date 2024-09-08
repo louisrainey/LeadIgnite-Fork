@@ -43,3 +43,82 @@ async function listAssistants(
 listAssistants(50, '2023-01-01T00:00:00Z', undefined, '2023-12-31T23:59:59Z')
   .then((response) => console.log('Assistants:', response))
   .catch((error) => console.error('Error:', error));
+
+export const exampleListAssistantsResponse = {
+  assistants: [
+    {
+      id: 'assistant-id-001',
+      name: 'Customer Support Assistant',
+      status: 'active',
+      createdAt: '2023-01-01T12:00:00Z',
+      updatedAt: '2023-06-01T15:00:00Z',
+      transcriber: {
+        provider: 'deepgram',
+        model: 'nova-2',
+        language: 'en',
+        smartFormat: true,
+        keywords: ['support', 'account'],
+        endpointing: 250
+      },
+      model: {
+        provider: 'openai',
+        model: 'gpt-4',
+        temperature: 0.8,
+        maxTokens: 1024,
+        emotionRecognitionEnabled: true,
+        numFastTurns: 2
+      },
+      voice: {
+        provider: 'azure',
+        voiceId: 'andrew',
+        speed: 1.25,
+        fillerInjectionEnabled: false
+      },
+      firstMessageMode: 'assistant-speaks-first',
+      recordingEnabled: true,
+      hipaaEnabled: false,
+      backgroundSound: 'office',
+      backchannelingEnabled: false,
+      silenceTimeoutSeconds: 30,
+      maxDurationSeconds: 3600
+    },
+    {
+      id: 'assistant-id-002',
+      name: 'Technical Support Bot',
+      status: 'inactive',
+      createdAt: '2023-02-15T12:00:00Z',
+      updatedAt: '2023-07-01T15:00:00Z',
+      transcriber: {
+        provider: 'azure',
+        model: 'neural-en',
+        language: 'en',
+        smartFormat: false,
+        keywords: ['error', 'bug'],
+        endpointing: 200
+      },
+      model: {
+        provider: 'azure',
+        model: 'gpt-3',
+        temperature: 0.7,
+        maxTokens: 800,
+        emotionRecognitionEnabled: false,
+        numFastTurns: 1
+      },
+      voice: {
+        provider: 'google',
+        voiceId: 'samantha',
+        speed: 1.0,
+        fillerInjectionEnabled: true
+      },
+      firstMessageMode: 'assistant-waits-for-user',
+      recordingEnabled: false,
+      hipaaEnabled: true,
+      backgroundSound: 'off',
+      backchannelingEnabled: true,
+      silenceTimeoutSeconds: 60,
+      maxDurationSeconds: 1800
+    }
+    // More assistant objects...
+  ],
+  totalCount: 2
+};
