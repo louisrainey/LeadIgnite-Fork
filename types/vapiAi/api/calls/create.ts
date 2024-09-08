@@ -86,7 +86,7 @@ export interface ServerDetails {
 
 // Assistant model
 export interface AssistantModel {
-  messages: Message[]; // Messages exchanged by the assistant
+  messages: ConversationMessage[]; // Messages exchanged by the assistant
   tools: ModelTool[]; // Tools that the assistant can use
   toolIds: string[]; // List of tool IDs
   provider: ModelProvider; // Available LLM providers
@@ -139,12 +139,60 @@ export enum MessageType {
 }
 // Message structure
 export interface Message {
-  content: string; // The content of the message
-  role: 'assistant' | 'user' | 'system'; // Role of the sender (assistant, user, system)
+  role: string; // The role in the conversation (user, system, bot, function call, etc.)
+  message: string; // The content of the message
+  time: number; // The timestamp when the message was sent
+  secondsFromStart: number; // The number of seconds from the start of the conversation
 }
 
-export interface ToolMessage extends Message {
+export interface UserMessage extends Message {
+  role: 'user'; // The role of the user
+  endTime: number; // The timestamp when the message ended
+  duration?: number; // The duration of the message in seconds (optional)
+}
+export interface SystemMessage extends Message {
+  role: 'system'; // The role of the system
+}
+
+export interface BotMessage extends Message {
+  role: 'bot'; // The role of the bot
+  endTime: number; // The timestamp when the message ended
+}
+
+export interface FunctionCallMessage extends Message {
+  role: 'function-call'; // The role of the function call
+  name: string; // The name of the function being called
+  args: string; // The arguments for the function call in JSON format
+}
+export interface NestedToolCallMessage extends Message {
+  role: 'tool-call'; // The role of the tool call in the conversation
+  toolCalls: object[]; // The list of tool calls made during the conversation
+}
+
+export interface ToolCallResultMessage extends Message {
+  role: 'tool-call-result'; // The role of the tool call result
+  toolCallId: string; // The ID of the tool call
+  name: string; // The name of the tool that returned the result
+  result: string; // The result of the tool call in JSON format
+}
+export interface FunctionResultMessage extends Message {
+  role: 'function-result'; // The role of the function result
+  name: string; // The name of the function that returned the result
+  result: string; // The result of the function call in JSON format
+}
+
+export type ConversationMessage =
+  | UserMessage
+  | SystemMessage
+  | BotMessage
+  | FunctionCallMessage
+  | NestedToolCallMessage
+  | ToolCallResultMessage
+  | FunctionResultMessage;
+
+export interface ToolMessage {
   type: 'request-start' | 'request-end' | 'other-type'; // Define the possible types
+  content: string;
   conditions?: {
     value: string;
     operator: 'eq' | 'ne' | 'gt' | 'lt'; // Define operators

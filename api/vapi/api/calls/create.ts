@@ -52,7 +52,16 @@ const callRequestData: CreateCallRequest = {
       endpointing: 255
     },
     model: {
-      messages: [{ content: 'Hello!', role: 'assistant' }],
+      messages: [
+        {
+          role: 'user',
+          message: 'Hello, how can I help?',
+          time: Date.now(),
+          secondsFromStart: 5,
+          endTime: Date.now() + 1000,
+          duration: 1
+        }
+      ],
       tools: [
         {
           async: false,
@@ -60,7 +69,6 @@ const callRequestData: CreateCallRequest = {
             {
               type: 'request-start', // Custom message type
               content: 'Tool started',
-              role: 'assistant', // Add the role property
               conditions: [{ value: 'start', operator: 'eq', param: 'trigger' }]
             }
           ],

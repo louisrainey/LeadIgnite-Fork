@@ -45,7 +45,6 @@ const toolData: CreateToolRequest = {
     {
       type: 'request-start',
       content: 'Starting DTMF tool',
-      role: 'assistant',
       conditions: [
         { value: 'start', operator: ConditionOperator.Equals, param: 'trigger' }
       ]
@@ -79,7 +78,6 @@ const exampleToolResponse: CreateToolResponse = {
     {
       type: 'request-start',
       content: 'Starting DTMF tool',
-      role: 'assistant',
       conditions: [
         { value: 'start', operator: ConditionOperator.Equals, param: 'trigger' }
       ]

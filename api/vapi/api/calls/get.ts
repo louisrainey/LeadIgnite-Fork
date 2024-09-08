@@ -49,12 +49,12 @@ export const exampleCallResponse: GetCallResponse = {
   endedReason: 'assistant-error',
   messages: [
     {
-      content: 'Hello, how can I help you?',
-      role: 'assistant'
-    },
-    {
-      content: 'I need assistance with my account.',
-      role: 'user'
+      role: 'user',
+      message: 'Hello, how can I help?',
+      time: Date.now(),
+      secondsFromStart: 5,
+      endTime: Date.now() + 1000,
+      duration: 1
     }
   ],
   destination: {
@@ -106,8 +106,12 @@ export const exampleCallResponse: GetCallResponse = {
     model: {
       messages: [
         {
-          content: 'Hello, how can I assist you today?',
-          role: 'assistant'
+          role: 'user',
+          message: 'Hello, how can I help?',
+          time: Date.now(),
+          secondsFromStart: 5,
+          endTime: Date.now() + 1000,
+          duration: 1
         }
       ],
       tools: [],

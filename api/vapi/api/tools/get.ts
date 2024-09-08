@@ -49,7 +49,6 @@ const exampleToolResponse: GetToolResponse = {
   messages: [
     {
       type: 'request-start',
-      role: 'system',
       content: 'Starting DTMF tool',
       conditions: [{ value: 'start', operator: 'eq', param: 'trigger' }]
     }
