@@ -2,7 +2,7 @@
 import { Search } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import StatCard from './statCard';
-import { Stat } from '@/types/campaign';
+import { Stat } from '@/types/dashboard/campaign';
 
 interface DashboardStatsProps {
   totalCampaigns: number;

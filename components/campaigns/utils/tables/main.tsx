@@ -13,7 +13,7 @@ import {
   SocialMediaCampaign,
   EmailCampaign,
   CampaignType
-} from '@/types/campaign';
+} from '@/types/dashboard/campaign';
 
 interface CampaignsTableProps {
   campaigns: Array<

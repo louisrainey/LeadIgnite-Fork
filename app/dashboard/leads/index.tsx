@@ -22,7 +22,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Coordinate, MapFormSchemaType, PropertyDetails } from '@/types/maps';
+import {
+  Coordinate,
+  MapFormSchemaType,
+  PropertyDetails
+} from '@/types/dashboard/maps';
 import { mapFormSchema } from '@/types/zod/propertyList';
 import {
   mockFetchAddressesFromApi,

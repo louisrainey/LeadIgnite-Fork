@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { X } from 'lucide-react';
-import { PropertyDetails } from '@/types/maps';
+import { PropertyDetails } from '@/types/dashboard/maps';
 import PropertyCard from './propertyCard';
 import { Loader2 } from 'lucide-react'; // Import a loading spinner icon from lucide-react
 
