@@ -190,15 +190,50 @@ export type ConversationMessage =
   | ToolCallResultMessage
   | FunctionResultMessage;
 
-export interface ToolMessage {
-  type: 'request-start' | 'request-end' | 'other-type'; // Define the possible types
-  content: string;
-  conditions?: {
-    value: string;
-    operator: 'eq' | 'ne' | 'gt' | 'lt'; // Define operators
-    param: string;
-  }[];
+// Enum for tool message types in the correct order
+export enum ToolMessageType {
+  ToolMessageStart = 'request-start',
+  ToolMessageComplete = 'request-complete',
+  ToolMessageFailed = 'request-failed',
+  ToolMessageDelayed = 'request-response-delayed'
 }
+
+// Interface for tool message conditions
+export interface Condition {
+  value: string; // Value to compare
+  operator: ConditionOperator; // Operator for comparison
+  param: string; // Parameter name to check
+}
+
+// Enum for condition operators
+export enum ConditionOperator {
+  Eq = 'eq',
+  Neq = 'neq',
+  Gt = 'gt',
+  Gte = 'gte',
+  Lt = 'lt',
+  Lte = 'lte'
+}
+
+// Enum for message roles
+export enum MessageRole {
+  Assistant = 'assistant',
+  System = 'system'
+}
+
+// Interface for tool messages
+export interface ToolMessage {
+  type: ToolMessageType; // Type of the tool message (start, complete, failed, delayed)
+  content: string; // The content of the message
+  role?: MessageRole; // Optional, default is 'assistant', can be 'system'
+  endCallAfterSpokenEnabled?: boolean; // Whether to end the call after speaking this message, default false
+  timingMilliseconds?: number; // For delayed messages, how long to wait before saying the message
+  conditions?: Condition[]; // Optional conditions for the tool message to trigger
+}
+
+// Tool message array for usage
+export type ToolMessagesArray = ToolMessage[];
+
 // Assistant configuration
 export interface Assistant {
   transcriber: Transcriber; // Transcriber options

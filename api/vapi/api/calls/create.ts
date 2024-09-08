@@ -1,4 +1,8 @@
-import { CreateCallRequest } from '@/types/vapiAi/api/calls/create';
+import {
+  CreateCallRequest,
+  MessageRole,
+  ToolMessageType
+} from '@/types/vapiAi/api/calls/create';
 
 // API call to create a call
 async function createCall(
@@ -67,9 +71,9 @@ const callRequestData: CreateCallRequest = {
           async: false,
           messages: [
             {
-              type: 'request-start', // Custom message type
-              content: 'Tool started',
-              conditions: [{ value: 'start', operator: 'eq', param: 'trigger' }]
+              type: ToolMessageType.ToolMessageStart,
+              content: 'Processing your request, please wait...',
+              role: MessageRole.Assistant
             }
           ],
           type: 'dtmf',
