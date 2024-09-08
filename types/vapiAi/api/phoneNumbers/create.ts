@@ -1,4 +1,10 @@
-// Phone number types
+// Enum for Provider Types
+export enum PhoneNumberProvider {
+  ByoPhoneNumber = 'byo-phone-number',
+  TwilioPhoneNumber = 'twilio-phone-number',
+  VonagePhoneNumber = 'vonage-phone-number',
+  VapiPhoneNumber = 'vapi-phone-number'
+}
 
 // Fallback Destination Type
 export interface FallbackDestination {
@@ -13,7 +19,7 @@ export interface FallbackDestination {
 // Request payload for creating a phone number
 export interface CreatePhoneNumberRequest {
   fallbackDestination: FallbackDestination; // Fallback configuration
-  provider: 'byo-phone-number'; // Provider type, fixed
+  provider: PhoneNumberProvider; // Use the enum for provider types
   numberE164CheckEnabled: boolean; // E164 check enabled flag
   number: string; // The phone number
   credentialId: string; // SIP trunk/Carrier credential ID
@@ -27,7 +33,7 @@ export interface CreatePhoneNumberRequest {
 // Response when a phone number is created
 export interface CreatePhoneNumberResponse {
   fallbackDestination: FallbackDestination; // The fallback configuration
-  provider: 'byo-phone-number'; // Provider type
+  provider: PhoneNumberProvider; // Use the enum for provider types
   numberE164CheckEnabled: boolean; // E164 check enabled flag
   id: string; // Unique identifier for the phone number
   orgId: string; // Unique identifier for the organization

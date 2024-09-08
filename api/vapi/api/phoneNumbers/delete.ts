@@ -1,3 +1,4 @@
+import { PhoneNumberProvider } from '@/types/vapiAi/api/phoneNumbers/create';
 import { DeletePhoneNumberResponse } from '@/types/vapiAi/api/phoneNumbers/delete';
 
 // Function to delete a phone number by ID
@@ -50,7 +51,7 @@ export const exampleDeletePhoneNumberResponse: DeletePhoneNumberResponse = {
     message: 'Backup destination in case of failure',
     description: 'Test description for the fallback'
   },
-  provider: 'byo-phone-number',
+  provider: PhoneNumberProvider.ByoPhoneNumber, // Correct
   numberE164CheckEnabled: true,
   id: 'phone-number-id-123',
   orgId: 'org-id-456',

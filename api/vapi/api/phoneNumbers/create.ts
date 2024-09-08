@@ -1,6 +1,7 @@
 import {
   CreatePhoneNumberRequest,
-  CreatePhoneNumberResponse
+  CreatePhoneNumberResponse,
+  PhoneNumberProvider
 } from '@/types/vapiAi/api/phoneNumbers/create';
 import fetch from 'node-fetch';
 
@@ -51,7 +52,7 @@ const phoneNumberRequestData: CreatePhoneNumberRequest = {
     message: 'This is a fallback message.',
     description: 'Fallback description.'
   },
-  provider: 'byo-phone-number',
+  provider: PhoneNumberProvider.ByoPhoneNumber, // Correct
   numberE164CheckEnabled: true,
   number: '+14155551234',
   credentialId: 'credential-id-123',
@@ -76,7 +77,7 @@ export const exampleCreatePhoneNumberResponse: CreatePhoneNumberResponse = {
     message: 'This is a fallback message.',
     description: 'Fallback description.'
   },
-  provider: 'byo-phone-number',
+  provider: PhoneNumberProvider.ByoPhoneNumber, // Correct
   numberE164CheckEnabled: true,
   id: 'phone-number-id-123',
   orgId: 'org-id-123',

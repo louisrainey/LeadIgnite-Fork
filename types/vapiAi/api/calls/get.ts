@@ -1,6 +1,6 @@
 // Reusing the assistant types from CreateCallRequest
 
-import { Assistant } from './call';
+import { Assistant } from './create';
 
 // Call types
 export type CallType = 'inboundPhoneCall' | 'outboundPhoneCall' | 'webCall';

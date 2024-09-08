@@ -1,6 +1,7 @@
 import {
   CreatePhoneNumberRequest,
-  CreatePhoneNumberResponse
+  CreatePhoneNumberResponse,
+  PhoneNumberProvider
 } from '@/types/vapiAi/api/phoneNumbers/create';
 import { UpdatePhoneNumberResponse } from '@/types/vapiAi/api/phoneNumbers/update';
 
@@ -51,7 +52,7 @@ const phoneNumberData: CreatePhoneNumberRequest = {
     message: 'Test message',
     description: 'Test description'
   },
-  provider: 'byo-phone-number',
+  provider: PhoneNumberProvider.ByoPhoneNumber, // Correct
   numberE164CheckEnabled: true,
   number: '+14155551234',
   credentialId: 'credential-123',
@@ -75,7 +76,7 @@ export const exampleUpdatePhoneNumberResponse: UpdatePhoneNumberResponse = {
     message: 'Fallback message',
     description: 'Fallback description'
   },
-  provider: 'byo-phone-number',
+  provider: PhoneNumberProvider.ByoPhoneNumber, // Correct
   numberE164CheckEnabled: true,
   id: 'phone-number-123',
   orgId: 'org-123',

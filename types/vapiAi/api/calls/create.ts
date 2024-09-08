@@ -128,6 +128,15 @@ export interface FormatPlan {
   numberToDigitsCutoff: number; // Cutoff for converting numbers to digits
 }
 
+export enum MessageType {
+  UserMessage = 'UserMessage',
+  SystemMessage = 'SystemMessage',
+  BotMessage = 'BotMessage',
+  FunctionCallMessage = 'FunctionCallMessage',
+  ToolCallMessage = 'ToolCallMessage',
+  ToolCallResultMessage = 'ToolCallResultMessage',
+  FunctionResultMessage = 'FunctionResultMessage'
+}
 // Message structure
 export interface Message {
   content: string; // The content of the message
