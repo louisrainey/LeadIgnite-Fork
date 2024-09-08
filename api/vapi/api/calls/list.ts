@@ -59,12 +59,12 @@ export const exampleListCallsResponse: ListCallsResponse = {
       endedReason: 'assistant-error',
       messages: [
         {
-          content: 'Hello, how can I help you?',
-          role: 'assistant'
-        },
-        {
-          content: 'I need help with my account.',
-          role: 'user'
+          role: 'user',
+          message: 'Hello, how can I help?',
+          time: Date.now(),
+          secondsFromStart: 5,
+          endTime: Date.now() + 1000,
+          duration: 1
         }
       ],
       createdAt: '2023-09-07T12:00:00Z',

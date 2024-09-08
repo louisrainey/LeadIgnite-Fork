@@ -60,7 +60,6 @@ const squadData: CreateSquadRequest = {
                 {
                   type: 'request-start',
                   content: 'Starting DTMF tool',
-                  role: 'assistant', // Assuming role is required in Message
                   conditions: [
                     { value: 'start', operator: 'eq', param: 'trigger' }
                   ]
@@ -68,7 +67,6 @@ const squadData: CreateSquadRequest = {
                 {
                   type: 'request-end',
                   content: 'Ending DTMF tool',
-                  role: 'assistant',
                   conditions: [
                     { value: 'end', operator: 'eq', param: 'trigger' }
                   ]

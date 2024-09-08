@@ -1,6 +1,6 @@
 // Reusing the assistant types from CreateCallRequest
 
-import { Assistant } from './create';
+import { Assistant, ConversationMessage } from './create';
 
 // Call types
 export type CallType = 'inboundPhoneCall' | 'outboundPhoneCall' | 'webCall';
@@ -56,7 +56,7 @@ export interface GetCallResponse {
   phoneCallTransport: 'sip' | 'pstn'; // Transport of the call
   status: CallStatus; // Status of the call
   endedReason?: EndedReason; // Why the call ended (optional)
-  messages: Message[]; // Messages spoken during the call
+  messages: ConversationMessage[]; // Messages spoken during the call
   destination?: Destination; // Transfer destination
   createdAt: string; // ISO date-time of call creation
   updatedAt: string; // ISO date-time of last update
