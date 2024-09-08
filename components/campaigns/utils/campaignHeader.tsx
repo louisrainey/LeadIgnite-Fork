@@ -70,7 +70,7 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
       past24hours: 300
     },
     {
-      title: 'Total DMs',
+      title: 'Total Interactions',
       value: totalDMs,
       statType: 'dm',
       click: true,

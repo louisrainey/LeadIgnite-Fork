@@ -27,7 +27,7 @@ import {
   SocialMediaCampaign
 } from '@/types/campaign';
 import { exampleCampaignsData } from '@/constants/data/campaigns';
-import { socialMediaColumns, emailColumns, callColumns } from './columns';
+import { emailColumns, callColumns, socialMediaColumns } from './utils/columns';
 
 // Define a union type of all campaign types
 type Campaign = SocialMediaCampaign | EmailCampaign | CallCampaign;
