@@ -23,7 +23,7 @@ async function createAssistant(payload: CreateAssistantRequest): Promise<any> {
 }
 
 // Example payload to create an assistant
-const examplePayload: CreateAssistantRequest = {
+export const exampleCreateAssistantPayload: CreateAssistantRequest = {
   transcriber: {
     provider: 'deepgram',
     model: 'nova-2',
@@ -179,7 +179,7 @@ const examplePayload: CreateAssistantRequest = {
   credentialIds: ['credential-123']
 };
 
-// Call the function to create the assistant
-createAssistant(examplePayload)
-  .then((response) => console.log('Assistant Created:', response))
-  .catch((error) => console.error('Error:', error));
+// // Call the function to create the assistant
+// createAssistant(exampleCreateAssistantPayload)
+//   .then((response) => console.log('Assistant Created:', response))
+//   .catch((error) => console.error('Error:', error));
