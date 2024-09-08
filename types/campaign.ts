@@ -116,8 +116,30 @@ export type Stat = {
 };
 
 // Reusable type for campaign data
-export type Campaign =
+// Updated Campaign type to include primaryType and secondaryType
+export type Campaign = (
   | TextCampaign
   | CallCampaign
   | SocialMediaCampaign
-  | EmailCampaign;
+  | EmailCampaign
+) & {
+  primaryType: CampaignType;
+  secondaryType: CampaignType;
+};
+
+// Optional runtime validation logic
+export function validateCampaignTypes(campaign: Campaign) {
+  if (campaign.primaryType === campaign.secondaryType) {
+    throw new Error('Primary and secondary types cannot be the same.');
+  }
+
+  const socialMediaTypes = ['dm']; // Add other social media types here if needed
+  if (
+    socialMediaTypes.includes(campaign.primaryType) &&
+    socialMediaTypes.includes(campaign.secondaryType)
+  ) {
+    throw new Error(
+      'Both primary and secondary types cannot be social media types.'
+    );
+  }
+}
