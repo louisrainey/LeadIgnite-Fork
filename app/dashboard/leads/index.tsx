@@ -26,7 +26,7 @@ import {
   Coordinate,
   MapFormSchemaType,
   PropertyDetails
-} from '@/types/dashboard/maps';
+} from '@/types/_dashboard/maps';
 import { mapFormSchema } from '@/types/zod/propertyList';
 import {
   mockFetchAddressesFromApi,

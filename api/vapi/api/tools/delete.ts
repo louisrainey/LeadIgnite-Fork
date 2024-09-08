@@ -1,3 +1,5 @@
+import { DeleteToolResponse } from '@/types/vapiAi/api/tools/delete';
+
 const options = {
   method: 'DELETE',
   headers: {
@@ -18,7 +20,7 @@ fetch('https://api.vapi.ai/tool/{id}', options)
   })
   .catch((error) => console.error('Error:', error));
 
-const exampleToolDeleteResponse = {
+export const exampleToolDeleteResponse = {
   id: 'tool-123',
   status: 'deleted',
   orgId: 'org-123',
