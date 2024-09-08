@@ -142,7 +142,6 @@ export interface ToolMessage extends Message {
     param: string;
   }[];
 }
-
 // Assistant configuration
 export interface Assistant {
   transcriber: Transcriber; // Transcriber options
