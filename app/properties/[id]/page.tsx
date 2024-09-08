@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PencilIcon, SearchIcon } from 'lucide-react';
-import { PropertyDetails } from '@/types/dashboard/maps';
+import { PropertyDetails } from '@/types/_dashboard/maps';
 import { Button } from '@/components/ui/button';
 import { detailed_properties_saved } from '@/constants/data/properties';
 import { notFound } from 'next/navigation';

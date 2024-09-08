@@ -1,4 +1,4 @@
-import { PropertyDetails } from '@/types/dashboard/maps';
+import { PropertyDetails } from '@/types/_dashboard/maps';
 import { v4 as uuidv4 } from 'uuid';
 
 export let detailed_properties_saved: PropertyDetails[] = [

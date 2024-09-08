@@ -20,7 +20,7 @@ import {
   CopyPlus,
   InfoIcon
 } from 'lucide-react';
-import { PropertyDetails } from '@/types/dashboard/maps'; // Ensure you import the PropertyDetails type
+import { PropertyDetails } from '@/types/_dashboard/maps'; // Ensure you import the PropertyDetails type
 import ActivitySidebar from '@/components/reusables/sidebars/activity';
 
 interface PropertyHeaderProps {

@@ -1,4 +1,4 @@
-import { AddressCoordinate, Coordinate } from '@/types/dashboard/maps';
+import { AddressCoordinate, Coordinate } from '@/types/_dashboard/maps';
 
 export const mockFetchAddressesFromApi = async (
   addresses: string[]

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import Lottie from 'lottie-react';
 import searchAnimation from '@/public/lottie/SearchPing.json'; // Lottie JSON file path
 import { AddContactInfoModal } from '@/components/reusables/modals/addContactInfo';
-import { PropertyDetails } from '@/types/dashboard/maps';
+import { PropertyDetails } from '@/types/_dashboard/maps';
 import { SkipTraceModal } from '@/components/reusables/modals/skipTrace';
 
 interface ContactCardProps {

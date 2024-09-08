@@ -88,6 +88,8 @@ export interface SocialMediaCampaign extends CampaignBase {
 
 // Specific types for Email Campaigns
 export interface EmailCampaign extends CampaignBase {
+  ghlID: string;
+
   fromEmail: string;
   toEmail: string;
   subject: string;

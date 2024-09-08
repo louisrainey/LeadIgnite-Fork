@@ -1,5 +1,5 @@
 import { ElevenLabsClient } from 'elevenlabs';
-import { getCustomerVoiceData } from '../../customers/customer-service';
+import { getCustomerVoiceData } from '../../customers/getCustoemrVoiceData';
 import { Readable } from 'stream'; // Node.js Readable stream
 
 const elevenlabs = new ElevenLabsClient({
