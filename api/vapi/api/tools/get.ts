@@ -1,5 +1,6 @@
 // api/tools.ts
 
+import { ToolMessageType, MessageRole } from '@/types/vapiAi/api/calls/create';
 import { ToolType } from '@/types/vapiAi/api/tools/create';
 import { GetToolResponse } from '@/types/vapiAi/api/tools/get';
 
@@ -48,9 +49,9 @@ const exampleToolResponse: GetToolResponse = {
   async: false,
   messages: [
     {
-      type: 'request-start',
-      content: 'Starting DTMF tool',
-      conditions: [{ value: 'start', operator: 'eq', param: 'trigger' }]
+      type: ToolMessageType.ToolMessageStart,
+      content: 'Processing your request, please wait...',
+      role: MessageRole.Assistant
     }
   ],
   type: ToolType.DTMF, // Use enum value here instead of a string  id: 'tool-id-123',

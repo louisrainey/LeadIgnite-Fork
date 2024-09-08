@@ -1,3 +1,4 @@
+import { ToolMessageType, MessageRole } from '@/types/vapiAi/api/calls/create';
 import { CreateSquadRequest } from '@/types/vapiAi/api/squad/create';
 
 async function createSquad(
@@ -58,18 +59,9 @@ const squadData: CreateSquadRequest = {
               async: false,
               messages: [
                 {
-                  type: 'request-start',
-                  content: 'Starting DTMF tool',
-                  conditions: [
-                    { value: 'start', operator: 'eq', param: 'trigger' }
-                  ]
-                },
-                {
-                  type: 'request-end',
-                  content: 'Ending DTMF tool',
-                  conditions: [
-                    { value: 'end', operator: 'eq', param: 'trigger' }
-                  ]
+                  type: ToolMessageType.ToolMessageStart,
+                  content: 'Processing your request, please wait...',
+                  role: MessageRole.Assistant
                 }
               ],
               type: 'dtmf',

@@ -1,5 +1,6 @@
 // api/tools.ts
 
+import { ToolMessageType, MessageRole } from '@/types/vapiAi/api/calls/create';
 import {
   CreateToolRequest,
   ConditionOperator,
@@ -43,11 +44,9 @@ const toolData: CreateToolRequest = {
   async: false,
   messages: [
     {
-      type: 'request-start',
-      content: 'Starting DTMF tool',
-      conditions: [
-        { value: 'start', operator: ConditionOperator.Equals, param: 'trigger' }
-      ]
+      type: ToolMessageType.ToolMessageStart,
+      content: 'Processing your request, please wait...',
+      role: MessageRole.Assistant
     }
   ],
   type: ToolType.DTMF,
@@ -76,11 +75,9 @@ const exampleToolResponse: CreateToolResponse = {
   async: false,
   messages: [
     {
-      type: 'request-start',
-      content: 'Starting DTMF tool',
-      conditions: [
-        { value: 'start', operator: ConditionOperator.Equals, param: 'trigger' }
-      ]
+      type: ToolMessageType.ToolMessageStart,
+      content: 'Processing your request, please wait...',
+      role: MessageRole.Assistant
     }
   ],
   type: ToolType.DTMF,
