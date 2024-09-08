@@ -66,7 +66,7 @@ export const exampleListPhoneNumbersResponse: ListPhoneNumbersResponse = [
       message: 'Fallback message',
       description: 'Fallback description'
     },
-    provider: 'byo-phone-number',
+    provider: PhoneNumberProvider.ByoPhoneNumber, // Correct
     numberE164CheckEnabled: true,
     id: 'phone-number-123',
     orgId: 'org-123',
@@ -89,7 +89,7 @@ export const exampleListPhoneNumbersResponse: ListPhoneNumbersResponse = [
       message: 'Fallback message',
       description: 'Fallback description'
     },
-    provider: 'byo-phone-number',
+    provider: PhoneNumberProvider.ByoPhoneNumber, // Correct
     numberE164CheckEnabled: true,
     id: 'phone-number-456',
     orgId: 'org-123',

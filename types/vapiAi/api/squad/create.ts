@@ -1,4 +1,4 @@
-import { KnowledgeBase, ToolMessage } from '../calls/call';
+import { KnowledgeBase, ToolMessage } from '../calls/create';
 
 export interface CreateSquadRequest {
   name: string;

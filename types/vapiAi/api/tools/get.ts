@@ -1,4 +1,4 @@
-import { ToolMessage } from '../calls/call';
+import { ToolMessage } from '../calls/create';
 import { ToolType } from './create';
 
 export interface GetToolResponse {

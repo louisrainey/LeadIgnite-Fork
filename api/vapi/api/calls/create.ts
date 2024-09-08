@@ -1,4 +1,4 @@
-import { CreateCallRequest } from '@/types/vapiAi/api/calls/call';
+import { CreateCallRequest } from '@/types/vapiAi/api/calls/create';
 
 // API call to create a call
 async function createCall(

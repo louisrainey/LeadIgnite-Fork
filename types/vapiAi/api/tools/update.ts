@@ -1,6 +1,6 @@
 // Assuming Tool, ToolMessage, ToolFunction, ToolServer, etc., already exist
 
-import { ToolMessage } from '../calls/call';
+import { ToolMessage } from '../calls/create';
 import { ToolFunction, ToolServer } from '../squad/create';
 import { ToolType } from './create';
 

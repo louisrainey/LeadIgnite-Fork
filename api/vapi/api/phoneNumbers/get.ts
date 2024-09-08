@@ -47,7 +47,7 @@ export const exampleGetPhoneNumberResponse: GetPhoneNumberResponse = {
     message: 'Fallback message in case of failure.',
     description: 'Fallback for missed calls.'
   },
-  provider: 'byo-phone-number',
+  provider: PhoneNumberProvider.ByoPhoneNumber, // Correct
   numberE164CheckEnabled: true,
   id: 'phone-number-id-123',
   orgId: 'org-id-456',
