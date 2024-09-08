@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { mapFormSchema } from './zod/propertyList';
+import { mapFormSchema } from '../zod/propertyList';
 
 export type AddressCoordinate = {
   address: string;

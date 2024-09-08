@@ -4,7 +4,7 @@ import {
   EmailCampaign,
   SocialMediaCampaign,
   Action
-} from '@/types/campaign';
+} from '@/types/dashboard/campaign';
 
 // Social media actions dataset
 export const exampleSocialMediaActions: {

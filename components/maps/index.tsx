@@ -6,7 +6,7 @@ import {
   DrawingManager
 } from '@react-google-maps/api';
 import PropertyListView from './properties/propertyList';
-import { PropertyDetails } from '@/types/maps';
+import { PropertyDetails } from '@/types/dashboard/maps';
 
 interface MapComponentProps {
   apiKey: string;

@@ -25,7 +25,7 @@ import {
   CallCampaign,
   EmailCampaign,
   SocialMediaCampaign
-} from '@/types/campaign';
+} from '@/types/dashboard/campaign';
 import { exampleCampaignsData } from '@/constants/data/campaigns';
 import { emailColumns, callColumns, socialMediaColumns } from './utils/columns';
 

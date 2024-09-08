@@ -8,7 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious
 } from '@/components/ui/carousel';
-import { PropertyDetails } from '@/types/maps';
+import { PropertyDetails } from '@/types/dashboard/maps';
 import Link from 'next/link';
 
 const PropertyCard: React.FC<{ property: PropertyDetails }> = ({

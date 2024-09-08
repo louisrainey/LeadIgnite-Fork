@@ -3,7 +3,7 @@ import {
   SocialMediaCampaign,
   EmailCampaign,
   CallCampaign
-} from '@/types/campaign';
+} from '@/types/dashboard/campaign';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
