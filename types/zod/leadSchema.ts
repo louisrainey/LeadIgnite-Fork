@@ -36,8 +36,14 @@ export const leadSchema = z.object({
       'Phone Number can only contain numbers and special characters like - + ( )'
     ),
 
-  email: z
+  phoneNumber2: z
     .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address')
+    .max(15, 'Phone Number 2 cannot exceed 15 characters')
+    .regex(
+      /^[0-9\-+()\s]*$/,
+      'Phone Number 2 can only contain numbers and special characters like - + ( )'
+    )
+    .optional(), // Making phone number 2 optional
+
+  email: z.string().email('Please enter a valid email address').optional() // Making email optional
 });

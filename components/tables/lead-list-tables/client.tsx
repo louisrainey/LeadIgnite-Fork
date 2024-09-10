@@ -8,12 +8,12 @@ import { Plus, Filter, ChevronDown, Menu } from 'lucide-react'; // Icons
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { Input } from '@/components/ui/input';
-import AddLeadModal from '@/components/reusables/modals/leadModal';
 import Lottie from 'lottie-react';
 import searchAnimation from '@/public/lottie/SearchPing.json'; // Lottie JSON file path
 import FilterListsDropdown from './utils/filterLeads'; // Import the filter component
 import { LeadListDataTable } from './lead-data-table';
 import { LeadList } from '@/constants/dashboard/leadList';
+import UploadListModal from '@/components/reusables/modals/uploadSkipTracedList';
 
 interface LeadListClientProps {
   data: LeadList[];
@@ -132,7 +132,7 @@ export const LeadListClient: React.FC<LeadListClientProps> = ({ data }) => {
       )}
 
       {/* Add Lead Modal */}
-      <AddLeadModal isOpen={isModalOpen} onClose={closeModal} />
+      <UploadListModal isOpen={isModalOpen} onClose={closeModal} />
     </>
   );
 };
