@@ -42,6 +42,9 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [headers, setHeaders] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedHeader, setSelectedHeader] = useState<string | null>(null); // Track the currently selected header
+  const [availableHeaders, setAvailableHeaders] = useState<string[]>(headers); // Track the available headers to show in dropdown
+
   const {
     register,
     handleSubmit,
