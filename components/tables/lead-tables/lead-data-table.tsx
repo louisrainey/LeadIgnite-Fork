@@ -15,12 +15,12 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { Input } from './input';
-import { Button } from './button';
-import { ScrollArea, ScrollBar } from './scroll-area';
-import { Badge } from './badge'; // Assume a Badge component exists
+import { Input } from '../../ui/input';
+import { Button } from '../../ui/button';
+import { ScrollArea, ScrollBar } from '../../ui/scroll-area';
+import { Badge } from '../../ui/badge'; // Assume a Badge component exists
 import { Calendar, CheckCheck, MessageCircle } from 'lucide-react';
-import ActivitySidebar from '../reusables/sidebars/activity';
+import ActivitySidebar from '../../reusables/sidebars/activity';
 
 // Status options
 const statusOptions = [
@@ -61,11 +61,16 @@ export function LeadDataTable<TData, TValue>({
   data,
   searchKey
 }: DataTableProps<TData, TValue>) {
+  const [search, setSearch] = useState('');
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel()
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      globalFilter: search // This will be used to filter based on search
+    }
   });
 
   // Handler for status dropdown changes
@@ -98,6 +103,14 @@ export function LeadDataTable<TData, TValue>({
 
   return (
     <>
+      <div className="mb-4">
+        <Input
+          placeholder={`Search ${searchKey}...`}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full max-w-sm"
+        />
+      </div>
       <ScrollArea className="h-[calc(80vh-220px)] rounded-md border md:h-[calc(80dvh-200px)]">
         <Table className="relative">
           <TableHeader>

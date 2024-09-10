@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PencilIcon, SearchIcon } from 'lucide-react';
 import { PropertyDetails } from '@/types/_dashboard/maps';
 import { Button } from '@/components/ui/button';
-import { detailed_properties_saved } from '@/constants/data/properties';
+import { detailed_properties_saved } from '@/constants/dashboard/properties';
 import { notFound } from 'next/navigation';
 import PropertyMap from '@/components/maps/properties/propertyMap';
 import { Progress } from '@/components/ui/progress';
@@ -32,7 +32,7 @@ import {
 import WholesaleCalculator from '@/components/property/page/calculations/wholesale';
 import AmortizationCalculator from '../../../../components/property/page/calculations/amortizationCalculator';
 import ContactInformationCard from '@/components/property/page/contactCard';
-import { emptyAgentProperty } from '@/constants/data/testProperties';
+import { emptyAgentProperty } from '@/constants/dashboard/testProperties';
 import PropertyOverviewCard from '@/components/property/page/propertyOverviewCard';
 import PageContainer from '@/components/layout/page-container';
 // Async function to fetch property data

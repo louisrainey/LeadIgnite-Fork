@@ -8,13 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Lead } from '@/constants/data';
+import { LeadList } from '@/constants/dashboard/leadList';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface CellActionProps {
-  data: Lead;
+  data: LeadList;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {

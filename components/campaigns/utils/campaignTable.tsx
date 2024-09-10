@@ -3,7 +3,7 @@ import Lottie from 'lottie-react';
 import { RefreshCw } from 'lucide-react'; // You can also use FontAwesome if needed
 import * as OutReachAnimation from '@/public/lottie/CampaignPing.json'; // Path to the Lottie animation
 import CampaignsTable from './tables/main';
-import { exampleCampaignsData } from '@/constants/data/campaigns';
+import { exampleCampaignsData } from '@/constants/dashboard/campaigns';
 import MultiStepCampaign from '@/components/reusables/modals/startCampaigns';
 
 interface NoCampaignsProps {

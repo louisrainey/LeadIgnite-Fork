@@ -1,5 +1,3 @@
-import { NavItem } from '@/types';
-
 export type Lead = {
   id: number; // Unique identifier for the lead
   firstName: string; // First name of the lead
@@ -155,75 +153,5 @@ export const leads: Lead[] = [
     followUp: '2023-09-19',
     lastUpdate: '2023-09-02',
     address1: '333 Willow Ave, New York, NY'
-  }
-];
-
-export type Employee = {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  gender: string;
-  date_of_birth: string; // Consider using a proper date type if possible
-  street: string;
-  city: string;
-  state: string;
-  country: string;
-  zipcode: string;
-  longitude?: number; // Optional field
-  latitude?: number; // Optional field
-  job: string;
-  profile_picture?: string | null; // Profile picture can be a string (URL) or null (if no picture)
-};
-
-export const navItems: NavItem[] = [
-  {
-    title: 'Property Search',
-    href: '/dashboard',
-    icon: 'search',
-    label: 'searchProperties'
-  },
-  {
-    title: 'Campaign Manager',
-    href: '/dashboard/campaigns',
-    icon: 'campaigns',
-    label: 'campaigns'
-  },
-  {
-    title: 'Leads',
-    href: '/dashboard/lead',
-    icon: 'user',
-    label: 'leads'
-  },
-  {
-    title: 'Lead Lists',
-    href: '/dashboard/leadList',
-    icon: 'scribe',
-    label: 'lead-lists'
-  },
-  {
-    title: 'Employee',
-    href: '/dashboard/employee',
-    icon: 'employee',
-    label: 'employee'
-  },
-  {
-    title: 'Profile',
-    href: '/dashboard/profile',
-    icon: 'profile',
-    label: 'profile'
-  },
-  {
-    title: 'Kanban',
-    href: '/dashboard/kanban',
-    icon: 'kanban',
-    label: 'kanban'
-  },
-  {
-    title: 'Login',
-    href: '/',
-    icon: 'login',
-    label: 'login'
   }
 ];
