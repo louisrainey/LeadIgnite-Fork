@@ -30,7 +30,8 @@ import {
   UserCircle,
   User2Icon,
   UserX2Icon,
-  X
+  X,
+  ScrollText
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -58,7 +59,7 @@ export const Icons = {
   add: Plus,
   warning: AlertTriangle,
   user: UserCircle,
-
+  scribe: ScrollText,
   arrowRight: ArrowRight,
   help: HelpCircle,
   pizza: Pizza,

@@ -16,6 +16,8 @@
 
 # Look into voice cloning
 
+# Fix Create lead Filter auto closing when clicking an option
+
 <!-- # Update Location cards to have dark mode ✅ -->
 <!-- ⚠️ # Add Data sets for Creatify  Create Video From Link, Get Video Result,Get Vedio History, Generate Preview video from link, Render video [Video]
    # Get existing links, create link, create link with params, update link, get link by id

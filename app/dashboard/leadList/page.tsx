@@ -1,18 +1,18 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import PageContainer from '@/components/layout/page-container';
-import { LeadClient } from '@/components/tables/lead-tables/client';
-import { leads } from '@/constants/data';
+import LeadListClient from '@/components/tables/lead-list-tables/client';
+import { leadListData } from '@/constants/dashboard/leadList';
 
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Leads', link: '/dashboard/lead' }
+  { title: 'Lead Lists', link: '/dashboard/leadList' }
 ];
 export default function page() {
   return (
     <PageContainer>
       <div className="space-y-2">
         <Breadcrumbs items={breadcrumbItems} />
-        <LeadClient data={leads} />
+        <LeadListClient data={[]} />
       </div>
     </PageContainer>
   );

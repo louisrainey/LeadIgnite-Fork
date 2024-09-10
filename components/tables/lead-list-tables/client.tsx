@@ -1,25 +1,25 @@
-'use client';
+'use client'; // Ensure that the component is a client-side component
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { Lead } from '@/constants/data';
-import { Plus, Filter, Calendar, ChevronDown } from 'lucide-react';
+import { Plus, Filter, ChevronDown, Menu } from 'lucide-react'; // Icons
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { Input } from '@/components/ui/input';
 import AddLeadModal from '@/components/reusables/modals/leadModal';
 import Lottie from 'lottie-react';
 import searchAnimation from '@/public/lottie/SearchPing.json'; // Lottie JSON file path
-import FilterDropdown from './utils/filterLeads';
-import { LeadDataTable } from './lead-data-table';
+import FilterListsDropdown from './utils/filterLeads'; // Import the filter component
+import { LeadListDataTable } from './lead-data-table';
+import { LeadList } from '@/constants/dashboard/leadList';
 
-interface ProductsClientProps {
-  data: Lead[];
+interface LeadListClientProps {
+  data: LeadList[];
 }
 
-export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
+export const LeadListClient: React.FC<LeadListClientProps> = ({ data }) => {
   const router = useRouter();
 
   // State for modal visibility
@@ -28,32 +28,36 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
   const [searchKey, setSearchKey] = useState(''); // Local state to manage search key
 
   // Filter state
-  const [selectedCampaign, setSelectedCampaign] = useState<
+  const [selectedListName, setSelectedListName] = useState<string | undefined>(
+    undefined
+  ); // List name filter
+  const [selectedRecordRange, setSelectedRecordRange] = useState<
     string | undefined
-  >();
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>();
-
-  const filterDropdownRef = useRef<HTMLDivElement | null>(null); // Ref for dropdown
+  >(undefined); // Record range filter
+  const [selectedUploadDate, setSelectedUploadDate] = useState<
+    string | undefined
+  >(undefined); // Upload date filter
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const toggleFilter = () => setIsFilterOpen((prev) => !prev);
 
+  // Apply the filter (you can customize this to apply filters to your lead lists)
   const applyFilter = () => {
-    console.log('Applying Filter:', { selectedCampaign, selectedStatus });
+    console.log('Applying Filter:', {
+      selectedListName,
+      selectedRecordRange,
+      selectedUploadDate
+    });
     setIsFilterOpen(false); // Close the dropdown after applying the filter
   };
 
-  const closeFilterDropdown = () => {
-    setIsFilterOpen(false);
-  };
-
+  // Reset the filter state to default values
   const resetFilter = () => {
-    setSelectedCampaign(undefined);
-    setSelectedStatus(undefined);
+    setSelectedListName(undefined);
+    setSelectedRecordRange(undefined);
+    setSelectedUploadDate(undefined);
   };
-
-  // Close dropdown when clicking outside of it
 
   return (
     <>
@@ -71,21 +75,12 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
             onClick={openModal}
             className="w-full rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
           >
-            <Plus className="mr-2" /> Create Lead
+            <Menu className="mr-2" /> Import List
           </Button>
 
           <div className="flex space-x-2">
-            {/* Today's Follow Ups Button */}
-            <Button
-              variant="outline"
-              className="overflow-hidden truncate whitespace-nowrap border-blue-600 text-blue-600"
-            >
-              <Calendar className="mr-2" />
-              Today&apos;s Follow Ups
-            </Button>
-
             {/* Filter Button with Dropdown */}
-            <div className="relative" ref={filterDropdownRef}>
+            <div className="relative">
               <Button
                 variant="outline"
                 className="border-blue-600 text-blue-600"
@@ -96,15 +91,18 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
                 <ChevronDown className="ml-2" />
               </Button>
 
+              {/* Dropdown for Filters */}
               {isFilterOpen && (
-                <FilterDropdown
-                  selectedCampaign={selectedCampaign}
-                  setSelectedCampaign={setSelectedCampaign}
-                  selectedStatus={selectedStatus}
-                  setSelectedStatus={setSelectedStatus}
+                <FilterListsDropdown
+                  selectedListName={selectedListName}
+                  setSelectedListName={setSelectedListName}
+                  selectedRecordRange={selectedRecordRange}
+                  setSelectedRecordRange={setSelectedRecordRange}
+                  selectedUploadDate={selectedUploadDate}
+                  setSelectedUploadDate={setSelectedUploadDate}
                   resetFilter={resetFilter}
                   applyFilter={applyFilter}
-                  closeDropdown={closeFilterDropdown} // Pass the close function to the dropdown
+                  closeDropdown={() => setIsFilterOpen(false)} // Close dropdown
                 />
               )}
             </div>
@@ -116,7 +114,7 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
 
       {/* Lead Data Table */}
       {data.length > 1 ? (
-        <LeadDataTable searchKey="Leads" columns={columns} data={data} />
+        <LeadListDataTable searchKey="Lists" columns={columns} data={data} />
       ) : (
         <div className="flex h-[60vh] flex-col items-center justify-center">
           <Lottie animationData={searchAnimation} loop autoplay />
@@ -128,7 +126,7 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
             onClick={openModal}
             className="mt-6 rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
           >
-            <Plus className="mr-2" /> Create Lead
+            <Menu className="mr-2" /> Import List
           </Button>
         </div>
       )}
@@ -139,4 +137,4 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
   );
 };
 
-export default LeadClient;
+export default LeadListClient;

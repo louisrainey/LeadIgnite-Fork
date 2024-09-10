@@ -33,7 +33,7 @@ import {
   calculateCenter
 } from '@/constants/utility/maps';
 import PropertyListView from '@/components/maps/properties/propertyList';
-import { detailed_properties_saved } from '@/constants/data/properties';
+import { detailed_properties_saved } from '@/constants/dashboard/properties';
 import { checkForSQLInjection } from '@/constants/utility/sqlCheck';
 
 export default function LeadsComponent() {

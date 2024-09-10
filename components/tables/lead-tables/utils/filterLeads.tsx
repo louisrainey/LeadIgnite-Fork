@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import {
   Select,
   SelectTrigger,
@@ -30,23 +30,29 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside of it
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+  // Custom close handler that only closes the dropdown if clicking outside of it
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      const target = event.target as Element; // Cast to Element
+
+      // Prevent closing if click happens inside the dropdown or a Select dropdown
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(target) &&
+        !target.closest('.ui-select') // Exclude the `Select` dropdowns by checking class or unique identifier
       ) {
-        closeDropdown(); // Call parent function to close dropdown
+        closeDropdown();
       }
-    }
+    },
+    [closeDropdown]
+  );
 
+  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [closeDropdown]);
+  }, [handleClickOutside]);
 
   // Disable the apply button if neither campaign nor status is selected
   const isApplyDisabled =
@@ -66,12 +72,14 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
           </label>
           <Select
             value={selectedCampaign || 'None'}
-            onValueChange={setSelectedCampaign}
+            onValueChange={(value) => {
+              setSelectedCampaign(value);
+            }}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="ui-select w-full">
               <SelectValue placeholder="Select campaign(s)" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="ui-select">
               <SelectGroup>
                 <SelectItem value="None">None</SelectItem>
                 <SelectItem value="campaign1">Campaign 1</SelectItem>
@@ -88,12 +96,14 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
           </label>
           <Select
             value={selectedStatus || 'None'}
-            onValueChange={setSelectedStatus}
+            onValueChange={(value) => {
+              setSelectedStatus(value);
+            }}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="ui-select w-full">
               <SelectValue placeholder="Select status(es)" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="ui-select">
               <SelectGroup>
                 <SelectItem value="None">None</SelectItem>
                 <SelectItem value="new">New</SelectItem>
