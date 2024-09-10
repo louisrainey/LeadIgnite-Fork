@@ -8,7 +8,7 @@
 
 # Update campaigns to show secondary contact method
 
-# Fix campaign table types mismatch
+# Fix campaign table types mismatch , maybe need to create different tables for each campaign
 
 # Add Data sets for Vapi Create,Get,List,Update,Delete | Assistant.Create,Get,List,Update,Delete |,Create,Get,List,Update,Delete | Phone Numbers ,Create,Get,List,Update,Delete | Squads, Create,Get,List,Update,Delete | Files, ? Create,Get,List,Update,Delete | Tools,
 
@@ -17,7 +17,7 @@
 # Look into voice cloning
 
 <!-- # Update Location cards to have dark mode ✅ -->
-<!-- # Add Data sets for Creatify  Create Video From Link, Get Video Result,Get Vedio History, Generate Preview video from link, Render video [Video]
+<!-- ⚠️ # Add Data sets for Creatify  Create Video From Link, Get Video Result,Get Vedio History, Generate Preview video from link, Render video [Video]
    # Get existing links, create link, create link with params, update link, get link by id
    # Post Lipsync Task , Get Lipsync items , get lipsync by id
    # Personas , Get available personas, Get all personas by id, create persona, delete persona
