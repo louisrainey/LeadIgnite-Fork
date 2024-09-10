@@ -47,6 +47,7 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
 
   const {
     register,
+    watch,
     handleSubmit,
     setValue,
     formState: { errors },
@@ -55,7 +56,7 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
     resolver: zodResolver(leadSchema), // Use Zod schema for validation
     mode: 'onChange' // This ensures validation happens on typing
   });
-
+  const listName = watch('listName');
   // Handle file drop
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length) {
@@ -130,19 +131,32 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
           </div>
 
           {/* File Upload */}
+          {/* File Upload Input (Dropzone) */}
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Skip-traced list*
             </label>
             <div
-              {...getRootProps()}
-              className="mt-2 cursor-pointer border-2 border-dashed border-gray-300 p-4 dark:border-gray-600"
+              {...getRootProps()} // Properly apply dropzone props
+              className={`mt-2 border-2 border-dashed p-4 
+          ${
+            !listName?.trim()
+              ? 'cursor-not-allowed bg-gray-200 dark:bg-gray-700'
+              : 'cursor-pointer border-gray-300 dark:border-gray-600'
+          }`}
             >
-              <input {...getInputProps()} />
+              <input
+                {...getInputProps()}
+                disabled={!listName?.trim()} // Disable input if listName is invalid
+              />
               {uploadedFile ? (
                 <p>{uploadedFile.name}</p>
               ) : (
-                <p>Click to upload or drag and drop (CSV or XLSX)</p>
+                <p>
+                  {listName?.trim()
+                    ? 'Click to upload or drag and drop (CSV or XLSX)'
+                    : 'Provide a valid List Name to enable uploading'}
+                </p>
               )}
             </div>
             {errors.skipTracedFile && (
@@ -159,7 +173,10 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
               <label className="block text-sm font-medium dark:text-gray-300">
                 First Name*
               </label>
-              <Select disabled={!uploadedFile} {...register('firstNameField')}>
+              <Select
+                disabled={!listName?.trim() || !uploadedFile}
+                {...register('firstNameField')}
+              >
                 <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                   <SelectValue placeholder="Match first name" />
                 </SelectTrigger>
@@ -185,7 +202,10 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
               <label className="block text-sm font-medium dark:text-gray-300">
                 Last Name*
               </label>
-              <Select disabled={!uploadedFile} {...register('lastNameField')}>
+              <Select
+                disabled={!listName?.trim() || !uploadedFile}
+                {...register('lastNameField')}
+              >
                 <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                   <SelectValue placeholder="Match last name" />
                 </SelectTrigger>
@@ -212,7 +232,7 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
                 Street Address*
               </label>
               <Select
-                disabled={!uploadedFile}
+                disabled={!listName?.trim() || !uploadedFile}
                 {...register('streetAddressField')}
               >
                 <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
@@ -240,7 +260,10 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
               <label className="block text-sm font-medium dark:text-gray-300">
                 City*
               </label>
-              <Select disabled={!uploadedFile} {...register('cityField')}>
+              <Select
+                disabled={!listName?.trim() || !uploadedFile}
+                {...register('cityField')}
+              >
                 <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                   <SelectValue placeholder="Match city" />
                 </SelectTrigger>
@@ -266,7 +289,10 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
               <label className="block text-sm font-medium dark:text-gray-300">
                 State*
               </label>
-              <Select disabled={!uploadedFile} {...register('stateField')}>
+              <Select
+                disabled={!listName?.trim() || !uploadedFile}
+                {...register('stateField')}
+              >
                 <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                   <SelectValue placeholder="Match state" />
                 </SelectTrigger>
@@ -292,7 +318,10 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
               <label className="block text-sm font-medium dark:text-gray-300">
                 Zip Code*
               </label>
-              <Select disabled={!uploadedFile} {...register('zipCodeField')}>
+              <Select
+                disabled={!listName?.trim() || !uploadedFile}
+                {...register('zipCodeField')}
+              >
                 <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                   <SelectValue placeholder="Match ZIP code" />
                 </SelectTrigger>
@@ -318,7 +347,10 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
               <label className="block text-sm font-medium dark:text-gray-300">
                 Phone 1*
               </label>
-              <Select disabled={!uploadedFile} {...register('phone1Field')}>
+              <Select
+                disabled={!listName?.trim() || !uploadedFile}
+                {...register('phone1Field')}
+              >
                 <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                   <SelectValue placeholder="Match phone 1" />
                 </SelectTrigger>
@@ -344,7 +376,10 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
               <label className="block text-sm font-medium dark:text-gray-300">
                 Phone 2
               </label>
-              <Select disabled={!uploadedFile} {...register('phone2Field')}>
+              <Select
+                disabled={!listName?.trim() || !uploadedFile}
+                {...register('phone2Field')}
+              >
                 <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                   <SelectValue placeholder="Match phone 2" />
                 </SelectTrigger>
@@ -365,7 +400,10 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
               <label className="block text-sm font-medium dark:text-gray-300">
                 Email
               </label>
-              <Select disabled={!uploadedFile} {...register('emailField')}>
+              <Select
+                disabled={!listName?.trim() || !uploadedFile}
+                {...register('emailField')}
+              >
                 <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                   <SelectValue placeholder="Match email" />
                 </SelectTrigger>
@@ -388,9 +426,13 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
           </div>
 
           <Button
-            disabled={!uploadedFile}
+            disabled={!listName?.trim() || !uploadedFile} // Check if listName is valid and a file is uploaded
             type="submit"
-            className="mt-4 bg-blue-600 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+            className={`mt-4 ${
+              !listName?.trim() || !uploadedFile
+                ? 'bg-gray-400'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            } `}
           >
             Upload
           </Button>
