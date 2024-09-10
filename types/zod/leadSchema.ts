@@ -23,16 +23,19 @@ export const leadSchema = z.object({
     .max(50, 'State cannot exceed 50 characters'),
   zipCode: z
     .string()
-    .min(5, 'Zip Code is required and must be 5 digits')
-    .max(10, 'Zip Code cannot exceed 10 characters'),
+    .min(5, 'Zip Code must be at least 5 digits')
+    .max(10, 'Zip Code cannot exceed 10 digits')
+    .regex(/^\d+$/, 'Zip Code must contain only numbers'),
+
   phoneNumber: z
     .string()
     .min(1, 'Phone Number is required')
-    .max(12, 'Phone Number cannot exceed 15 characters')
+    .max(15, 'Phone Number cannot exceed 15 characters')
     .regex(
       /^[0-9\-+()\s]*$/,
       'Phone Number can only contain numbers and special characters like - + ( )'
     ),
+
   email: z
     .string()
     .min(1, 'Email is required')
