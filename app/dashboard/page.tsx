@@ -1,7 +1,7 @@
 'use client';
 
 import PageContainer from '@/components/layout/page-container';
-import LeadsComponent from './leads';
+import LeadsComponent from '../../components/leadsSearch';
 
 export default function Page() {
   return (
