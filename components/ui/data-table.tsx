@@ -1,5 +1,3 @@
-'use client';
-
 import {
   ColumnDef,
   flexRender,
@@ -19,6 +17,39 @@ import {
 import { Input } from './input';
 import { Button } from './button';
 import { ScrollArea, ScrollBar } from './scroll-area';
+import { Badge } from './badge'; // Assume a Badge component exists
+import { useState } from 'react';
+import { Calendar, CheckCheck, MessageCircle } from 'lucide-react';
+
+// Lucide Icon Imports
+
+// Status options
+const statusOptions = [
+  {
+    value: 'new',
+    label: 'New Lead',
+    bgColor: 'bg-blue-600',
+    textColor: 'text-white'
+  },
+  {
+    value: 'contacted',
+    label: 'Contacted',
+    bgColor: 'bg-yellow-600',
+    textColor: 'text-white'
+  },
+  {
+    value: 'closed',
+    label: 'Closed',
+    bgColor: 'bg-green-600',
+    textColor: 'text-white'
+  },
+  {
+    value: 'lost',
+    label: 'Lost',
+    bgColor: 'bg-red-600',
+    textColor: 'text-white'
+  }
+];
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -26,7 +57,7 @@ interface DataTableProps<TData, TValue> {
   searchKey: string;
 }
 
-export function DataTable<TData, TValue>({
+export function LeadDataTable<TData, TValue>({
   columns,
   data,
   searchKey
@@ -38,54 +69,94 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel()
   });
 
-  /* this can be used to get the selectedrows 
-  console.log("value", table.getFilteredSelectedRowModel()); */
+  // Handler for status dropdown changes
+  const [statuses, setStatuses] = useState<Record<string, string>>({});
+
+  const handleStatusChange = (id: string, newValue: string) => {
+    setStatuses((prev) => ({ ...prev, [id]: newValue }));
+  };
+
+  const getStatusColor = (status: string) => {
+    const selectedStatus = statusOptions.find(
+      (option) => option.value === status
+    );
+    return selectedStatus
+      ? `${selectedStatus.bgColor} ${selectedStatus.textColor}`
+      : '';
+  };
 
   return (
     <>
-      <Input
-        placeholder={`Search ${searchKey}...`}
-        value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
-        onChange={(event) =>
-          table.getColumn(searchKey)?.setFilterValue(event.target.value)
-        }
-        className="w-full md:max-w-sm"
-      />
+      <div className="flex items-center justify-between py-4">
+        <Input
+          placeholder={`Search ${searchKey}...`}
+          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
+          onChange={(event) =>
+            table.getColumn(searchKey)?.setFilterValue(event.target.value)
+          }
+          className="w-full md:max-w-sm"
+        />
+        <Button variant="default" className="ml-4">
+          <CheckCheck className="mr-2" />
+          Create Lead
+        </Button>
+      </div>
       <ScrollArea className="h-[calc(80vh-220px)] rounded-md border md:h-[calc(80dvh-200px)]">
         <Table className="relative">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="align-top">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
                     </TableCell>
                   ))}
+                  <TableCell>
+                    {/* Status dropdown with color coding */}
+                    <select
+                      className={`rounded px-2 py-1 text-sm ${getStatusColor(
+                        statuses[row.id] || 'new'
+                      )}`}
+                      value={statuses[row.id] || 'new'}
+                      onChange={(e) =>
+                        handleStatusChange(row.id, e.target.value)
+                      }
+                    >
+                      {statusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </TableCell>
+                  <TableCell>
+                    <Calendar className="mr-2 inline" />
+                    None
+                  </TableCell>
+                  <TableCell>
+                    <MessageCircle className="inline" />
+                  </TableCell>
+                  <TableCell>Today</TableCell>
                 </TableRow>
               ))
             ) : (
