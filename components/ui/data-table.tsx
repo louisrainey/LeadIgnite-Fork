@@ -98,21 +98,6 @@ export function LeadDataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center justify-between py-4">
-        <Input
-          placeholder={`Search ${searchKey}...`}
-          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn(searchKey)?.setFilterValue(event.target.value)
-          }
-          className="w-full md:max-w-sm"
-        />
-        <Button variant="default" className="ml-4">
-          <CheckCheck className="mr-2" />
-          Create Lead
-        </Button>
-      </div>
-
       <ScrollArea className="h-[calc(80vh-220px)] rounded-md border md:h-[calc(80dvh-200px)]">
         <Table className="relative">
           <TableHeader>
