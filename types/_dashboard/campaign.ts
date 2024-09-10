@@ -1,3 +1,5 @@
+import { GetCallResponse } from '../vapiAi/api/calls/get';
+
 // Common fields for all campaigns
 export interface CampaignBase {
   id: string;
@@ -5,6 +7,7 @@ export interface CampaignBase {
   goal?: string;
   status:
     | 'delivered'
+    | 'delivering'
     | 'failed'
     | 'pending'
     | 'completed'
@@ -29,13 +32,12 @@ export interface TextCampaign extends CampaignBase {
 
 // Specific types for Call Campaigns
 export interface CallCampaign extends CampaignBase {
+  vapi: GetCallResponse;
   callerNumber: string;
   receiverNumber: string;
   duration: number; // in seconds
   callType: 'inbound' | 'outbound';
-  status: 'completed' | 'missed' | 'failed'; // Call-specific status
-  timestamp: Date;
-
+  timestamp?: Date; // Add this if `timestamp` is needed for tracking
   // Additional fields specific to the call campaign
   calls: number;
   inQueue: number;
