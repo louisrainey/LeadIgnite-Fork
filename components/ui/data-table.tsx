@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -18,10 +19,8 @@ import { Input } from './input';
 import { Button } from './button';
 import { ScrollArea, ScrollBar } from './scroll-area';
 import { Badge } from './badge'; // Assume a Badge component exists
-import { useState } from 'react';
 import { Calendar, CheckCheck, MessageCircle } from 'lucide-react';
-
-// Lucide Icon Imports
+import ActivitySidebar from '../reusables/sidebars/activity';
 
 // Status options
 const statusOptions = [
@@ -71,6 +70,8 @@ export function LeadDataTable<TData, TValue>({
 
   // Handler for status dropdown changes
   const [statuses, setStatuses] = useState<Record<string, string>>({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); // Manage sidebar open/close
+  const [selectedLead, setSelectedLead] = useState<string | null>(null); // Track selected lead
 
   const handleStatusChange = (id: string, newValue: string) => {
     setStatuses((prev) => ({ ...prev, [id]: newValue }));
@@ -83,6 +84,16 @@ export function LeadDataTable<TData, TValue>({
     return selectedStatus
       ? `${selectedStatus.bgColor} ${selectedStatus.textColor}`
       : '';
+  };
+
+  const openSidebar = (leadId: string) => {
+    setSelectedLead(leadId);
+    setIsSidebarOpen(true);
+  };
+
+  const closeSidebar = () => {
+    setSelectedLead(null);
+    setIsSidebarOpen(false);
   };
 
   return (
@@ -101,6 +112,7 @@ export function LeadDataTable<TData, TValue>({
           Create Lead
         </Button>
       </div>
+
       <ScrollArea className="h-[calc(80vh-220px)] rounded-md border md:h-[calc(80dvh-200px)]">
         <Table className="relative">
           <TableHeader>
@@ -154,7 +166,9 @@ export function LeadDataTable<TData, TValue>({
                     None
                   </TableCell>
                   <TableCell>
-                    <MessageCircle className="inline" />
+                    <button onClick={() => openSidebar(row.id)}>
+                      <MessageCircle className="inline" />
+                    </button>
                   </TableCell>
                   <TableCell>Today</TableCell>
                 </TableRow>
@@ -173,6 +187,7 @@ export function LeadDataTable<TData, TValue>({
         </Table>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
+
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{' '}
@@ -197,6 +212,9 @@ export function LeadDataTable<TData, TValue>({
           </Button>
         </div>
       </div>
+
+      {/* Conditionally render the ActivitySidebar */}
+      {isSidebarOpen && <ActivitySidebar onClose={closeSidebar} />}
     </>
   );
 }
