@@ -5,6 +5,9 @@ import * as OutReachAnimation from '@/public/lottie/CampaignPing.json'; // Path 
 import CampaignsTable from './tables/main';
 import { exampleCampaignsData } from '@/constants/dashboard/campaigns';
 import MultiStepCampaign from '@/components/reusables/modals/startCampaigns';
+import { CallCampaignTable } from '@/components/tables/calls-table/call-table';
+import { callCampaignData } from '@/types/_faker/calls';
+import { callCampaignColumns } from '@/components/tables/calls-table/columns';
 
 interface NoCampaignsProps {
   totalCampaigns: number; // Number of total campaigns
@@ -77,9 +80,11 @@ const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
             </button>
           </div>
         ) : (
-          <CampaignsTable
-            campaigns={exampleCampaignsData.calls}
-            campaignType="call"
+          <CallCampaignTable
+            columns={callCampaignColumns}
+            data={callCampaignData}
+            searchKey="calls"
+            pageCount={Math.ceil(callCampaignData.length / 10)} // Adjust page count based on the total data length
           />
         )}
       </div>

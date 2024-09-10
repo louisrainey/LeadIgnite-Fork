@@ -1,5 +1,7 @@
 import { NavItem } from '@/types';
 
+export const APP_TESTING_MODE = true;
+
 export type Lead = {
   id: number; // Unique identifier for the lead
   firstName: string; // First name of the lead
