@@ -1,5 +1,5 @@
 // Enum for transcriber providers
-export type TranscriberProvider = 'deepgram' | 'azure';
+export type TranscriberProvider = 'deepgram' | 'azure' | 'google' | 'aws';
 
 // Enum for LLM providers
 export type ModelProvider =

@@ -66,7 +66,7 @@ interface Model {
 }
 
 // Type for the Voice configuration
-interface Voice {
+interface AssistantVoice {
   fillerInjectionEnabled: boolean;
   provider: 'azure' | 'aws' | 'google'; // Example voice providers
   voiceId: string;
@@ -86,7 +86,7 @@ interface Voice {
 interface CreateAssistantRequest {
   transcriber: Transcriber;
   model: Model;
-  voice: Voice;
+  voice: AssistantVoice;
   firstMessageMode:
     | 'assistant-speaks-first'
     | 'assistant-speaks-first-with-model-generated-message'
