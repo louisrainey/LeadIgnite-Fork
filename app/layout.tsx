@@ -10,8 +10,9 @@ import { auth } from '@/auth';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Next Shadcn',
-  description: 'Basic dashboard with Next.js and Shadcn'
+  title: 'Lead Ignite | Real Estate Lead Generation',
+  description:
+    'Accelerate your real estate business with Lead Ignite. Leverage proven strategies and powerful tools to attract, engage, and convert more qualified real estate leads into clients.'
 };
 
 export default async function RootLayout({
