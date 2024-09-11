@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { TextMessageCampaign, TextMessage } from '@/types/goHighLevel/text';
 import { EyeIcon } from 'lucide-react';
+import { exportCampaignMessagesToExcel } from '@/lib/utils/files/tableData';
 
 // Color statuses for the text message campaign
 const statusColor: Record<TextMessageCampaign['status'], string> = {
@@ -94,27 +95,45 @@ export const textMessageCampaignColumns: ColumnDef<TextMessageCampaign>[] = [
   },
   {
     accessorKey: 'messages',
-    header: 'View Messages',
-    cell: ({ row }) => (
-      <div className="flex">
-        <select
-          className="max-w-[200px] truncate rounded-md border p-2" // Set max width and truncate long text
-          onChange={handleMessageSelect}
-          defaultValue="" // Set default value to an empty string
-        >
-          <option value="" disabled>
-            View Message
-          </option>
-          {row.original.messages.map((message: TextMessage) => (
-            <option
-              key={message.id}
-              value={`https://textprovider.com/view/${message.id}`}
-            >
-              {message.body?.slice(0, 30) || 'No Content'}...
-            </option>
-          ))}
-        </select>
-      </div>
-    )
+    header: 'Download Messages',
+    cell: ({ row }) => {
+      // Define the columns for exporting messages with correct keyof TextMessage type
+      const messageColumns: {
+        header: string;
+        accessorKey: keyof TextMessage;
+      }[] = [
+        { header: 'Message ID', accessorKey: 'id' },
+        { header: 'Body', accessorKey: 'body' }, // Body column
+        { header: 'Attachments', accessorKey: 'attachments' }, // Attachments column
+        { header: 'Type', accessorKey: 'messageType' },
+        { header: 'Status', accessorKey: 'status' },
+        { header: 'Direction', accessorKey: 'direction' },
+        { header: 'Date Added', accessorKey: 'dateAdded' }
+      ];
+
+      // Extract the messages from the campaign
+      const messages = row.original.messages as TextMessage[];
+
+      return (
+        <div className="flex space-x-2">
+          {/* Button to download the messages as an Excel file */}
+          <button
+            className="p-2 text-blue-500 hover:underline"
+            onClick={() => {
+              console.log('Messages data:', messages); // Log for debugging
+
+              exportCampaignMessagesToExcel(
+                `Messages_${row.original.name}`, // Sheet name based on campaign name
+                messageColumns, // Columns for the Excel export
+                messages, // Pass the messages array from the campaign
+                `${row.original.name}_messages.xlsx` // Filename for the downloaded file
+              );
+            }}
+          >
+            Download Messages
+          </button>
+        </div>
+      );
+    }
   }
 ];
