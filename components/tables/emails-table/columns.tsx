@@ -117,7 +117,7 @@ export const emailCampaignColumns: ColumnDef<EmailCampaign>[] = [
           defaultValue="" // Set default value to an empty string
         >
           <option value="" disabled>
-            View an Thread
+            View Email Thread
           </option>
           {row.original.emails.map((email: GetEmailByIdResponse) => (
             <option key={email.id} value={`mailto:${email.from}`}>

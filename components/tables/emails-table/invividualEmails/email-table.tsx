@@ -21,7 +21,6 @@ import {
 } from '@/components/ui/table';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,7 +30,9 @@ interface DataTableProps<TData, TValue> {
   pageSizeOptions?: number[];
 }
 
-export function IndividualCallResponseTable<TData, TValue>({
+// Helper function to download email content
+
+export function IndividualEmailTable<TData, TValue>({
   columns,
   data,
   searchKey,
@@ -103,10 +104,8 @@ export function IndividualCallResponseTable<TData, TValue>({
         className="my-5 w-full md:max-w-sm"
       />
 
-      {/* Add horizontal scroll with overflow-x-auto */}
       <div className="w-full overflow-x-auto">
         <Table className="min-w-[1200px]">
-          {/* Set minimum width to trigger horizontal scroll */}
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -132,12 +131,10 @@ export function IndividualCallResponseTable<TData, TValue>({
                       key={cell.id}
                       className={index === 0 ? 'text-left' : ''}
                     >
-                      <span className="text-left">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </span>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
