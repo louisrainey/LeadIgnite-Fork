@@ -1,111 +1,141 @@
-'use client';
-
-import React, { useState } from 'react';
-import {
-  ColumnDef,
-  useReactTable,
-  getCoreRowModel
-} from '@tanstack/react-table';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
-import { PlayButton } from '@/components/reusables/calls/playButton'; // Assuming the PlayButton exists
+import { ColumnDef } from '@tanstack/react-table';
+import { PlayButtonTimeLine } from '@/components/reusables/calls/playButtonTimeLine';
 import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
-import { ConversationMessage } from '@/types/vapiAi/api/calls/create';
+import { DownloadIcon } from 'lucide-react'; // Assuming you use an icon library like Lucide
 
-// Helper function to truncate text
-const truncateText = (text: string, limit: number) => {
-  if (text.length <= limit) return text;
-  return text.slice(0, limit) + '...';
+// Helper function to format duration in MM:SS format
+const formatDuration = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 };
 
-// Transcript cell component to manage expanded/collapsed state
-const TranscriptCell = ({ transcript }: { transcript: string }) => {
-  const [expanded, setExpanded] = useState(false);
-  const toggleExpand = () => setExpanded(!expanded);
-
-  return (
-    <div>
-      {expanded ? transcript : truncateText(transcript, 100)}
-      {transcript.length > 100 && (
-        <button onClick={toggleExpand} className="ml-2 text-blue-500">
-          {expanded ? 'Show less' : 'Show more'}
-        </button>
-      )}
-    </div>
-  );
-};
-
-// Define the columns based on GetCallResponse
-export const callResponseColumns: ColumnDef<GetCallResponse>[] = [
-  {
-    accessorKey: 'id',
-    header: 'Call ID'
-  },
-  {
-    accessorKey: 'type',
-    header: 'Call Type',
-    cell: ({ row }) => row.original.type
-  },
+// Updated Columns for GetCallResponse with alignment rules
+export const SingleCallResponseColumns: ColumnDef<GetCallResponse>[] = [
   {
     accessorKey: 'status',
-    header: 'Status',
-    cell: ({ row }) => row.original.status
-  },
-  {
-    accessorKey: 'phoneCallProvider',
-    header: 'Provider',
-    cell: ({ row }) => row.original.phoneCallProvider
+    header: () => <div className="text-left">Status</div>,
+    cell: ({ row }) => row.original.status,
+    meta: {
+      align: 'text-left'
+    }
   },
   {
     accessorKey: 'createdAt',
-    header: 'Created At',
-    cell: ({ row }) => new Date(row.original.createdAt).toLocaleString()
+    header: () => <div className="text-center">Created At</div>,
+    cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
+    meta: {
+      align: 'text-center'
+    }
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: () => <div className="text-center">Updated At</div>,
+    cell: ({ row }) => new Date(row.original.updatedAt).toLocaleString(),
+    meta: {
+      align: 'text-center'
+    }
+  },
+  {
+    accessorKey: 'startedAt',
+    header: () => <div className="text-center">Started At</div>,
+    cell: ({ row }) =>
+      row.original.startedAt
+        ? new Date(row.original.startedAt).toLocaleString()
+        : 'N/A',
+    meta: {
+      align: 'text-center'
+    }
   },
   {
     accessorKey: 'endedAt',
-    header: 'Ended At',
+    header: () => <div className="text-center">Ended At</div>,
     cell: ({ row }) =>
       row.original.endedAt
         ? new Date(row.original.endedAt).toLocaleString()
-        : 'N/A'
+        : 'N/A',
+    meta: {
+      align: 'text-center'
+    }
   },
   {
     accessorKey: 'costBreakdown.total',
-    header: 'Total Cost',
-    cell: ({ row }) => `$${row.original.costBreakdown.total.toFixed(2)}`
+    header: () => <div className="text-center">Total Cost</div>,
+    cell: ({ row }) => `$${row.original.costBreakdown.total.toFixed(2)}`,
+    meta: {
+      align: 'text-center'
+    }
   },
   {
-    accessorKey: 'endedReason',
-    header: 'Ended Reason',
-    cell: ({ row }) => row.original.endedReason || 'N/A'
+    accessorKey: 'phoneCallProvider',
+    header: () => <div className="text-center">Provider</div>,
+    cell: ({ row }) => row.original.phoneCallProvider,
+    meta: {
+      align: 'text-center'
+    }
+  },
+  {
+    // New column for "Download Transcript" with a download icon
+    accessorKey: 'transcript',
+    header: () => <div className="text-center">Download Transcript</div>,
+    cell: ({ row }) => {
+      const transcript = row.original.transcript || 'No transcript available';
+      const handleDownload = () => {
+        const blob = new Blob([transcript], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `transcript-${row.original.id}.txt`; // Naming the file with call id
+        a.click();
+        URL.revokeObjectURL(url); // Clean up the URL
+      };
+
+      return transcript !== 'No transcript available' ? (
+        <button
+          onClick={handleDownload}
+          className="flex items-center space-x-1 text-blue-500 hover:underline"
+        >
+          <DownloadIcon className="h-4 w-4" />
+          <span>Download</span>
+        </button>
+      ) : (
+        'No Transcript'
+      );
+    },
+    meta: {
+      align: 'text-center'
+    }
   },
   {
     accessorKey: 'recordingUrl',
-    header: 'Playback',
+    header: () => <div className="text-center">Playback</div>,
     cell: ({ row }) => {
       const recordingUrl = row.original.recordingUrl;
+
+      const startTimeInSeconds = row.original.startedAt
+        ? new Date(row.original.startedAt).getTime() / 1000
+        : 0;
+      const endTimeInSeconds = row.original.endedAt
+        ? new Date(row.original.endedAt).getTime() / 1000
+        : 0;
+
+      const duration = endTimeInSeconds - startTimeInSeconds;
+
       return recordingUrl ? (
-        <PlayButton audioSrc={recordingUrl} />
+        <div className="flex items-center space-x-2">
+          <PlayButtonTimeLine
+            audioSrc={recordingUrl}
+            startTime={startTimeInSeconds}
+            endTime={endTimeInSeconds}
+          />
+          <span>{formatDuration(duration)}</span>
+        </div>
       ) : (
         'No Recording'
       );
+    },
+    meta: {
+      align: 'text-center'
     }
-  },
-  // Use the TranscriptCell component to manage state
-  {
-    accessorKey: 'transcript',
-    header: 'Transcript',
-    cell: ({ row }) => (
-      <TranscriptCell
-        transcript={row.original.transcript || 'No transcript available'}
-      />
-    )
   }
-  // Use the MessagesCell component to manage state
 ];
