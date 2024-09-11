@@ -108,7 +108,7 @@ const generateCallCampaign = (): CallCampaign => {
     aiAvatarAgent: faker.helpers.maybe(() => faker.person.firstName(), {
       probability: 0.2
     }),
-    vapi: generateGetCallResponse(),
+    vapi: Array.from({ length: 10 }, () => generateGetCallResponse()),
     callerNumber: generatePhoneNumber(), // Using custom generatePhoneNumber function
     receiverNumber: generatePhoneNumber(), // Using custom generatePhoneNumber function
     duration: faker.number.int({ min: 30, max: 600 }), // Call duration in seconds

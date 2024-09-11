@@ -32,7 +32,7 @@ export interface TextCampaign extends CampaignBase {
 
 // Specific types for Call Campaigns
 export interface CallCampaign extends CampaignBase {
-  vapi: GetCallResponse;
+  vapi: GetCallResponse[];
   callerNumber: string;
   receiverNumber: string;
   duration: number; // in seconds

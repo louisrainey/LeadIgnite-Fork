@@ -1,6 +1,8 @@
-import { PlayButton } from '@/components/reusables/calls/playButton';
+import { PlayButtonSkip } from '@/components/reusables/calls/playButton';
 import { CallCampaign } from '@/types/_dashboard/campaign';
+import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 import { ColumnDef } from '@tanstack/react-table';
+import { useState } from 'react';
 
 const statusColor: Record<CallCampaign['status'], string> = {
   delivering: 'bg-green-100 text-green-600',
@@ -14,12 +16,11 @@ const statusColor: Record<CallCampaign['status'], string> = {
   unread: 'bg-purple-100 text-purple-600' // Example color for "unread"
 };
 
-// Adjust the column structure to match the table design in the screenshot
+// Adjust the column structure to match the table design
 export const callCampaignColumns: ColumnDef<CallCampaign>[] = [
   {
     accessorKey: 'name',
     header: 'Campaign Name',
-    // Add `text-left` class to align the campaign name to the left
     cell: ({ row }) => <span className="text-left">{row.original.name}</span>
   },
   {
@@ -71,12 +72,8 @@ export const callCampaignColumns: ColumnDef<CallCampaign>[] = [
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
-      // Define different colors for each status
-
-      // Fallback to a default color if status is not defined in statusColor
       const colorClass =
         statusColor[row.original.status] || 'bg-gray-100 text-gray-600';
-
       return (
         <span
           className={`rounded-full px-2 py-1 text-sm font-medium ${colorClass}`}
@@ -97,12 +94,57 @@ export const callCampaignColumns: ColumnDef<CallCampaign>[] = [
     accessorKey: 'callRecording',
     header: 'Playback',
     cell: ({ row }) => {
-      const recordingUrl = row.original.vapi?.recordingUrl;
-      return recordingUrl ? (
-        <PlayButton audioSrc={recordingUrl} />
-      ) : (
-        'No Recording'
-      );
+      if (row.original.vapi && row.original.vapi.length > 0) {
+        return <PlaybackCell vapi={row.original.vapi} />;
+      } else {
+        return 'No Calls';
+      }
     }
   }
 ];
+
+interface PlaybackCellProps {
+  vapi: GetCallResponse[];
+}
+
+export const PlaybackCell = ({ vapi }: PlaybackCellProps) => {
+  const [currentCallIndex, setCurrentCallIndex] = useState(0);
+
+  const handleNextCall = () => {
+    if (currentCallIndex < vapi.length - 1) {
+      setCurrentCallIndex(currentCallIndex + 1); // Move to the next call
+    }
+  };
+
+  const handlePrevCall = () => {
+    if (currentCallIndex > 0) {
+      setCurrentCallIndex(currentCallIndex - 1); // Move to the previous call
+    }
+  };
+
+  const currentCall = vapi[currentCallIndex]; // Access the current call
+
+  const recordingUrl = currentCall.recordingUrl;
+  const startedAt = currentCall.startedAt
+    ? new Date(currentCall.startedAt).getTime() / 1000
+    : 0;
+  const endedAt = currentCall.endedAt
+    ? new Date(currentCall.endedAt).getTime() / 1000
+    : 0;
+
+  if (recordingUrl) {
+    return (
+      <PlayButtonSkip
+        audioSrc={recordingUrl}
+        startTime={startedAt}
+        endTime={endedAt}
+        onNextCall={handleNextCall}
+        onPrevCall={handlePrevCall}
+        isNextDisabled={currentCallIndex >= vapi.length - 1}
+        isPrevDisabled={currentCallIndex <= 0}
+      />
+    );
+  } else {
+    return <span>No Recording</span>;
+  }
+};

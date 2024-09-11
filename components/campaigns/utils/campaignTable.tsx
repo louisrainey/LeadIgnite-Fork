@@ -8,9 +8,6 @@ import MultiStepCampaign from '@/components/reusables/modals/startCampaigns';
 import { CallCampaignTable } from '@/components/tables/calls-table/call-campaign-table';
 import { mockCallCampaignData } from '@/types/_faker/callCampaign';
 import { callCampaignColumns } from '@/components/tables/calls-table/columns';
-import { IndividualCallResponseTable } from '@/components/tables/calls-table/invividualCalls/call-table';
-import { SingleCallResponseColumns } from '@/components/tables/calls-table/invividualCalls/individualCallsColumns';
-import { mockIndividualCallData } from '@/types/_faker/calls';
 
 interface NoCampaignsProps {
   totalCampaigns: number; // Number of total campaigns
@@ -83,12 +80,18 @@ const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
             </button>
           </div>
         ) : (
-          <IndividualCallResponseTable
-            columns={SingleCallResponseColumns}
-            data={mockIndividualCallData}
-            pageCount={10} // Define how many pages you expect
-            searchKey="id" // Define the key for search functionality
+          <CallCampaignTable
+            columns={callCampaignColumns}
+            data={mockCallCampaignData}
+            searchKey="calls"
+            pageCount={Math.ceil(mockCallCampaignData.length / 10)} // Adjust page count based on the total data length
           />
+          //   <IndividualCallResponseTable
+          //   columns={SingleCallResponseColumns}
+          //   data={mockIndividualCallData}
+          //   pageCount={10} // Define how many pages you expect
+          //   searchKey="id" // Define the key for search functionality
+          // />
         )}
       </div>
 
