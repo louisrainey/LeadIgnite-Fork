@@ -53,43 +53,55 @@ export interface CallCampaign extends CampaignBase {
   funnelID?: string;
   workflowID?: string;
 }
-
-export type Action = {
-  type:
-    | 'Comment'
-    | 'Like'
-    | 'Follow'
-    | 'Story'
-    | 'ConnectionRequest'
-    | 'Invite'
-    | 'Share'
-    | '📩 Connections'
-    | '📩 Groups'
-    | '📩 Followers'
-    | '👁️ Story'
-    | 'Connect + Follow Up'
-    | 'Invite to follow';
+export type BaseAction = {
   status: 'pending' | 'successful' | 'failed'; // Status of each action
   attempt: number; // Number of attempts
   successful: number; // Number of successful executions
   failed: number; // Number of failed executions
-
-  // Only for actions with 📩 in the type, if the action was successful
-  replyMessage?: string; // Optional message reply
-  viewLink?: string; // Optional link to view details
+  viewLink: string; // Link to view details of the action
 };
 
+// Twitter-specific actions
+export type TwitterAction = BaseAction & {
+  type: 'Like' | 'Follow' | 'Retweet' | '📩 Followers'; // Twitter-specific actions
+  replyMessage?: string; // Only available for specific Twitter actions (e.g., 📩 Followers)
+};
+
+// LinkedIn-specific actions
+export type LinkedInAction = BaseAction & {
+  type:
+    | 'Connect'
+    | 'Connect & Follow Up'
+    | 'Message'
+    | 'Invite to Follow'
+    | 'Comment'
+    | 'Like'
+    | '📩 Connections'
+    | '📩 Groups'; // LinkedIn-specific actions
+  replyMessage?: string; // Only available for message-related actions (e.g., Message, Connect & Follow Up)
+};
+
+// Instagram-specific actions
+export type InstagramAction = BaseAction & {
+  type: 'Like' | 'Follow' | 'Comment' | '👁️ Story'; // Instagram-specific actions
+};
+
+// Union of all actions
+export type SocialAction = TwitterAction | LinkedInAction | InstagramAction;
 // Specific types for DM Campaigns
-export interface SocialMediaCampaign extends CampaignBase {
-  platform: 'Twitter' | 'Instagram' | 'LinkedIn';
-  senderHandle: string;
-  receiverHandle: string;
-  hashtags: string[]; // List of relevant hashtags
-  sentAt: Date;
-  startDate: string;
-  endDate: string;
+
+export interface SocialMediaCampaign {
+  id: string; // Campaign ID
+  platform: 'Twitter' | 'Instagram' | 'LinkedIn'; // Platform for the campaign
+  name: string; // Campaign name
   status: 'pending' | 'completed' | 'failed'; // General status for the campaign
-  actions: Action[]; // Array of actions using the Action type
+  createdAt: string; // Date when the campaign was created
+  startDate: string; // Start date of the campaign
+  endDate: string; // End date of the campaign
+  senderHandle: string; // Handle of the sender
+  receiverHandle: string; // Handle of the receiver (could be user or group)
+  hashtags: string[]; // List of hashtags
+  actions: SocialAction[]; // List of actions performed in the campaign
 }
 
 // Specific types for Email Campaigns

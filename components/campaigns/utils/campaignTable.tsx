@@ -11,6 +11,12 @@ import { callCampaignColumns } from '@/components/tables/calls-table/columns';
 import { EmailCampaignTable } from '@/components/tables/emails-table/email-campaign-table';
 import { emailCampaignColumns } from '@/components/tables/emails-table/columns';
 import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
+import { textMessageCampaignColumns } from '@/components/tables/text-table/columns';
+import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
+import { TextMessageCampaignTable } from '@/components/tables/text-table/social-campaign-table';
+import { SocialMediaCampaignTable } from '@/components/tables/socials-table/social-campaign-table';
+import { socialMediaCampaignColumns } from '@/components/tables/socials-table/columns';
+import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
 
 interface NoCampaignsProps {
   totalCampaigns: number; // Number of total campaigns
@@ -95,9 +101,21 @@ const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
           //   pageCount={10} // Define how many pages you expect
           //   searchKey="id" // Define the key for search functionality
           // />
-          <EmailCampaignTable
-            columns={emailCampaignColumns}
-            data={mockGeneratedSampleEmailCampaigns}
+          // <EmailCampaignTable
+          //   columns={emailCampaignColumns}
+          //   data={mockGeneratedSampleEmailCampaigns}
+          //   searchKey="name"
+          //   pageCount={10}
+          // />
+          // <TextMessageCampaignTable
+          //   columns={textMessageCampaignColumns}
+          //   data={mockTextCampaigns}
+          //   searchKey="name"
+          //   pageCount={10}
+          // />
+          <SocialMediaCampaignTable
+            columns={socialMediaCampaignColumns}
+            data={mockSocialMediaCampaigns}
             searchKey="name"
             pageCount={10}
           />
