@@ -30,7 +30,7 @@ import {
   ChunkPlan,
   FormatPlan,
   Voice
-} from '../vapiAi/api/calls/create';
+} from '../../vapiAi/api/calls/create';
 import { number, string } from 'zod';
 import { APP_TESTING_MODE } from '@/constants/data';
 

@@ -1,3 +1,5 @@
+import { CampaignBase } from '../_dashboard/campaign';
+
 export interface GetEmailByIdResponse {
   id: string; // Required: Email ID
   altId?: string; // Optional: External ID
@@ -28,4 +30,18 @@ export interface GetEmailByIdResponse {
   bcc?: string[]; // Optional: List of BCC email IDs
   replyToMessageId?: string; // Optional: Reply-to message ID
   source?: 'workflow' | 'bulk_action' | 'campaign' | 'api' | 'app'; // Optional: Source of the email
+}
+
+export interface EmailCampaign extends CampaignBase {
+  emails: GetEmailByIdResponse[]; // Array of emails associated with the campaign
+  senderEmail: string; // The email address that is sending the emails
+  recipientCount: number; // Number of recipients
+  sentCount: number; // Number of successfully sent emails
+  deliveredCount: number; // Number of delivered emails
+  openedCount: number; // Number of opened emails
+  bouncedCount: number; // Number of bounced emails
+  failedCount: number; // Number of failed emails
+  workflowID?: string; // ID of the workflow associated with the email campaign (optional)
+  funnelID?: string; // ID of the funnel associated with the campaign (optional)
+  scriptID?: string; // ID of the script being used (optional)
 }
