@@ -1,3 +1,4 @@
+import { EmailCampaign } from '../goHighLevel/conversations';
 import { GetCallResponse } from '../vapiAi/api/calls/get';
 
 // Common fields for all campaigns
@@ -48,6 +49,9 @@ export interface CallCampaign extends CampaignBase {
   wrongNumber: number;
   inactiveNumber: number;
   dnc: number;
+  scriptID?: string;
+  funnelID?: string;
+  workflowID?: string;
 }
 
 export type Action = {
@@ -89,15 +93,6 @@ export interface SocialMediaCampaign extends CampaignBase {
 }
 
 // Specific types for Email Campaigns
-export interface EmailCampaign extends CampaignBase {
-  ghlID: string;
-
-  fromEmail: string;
-  toEmail: string;
-  subject: string;
-  body: string;
-  sentAt: Date;
-}
 
 // Enum-like type for campaign categories
 export type CampaignType =

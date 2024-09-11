@@ -6,8 +6,11 @@ import CampaignsTable from './tables/main';
 import { exampleCampaignsData } from '@/constants/dashboard/campaigns';
 import MultiStepCampaign from '@/components/reusables/modals/startCampaigns';
 import { CallCampaignTable } from '@/components/tables/calls-table/call-campaign-table';
-import { mockCallCampaignData } from '@/types/_faker/callCampaign';
+import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
 import { callCampaignColumns } from '@/components/tables/calls-table/columns';
+import { EmailCampaignTable } from '@/components/tables/emails-table/email-campaign-table';
+import { emailCampaignColumns } from '@/components/tables/emails-table/columns';
+import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
 
 interface NoCampaignsProps {
   totalCampaigns: number; // Number of total campaigns
@@ -80,18 +83,24 @@ const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
             </button>
           </div>
         ) : (
-          <CallCampaignTable
-            columns={callCampaignColumns}
-            data={mockCallCampaignData}
-            searchKey="calls"
-            pageCount={Math.ceil(mockCallCampaignData.length / 10)} // Adjust page count based on the total data length
-          />
+          // <CallCampaignTable
+          //   columns={callCampaignColumns}
+          //   data={mockCallCampaignData}
+          //   searchKey="calls"
+          //   pageCount={Math.ceil(mockCallCampaignData.length / 10)} // Adjust page count based on the total data length
+          // />
           //   <IndividualCallResponseTable
           //   columns={SingleCallResponseColumns}
           //   data={mockIndividualCallData}
           //   pageCount={10} // Define how many pages you expect
           //   searchKey="id" // Define the key for search functionality
           // />
+          <EmailCampaignTable
+            columns={emailCampaignColumns}
+            data={mockGeneratedSampleEmailCampaigns}
+            searchKey="name"
+            pageCount={10}
+          />
         )}
       </div>
 
