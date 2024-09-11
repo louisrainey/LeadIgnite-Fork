@@ -108,8 +108,11 @@ export function SocialMediaCampaignTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-left">
+                {headerGroup.headers.map((header, index) => (
+                  <TableHead
+                    key={header.id}
+                    className={index === 0 ? 'text-left' : 'text-center'} // Apply left-align for the first header, center for the rest
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -121,6 +124,7 @@ export function SocialMediaCampaignTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

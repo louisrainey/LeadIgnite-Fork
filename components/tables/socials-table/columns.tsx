@@ -180,13 +180,7 @@ export const socialMediaCampaignColumns: ColumnDef<SocialMediaCampaign>[] = [
       );
     }
   },
-  {
-    accessorKey: 'actions',
-    header: 'Actions',
-    cell: ({ row }) => (
-      <PlatformActionsDropdown actions={row.original.actions} />
-    )
-  },
+
   {
     accessorKey: 'download',
     header: 'Download',
