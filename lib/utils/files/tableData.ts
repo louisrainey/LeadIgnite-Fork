@@ -112,12 +112,10 @@ export async function exportCampaignMessagesToExcel(
   });
   saveAs(blob, filename);
 }
-
-// Excel export function to export the emails inside a campaign
 export async function exportEmailCampaignToExcel(
   sheetName: string,
-  columns: { header: string; accessorKey: keyof GetEmailByIdResponse }[], // Ensure accessorKey is keyof GetEmailByIdResponse
-  emails: GetEmailByIdResponse[], // Array of emails
+  columns: { header: string; accessorKey: keyof GetEmailByIdResponse }[],
+  emails: GetEmailByIdResponse[],
   filename: string
 ) {
   const workbook = new ExcelJS.Workbook();
@@ -139,6 +137,12 @@ export async function exportEmailCampaignToExcel(
     width: 30 // Adjust column width as needed
   }));
 
+  // Check if the worksheet columns are initialized correctly
+  if (!worksheet.columns || worksheet.columns.length === 0) {
+    console.error('Worksheet columns are not defined');
+    return;
+  }
+
   // Log the worksheet columns to ensure headers are set correctly
   console.log('Worksheet columns:', worksheet.columns);
 
@@ -148,8 +152,10 @@ export async function exportEmailCampaignToExcel(
       (rowObj, col) => {
         // Handle the attachments array by joining it into a string
         if (col.accessorKey === 'attachments') {
-          rowObj[col.accessorKey as string] = email.attachments?.length
-            ? email.attachments.join(', ')
+          rowObj[col.accessorKey as string] = Array.isArray(
+            email[col.accessorKey]
+          )
+            ? email[col.accessorKey]?.join(', ')
             : 'No Attachments';
         } else if (
           col.accessorKey === 'to' ||
@@ -157,11 +163,15 @@ export async function exportEmailCampaignToExcel(
           col.accessorKey === 'bcc'
         ) {
           // Convert the recipient arrays to comma-separated strings
-          rowObj[col.accessorKey as string] =
-            email[col.accessorKey]?.join(', ') || 'None';
+          rowObj[col.accessorKey as string] = Array.isArray(
+            email[col.accessorKey]
+          )
+            ? email[col.accessorKey]?.join(', ') // Safe call join only if it's an array
+            : 'None'; // If not an array or undefined, return 'None'
         } else {
           // For other properties, safely access the data
-          rowObj[col.accessorKey as string] = email[col.accessorKey] || '';
+          const value = email[col.accessorKey];
+          rowObj[col.accessorKey as string] = value !== undefined ? value : ''; // Handle null or undefined values
         }
         return rowObj;
       },
@@ -171,10 +181,8 @@ export async function exportEmailCampaignToExcel(
     // Log each row before adding it to the worksheet
     console.log(`Row ${index + 1}:`, rowData);
 
-    // Check if rowData is complete and add to the worksheet
-    if (Object.values(rowData).length > 0) {
-      worksheet.addRow(rowData);
-    }
+    // Add the row to the worksheet
+    worksheet.addRow(rowData);
   });
 
   // Log the final worksheet rows to ensure rows were added correctly
