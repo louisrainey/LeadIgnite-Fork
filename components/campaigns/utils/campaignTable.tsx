@@ -107,18 +107,18 @@ const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
           //   searchKey="name"
           //   pageCount={10}
           // />
-          // <TextMessageCampaignTable
-          //   columns={textMessageCampaignColumns}
-          //   data={mockTextCampaigns}
-          //   searchKey="name"
-          //   pageCount={10}
-          // />
-          <SocialMediaCampaignTable
-            columns={socialMediaCampaignColumns}
-            data={mockSocialMediaCampaigns}
+          <TextMessageCampaignTable
+            columns={textMessageCampaignColumns}
+            data={mockTextCampaigns}
             searchKey="name"
             pageCount={10}
           />
+          // <SocialMediaCampaignTable
+          //   columns={socialMediaCampaignColumns}
+          //   data={mockSocialMediaCampaigns}
+          //   searchKey="name"
+          //   pageCount={10}
+          // />
         )}
       </div>
 
