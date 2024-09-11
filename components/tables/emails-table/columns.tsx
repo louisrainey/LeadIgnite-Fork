@@ -6,6 +6,7 @@ import {
   GetEmailByIdResponse
 } from '@/types/goHighLevel/conversations';
 import { EyeIcon } from 'lucide-react';
+import { exportEmailCampaignToExcel } from '@/lib/utils/files/tableData';
 
 // Color statuses for the email campaign
 const statusColor: Record<EmailCampaign['status'], string> = {
@@ -108,24 +109,48 @@ export const emailCampaignColumns: ColumnDef<EmailCampaign>[] = [
   },
   {
     accessorKey: 'emails',
-    header: 'View Emails',
-    cell: ({ row }) => (
-      <div className="flex">
-        <select
-          className="max-w-[200px] truncate rounded-md border p-2" // Set max width and truncate long text
-          onChange={handleEmailSelect}
-          defaultValue="" // Set default value to an empty string
-        >
-          <option value="" disabled>
-            View Email Thread
-          </option>
-          {row.original.emails.map((email: GetEmailByIdResponse) => (
-            <option key={email.id} value={`mailto:${email.from}`}>
-              {email.subject || 'No Subject'}
-            </option>
-          ))}
-        </select>
-      </div>
-    )
+    header: 'Download Emails',
+    cell: ({ row }) => {
+      // Define the columns for exporting emails with correct keyof GetEmailByIdResponse type
+      const emailColumns: {
+        header: string;
+        accessorKey: keyof GetEmailByIdResponse;
+      }[] = [
+        { header: 'Email ID', accessorKey: 'id' },
+        { header: 'Subject', accessorKey: 'subject' },
+        { header: 'Body', accessorKey: 'body' },
+        { header: 'From', accessorKey: 'from' },
+        { header: 'To', accessorKey: 'to' },
+        { header: 'CC', accessorKey: 'cc' }, // Optional
+        { header: 'BCC', accessorKey: 'bcc' }, // Optional
+        { header: 'Status', accessorKey: 'status' },
+        { header: 'Attachments', accessorKey: 'attachments' }, // Attachments column
+        { header: 'Date Added', accessorKey: 'dateAdded' }
+      ];
+
+      // Extract the emails from the campaign
+      const emails = row.original.emails as GetEmailByIdResponse[];
+
+      return (
+        <div className="flex space-x-2">
+          {/* Button to download the emails as an Excel file */}
+          <button
+            className="p-2 text-blue-500 hover:underline"
+            onClick={() => {
+              console.log('Emails data:', emails); // Log for debugging
+
+              exportEmailCampaignToExcel(
+                `Emails_${row.original.name}`, // Sheet name based on campaign name
+                emailColumns, // Columns for the Excel export
+                emails, // Pass the emails array from the campaign
+                `${row.original.name}_emails.xlsx` // Filename for the downloaded file
+              );
+            }}
+          >
+            Download Emails
+          </button>
+        </div>
+      );
+    }
   }
 ];
