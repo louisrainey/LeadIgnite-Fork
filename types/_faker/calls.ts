@@ -388,4 +388,4 @@ export const generateCallData = (): GetCallResponse[] => {
   return callData;
 };
 
-export const mockAPIData = APP_TESTING_MODE && generateCallData();
+export const mockIndividualCallData = APP_TESTING_MODE && generateCallData();
