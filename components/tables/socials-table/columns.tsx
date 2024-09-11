@@ -208,12 +208,14 @@ export const socialMediaCampaignColumns: ColumnDef<SocialMediaCampaign>[] = [
           // Extract platforms from the actions (similar to PlatformActionsDropdown)
           const platforms = Array.from(
             new Set(
-              row.original.actions.map((action: SocialAction) => {
-                if (action.type.includes('📩')) return 'LinkedIn';
-                if (['Like', 'Follow', 'Retweet'].includes(action.type))
-                  return 'Twitter';
-                return 'Instagram'; // Default to Instagram
-              })
+              (row.original.actions as SocialAction[]).map(
+                (action: SocialAction) => {
+                  if (action.type.includes('📩')) return 'LinkedIn';
+                  if (['Like', 'Follow', 'Retweet'].includes(action.type))
+                    return 'Twitter';
+                  return 'Instagram'; // Default to Instagram
+                }
+              )
             )
           );
 
@@ -222,7 +224,9 @@ export const socialMediaCampaignColumns: ColumnDef<SocialMediaCampaign>[] = [
 
           // Function to filter actions by platform
           const filterActionsByPlatform = (platform: string) => {
-            return row.original.actions.filter((action: SocialAction) => {
+            const actionsArray = row.original.actions as SocialAction[]; // Ensure actions is treated as an array
+
+            return actionsArray.filter((action: SocialAction) => {
               if (platform === 'LinkedIn') return action.type.includes('📩');
               if (platform === 'Twitter')
                 return ['Like', 'Follow', 'Retweet'].includes(action.type);
@@ -233,8 +237,8 @@ export const socialMediaCampaignColumns: ColumnDef<SocialMediaCampaign>[] = [
           };
 
           // Generate data array by looping over platforms and actions
-          const data = platforms.flatMap((platform) =>
-            filterActionsByPlatform(platform).map((action) => ({
+          const data = platforms.flatMap((platform: string) =>
+            filterActionsByPlatform(platform).map((action: SocialAction) => ({
               name: row.original.name,
               platform, // Set the platform
               senderHandle: row.original.senderHandle,
