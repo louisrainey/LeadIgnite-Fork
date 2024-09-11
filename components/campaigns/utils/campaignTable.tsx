@@ -101,18 +101,18 @@ const CampaignsMainContent: React.FC<NoCampaignsProps> = ({
           //   pageCount={10} // Define how many pages you expect
           //   searchKey="id" // Define the key for search functionality
           // />
-          // <EmailCampaignTable
-          //   columns={emailCampaignColumns}
-          //   data={mockGeneratedSampleEmailCampaigns}
-          //   searchKey="name"
-          //   pageCount={10}
-          // />
-          <TextMessageCampaignTable
-            columns={textMessageCampaignColumns}
-            data={mockTextCampaigns}
+          <EmailCampaignTable
+            columns={emailCampaignColumns}
+            data={mockGeneratedSampleEmailCampaigns}
             searchKey="name"
             pageCount={10}
           />
+          // <TextMessageCampaignTable
+          //   columns={textMessageCampaignColumns}
+          //   data={mockTextCampaigns}
+          //   searchKey="name"
+          //   pageCount={10}
+          // />
           // <SocialMediaCampaignTable
           //   columns={socialMediaCampaignColumns}
           //   data={mockSocialMediaCampaigns}
