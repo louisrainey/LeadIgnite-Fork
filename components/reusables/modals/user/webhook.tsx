@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -82,7 +83,7 @@ export const WebhookModal: React.FC = () => {
   return (
     <Dialog open={isWebhookModalOpen} onOpenChange={closeWebhookModal}>
       <DialogContent
-        className="sm:max-w-3xl"
+        className="max-h-screen overflow-y-auto sm:max-w-3xl"
         autoFocus={false}
         style={{ zIndex: 9999 }}
       >
@@ -116,7 +117,7 @@ export const WebhookModal: React.FC = () => {
                 rows={8}
                 value={webhookPayload}
                 readOnly
-                className="overflow-x-auto dark:bg-gray-800 dark:text-gray-200" // Dark mode styling and horizontal scroll
+                className="max-w-full overflow-x-auto dark:bg-gray-800 dark:text-gray-200" // Dark mode styling and horizontal scroll
               />
               <Button
                 onClick={copyToClipboard}
@@ -152,7 +153,7 @@ export const WebhookModal: React.FC = () => {
                   <p className="text-sm dark:text-gray-200">
                     Webhook sent on {entry.date} with payload:
                   </p>
-                  <pre className="rounded bg-gray-100 p-2 text-xs dark:bg-gray-700">
+                  <pre className="overflow-x-auto rounded bg-gray-100 p-2 text-xs dark:bg-gray-700">
                     {JSON.stringify(entry.payload, null, 2)}
                   </pre>
                 </div>

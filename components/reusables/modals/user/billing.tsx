@@ -230,7 +230,13 @@ export const BillingModal: React.FC<BillingModalProps> = ({
                   <div>{entry.amount}</div>
                   <div>{entry.date}</div>
                   <div className="flex items-center">
-                    <Badge className="bg-green-100 text-green-700">
+                    <Badge
+                      className={
+                        entry.status === 'Unpaid'
+                          ? 'bg-red-100 text-red-700'
+                          : 'bg-green-100 text-green-700'
+                      }
+                    >
                       {entry.status}
                     </Badge>
                   </div>
