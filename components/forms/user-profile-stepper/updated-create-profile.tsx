@@ -92,7 +92,7 @@ const PersonalInformationForm: React.FC<{
   <>
     <FormField
       control={form.control}
-      name="firstname"
+      name="firstName"
       render={({ field }) => (
         <FormItem>
           <FormLabel>First Name</FormLabel>
@@ -105,7 +105,7 @@ const PersonalInformationForm: React.FC<{
     />
     <FormField
       control={form.control}
-      name="lastname"
+      name="lastName"
       render={({ field }) => (
         <FormItem>
           <FormLabel>Last Name</FormLabel>
@@ -116,6 +116,44 @@ const PersonalInformationForm: React.FC<{
         </FormItem>
       )}
     />
+    <FormField
+      control={form.control}
+      name="companyName"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Company name</FormLabel>
+          <FormControl>
+            <Input disabled={loading} placeholder="Apex Company" {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+    <FormField
+      control={form.control}
+      name="companyLogo"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Company Logo</FormLabel>
+          <FormControl>
+            <input
+              type="file"
+              accept="image/*"
+              disabled={loading}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  const file = e.target.files[0];
+                  field.onChange(file); // Handle the file input here
+                }
+              }}
+              className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+
     <FormField
       control={form.control}
       name="email"
@@ -135,7 +173,7 @@ const PersonalInformationForm: React.FC<{
     />
     <FormField
       control={form.control}
-      name="contactno"
+      name="contactNum"
       render={({ field }) => (
         <FormItem>
           <FormLabel>Contact Number</FormLabel>
@@ -219,11 +257,15 @@ const PersonalInformationForm: React.FC<{
     {/* Add margin to ensure spacing between sections */}
     <div className="mt-4">
       {/* Adding Voice Selector */}
+      <FormLabel>(Optional) Select Voice</FormLabel>
+
       <VoiceSelector voices={voices} onVoiceSelect={handleVoiceSelect} />
     </div>
 
     <div className="mt-4">
       {/* File Upload Section for Sales Script */}
+      <FormLabel>(Optional) Sales Script</FormLabel>
+
       <UploadSalesScript
         onFileUpload={handleScriptUpload}
         selectedFileName={selectedScriptFileName}
@@ -232,6 +274,8 @@ const PersonalInformationForm: React.FC<{
 
     <div className="mt-4">
       {/* Email Body Upload Component */}
+      <FormLabel>(Optional) Email Body</FormLabel>
+
       <UploadEmailBody
         onFileUpload={handleEmailUpload}
         selectedFileName={selectedEmailFileName}
@@ -487,7 +531,19 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
     {
       id: 'Step 1',
       name: 'Personal Information',
-      fields: ['firstname', 'lastname', 'email', 'contactno', 'country', 'city']
+      fields: [
+        'firstName',
+        'lastName',
+        'email',
+        'contactNum',
+        'country',
+        'city',
+        'companyName',
+        'companyLogo',
+        'voiceID',
+        'emailBody',
+        'salesScript'
+      ]
     },
     {
       id: 'Step 2',
@@ -538,11 +594,11 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
 
   // Function to handle file uploads
   const handleScriptUpload = (fileContent: string) => {
-    setValue('salesscript', fileContent); // Store the email body content
+    setValue('salesScript', fileContent); // Store the email body content
     console.log('Uploaded Email Body Content:', fileContent);
   };
   const handleEmailUpload = (fileContent: string) => {
-    setValue('emailbody', fileContent); // Store the email body content
+    setValue('emailBody', fileContent); // Store the email body content
     console.log('Uploaded Email Body Content:', fileContent);
   };
   return (
