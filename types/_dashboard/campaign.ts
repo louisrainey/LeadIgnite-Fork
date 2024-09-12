@@ -23,6 +23,17 @@ export interface CampaignBase {
   aiAvatarAgent?: string;
 }
 
+export const campaignStatusesGB: CampaignBase['status'][] = [
+  'queued',
+  'delivered',
+  'delivering',
+  'failed',
+  'pending',
+  'completed',
+  'missed',
+  'read',
+  'unread'
+];
 // Specific types for Text Campaigns
 export interface TextCampaign extends CampaignBase {
   phoneNumber: string;
@@ -90,11 +101,10 @@ export type InstagramAction = BaseAction & {
 export type SocialAction = TwitterAction | LinkedInAction | InstagramAction;
 // Specific types for DM Campaigns
 
-export interface SocialMediaCampaign {
+export interface SocialMediaCampaign extends CampaignBase {
   id: string; // Campaign ID
   platform: 'Twitter' | 'Instagram' | 'LinkedIn'; // Platform for the campaign
   name: string; // Campaign name
-  status: 'pending' | 'completed' | 'failed'; // General status for the campaign
   createdAt: string; // Date when the campaign was created
   startDate: string; // Start date of the campaign
   endDate: string; // End date of the campaign

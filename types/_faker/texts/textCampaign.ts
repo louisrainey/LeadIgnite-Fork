@@ -2,6 +2,7 @@ import { TextMessageCampaign } from '@/types/goHighLevel/text';
 import { faker } from '@faker-js/faker';
 import { generateSampleTextMessage } from './texts';
 import { APP_TESTING_MODE } from '@/constants/data';
+import { campaignStatusesGB } from '@/types/_dashboard/campaign';
 
 // Generate a single sample TextMessageCampaign
 const generateSampleTextMessageCampaign = (): TextMessageCampaign => {
@@ -12,13 +13,10 @@ const generateSampleTextMessageCampaign = (): TextMessageCampaign => {
 
   return {
     id: faker.string.uuid(),
+    startDate: faker.date.past().toISOString(),
+
     name: faker.company.name(),
-    status: faker.helpers.arrayElement([
-      'pending',
-      'in-progress',
-      'completed',
-      'failed'
-    ]),
+    status: faker.helpers.arrayElement(campaignStatusesGB),
     createdAt: faker.date.past().toISOString(),
     sentCount: sentCount,
     deliveredCount: deliveredCount,

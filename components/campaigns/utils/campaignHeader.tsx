@@ -138,19 +138,11 @@ const CampaignHeader: React.FC = () => {
       past24hours: past24HoursData.totalConversations // Example value for conversations in the past 24 hours
     },
     {
-      title: 'Total Direct Interactions',
-      value: totalDMs,
-      statType: 'dm',
+      title: 'Total Call Campaigns',
+      value: totalCallCampaigns,
+      statType: 'call',
       click: true,
-      past24hours: past24HoursData.totalDMs // Example value for DMs in the past 24 hours
-    },
-    {
-      title: 'Total Text Campaigns',
-      value: totalTextCampaigns,
-      statType: 'text',
-      colSpan: 2,
-      click: true,
-      past24hours: past24HoursData.totalTextCampaigns // Example value for text campaigns in the past 24 hours
+      past24hours: past24HoursData.totalCalls // Example value for call campaigns in the past 24 hours
     },
     {
       title: 'Total Email Campaigns',
@@ -160,11 +152,20 @@ const CampaignHeader: React.FC = () => {
       past24hours: past24HoursData.totalEmailCampaigns // Example value for email campaigns in the past 24 hours
     },
     {
-      title: 'Total Calls',
-      value: totalCallCampaigns,
-      statType: 'call',
+      title: 'Total Text Campaigns',
+      value: totalTextCampaigns,
+      statType: 'text',
+      colSpan: 2,
       click: true,
-      past24hours: past24HoursData.totalCalls // Example value for call campaigns in the past 24 hours
+      past24hours: past24HoursData.totalTextCampaigns // Example value for text campaigns in the past 24 hours
+    },
+
+    {
+      title: 'Total Social Campaigns',
+      value: totalDMs,
+      statType: 'dm',
+      click: true,
+      past24hours: past24HoursData.totalDMs // Example value for DMs in the past 24 hours
     }
   ];
 
