@@ -2,6 +2,8 @@ import ThemeToggle from '@/components/layout/ThemeToggle/theme-toggle';
 import { cn } from '@/lib/utils';
 import { MobileSidebar } from './mobile-sidebar';
 import { UserNav } from './user-nav';
+import { UpgradeButton } from '../reusables/modals/user/upgrade';
+import { mockSubscriptions } from '@/types/_faker/profile/userSubscription';
 
 export default function Header() {
   return (
@@ -11,6 +13,7 @@ export default function Header() {
           <MobileSidebar />
         </div>
         <div className="flex items-center gap-2">
+          <UpgradeButton currentMembership={mockSubscriptions[1]} />
           <UserNav />
           <ThemeToggle />
         </div>

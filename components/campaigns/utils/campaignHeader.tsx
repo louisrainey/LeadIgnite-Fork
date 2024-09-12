@@ -13,6 +13,7 @@ import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
 import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
 import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
 import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
+import { useCampaignStore } from '@/lib/stores/campaigns'; // Import the Zustand store
 
 interface DashboardStatsProps {
   totalCampaigns: number;
@@ -31,10 +32,11 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
   activeFilter,
   setActiveFilter
 }) => {
-  // Array of stats to render dynamically
-
   const [activeIndex, setActiveIndex] = useState(0); // Track the currently animated card
   const [animationComplete, setAnimationComplete] = useState(false); // Track if the animation is completed
+
+  // Zustand's setCampaignType to change the campaign type dynamically
+  const setCampaignType = useCampaignStore((state) => state.setCampaignType);
 
   // Assume you have these arrays from your campaign data
   const socialCampaigns: SocialMediaCampaign[] = mockSocialMediaCampaigns; // Replace with actual data
@@ -63,6 +65,7 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
     totalTextCampaigns +
     totalEmailCampaigns +
     totalCallCampaigns;
+
   // Calculate total calls (inbound + outbound)
   const totalCalls = callCampaigns.reduce(
     (sum, campaign) => sum + campaign.calls,
@@ -74,6 +77,7 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
     (sum, campaign) => sum + campaign.actions.length,
     0
   );
+
   const campaignFilters = [
     { label: 'All Campaigns', color: 'bg-gray-500' },
     { label: 'Scheduled Campaigns', color: 'bg-yellow-500' },
@@ -127,11 +131,26 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
       past24hours: 70 // Example value for call campaigns in the past 24 hours
     }
   ];
-  const handleCardClick = (stat: string) => {
-    // Navigate to the specific stat page, or log the clicked stat
-    console.log(`Clicked on: ${stat}`);
-    // Example: You could use React Router or a similar navigation solution
-    // history.push(`/stats/${stat.toLowerCase()}`);
+
+  // Function to handle card click and trigger campaign type change
+  const handleCardClick = (statType: string) => {
+    switch (statType) {
+      case 'email':
+        setCampaignType('email');
+        break;
+      case 'call':
+        setCampaignType('call');
+        break;
+      case 'text':
+        setCampaignType('text');
+        break;
+      case 'dm': // For social media campaigns
+        setCampaignType('social');
+        break;
+      default:
+        break;
+    }
+    console.log(`Changed campaign type to: ${statType}`);
   };
 
   useEffect(() => {
@@ -218,7 +237,7 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
               title={stat.title}
               addedToday={stat.past24hours}
               value={stat.value}
-              onClick={() => console.log(`Clicked on ${stat.statType}`)}
+              onClick={() => handleCardClick(stat.statType)} // Update this to handle clicks and set campaign type
               isActive={index === activeIndex} // Active if index matches activeIndex
               click={stat.click} // Control whether the card is clickable
               animationComplete={animationComplete} // Control whether the animation is complete
