@@ -32,7 +32,7 @@ const StatCard: React.FC<StatCardProps> = ({
       }`}
     >
       <p>{title}</p>
-      <h2 className="text-3xl font-bold">{value}</h2>
+      <h2 className="py-1 text-3xl font-bold">{value}</h2>
 
       {/* Added today badge */}
       {addedToday && (

@@ -1,22 +1,16 @@
 # Add cancel while drawing
 
-# Enable Close and Open Listing Accordian
+# ? Enable Close and Open Listing Accordian?
 
-# Add Dynamic Modals
+# Fix Date range picker in campaigns
 
-# Fix Date range picker
+# Add campaigns to global state , so we can easily switch, filter
 
-# Update campaigns to show secondary contact method
+# add page for user voice , script
 
-# Fix campaign table types mismatch , maybe need to create different tables for each campaign
+<!-- #✅ LMNT Voice Cloining [text](https://docs.lmnt.com/api-reference/voice/create-voice#create-voice)
 
-# Add Data sets for Vapi Create,Get,List,Update,Delete | Assistant.Create,Get,List,Update,Delete |,Create,Get,List,Update,Delete | Phone Numbers ,Create,Get,List,Update,Delete | Squads, Create,Get,List,Update,Delete | Files, ? Create,Get,List,Update,Delete | Tools,
-
-# LMNT Voice Cloining [text](https://docs.lmnt.com/api-reference/voice/create-voice#create-voice)
-
-# Look into voice cloning
-
-# Fix Create lead Filter auto closing when clicking an option
+#✅ Look into voice cloning -->
 
 <!-- # Update Location cards to have dark mode ✅ -->
 <!-- ⚠️ # Add Data sets for Creatify  Create Video From Link, Get Video Result,Get Vedio History, Generate Preview video from link, Render video [Video]
@@ -25,3 +19,9 @@
    # Personas , Get available personas, Get all personas by id, create persona, delete persona
    # Voices , Get Voices
    # Get remaining credits -->
+<!-- #✅ Fix campaign table types mismatch , maybe need to create different tables for each campaign
+
+# ✅Add Data sets for Vapi Create,Get,List,Update,Delete | Assistant.Create,Get,List,Update,Delete |,Create,Get,List,Update,Delete | Phone Numbers ,Create,Get,List,Update,Delete | Squads, Create,Get,List,Update,Delete | Files, ? Create,Get,List,Update,Delete | Tools, -->
+
+<!-- #✅ Update campaigns to show secondary contact method -->
+<!-- # Fix Create lead Filter auto closing when clicking an option -->
