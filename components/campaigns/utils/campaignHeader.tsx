@@ -2,135 +2,42 @@
 import { Search } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import StatCard from './statCard';
+import { useCampaignStore } from '@/lib/stores/campaigns'; // Import the Zustand store
 import {
-  CallCampaign,
   SocialMediaCampaign,
+  CallCampaign,
   Stat
-} from '@/types/_dashboard/campaign';
-import { EmailCampaign } from '@/types/goHighLevel/conversations';
-import { TextMessageCampaign } from '@/types/goHighLevel/text';
+} from '@/types/_dashboard/campaign'; // Types for campaigns
 import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
 import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
 import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
 import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
-import { useCampaignStore } from '@/lib/stores/campaigns'; // Import the Zustand store
+import { EmailCampaign } from '@/types/goHighLevel/conversations';
+import { TextMessageCampaign } from '@/types/goHighLevel/text';
 
-interface DashboardStatsProps {
-  totalCampaigns: number;
-  totalCalls: number;
-  totalConversations: number;
-  totalTexts: number;
-  totalEmails: number;
-  totalDMs: number;
-  creditsRemaining: number;
-  activeFilter: string;
-  setActiveFilter: (filter: string) => void;
-}
+const creditsRemaining = 500;
 
-const CampaignHeader: React.FC<DashboardStatsProps> = ({
-  creditsRemaining,
-  activeFilter,
-  setActiveFilter
-}) => {
+const CampaignHeader: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0); // Track the currently animated card
   const [animationComplete, setAnimationComplete] = useState(false); // Track if the animation is completed
+  const [activeFilter, setActiveFilter] = useState('all'); // Track the active filter
 
-  // Zustand's setCampaignType to change the campaign type dynamically
+  // Zustand's setCampaignType and filterCampaignsByStatus functions
   const setCampaignType = useCampaignStore((state) => state.setCampaignType);
-
-  // Assume you have these arrays from your campaign data
-  const socialCampaigns: SocialMediaCampaign[] = mockSocialMediaCampaigns; // Replace with actual data
-  const textCampaigns: TextMessageCampaign[] = mockTextCampaigns; // Replace with actual data
-  const emailCampaigns: EmailCampaign[] = mockGeneratedSampleEmailCampaigns; // Replace with actual data
-  const callCampaigns: CallCampaign[] = mockCallCampaignData; // Replace with actual data
-
-  // Calculate total campaigns, conversations, and actions
-  const totalSocialCampaigns = socialCampaigns.length;
-  const totalTextCampaigns = textCampaigns.length;
-  const totalEmailCampaigns = emailCampaigns.length;
-  const totalCallCampaigns = callCampaigns.length;
-
-  // Calculate total conversations (for text messages and email)
-  const totalTextMessages = textCampaigns.reduce(
-    (sum, campaign) => sum + campaign.totalMessages,
-    0
+  const filterCampaignsByStatus = useCampaignStore(
+    (state) => state.filterCampaignsByStatus
   );
-  const totalEmailMessages = emailCampaigns.reduce(
-    (sum, campaign) => sum + campaign.emails.length,
-    0
-  );
-  const totalConversations = totalTextMessages + totalEmailMessages;
-  const totalCampaigns =
-    totalSocialCampaigns +
-    totalTextCampaigns +
-    totalEmailCampaigns +
-    totalCallCampaigns;
+  const filteredCampaigns = useCampaignStore(
+    (state) => state.filteredCampaigns
+  ); // Filtered campaigns after applying the filter
 
-  // Calculate total calls (inbound + outbound)
-  const totalCalls = callCampaigns.reduce(
-    (sum, campaign) => sum + campaign.calls,
-    0
-  );
-
-  // Aggregate other campaign data as needed
-  const totalDMs = socialCampaigns.reduce(
-    (sum, campaign) => sum + campaign.actions.length,
-    0
-  );
-
-  const campaignFilters = [
-    { label: 'All Campaigns', color: 'bg-gray-500' },
-    { label: 'Scheduled Campaigns', color: 'bg-yellow-500' },
-    { label: 'Active Campaigns', color: 'bg-green-500' },
-    { label: 'Completed Campaigns', color: 'bg-blue-500' }
-  ];
-
-  // Now define your `stats` array
-  const stats: Stat[] = [
-    {
-      title: 'Total Campaigns',
-      value: totalCampaigns,
-      statType: 'total',
-      colSpan: 2,
-      click: false
-    },
-    {
-      title: 'Total Conversations',
-      value: totalConversations,
-      statType: 'conversations',
-      click: false,
-      past24hours: 150 // Example value for conversations in the past 24 hours
-    },
-    {
-      title: 'Total Direct Interactions',
-      value: totalDMs,
-      statType: 'dm',
-      click: true,
-      past24hours: 120 // Example value for DMs in the past 24 hours
-    },
-    {
-      title: 'Total Text Campaigns',
-      value: totalTextCampaigns,
-      statType: 'text',
-      colSpan: 2,
-      click: true,
-      past24hours: 100 // Example value for text campaigns in the past 24 hours
-    },
-    {
-      title: 'Total Email Campaigns',
-      value: totalEmailCampaigns,
-      statType: 'email',
-      click: true,
-      past24hours: 80 // Example value for email campaigns in the past 24 hours
-    },
-    {
-      title: 'Total Calls',
-      value: totalCallCampaigns,
-      statType: 'call',
-      click: true,
-      past24hours: 70 // Example value for call campaigns in the past 24 hours
-    }
-  ];
+  // Function to handle filter clicks
+  const handleFilterClick = (filter: string) => {
+    setActiveFilter(filter);
+    filterCampaignsByStatus(
+      filter as 'all' | 'scheduled' | 'active' | 'completed'
+    );
+  };
 
   // Function to handle card click and trigger campaign type change
   const handleCardClick = (statType: string) => {
@@ -150,8 +57,116 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
       default:
         break;
     }
-    console.log(`Changed campaign type to: ${statType}`);
   };
+
+  // Example past 24-hour data
+  const past24HoursData = {
+    totalConversations: 150,
+    totalDMs: 120,
+    totalTextCampaigns: 100,
+    totalEmailCampaigns: 80,
+    totalCalls: 70
+  };
+
+  // Assume you have these arrays from your campaign data
+  const socialCampaigns: SocialMediaCampaign[] = mockSocialMediaCampaigns; // Replace with actual data
+  const textCampaigns: TextMessageCampaign[] = mockTextCampaigns; // Replace with actual data
+  const emailCampaigns: EmailCampaign[] = mockGeneratedSampleEmailCampaigns; // Replace with actual data
+  const callCampaigns: CallCampaign[] = mockCallCampaignData; // Replace with actual data
+
+  // Calculate total campaigns, conversations, and actions
+  const totalSocialCampaigns = socialCampaigns.length;
+  const totalTextCampaigns = textCampaigns.length;
+  const totalEmailCampaigns = emailCampaigns.length;
+  const totalCallCampaigns = callCampaigns.length;
+
+  // Calculate total conversations (sum of texts and emails)
+  const totalTextMessages = textCampaigns.reduce(
+    (sum, campaign) => sum + campaign.totalMessages,
+    0
+  );
+  const totalEmailMessages = emailCampaigns.reduce(
+    (sum, campaign) => sum + campaign.emails.length,
+    0
+  );
+  const totalConversations = totalTextMessages + totalEmailMessages;
+
+  // Calculate total campaigns across all types
+  const totalCampaigns =
+    totalSocialCampaigns +
+    totalTextCampaigns +
+    totalEmailCampaigns +
+    totalCallCampaigns;
+
+  // Calculate total calls (inbound + outbound)
+  const totalCalls = callCampaigns.reduce(
+    (sum, campaign) => sum + campaign.calls,
+    0
+  );
+
+  // Aggregate other campaign data as needed (e.g., DMs)
+  const totalDMs = socialCampaigns.reduce(
+    (sum, campaign) => sum + campaign.actions.length,
+    0
+  );
+
+  const campaignFilters = [
+    { label: 'All Campaigns', value: 'all', color: 'bg-gray-500' },
+    {
+      label: 'Scheduled Campaigns',
+      value: 'scheduled',
+      color: 'bg-yellow-500'
+    },
+    { label: 'Active Campaigns', value: 'active', color: 'bg-green-500' },
+    { label: 'Completed Campaigns', value: 'completed', color: 'bg-blue-500' }
+  ];
+
+  // Now define your `stats` array
+  const stats: Stat[] = [
+    {
+      title: 'Total Campaigns',
+      value: totalCampaigns,
+      statType: 'total',
+      colSpan: 2,
+      click: false
+    },
+    {
+      title: 'Total Conversations',
+      value: totalConversations,
+      statType: 'conversations',
+      click: false,
+      past24hours: past24HoursData.totalConversations // Example value for conversations in the past 24 hours
+    },
+    {
+      title: 'Total Direct Interactions',
+      value: totalDMs,
+      statType: 'dm',
+      click: true,
+      past24hours: past24HoursData.totalDMs // Example value for DMs in the past 24 hours
+    },
+    {
+      title: 'Total Text Campaigns',
+      value: totalTextCampaigns,
+      statType: 'text',
+      colSpan: 2,
+      click: true,
+      past24hours: past24HoursData.totalTextCampaigns // Example value for text campaigns in the past 24 hours
+    },
+    {
+      title: 'Total Email Campaigns',
+      value: totalEmailCampaigns,
+      statType: 'email',
+      click: true,
+      past24hours: past24HoursData.totalEmailCampaigns // Example value for email campaigns in the past 24 hours
+    },
+    {
+      title: 'Total Calls',
+      value: totalCallCampaigns,
+      statType: 'call',
+      click: true,
+      past24hours: past24HoursData.totalCalls // Example value for call campaigns in the past 24 hours
+    }
+  ];
 
   useEffect(() => {
     // Check if the animation has already been completed from localStorage
@@ -172,7 +187,6 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
 
       // Stop the loop after reaching the last card
       if (currentIndex === stats.length - 1) {
-        // Clear the interval right after reaching the last card
         clearInterval(interval);
 
         // Let the last card animate for 3 more seconds
@@ -183,8 +197,7 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
           localStorage.setItem('animationComplete', 'true');
         }, 3000); // Keep the last card animated for 3 seconds
       } else {
-        // Increment index for the next card
-        currentIndex++;
+        currentIndex++; // Increment index for the next card
       }
     }, 3000); // Switch active card every 3 seconds
 
@@ -210,20 +223,23 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
 
       {/* Campaign Filter Buttons */}
       <div className="mb-4 flex w-full gap-4">
-        {campaignFilters.map((filter) => (
-          <button
-            key={filter.label}
-            onClick={() => setActiveFilter(filter.label)}
-            className={`flex w-1/4 items-center justify-center rounded-md px-4 py-2 ${
-              activeFilter === filter.label
-                ? 'bg-gray-200 dark:bg-gray-700'
-                : 'bg-gray-100 dark:bg-gray-800'
-            } dark:text-white`}
-          >
-            <span className={`h-2 w-2 rounded-full ${filter.color}`}></span>
-            <span className="ml-2">{filter.label}</span>
-          </button>
-        ))}
+        {campaignFilters.map((filter) => {
+          const isActive = activeFilter === filter.value;
+          return (
+            <button
+              key={filter.label}
+              onClick={() => handleFilterClick(filter.value)} // filter.value now exists
+              className={`flex w-1/4 items-center justify-center rounded-md px-4 py-2 ${
+                isActive
+                  ? 'bg-gray-200 dark:bg-gray-700'
+                  : 'bg-gray-100 dark:bg-gray-800'
+              } dark:text-white`}
+            >
+              <span className={`h-2 w-2 rounded-full ${filter.color}`}></span>
+              <span className="ml-2">{filter.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Statistics Grid */}
@@ -245,8 +261,6 @@ const CampaignHeader: React.FC<DashboardStatsProps> = ({
           </div>
         ))}
       </div>
-
-      {/* View Call Recordings Button */}
     </div>
   );
 };

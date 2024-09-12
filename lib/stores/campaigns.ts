@@ -3,7 +3,11 @@ import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
 import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
 import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
 import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
-import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
+import {
+  CallCampaign,
+  SocialMediaCampaign,
+  CampaignBase
+} from '@/types/_dashboard/campaign';
 import { EmailCampaign } from '@/types/goHighLevel/conversations';
 import { TextMessageCampaign } from '@/types/goHighLevel/text';
 
@@ -16,7 +20,16 @@ interface CampaignState {
     | TextMessageCampaign
     | SocialMediaCampaign
   )[]; // Holds the currently active campaign data
+  filteredCampaigns: (
+    | EmailCampaign
+    | CallCampaign
+    | TextMessageCampaign
+    | SocialMediaCampaign
+  )[]; // Holds the filtered campaigns
   setCampaignType: (type: 'email' | 'call' | 'text' | 'social') => void;
+  filterCampaignsByStatus: (
+    status: 'all' | 'scheduled' | 'active' | 'completed'
+  ) => void;
   getNumberOfCampaigns: () => number;
 }
 
@@ -24,10 +37,10 @@ interface CampaignState {
 export const useCampaignStore = create<CampaignState>((set, get) => ({
   currentCampaignType: 'call', // Default to 'call'
   currentCampaign: mockCallCampaignData, // Default campaign data (calls)
+  filteredCampaigns: mockCallCampaignData, // Start with no filter applied, showing all campaigns
 
   // Action to set the current campaign type and update the campaign data accordingly
   setCampaignType: (type) => {
-    // Explicitly define the type of `campaignData` as a union type
     let campaignData: (
       | EmailCampaign
       | CallCampaign
@@ -35,6 +48,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       | SocialMediaCampaign
     )[] = [];
 
+    // Update `currentCampaign` and `filteredCampaigns` based on selected type
     switch (type) {
       case 'email':
         campaignData = mockGeneratedSampleEmailCampaigns; // Email campaign data
@@ -52,12 +66,51 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
         campaignData = [];
     }
 
-    set({ currentCampaignType: type, currentCampaign: campaignData });
+    // Set the new campaign data for both `currentCampaign` and `filteredCampaigns`
+    set({
+      currentCampaignType: type,
+      currentCampaign: campaignData,
+      filteredCampaigns: campaignData
+    });
+  },
+
+  // Action to filter campaigns by status
+  filterCampaignsByStatus: (status) => {
+    const { currentCampaign } = get();
+    let filteredCampaigns = currentCampaign;
+
+    // Apply filtering based on the status
+    switch (status) {
+      case 'scheduled':
+        filteredCampaigns = currentCampaign.filter(
+          (campaign) =>
+            campaign.status === 'pending' || campaign.status === 'queued'
+        );
+        break;
+      case 'active':
+        filteredCampaigns = currentCampaign.filter(
+          (campaign) => campaign.status === 'delivering'
+        );
+        break;
+      case 'completed':
+        filteredCampaigns = currentCampaign.filter(
+          (campaign) => campaign.status === 'completed'
+        );
+        break;
+      case 'all':
+      default:
+        // For 'all', we don't filter and just show all campaigns
+        filteredCampaigns = currentCampaign;
+        break;
+    }
+
+    // Set the filtered campaigns
+    set({ filteredCampaigns });
   },
 
   // Getter for the number of campaigns in the current type
   getNumberOfCampaigns: () => {
-    const { currentCampaign } = get();
-    return currentCampaign.length || 0;
+    const { filteredCampaigns } = get();
+    return filteredCampaigns.length || 0;
   }
 }));
