@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { useModalStore } from '@/lib/stores/dashboard';
 import { UserProfileSubscription } from '@/types/_faker/profile/userSubscription';
 import { downloadBillingHistoryAsXlsx } from '@/lib/utils/files/billingHistory';
+import { PaymentModal } from './paymentDetailts';
 
 // Mocked Data Example: Billing History and Payment Details Props
 interface BillingHistoryItem {
@@ -37,7 +38,6 @@ interface BillingModalProps {
 interface ManageSubscriptionModalProps {
   subscription: UserProfileSubscription; // Accepts the subscription prop
 }
-
 const ManageSubscriptionModal: React.FC<ManageSubscriptionModalProps> = ({
   subscription
 }) => {
@@ -82,7 +82,11 @@ const ManageSubscriptionModal: React.FC<ManageSubscriptionModalProps> = ({
           open={isSubscriptionModalOpen}
           onOpenChange={closeSubscriptionModal}
         >
-          <DialogContent className="sm:max-w-lg" style={{ zIndex: 10000 }}>
+          {/* Add styles to the modal for light/dark mode */}
+          <DialogContent
+            className="border-2 border-orange-700 sm:max-w-lg dark:border-green-400"
+            style={{ zIndex: 10000 }}
+          >
             <DialogHeader>
               <DialogTitle>Manage your subscription</DialogTitle>
             </DialogHeader>
@@ -155,7 +159,8 @@ const ManageSubscriptionModal: React.FC<ManageSubscriptionModalProps> = ({
     </>
   );
 };
-// Billing Modal
+
+// Billing Modal Component
 export const BillingModal: React.FC<BillingModalProps> = ({
   billingHistory,
   paymentDetails,
@@ -163,13 +168,13 @@ export const BillingModal: React.FC<BillingModalProps> = ({
 }) => {
   const { isBillingModalOpen, openBillingModal, closeBillingModal } =
     useModalStore();
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  const openPaymentModal = () => setIsPaymentModalOpen(true);
+  const closePaymentModal = () => setIsPaymentModalOpen(false);
 
   return (
     <>
-      <Button onClick={openBillingModal} className="bg-blue-600 text-white">
-        Manage Billing
-      </Button>
-
       {isBillingModalOpen && (
         <Dialog open={isBillingModalOpen} onOpenChange={closeBillingModal}>
           <DialogContent className="sm:max-w-lg" style={{ zIndex: 9999 }}>
@@ -193,7 +198,11 @@ export const BillingModal: React.FC<BillingModalProps> = ({
                 </div>
                 <ManageSubscriptionModal subscription={subscription} />
               </div>
-              <Button variant="link" className="mt-4 p-0 text-blue-600">
+              <Button
+                onClick={openPaymentModal}
+                variant="link"
+                className="mt-4 p-0 text-blue-600"
+              >
                 + Add new payment method
               </Button>
             </div>
@@ -236,6 +245,11 @@ export const BillingModal: React.FC<BillingModalProps> = ({
             </Button>
           </DialogContent>
         </Dialog>
+      )}
+
+      {/* Render PaymentModal if open */}
+      {isPaymentModalOpen && (
+        <PaymentModal closePaymentModal={closePaymentModal} />
       )}
     </>
   );
