@@ -1,3 +1,5 @@
+import { CampaignBase } from '../_dashboard/campaign';
+
 // Restrict the messageType to be either 'SMS' or 'EMAIL'
 export type MessageType = 'TYPE_SMS' | 'TYPE_EMAIL';
 
@@ -50,10 +52,9 @@ export interface Meta {
   };
 }
 
-export interface TextMessageCampaign {
+export interface TextMessageCampaign extends CampaignBase {
   id: string; // Campaign ID
   name: string; // Campaign name
-  status: 'pending' | 'in-progress' | 'completed' | 'failed'; // Campaign status
   createdAt: string; // Date when the campaign was created (ISO string)
   sentCount: number; // Number of messages sent
   deliveredCount: number; // Number of messages delivered

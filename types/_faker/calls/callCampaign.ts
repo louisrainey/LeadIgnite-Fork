@@ -5,7 +5,7 @@ import {
   EndedReason,
   GetCallResponse
 } from '../../vapiAi/api/calls/get';
-import { CallCampaign } from '../../_dashboard/campaign';
+import { CallCampaign, campaignStatusesGB } from '../../_dashboard/campaign';
 import { APP_TESTING_MODE } from '../../../constants/data';
 
 // Helper function to generate a phone number in the +1-XXX-XXX-XXXX format
@@ -103,7 +103,7 @@ const generateCallCampaign = (): CallCampaign => {
     id: faker.string.uuid(), // Fix: use faker.string.uuid() for UUID
     name: ` ${faker.company.name()}`, // Fix: use faker.company.name() for company name
     goal: faker.lorem.sentence(),
-    status: faker.helpers.arrayElement(callStatuses),
+    status: faker.helpers.arrayElement(campaignStatusesGB),
     startDate: faker.date.past().toISOString(),
     endDate: faker.helpers.maybe(() => faker.date.future().toISOString(), {
       probability: 0.7

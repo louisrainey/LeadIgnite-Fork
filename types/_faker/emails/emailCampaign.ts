@@ -2,6 +2,7 @@ import { EmailCampaign } from '@/types/goHighLevel/conversations';
 import { faker } from '@faker-js/faker';
 import { generateSampleEmails, sampleEmail } from './email';
 import { APP_TESTING_MODE } from '@/constants/data';
+import { campaignStatusesGB } from '@/types/_dashboard/campaign';
 
 // Sample EmailCampaign generator
 // Sample EmailCampaign generator
@@ -17,17 +18,7 @@ export const generateSampleEmailCampaign = (): EmailCampaign => {
     id: faker.string.uuid(),
     name: faker.company.name(),
     startDate: faker.date.past().toISOString(),
-    status: faker.helpers.arrayElement([
-      'pending',
-      'delivered',
-      'delivering',
-      'completed',
-      'missed',
-      'queued',
-      'failed',
-      'read',
-      'unread'
-    ]),
+    status: faker.helpers.arrayElement(campaignStatusesGB),
     emails: generateSampleEmails(faker.number.int({ min: 5, max: 20 })), // Attach the sample emails
     recipientCount: totalRecipients,
     sentCount: sent,

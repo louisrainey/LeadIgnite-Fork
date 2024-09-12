@@ -1,4 +1,7 @@
-import { SocialMediaCampaign } from '@/types/_dashboard/campaign';
+import {
+  SocialMediaCampaign,
+  campaignStatusesGB
+} from '@/types/_dashboard/campaign';
 import { faker } from '@faker-js/faker';
 import { generateRandomAction } from './social';
 import { APP_TESTING_MODE } from '@/constants/data';
@@ -12,7 +15,7 @@ export const generateSampleSocialMediaCampaign = (
     id: faker.string.uuid(),
     platform: platform,
     name: faker.company.name(),
-    status: faker.helpers.arrayElement(['pending', 'completed', 'failed']),
+    status: faker.helpers.arrayElement(campaignStatusesGB),
     createdAt: faker.date.past().toISOString(),
     startDate: faker.date.past().toISOString(),
     endDate: faker.date.future().toISOString(),
