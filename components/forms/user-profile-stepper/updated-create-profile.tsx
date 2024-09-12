@@ -33,6 +33,7 @@ import { useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import VoiceSelector from './utils/voice/selector';
 import { mockVoices } from '@/types/_faker/_api/vapi/assistant';
+import { UploadEmailBody } from './utils/voice/uploadEmailBody';
 
 interface ProfileFormType {
   initialData: any | null;
@@ -389,6 +390,9 @@ const StepNavigation: React.FC<{
 // Main Component
 
 // Main Component
+
+// Main Component
+// Main Component
 export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   initialData,
   categories
@@ -397,9 +401,12 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [scriptContent, setScriptContent] = useState<string>(''); // For storing script content from file
-  const [selectedFileName, setSelectedFileName] = useState<string>(''); // Store uploaded file name
-  const [selectedVoice, setSelectedVoice] = useState<string | null>(null); // State for selected voice
+  const [selectedScriptFileName, setSelectedScriptFileName] =
+    useState<string>(''); // Track uploaded file name
+  const [selectedEmailFileName, setSelectedEmailFileName] =
+    useState<string>(''); // Track uploaded file name
+
+  const [selectedVoice, setSelectedVoice] = useState<string | null>(null); // Track selected voice
   const title = initialData ? 'Edit product' : 'Create Your Profile';
   const description = initialData
     ? 'Edit a product.'
@@ -430,6 +437,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
 
   const {
     control,
+    setValue, // Used to set values programmatically for form fields
     formState: { isValid, isSubmitting }
   } = form;
   const { append, remove, fields } = useFieldArray({ control, name: 'jobs' });
@@ -481,13 +489,16 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
 
   const voices: AssistantVoice[] = mockVoices; // Generate 5 mock voices
 
+  // Handle voice selection (use useState for tracking selected voice)
   const handleVoiceSelect = (voiceId: string) => {
-    setSelectedVoice(voiceId);
+    setSelectedVoice(voiceId); // Set voice state when selected
     console.log('Selected voice:', voiceId);
   };
 
   // Function to handle file uploads
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleScriptFileUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       const fileType = file.name.split('.').pop()?.toLowerCase();
@@ -496,17 +507,19 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         return;
       }
 
-      setSelectedFileName(file.name); // Set the file name
-
       const reader = new FileReader();
       reader.onload = (event) => {
         const text = event.target?.result as string;
-        setScriptContent(text); // Set the file content
+        setValue('salesscript', text); // Store the script content in the form state
+        setSelectedScriptFileName(file.name); // Set the file name using useState
       };
       reader.readAsText(file); // Read the content
     }
   };
-
+  const handleEmailUpload = (fileContent: string) => {
+    setValue('emailbody', fileContent); // Store the email body content
+    console.log('Uploaded Email Body Content:', fileContent);
+  };
   return (
     <>
       <ProfileHeading
@@ -590,6 +603,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
           {/* Adding Voice Selector */}
           <VoiceSelector voices={voices} onVoiceSelect={handleVoiceSelect} />
 
+          {/* File Upload Section */}
           <div className="mx-auto mt-4 max-w-lg">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Upload Script (.txt, .doc, .docx)
@@ -597,20 +611,28 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
             <input
               type="file"
               accept=".txt,.doc,.docx"
-              onChange={handleFileUpload}
+              onChange={handleScriptFileUpload}
               className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 dark:text-gray-300 file:dark:bg-blue-500 dark:hover:file:bg-blue-600"
             />
-            {selectedFileName && (
+
+            {/* Display selected file name and script content */}
+            {selectedScriptFileName && (
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Uploaded file: {selectedFileName}
+                Uploaded file: {selectedScriptFileName}
               </p>
             )}
-            {scriptContent && (
+            {form.watch('salesscript') && (
               <pre className="mt-4 max-h-40 overflow-auto border bg-gray-100 p-4 text-sm text-gray-800 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300">
-                {scriptContent}
+                {form.watch('salesscript')}
               </pre>
             )}
           </div>
+
+          {/* Email Body Upload Component */}
+          <UploadEmailBody
+            onFileUpload={handleEmailUpload}
+            selectedFileName={selectedEmailFileName}
+          />
         </form>
       </Form>
       <StepNavigation
