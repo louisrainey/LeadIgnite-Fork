@@ -113,7 +113,9 @@ export type CampaignType =
   | 'dm'
   | 'email'
   | 'total'
-  | 'conversations';
+  | 'conversations'
+  | 'social'
+  | 'total';
 
 // A Stat type that could be reused for each campaign type in various views
 export type Stat = {
@@ -121,7 +123,7 @@ export type Stat = {
   value: number;
   statType: CampaignType; // StatType should match the campaign types
   click: boolean;
-  past24hours: number;
+  past24hours?: number;
   rowSpan?: number; // Optional rowSpan value
   colSpan?: number; // Optional colSpan value
 };

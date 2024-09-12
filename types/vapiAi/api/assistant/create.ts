@@ -68,7 +68,7 @@ interface Model {
 // Type for the Voice configuration
 interface AssistantVoice {
   fillerInjectionEnabled: boolean;
-  provider: 'azure' | 'aws' | 'google'; // Example voice providers
+  provider: 'azure' | 'aws' | 'google' | '11labs'; // Example voice providers
   voiceId: string;
   speed: number;
   chunkPlan: {

@@ -205,10 +205,10 @@ export const navItems: NavItem[] = [
     label: 'lead-lists'
   },
   {
-    title: 'Employee',
-    href: '/dashboard/employee',
-    icon: 'employee',
-    label: 'employee'
+    title: 'Kanban',
+    href: '/dashboard/kanban',
+    icon: 'kanban',
+    label: 'kanban'
   },
   {
     title: 'Profile',
@@ -217,15 +217,15 @@ export const navItems: NavItem[] = [
     label: 'profile'
   },
   {
-    title: 'Kanban',
-    href: '/dashboard/kanban',
-    icon: 'kanban',
-    label: 'kanban'
-  },
-  {
     title: 'Login',
     href: '/',
     icon: 'login',
     label: 'login'
+  },
+  {
+    title: 'Employee',
+    href: '/dashboard/employee',
+    icon: 'employee',
+    label: 'employee'
   }
 ];
