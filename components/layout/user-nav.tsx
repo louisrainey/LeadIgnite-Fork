@@ -13,7 +13,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useModalStore } from '@/lib/stores/dashboard';
 import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 export function UserNav() {
+  const router = useRouter(); // Use next/navigation
   const { data: session } = useSession();
   const {
     openUsageModal,
@@ -49,32 +51,51 @@ export function UserNav() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => router.push('/dashboard/profile')}
+            >
               Profile
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={openUsageModal}>
-              {' '}
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={openUsageModal}
+            >
               {/* Open the modal */}
               Usage
               <DropdownMenuShortcut>⌘U</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={openBillingModal}>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={openBillingModal}
+            >
               Billing
               <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={openSecurityModal}>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={openSecurityModal}
+            >
               Security
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={openWebhookModal}>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={openWebhookModal}
+            >
               Webhooks
               <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              New Team
+            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => signOut()}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => signOut()}
+          >
             Log out
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>

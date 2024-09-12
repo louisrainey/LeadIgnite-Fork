@@ -31,7 +31,8 @@ import {
   User2Icon,
   UserX2Icon,
   X,
-  ScrollText
+  ScrollText,
+  LogOutIcon
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -42,6 +43,7 @@ export const Icons = {
   campaigns: Unplug,
   logo: Command,
   login: LogIn,
+  logout: LogOutIcon,
   close: X,
   profile: User2Icon,
   spinner: Loader2,
