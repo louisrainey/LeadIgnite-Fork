@@ -6,17 +6,16 @@ import MultiStepCampaign from '@/components/reusables/modals/startCampaigns';
 
 import { CallCampaignTable } from '@/components/tables/calls-table/call-campaign-table';
 import { callCampaignColumns } from '@/components/tables/calls-table/columns';
-import { EmailCampaignTable } from '@/components/tables/emails-table/email-campaign-table';
-import { emailCampaignColumns } from '@/components/tables/emails-table/columns';
 import { TextMessageCampaignTable } from '@/components/tables/text-table/social-campaign-table';
 import { textMessageCampaignColumns } from '@/components/tables/text-table/columns';
 import { SocialMediaCampaignTable } from '@/components/tables/socials-table/social-campaign-table';
 import { socialMediaCampaignColumns } from '@/components/tables/socials-table/columns';
 import { useCampaignStore } from '@/lib/stores/campaigns';
-import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
-import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
-import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
-import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
+import { EmailCampaignTable } from '@/components/tables/emails-table/email-campaign-table';
+import { emailCampaignColumns } from '@/components/tables/emails-table/columns';
+import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
+import { EmailCampaign } from '@/types/goHighLevel/conversations';
+import { TextMessageCampaign } from '@/types/goHighLevel/text';
 
 const CampaignsMainContent: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,6 +24,9 @@ const CampaignsMainContent: React.FC = () => {
   const currentCampaignType = useCampaignStore(
     (state) => state.currentCampaignType
   );
+  const filteredCampaigns = useCampaignStore(
+    (state) => state.filteredCampaigns
+  );
   const getNumberOfCampaigns = useCampaignStore(
     (state) => state.getNumberOfCampaigns
   );
@@ -32,45 +34,43 @@ const CampaignsMainContent: React.FC = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const totalCampaigns = getNumberOfCampaigns(); // Get the total number of campaigns
-
-  // Function to dynamically render the table based on the current campaign type
+  const totalCampaigns = getNumberOfCampaigns(); // Get the total number of filtered campaigns
   const renderCampaignTable = () => {
     switch (currentCampaignType) {
       case 'email':
         return (
           <EmailCampaignTable
             columns={emailCampaignColumns}
-            data={mockGeneratedSampleEmailCampaigns}
+            data={filteredCampaigns as EmailCampaign[]} // Type assertion for EmailCampaign data
             searchKey="name"
-            pageCount={10}
+            pageCount={Math.ceil(filteredCampaigns.length / 10)}
           />
         );
       case 'call':
         return (
           <CallCampaignTable
             columns={callCampaignColumns}
-            data={mockCallCampaignData}
+            data={filteredCampaigns as CallCampaign[]} // Type assertion for CallCampaign data
             searchKey="calls"
-            pageCount={Math.ceil(mockCallCampaignData.length / 10)}
+            pageCount={Math.ceil(filteredCampaigns.length / 10)}
           />
         );
       case 'text':
         return (
           <TextMessageCampaignTable
             columns={textMessageCampaignColumns}
-            data={mockTextCampaigns}
+            data={filteredCampaigns as TextMessageCampaign[]} // Type assertion for TextMessageCampaign data
             searchKey="name"
-            pageCount={10}
+            pageCount={Math.ceil(filteredCampaigns.length / 10)}
           />
         );
       case 'social':
         return (
           <SocialMediaCampaignTable
             columns={socialMediaCampaignColumns}
-            data={mockSocialMediaCampaigns}
+            data={filteredCampaigns as SocialMediaCampaign[]} // Type assertion for SocialMediaCampaign data
             searchKey="name"
-            pageCount={10}
+            pageCount={Math.ceil(filteredCampaigns.length / 10)}
           />
         );
       default:
@@ -131,7 +131,7 @@ const CampaignsMainContent: React.FC = () => {
             </button>
           </div>
         ) : (
-          renderCampaignTable()
+          renderCampaignTable() // Render the table based on the filtered campaigns
         )}
       </div>
 

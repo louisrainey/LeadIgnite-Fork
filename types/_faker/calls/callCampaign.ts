@@ -86,10 +86,17 @@ const generateGetCallResponse = (): GetCallResponse => {
 // Helper function to create CallCampaign data
 const generateCallCampaign = (): CallCampaign => {
   const callStatuses: CallCampaign['status'][] = [
+    'queued',
+    'delivered',
+    'delivering',
+    'failed',
+    'pending',
     'completed',
     'missed',
-    'failed'
+    'read',
+    'unread'
   ];
+
   const callTypes: CallCampaign['callType'][] = ['inbound', 'outbound'];
 
   return {
