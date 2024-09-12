@@ -129,7 +129,14 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
     {
       id: 'Step 1',
       name: 'Personal Information',
-      fields: ['firstname', 'lastname', 'email', 'contactno', 'country', 'city']
+      fields: [
+        'firstName',
+        'lastName',
+        'email',
+        'contactNum',
+        'country',
+        'city'
+      ]
     },
     {
       id: 'Step 2',
@@ -244,7 +251,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
               <>
                 <FormField
                   control={form.control}
-                  name="firstname"
+                  name="firstName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>First Name</FormLabel>
@@ -261,7 +268,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                 />
                 <FormField
                   control={form.control}
-                  name="lastname"
+                  name="lastName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Last Name</FormLabel>
@@ -295,7 +302,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                 />
                 <FormField
                   control={form.control}
-                  name="contactno"
+                  name="contactNum"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Contact Number</FormLabel>
