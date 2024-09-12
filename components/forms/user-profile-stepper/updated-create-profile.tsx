@@ -387,6 +387,7 @@ const StepNavigation: React.FC<{
 );
 
 // Main Component
+
 // Main Component
 export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   initialData,
@@ -396,13 +397,15 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [scriptContent, setScriptContent] = useState<string>(''); // For storing script content from file
+  const [selectedFileName, setSelectedFileName] = useState<string>(''); // Store uploaded file name
+  const [selectedVoice, setSelectedVoice] = useState<string | null>(null); // State for selected voice
   const title = initialData ? 'Edit product' : 'Create Your Profile';
   const description = initialData
     ? 'Edit a product.'
     : 'To create your resume, we first need some basic information about you.';
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setData] = useState({});
-  const [selectedVoice, setSelectedVoice] = useState<string | null>(null); // State for selected voice
 
   const defaultValues = {
     jobs: [
@@ -417,15 +420,14 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
     ]
   };
 
-  // Updated useForm setup
+  // useForm setup with Zod validation
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues,
-    mode: 'onChange', // Validate on change
-    reValidateMode: 'onChange' // Ensure re-validation happens on each change
+    mode: 'onChange',
+    reValidateMode: 'onChange'
   });
 
-  // Extract formState's isValid and isSubmitting
   const {
     control,
     formState: { isValid, isSubmitting }
@@ -458,10 +460,8 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   const next = async () => {
     const stepFields = steps[currentStep].fields as (keyof ProfileFormValues)[];
 
-    // Trigger validation for the current step's fields
     const isStepValid = await form.trigger(stepFields);
 
-    // If the current step is valid, proceed to the next step
     if (isStepValid) {
       if (currentStep < steps.length - 1) {
         if (currentStep === steps.length - 2) {
@@ -479,13 +479,32 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   const countries = [{ id: '1', name: 'India' }];
   const cities = [{ id: '2', name: 'Kerala' }];
 
-  // Mock voices generated earlier
   const voices: AssistantVoice[] = mockVoices; // Generate 5 mock voices
 
-  // Handle voice selection
   const handleVoiceSelect = (voiceId: string) => {
     setSelectedVoice(voiceId);
     console.log('Selected voice:', voiceId);
+  };
+
+  // Function to handle file uploads
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const fileType = file.name.split('.').pop()?.toLowerCase();
+      if (!['txt', 'doc', 'docx'].includes(fileType || '')) {
+        alert('Only .txt, .doc, or .docx files are allowed.');
+        return;
+      }
+
+      setSelectedFileName(file.name); // Set the file name
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const text = event.target?.result as string;
+        setScriptContent(text); // Set the file content
+      };
+      reader.readAsText(file); // Read the content
+    }
   };
 
   return (
@@ -568,8 +587,30 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
             )}
           </div>
 
-          {/* Adding Voice Selector with mock data */}
+          {/* Adding Voice Selector */}
           <VoiceSelector voices={voices} onVoiceSelect={handleVoiceSelect} />
+
+          <div className="mx-auto mt-4 max-w-lg">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Upload Script (.txt, .doc, .docx)
+            </label>
+            <input
+              type="file"
+              accept=".txt,.doc,.docx"
+              onChange={handleFileUpload}
+              className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 dark:text-gray-300 file:dark:bg-blue-500 dark:hover:file:bg-blue-600"
+            />
+            {selectedFileName && (
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Uploaded file: {selectedFileName}
+              </p>
+            )}
+            {scriptContent && (
+              <pre className="mt-4 max-h-40 overflow-auto border bg-gray-100 p-4 text-sm text-gray-800 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                {scriptContent}
+              </pre>
+            )}
+          </div>
         </form>
       </Form>
       <StepNavigation

@@ -18,7 +18,7 @@ interface Condition {
 // Type for model messages
 interface Message {
   content: string;
-  role: 'assistant' | 'user';
+  role: 'user' | 'assistant' | 'tool' | 'function' | 'system';
   type?: string;
   conditions?: Condition[];
 }

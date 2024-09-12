@@ -28,7 +28,21 @@ export const profileSchema = z.object({
     .string()
     .min(1, { message: 'Please select a city.' })
     .max(100, { message: 'City name cannot exceed 100 characters.' }),
-  // jobs array is for dynamic fields
+
+  // Optional voice field with max validation applied first
+  voice: z
+    .string()
+    .max(100, { message: 'Voice selection cannot exceed 100 characters.' })
+    .optional()
+    .nullable(), // Allows the voice field to be null or not provided
+
+  // Required sales script field
+  salesscript: z
+    .string()
+    .min(10, { message: 'Sales script must be at least 10 characters long.' })
+    .max(1000, { message: 'Sales script cannot exceed 1000 characters.' }),
+
+  // jobs array for dynamic fields
   jobs: z.array(
     z.object({
       jobcountry: z
