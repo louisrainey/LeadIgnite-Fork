@@ -529,8 +529,8 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
 
   const steps = [
     {
-      id: 'Step 1',
-      name: 'Personal Information',
+      id: 'My Details',
+      name: 'Base Setup',
       fields: [
         'firstName',
         'lastName',
