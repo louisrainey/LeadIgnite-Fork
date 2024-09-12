@@ -123,7 +123,7 @@ export const PlaybackCell = ({ vapi }: PlaybackCellProps) => {
   };
 
   const currentCall = vapi[currentCallIndex]; // Access the current call
-
+  const title = currentCall.id;
   const recordingUrl = currentCall.recordingUrl;
   const startedAt = currentCall.startedAt
     ? new Date(currentCall.startedAt).getTime() / 1000
@@ -135,6 +135,7 @@ export const PlaybackCell = ({ vapi }: PlaybackCellProps) => {
   if (recordingUrl) {
     return (
       <PlayButtonSkip
+        title={title}
         audioSrc={recordingUrl}
         startTime={startedAt}
         endTime={endedAt}
