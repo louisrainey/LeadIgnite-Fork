@@ -1,5 +1,3 @@
-'use client';
-
 import {
   ColumnDef,
   PaginationState,
@@ -112,8 +110,11 @@ export function CallCampaignTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-left">
+                {headerGroup.headers.map((header, index) => (
+                  <TableHead
+                    key={header.id}
+                    className={`${index === 0 ? 'text-left' : 'text-center'}`} // Center all headers except the first one
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -132,9 +133,9 @@ export function CallCampaignTable<TData, TValue>({
                   {row.getVisibleCells().map((cell, index) => (
                     <TableCell
                       key={cell.id}
-                      className={index === 0 ? 'text-left' : ''}
+                      className={index === 0 ? 'text-left' : 'text-center'} // Center all cells except the first one
                     >
-                      <span className="text-left">
+                      <span>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

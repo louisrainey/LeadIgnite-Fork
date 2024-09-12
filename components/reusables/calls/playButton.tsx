@@ -10,6 +10,7 @@ interface PlayButtonSkipProps {
   onPrevCall: () => void; // Function to get the previous call
   isNextDisabled: boolean; // To disable the Next button if no more calls
   isPrevDisabled: boolean; // To disable the Prev button if no more calls
+  title: string; // New title prop for the audio
 }
 
 export function PlayButtonSkip({
@@ -19,7 +20,8 @@ export function PlayButtonSkip({
   onNextCall,
   onPrevCall,
   isNextDisabled,
-  isPrevDisabled
+  isPrevDisabled,
+  title // Added title prop
 }: PlayButtonSkipProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -45,42 +47,49 @@ export function PlayButtonSkip({
   }, [startTime]);
 
   return (
-    <div className="flex items-center space-x-2">
-      <button
-        onClick={onPrevCall}
-        disabled={isPrevDisabled}
-        className={`p-2 ${
-          isPrevDisabled ? 'cursor-not-allowed opacity-50' : ''
-        }`}
-      >
-        ⏮ Prev
-      </button>
+    <div className="flex flex-col items-center space-y-2">
+      {/* Audio Title */}
+      <h2 className="text-center text-sm font-semibold text-gray-700 dark:text-white">
+        {title}
+      </h2>
 
-      <div
-        onClick={togglePlay}
-        className={`relative flex cursor-pointer items-center justify-center rounded-full p-2 transition-all duration-300 ${
-          isPlaying ? 'bg-red-500/50' : 'bg-green-500'
-        }`}
-        style={{ height: '60px', width: '60px' }}
-      >
-        <Lottie
-          animationData={playAnimation}
-          loop={true}
-          autoplay={false}
-          lottieRef={lottieRef}
-          style={{ height: '40px', width: '40px' }}
-        />
+      <div className="flex items-center space-x-2">
+        <button
+          onClick={onPrevCall}
+          disabled={isPrevDisabled}
+          className={`p-2 ${
+            isPrevDisabled ? 'cursor-not-allowed opacity-50' : ''
+          }`}
+        >
+          ⏮ Prev
+        </button>
+
+        <div
+          onClick={togglePlay}
+          className={`relative flex cursor-pointer items-center justify-center rounded-full p-2 transition-all duration-300 ${
+            isPlaying ? 'bg-red-500/50' : 'bg-green-500'
+          }`}
+          style={{ height: '60px', width: '60px' }}
+        >
+          <Lottie
+            animationData={playAnimation}
+            loop={true}
+            autoplay={false}
+            lottieRef={lottieRef}
+            style={{ height: '40px', width: '40px' }}
+          />
+        </div>
+
+        <button
+          onClick={onNextCall}
+          disabled={isNextDisabled}
+          className={`p-2 ${
+            isNextDisabled ? 'cursor-not-allowed opacity-50' : ''
+          }`}
+        >
+          ⏭ Next
+        </button>
       </div>
-
-      <button
-        onClick={onNextCall}
-        disabled={isNextDisabled}
-        className={`p-2 ${
-          isNextDisabled ? 'cursor-not-allowed opacity-50' : ''
-        }`}
-      >
-        ⏭ Next
-      </button>
 
       <audio ref={audioRef} src={audioSrc} />
     </div>
