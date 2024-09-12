@@ -15,9 +15,13 @@ interface ModalState {
   openIntegrationsModal: () => void;
   closeIntegrationsModal: () => void;
 
-  isSubscriptionModalOpen: boolean;
-  openSubscriptionModal: () => void;
-  closeSubscriptionModal: () => void;
+  isSecurityModalOpen: boolean;
+  openSecurityModal: () => void;
+  closeSecurityModal: () => void;
+
+  isWebhookModalOpen: boolean;
+  openWebhookModal: () => void;
+  closeWebhookModal: () => void;
 }
 
 export const useModalStore = create<ModalState>((set) => ({
@@ -25,7 +29,9 @@ export const useModalStore = create<ModalState>((set) => ({
   isUsageModalOpen: false,
   openUsageModal: () => set({ isUsageModalOpen: true }),
   closeUsageModal: () => set({ isUsageModalOpen: false }),
-
+  isSecurityModalOpen: false,
+  openSecurityModal: () => set({ isSecurityModalOpen: true }),
+  closeSecurityModal: () => set({ isSecurityModalOpen: false }),
   // Billing Modal
   isBillingModalOpen: false,
   openBillingModal: () => set({ isBillingModalOpen: true }),
@@ -36,8 +42,42 @@ export const useModalStore = create<ModalState>((set) => ({
   openIntegrationsModal: () => set({ isIntegrationsModalOpen: true }),
   closeIntegrationsModal: () => set({ isIntegrationsModalOpen: false }),
 
-  // Subscription Modal
-  isSubscriptionModalOpen: false,
-  openSubscriptionModal: () => set({ isSubscriptionModalOpen: true }),
-  closeSubscriptionModal: () => set({ isSubscriptionModalOpen: false })
+  // Webhook Modal - Correctly tied to isWebhookModalOpen state
+  isWebhookModalOpen: false,
+  openWebhookModal: () => set({ isWebhookModalOpen: true }),
+  closeWebhookModal: () => set({ isWebhookModalOpen: false })
+}));
+
+// stores/useSecurityStore.ts
+interface SecurityState {
+  showCurrentPassword: boolean;
+  showNewPassword: boolean;
+  showConfirmPassword: boolean;
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+  toggleShowCurrentPassword: () => void;
+  toggleShowNewPassword: () => void;
+  toggleShowConfirmPassword: () => void;
+  setCurrentPassword: (value: string) => void;
+  setNewPassword: (value: string) => void;
+  setConfirmPassword: (value: string) => void;
+}
+
+export const useSecurityStore = create<SecurityState>((set) => ({
+  showCurrentPassword: false,
+  showNewPassword: false,
+  showConfirmPassword: false,
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: '',
+  toggleShowCurrentPassword: () =>
+    set((state) => ({ showCurrentPassword: !state.showCurrentPassword })),
+  toggleShowNewPassword: () =>
+    set((state) => ({ showNewPassword: !state.showNewPassword })),
+  toggleShowConfirmPassword: () =>
+    set((state) => ({ showConfirmPassword: !state.showConfirmPassword })),
+  setCurrentPassword: (value: string) => set({ currentPassword: value }),
+  setNewPassword: (value: string) => set({ newPassword: value }),
+  setConfirmPassword: (value: string) => set({ confirmPassword: value })
 }));

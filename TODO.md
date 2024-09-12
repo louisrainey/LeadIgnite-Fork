@@ -6,7 +6,18 @@
 
 # Add campaigns to global state , so we can easily switch, filter
 
-# add page for user voice , script
+# Need to fix billing modal opening and autofocusing, unable to click app behind once closed
+
+<!-- Uncaught InternalError: too much recursion
+    $d3863c46a17e8a28$var$focus index.mjs:247
+    handleFocusOut index.mjs:62
+    $d3863c46a17e8a28$var$focus index.mjs:250
+    handleFocusIn index.mjs:44
+    $d3863c46a17e8a28$var$focus index.mjs:247
+    handleFocusOut index.mjs:62
+index.mjs:247 -->
+
+<!-- #✅  add page for user voice , script -->
 
 <!-- #✅ LMNT Voice Cloining [text](https://docs.lmnt.com/api-reference/voice/create-voice#create-voice)
 

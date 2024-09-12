@@ -38,14 +38,12 @@ interface BillingModalProps {
 interface ManageSubscriptionModalProps {
   subscription: UserProfileSubscription; // Accepts the subscription prop
 }
+
 const ManageSubscriptionModal: React.FC<ManageSubscriptionModalProps> = ({
   subscription
 }) => {
-  const {
-    isSubscriptionModalOpen,
-    openSubscriptionModal,
-    closeSubscriptionModal
-  } = useModalStore();
+  // Local state to track the modal's visibility
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
 
   // State to track the subscription status
   const [isSubscriptionActive, setIsSubscriptionActive] = useState(
@@ -67,6 +65,10 @@ const ManageSubscriptionModal: React.FC<ManageSubscriptionModalProps> = ({
     setIsSubscriptionActive(false);
     setSubscriptionType('monthly'); // Reset to monthly by default after canceling
   };
+
+  // Function to open and close the modal
+  const openSubscriptionModal = () => setIsSubscriptionModalOpen(true);
+  const closeSubscriptionModal = () => setIsSubscriptionModalOpen(false);
 
   return (
     <>
@@ -166,15 +168,16 @@ export const BillingModal: React.FC<BillingModalProps> = ({
   paymentDetails,
   subscription
 }) => {
-  const { isBillingModalOpen, openBillingModal, closeBillingModal } =
-    useModalStore();
+  const { isBillingModalOpen, closeBillingModal } = useModalStore(); // Using Zustand store for billing modal state
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
+  // Functions to handle Payment Modal state
   const openPaymentModal = () => setIsPaymentModalOpen(true);
   const closePaymentModal = () => setIsPaymentModalOpen(false);
 
   return (
     <>
+      {/* Billing Modal */}
       {isBillingModalOpen && (
         <Dialog open={isBillingModalOpen} onOpenChange={closeBillingModal}>
           <DialogContent className="sm:max-w-lg" style={{ zIndex: 9999 }}>
@@ -247,7 +250,7 @@ export const BillingModal: React.FC<BillingModalProps> = ({
         </Dialog>
       )}
 
-      {/* Render PaymentModal if open */}
+      {/* Payment Modal - Only rendered when `isPaymentModalOpen` is true */}
       {isPaymentModalOpen && (
         <PaymentModal closePaymentModal={closePaymentModal} />
       )}
