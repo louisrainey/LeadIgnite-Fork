@@ -1,3 +1,5 @@
+# @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
+
 # Add cancel while drawing
 
 # ? Enable Close and Open Listing Accordian? (Add Max Height)
@@ -10,7 +12,7 @@
 
 # Add campaigns to global state , so we can easily switch, filter
 
-# Need to fix modals opening and autofocusing, unable to click app behind once closed
+# Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
 
 <!-- Uncaught InternalError: too much recursion
     $d3863c46a17e8a28$var$focus index.mjs:247

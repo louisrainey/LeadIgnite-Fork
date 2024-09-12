@@ -2,6 +2,7 @@ import Header from '@/components/layout/header';
 import Sidebar from '@/components/layout/sidebar';
 import { BillingModal } from '@/components/reusables/modals/user/billing';
 import { SecurityModal } from '@/components/reusables/modals/user/security';
+import { UpgradeModal } from '@/components/reusables/modals/user/upgrade';
 import AiUsageModal from '@/components/reusables/modals/user/usage';
 import { WebhookModal } from '@/components/reusables/modals/user/webhook';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -38,7 +39,7 @@ export default function DashboardLayout({
         subscription={mockSubscriptions[0]}
       />
       <SecurityModal />
-
+      <UpgradeModal />
       <WebhookModal />
     </div>
   );

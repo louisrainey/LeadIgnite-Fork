@@ -22,6 +22,10 @@ interface ModalState {
   isWebhookModalOpen: boolean;
   openWebhookModal: () => void;
   closeWebhookModal: () => void;
+
+  isUpgradeModalOpen: boolean;
+  openUpgradeModal: () => void;
+  closeUpgradeModal: () => void;
 }
 
 export const useModalStore = create<ModalState>((set) => ({
@@ -45,7 +49,11 @@ export const useModalStore = create<ModalState>((set) => ({
   // Webhook Modal - Correctly tied to isWebhookModalOpen state
   isWebhookModalOpen: false,
   openWebhookModal: () => set({ isWebhookModalOpen: true }),
-  closeWebhookModal: () => set({ isWebhookModalOpen: false })
+  closeWebhookModal: () => set({ isWebhookModalOpen: false }),
+
+  isUpgradeModalOpen: false,
+  openUpgradeModal: () => set({ isUpgradeModalOpen: true }),
+  closeUpgradeModal: () => set({ isUpgradeModalOpen: false })
 }));
 
 // stores/useSecurityStore.ts

@@ -85,10 +85,11 @@ export function UserNav() {
               onClick={openWebhookModal}
             >
               Webhooks
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              <DropdownMenuShortcut>⌘W</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer">
               New Team
+              <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

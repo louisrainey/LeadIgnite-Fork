@@ -130,7 +130,7 @@ export type Stat = {
 
 // Reusable type for campaign data
 // Updated Campaign type to include primaryType and secondaryType
-export type Campaign = (
+export type CampaignGlobalType = (
   | TextCampaign
   | CallCampaign
   | SocialMediaCampaign
@@ -141,7 +141,7 @@ export type Campaign = (
 };
 
 // Optional runtime validation logic
-export function validateCampaignTypes(campaign: Campaign) {
+export function validateCampaignTypes(campaign: CampaignGlobalType) {
   if (campaign.primaryType === campaign.secondaryType) {
     throw new Error('Primary and secondary types cannot be the same.');
   }
