@@ -43,19 +43,25 @@ export const profileSchema = z.object({
     .max(100, { message: 'Voice selection cannot exceed 100 characters.' })
     .optional()
     .nullable(), // Allows the field to be null or not provided
-
+  voiceId: z
+    .string()
+    .min(1, { message: 'Voice ID is required if provided.' })
+    .max(100, { message: 'Voice ID cannot exceed 100 characters.' })
+    .optional(),
   // Required sales script field
   salesscript: z
     .string()
     .min(10, { message: 'Sales script must be at least 10 characters long.' })
-    .max(1000, { message: 'Sales script cannot exceed 1000 characters.' }),
+    .max(1000, { message: 'Sales script cannot exceed 1000 characters.' })
+    .optional(),
   emailbody: z
     .string()
     .min(10, { message: 'Email body must be at least 10 characters long.' })
     .max(5000, { message: 'Email body cannot exceed 5000 characters.' }) // Optional, adjust as needed
     .refine((value) => htmlRegex.test(value) || markdownRegex.test(value), {
       message: 'Email body must be valid Markdown or HTML.'
-    }),
+    })
+    .optional(),
   // Jobs array for dynamic job fields
   jobs: z.array(
     z.object({

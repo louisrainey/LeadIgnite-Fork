@@ -65,12 +65,30 @@ const ProfileHeading: React.FC<{
 );
 
 // 2. Personal Information Form Component
+// 2. Personal Information Form Component
 const PersonalInformationForm: React.FC<{
   form: any;
   loading: boolean;
   countries: { id: string; name: string }[];
   cities: { id: string; name: string }[];
-}> = ({ form, loading, countries, cities }) => (
+  voices: AssistantVoice[]; // Add voices prop for VoiceSelector
+  handleVoiceSelect: (voiceId: string) => void; // Voice select handler
+  handleScriptUpload: (scriptContent: string) => void; // Script upload handler
+  selectedScriptFileName: string; // Selected script file name
+  handleEmailUpload: (emailContent: string) => void; // Email upload handler
+  selectedEmailFileName: string; // Selected email file name
+}> = ({
+  form,
+  loading,
+  countries,
+  cities,
+  voices,
+  handleVoiceSelect,
+  handleScriptUpload,
+  selectedScriptFileName,
+  handleEmailUpload,
+  selectedEmailFileName
+}) => (
   <>
     <FormField
       control={form.control}
@@ -197,6 +215,28 @@ const PersonalInformationForm: React.FC<{
         </FormItem>
       )}
     />
+
+    {/* Add margin to ensure spacing between sections */}
+    <div className="mt-4">
+      {/* Adding Voice Selector */}
+      <VoiceSelector voices={voices} onVoiceSelect={handleVoiceSelect} />
+    </div>
+
+    <div className="mt-4">
+      {/* File Upload Section for Sales Script */}
+      <UploadSalesScript
+        onFileUpload={handleScriptUpload}
+        selectedFileName={selectedScriptFileName}
+      />
+    </div>
+
+    <div className="mt-4">
+      {/* Email Body Upload Component */}
+      <UploadEmailBody
+        onFileUpload={handleEmailUpload}
+        selectedFileName={selectedEmailFileName}
+      />
+    </div>
   </>
 );
 
@@ -560,8 +600,15 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
                 loading={loading}
                 countries={countries}
                 cities={cities}
+                voices={voices} // Pass the voices prop for VoiceSelector
+                handleVoiceSelect={handleVoiceSelect} // Pass the handler for voice selection
+                handleScriptUpload={handleScriptUpload} // Pass the handler for script upload
+                selectedScriptFileName={selectedScriptFileName} // Pass the selected script file name
+                handleEmailUpload={handleEmailUpload} // Pass the handler for email upload
+                selectedEmailFileName={selectedEmailFileName} // Pass the selected email file name
               />
             )}
+
             {currentStep === 1 &&
               fields.map((field, index) => (
                 <JobAccordion
@@ -584,21 +631,6 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
               </div>
             )}
           </div>
-
-          {/* Adding Voice Selector */}
-          <VoiceSelector voices={voices} onVoiceSelect={handleVoiceSelect} />
-
-          {/* File Upload Section */}
-          <UploadSalesScript
-            onFileUpload={handleScriptUpload}
-            selectedFileName={selectedScriptFileName}
-          />
-
-          {/* Email Body Upload Component */}
-          <UploadEmailBody
-            onFileUpload={handleEmailUpload}
-            selectedFileName={selectedEmailFileName}
-          />
         </form>
       </Form>
       <StepNavigation
