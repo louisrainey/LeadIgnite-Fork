@@ -1,7 +1,9 @@
 import Header from '@/components/layout/header';
 import Sidebar from '@/components/layout/sidebar';
 import { BillingModal } from '@/components/reusables/modals/user/billing';
+import { SecurityModal } from '@/components/reusables/modals/user/security';
 import AiUsageModal from '@/components/reusables/modals/user/usage';
+import { WebhookModal } from '@/components/reusables/modals/user/webhook';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   mockBillingHistory,
@@ -35,6 +37,9 @@ export default function DashboardLayout({
         paymentDetails={mockPaymentDetails}
         subscription={mockSubscriptions[0]}
       />
+      <SecurityModal />
+
+      <WebhookModal />
     </div>
   );
 }

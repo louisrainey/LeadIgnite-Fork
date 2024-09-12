@@ -15,7 +15,12 @@ import { useModalStore } from '@/lib/stores/dashboard';
 import { signOut, useSession } from 'next-auth/react';
 export function UserNav() {
   const { data: session } = useSession();
-  const { openUsageModal, openBillingModal } = useModalStore(); // Zustand hook to open the modal
+  const {
+    openUsageModal,
+    openBillingModal,
+    openSecurityModal,
+    openWebhookModal
+  } = useModalStore(); // Zustand hook to open the modal
 
   if (session) {
     return (
@@ -58,9 +63,12 @@ export function UserNav() {
               Billing
               <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
             </DropdownMenuItem>
-
-            <DropdownMenuItem>
-              Settings
+            <DropdownMenuItem onClick={openSecurityModal}>
+              Security
+              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={openWebhookModal}>
+              Webhooks
               <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>New Team</DropdownMenuItem>
