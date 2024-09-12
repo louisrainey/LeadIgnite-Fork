@@ -39,7 +39,7 @@ const UploadSalesScript: React.FC<UploadSalesScriptProps> = ({
   };
 
   return (
-    <div className="mx-auto mt-4 max-w-lg">
+    <div className="mx-auto mt-4 max-w-3xl overflow-auto rounded-lg border border-gray-300 bg-white p-4 text-gray-900 shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
         Upload Script (.txt, .doc, .docx)
       </label>
@@ -57,7 +57,7 @@ const UploadSalesScript: React.FC<UploadSalesScriptProps> = ({
         </p>
       )}
       {fileContent && (
-        <pre className="mt-4 max-h-40 overflow-auto border bg-gray-100 p-4 text-sm text-gray-800 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300">
+        <pre className="mt-4 max-h-40 overflow-auto rounded-lg border border-gray-300 bg-gray-100 p-4 text-sm dark:border-gray-600 dark:bg-gray-800">
           {fileContent}
         </pre>
       )}
