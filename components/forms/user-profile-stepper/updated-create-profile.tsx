@@ -34,6 +34,7 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import VoiceSelector from './utils/voice/selector';
 import { mockVoices } from '@/types/_faker/_api/vapi/assistant';
 import { UploadEmailBody } from './utils/voice/uploadEmailBody';
+import UploadSalesScript from './utils/voice/uploadScript';
 
 interface ProfileFormType {
   initialData: any | null;
@@ -496,25 +497,9 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   };
 
   // Function to handle file uploads
-  const handleScriptFileUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const fileType = file.name.split('.').pop()?.toLowerCase();
-      if (!['txt', 'doc', 'docx'].includes(fileType || '')) {
-        alert('Only .txt, .doc, or .docx files are allowed.');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const text = event.target?.result as string;
-        setValue('salesscript', text); // Store the script content in the form state
-        setSelectedScriptFileName(file.name); // Set the file name using useState
-      };
-      reader.readAsText(file); // Read the content
-    }
+  const handleScriptUpload = (fileContent: string) => {
+    setValue('salesscript', fileContent); // Store the email body content
+    console.log('Uploaded Email Body Content:', fileContent);
   };
   const handleEmailUpload = (fileContent: string) => {
     setValue('emailbody', fileContent); // Store the email body content
@@ -604,29 +589,10 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
           <VoiceSelector voices={voices} onVoiceSelect={handleVoiceSelect} />
 
           {/* File Upload Section */}
-          <div className="mx-auto mt-4 max-w-lg">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Upload Script (.txt, .doc, .docx)
-            </label>
-            <input
-              type="file"
-              accept=".txt,.doc,.docx"
-              onChange={handleScriptFileUpload}
-              className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 dark:text-gray-300 file:dark:bg-blue-500 dark:hover:file:bg-blue-600"
-            />
-
-            {/* Display selected file name and script content */}
-            {selectedScriptFileName && (
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Uploaded file: {selectedScriptFileName}
-              </p>
-            )}
-            {form.watch('salesscript') && (
-              <pre className="mt-4 max-h-40 overflow-auto border bg-gray-100 p-4 text-sm text-gray-800 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300">
-                {form.watch('salesscript')}
-              </pre>
-            )}
-          </div>
+          <UploadSalesScript
+            onFileUpload={handleScriptUpload}
+            selectedFileName={selectedScriptFileName}
+          />
 
           {/* Email Body Upload Component */}
           <UploadEmailBody
