@@ -1,12 +1,17 @@
-import { GetEmailByIdResponse } from '@/types/goHighLevel/conversations';
+import {
+  EmailCampaign,
+  GetEmailByIdResponse
+} from '@/types/goHighLevel/conversations';
 import { TextMessage } from '@/types/goHighLevel/text';
 import ExcelJS from 'exceljs';
 
-// Export email campaign to Excel
 export async function exportEmailCampaignBulkToExcel(
   sheetName: string,
-  columns: { header: string; accessorKey: keyof GetEmailByIdResponse }[],
-  emails: GetEmailByIdResponse[],
+  columns: {
+    header: string;
+    accessorKey: keyof GetEmailByIdResponse;
+  }[],
+  emails: GetEmailByIdResponse[], // Now this accepts an array of GetEmailByIdResponse
   filename: string
 ): Promise<Uint8Array> {
   const workbook = new ExcelJS.Workbook();
@@ -18,6 +23,7 @@ export async function exportEmailCampaignBulkToExcel(
     width: 30
   }));
 
+  // Iterate over the emails array and add each email as a row
   emails.forEach((email) => {
     const rowData = columns.reduce(
       (rowObj, col) => {
@@ -27,7 +33,7 @@ export async function exportEmailCampaignBulkToExcel(
       {} as Record<string, any>
     );
 
-    worksheet.addRow(rowData);
+    worksheet.addRow(rowData); // Add each email as a row in the sheet
   });
 
   // Return Uint8Array instead of Buffer

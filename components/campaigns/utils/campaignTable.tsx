@@ -16,6 +16,7 @@ import { emailCampaignColumns } from '@/components/tables/emails-table/columns';
 import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import { EmailCampaign } from '@/types/goHighLevel/conversations';
 import { TextMessageCampaign } from '@/types/goHighLevel/text';
+import { exportMultipleCampaignsToZip } from '@/lib/utils/files/arrayTableData';
 
 const CampaignsMainContent: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,6 +36,43 @@ const CampaignsMainContent: React.FC = () => {
   const closeModal = () => setIsModalOpen(false);
 
   const totalCampaigns = getNumberOfCampaigns(); // Get the total number of filtered campaigns
+
+  // Function to handle export based on the current campaign type and filtered data
+  const handleExport = async () => {
+    if (!filteredCampaigns || filteredCampaigns.length === 0) {
+      alert('No campaigns available for export');
+      return;
+    }
+
+    let filename = '';
+
+    // Set the filename based on the current campaign type
+    switch (currentCampaignType) {
+      case 'email':
+        filename = 'Email_Campaigns.xlsx';
+        break;
+      case 'text':
+        filename = 'Text_Campaigns.xlsx';
+        break;
+      case 'social':
+        filename = 'Social_Campaigns.xlsx';
+        break;
+      case 'call':
+        filename = 'Call_Campaigns.xlsx'; // Optionally add Call Campaign export logic
+        break;
+      default:
+        alert('Unsupported campaign type');
+        return;
+    }
+
+    // Call the export function for the current campaign type
+    await exportMultipleCampaignsToZip(
+      currentCampaignType,
+      filteredCampaigns,
+      filename
+    );
+  };
+
   const renderCampaignTable = () => {
     switch (currentCampaignType) {
       case 'email':
@@ -101,7 +139,10 @@ const CampaignsMainContent: React.FC = () => {
             </button>
           </div>
 
-          <button className="flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+          <button
+            onClick={handleExport} // Attach the export handler to the button
+            className="flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+          >
             <i className="fas fa-file-export mr-2"></i>
             Export Excel
           </button>
@@ -142,3 +183,15 @@ const CampaignsMainContent: React.FC = () => {
 };
 
 export default CampaignsMainContent;
+function exportSingleCampaignTypeToZip(
+  currentCampaignType: string,
+  filteredCampaigns: (
+    | CallCampaign
+    | EmailCampaign
+    | TextMessageCampaign
+    | SocialMediaCampaign
+  )[],
+  filename: string
+) {
+  throw new Error('Function not implemented.');
+}
