@@ -69,6 +69,13 @@ export const callColumns = [
   { header: 'Recording URL', accessorKey: 'recordingUrl' }
 ];
 
+// Get today's date in dd/mm/yyyy format
+const today = new Date();
+const dd = String(today.getDate()).padStart(2, '0');
+const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+const yyyy = today.getFullYear();
+const formattedDate = `${dd}_${mm}_${yyyy}`; // Format the date with underscores
+
 // Function to export multiple campaigns to ZIP
 export async function exportMultipleCampaignsToZip(
   campaignType: 'call' | 'email' | 'text' | 'social',
@@ -156,5 +163,10 @@ export async function exportMultipleCampaignsToZip(
 
   // Generate ZIP and download
   const zipBlob = await zip.generateAsync({ type: 'blob' });
-  saveAs(zipBlob, `${campaignType}_Campaigns_Export.zip`);
+  saveAs(
+    zipBlob,
+    `${campaignType.toLocaleUpperCase()}_Campaigns_Export${
+      formattedDate + `.zip`
+    }`
+  );
 }

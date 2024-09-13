@@ -45,20 +45,26 @@ const CampaignsMainContent: React.FC = () => {
     }
 
     let filename = '';
+    // Get today's date in dd/mm/yyyy format
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const yyyy = today.getFullYear();
+    const formattedDate = `${dd}_${mm}_${yyyy}`; // Format the date with underscores
 
-    // Set the filename based on the current campaign type
+    // Update filename based on the campaign type and append the formatted date
     switch (currentCampaignType) {
       case 'email':
-        filename = 'Email_Campaigns.xlsx';
+        filename = `${filteredCampaigns[0].name}_Email_Campaigns_${formattedDate}.xlsx`; // Append the formatted date
         break;
       case 'text':
-        filename = 'Text_Campaigns.xlsx';
+        filename = `${filteredCampaigns[0].name}_Text_Campaigns_${formattedDate}.xlsx`; // Append the formatted date
         break;
       case 'social':
-        filename = 'Social_Campaigns.xlsx';
+        filename = `${filteredCampaigns[0].name}_Social_Campaigns_${formattedDate}.xlsx`; // Append the formatted date
         break;
       case 'call':
-        filename = 'Call_Campaigns.xlsx'; // Optionally add Call Campaign export logic
+        filename = `${filteredCampaigns[0].name}_Call_Campaigns_${formattedDate}.xlsx`; // Append the formatted date
         break;
       default:
         alert('Unsupported campaign type');
