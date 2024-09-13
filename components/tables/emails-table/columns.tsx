@@ -6,7 +6,7 @@ import {
   GetEmailByIdResponse
 } from '@/types/goHighLevel/conversations';
 import { EyeIcon } from 'lucide-react';
-import { exportEmailCampaignToExcel } from '@/lib/utils/files/tableData';
+import { exportEmailCampaignToExcel } from '@/lib/utils/files/downloadTableData';
 
 // Color statuses for the email campaign
 const statusColor: Record<EmailCampaign['status'], string> = {

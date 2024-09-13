@@ -11,9 +11,9 @@ import {
   TextCampaign,
   CallCampaign,
   SocialMediaCampaign,
-  EmailCampaign,
   CampaignType
 } from '@/types/_dashboard/campaign';
+import { EmailCampaign } from '@/types/goHighLevel/conversations';
 
 interface CampaignsTableProps {
   campaigns: Array<
@@ -145,7 +145,7 @@ const renderTableRowCells = (
             {dmCampaign.platform}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {dmCampaign.sentAt.toLocaleString()}
+            {dmCampaign.startDate}
           </TableCell>
           <TableCell className="p-2 text-center">{dmCampaign.status}</TableCell>
           <TableCell className="p-2 text-center">
@@ -154,32 +154,40 @@ const renderTableRowCells = (
         </>
       );
     case 'email':
+    case 'email':
       const emailCampaign = campaign as EmailCampaign;
       return (
         <>
           <TableCell className="p-2 text-center">
-            {emailCampaign.fromEmail}
+            {emailCampaign.senderEmail} {/* The sender's email address */}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {emailCampaign.toEmail}
+            {emailCampaign.recipientCount} {/* Number of recipients */}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {emailCampaign.subject}
+            {emailCampaign.sentCount} {/* Number of successfully sent emails */}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {emailCampaign.body}
+            {emailCampaign.deliveredCount} {/* Number of delivered emails */}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {emailCampaign.sentAt.toLocaleString()}
+            {emailCampaign.openedCount} {/* Number of opened emails */}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {emailCampaign.status}
+            {emailCampaign.bouncedCount} {/* Number of bounced emails */}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {emailCampaign.startDate}
+            {emailCampaign.failedCount} {/* Number of failed emails */}
+          </TableCell>
+          <TableCell className="p-2 text-center">
+            {emailCampaign.startDate} {/* Campaign start date */}
+          </TableCell>
+          <TableCell className="p-2 text-center">
+            {emailCampaign.status} {/* Campaign status */}
           </TableCell>
         </>
       );
+
     default:
       return null;
   }
