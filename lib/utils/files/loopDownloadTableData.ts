@@ -1,3 +1,4 @@
+import { SocialAction, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import {
   EmailCampaign,
   GetEmailByIdResponse
@@ -73,33 +74,61 @@ export async function exportCampaignMessagesBulkToExcel(
 }
 
 // Export social campaign data to Excel
+
 export async function exportSocialTableBulkToExcel(
   sheetName: string,
   campaignType: 'text' | 'email' | 'social' | 'call',
   columns: { header: string; accessorKey: string }[],
-  data: any[],
+  data: SocialMediaCampaign[],
   filename: string
 ): Promise<Uint8Array> {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(sheetName);
 
+  // Add column headers
   worksheet.columns = columns.map((col) => ({
     header: col.header,
     key: col.accessorKey
   }));
 
+  // Process each campaign and create a separate row for each action
   data.forEach((campaign) => {
-    const rowData = columns.reduce(
-      (acc, col) => {
-        acc[col.accessorKey] = campaign[col.accessorKey];
-        return acc;
-      },
-      {} as Record<string, any>
-    );
+    campaign.actions.forEach((action: SocialAction) => {
+      // Create a row for each action in the campaign
+      const rowData = columns.reduce(
+        (acc, col) => {
+          if (col.accessorKey === 'actions') {
+            // Handle the actions column (only the current action for this row)
+            acc[col.accessorKey] = `${action.type} (Attempts: ${
+              action.attempt
+            }, Successes: ${action.successful}, Failures: ${
+              action.failed
+            }, Status: ${action.status}, View: ${action.viewLink || 'N/A'})`;
+          } else if (campaign[col.accessorKey as keyof SocialMediaCampaign]) {
+            // Handle all other columns by pulling from the campaign object
+            acc[col.accessorKey] =
+              campaign[col.accessorKey as keyof SocialMediaCampaign] || '';
+          }
+          return acc;
+        },
+        {} as Record<string, any>
+      );
 
-    worksheet.addRow(rowData);
+      worksheet.addRow(rowData); // Add a new row for the current action
+    });
   });
 
-  // Return Uint8Array
+  // Auto-resize columns based on content
+  worksheet.columns.forEach((column) => {
+    if (column.values) {
+      column.width = Math.max(
+        ...column.values
+          .filter((val) => val !== undefined && val !== null)
+          .map((val) => val!.toString().length)
+      );
+    }
+  });
+
+  // Return Uint8Array for zip creation
   return workbook.xlsx.writeBuffer() as Promise<Uint8Array>;
 }
