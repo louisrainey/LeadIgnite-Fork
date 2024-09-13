@@ -1,9 +1,14 @@
-import { SocialAction, SocialMediaCampaign } from '@/types/_dashboard/campaign';
+import {
+  CallCampaign,
+  SocialAction,
+  SocialMediaCampaign
+} from '@/types/_dashboard/campaign';
 import {
   EmailCampaign,
   GetEmailByIdResponse
 } from '@/types/goHighLevel/conversations';
 import { TextMessage } from '@/types/goHighLevel/text';
+import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 import ExcelJS from 'exceljs';
 
 export async function exportEmailCampaignBulkToExcel(
@@ -130,5 +135,101 @@ export async function exportSocialTableBulkToExcel(
   });
 
   // Return Uint8Array for zip creation
+  return workbook.xlsx.writeBuffer() as Promise<Uint8Array>;
+}
+
+export async function exportCallCampaignsToExcel(
+  sheetName: string,
+  campaignType: 'text' | 'email' | 'social' | 'call', // The campaign type
+  columns: { header: string; accessorKey: string }[], // Columns for Excel export
+  data: CallCampaign[], // Call campaign data
+  filename: string // The output file name
+): Promise<Uint8Array> {
+  const workbook = new ExcelJS.Workbook();
+  const campaignName =
+    data.length > 0 ? data[0].name.replace(/\s+/g, '_') : 'Unnamed_Campaign';
+
+  // Get today's date in dd/mm/yyyy format
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const yyyy = today.getFullYear();
+  const formattedDate = `${dd}_${mm}_${yyyy}`; // Use underscores for filename compatibility
+
+  // Modify the worksheet name to include the campaign name
+  const worksheet = workbook.addWorksheet(
+    `${sheetName}_${campaignName}_${formattedDate}`
+  );
+
+  // Add column headers
+  worksheet.columns = columns.map((col) => ({
+    header: col.header,
+    key: col.accessorKey
+  }));
+
+  // Process each call campaign and create rows for each call response
+  data.forEach((campaign) => {
+    campaign.vapi.forEach((callResponse: GetCallResponse) => {
+      const rowData = columns.reduce(
+        (acc, col) => {
+          if (col.accessorKey === 'status') {
+            // Get the campaign status from the main campaign object, not the individual call
+            acc[col.accessorKey] = campaign.status || 'No Status';
+          } else if (col.accessorKey === 'createdAt') {
+            acc[col.accessorKey] = new Date(
+              callResponse.createdAt
+            ).toLocaleString();
+          } else if (col.accessorKey === 'updatedAt') {
+            acc[col.accessorKey] = new Date(
+              callResponse.updatedAt
+            ).toLocaleString();
+          } else if (col.accessorKey === 'startedAt') {
+            acc[col.accessorKey] = callResponse.startedAt
+              ? new Date(callResponse.startedAt).toLocaleString()
+              : 'N/A';
+          } else if (col.accessorKey === 'endedAt') {
+            acc[col.accessorKey] = callResponse.endedAt
+              ? new Date(callResponse.endedAt).toLocaleString()
+              : 'N/A';
+          } else if (col.accessorKey === 'costBreakdown.total') {
+            acc[col.accessorKey] = `$${callResponse.costBreakdown.total.toFixed(
+              2
+            )}`;
+          } else if (col.accessorKey === 'phoneCallProvider') {
+            acc[col.accessorKey] = callResponse.phoneCallProvider;
+          } else if (col.accessorKey === 'transcript') {
+            // Get the actual transcript text if available, else return 'No Transcript'
+            acc[col.accessorKey] = callResponse.transcript || 'No Transcript';
+          } else if (col.accessorKey === 'recordingUrl') {
+            // Get the actual recording URL if available, else return 'No Recording'
+            acc[col.accessorKey] = callResponse.recordingUrl
+              ? callResponse.recordingUrl
+              : 'No Recording';
+          } else {
+            // Handle additional fields from the campaign object itself
+            acc[col.accessorKey] =
+              campaign[col.accessorKey as keyof CallCampaign] || '';
+          }
+          return acc;
+        },
+        {} as Record<string, any>
+      );
+
+      worksheet.addRow(rowData); // Add the row for the current call response
+    });
+  });
+
+  // Auto-resize columns based on content
+  worksheet.columns.forEach((column) => {
+    if (column.values) {
+      column.width = Math.max(
+        ...column.values
+          .filter((val) => val !== undefined && val !== null)
+          .map((val) => val!.toString().length)
+      );
+    }
+  });
+
+  // Create and return the Excel buffer for download
   return workbook.xlsx.writeBuffer() as Promise<Uint8Array>;
 }
