@@ -14,6 +14,8 @@ import {
   SelectItem,
   SelectValue
 } from '@/components/ui/select'; // ShadCN Select
+import { DateRange } from 'react-day-picker';
+import { Calendar } from '@/components/ui/calendar';
 import { X } from 'lucide-react'; // Close Icon
 import { format } from 'date-fns';
 import { DatePickerWithRange } from './dateRangePicker';
@@ -347,6 +349,7 @@ interface FinalizeCampaignModalProps {
   handleBack: () => void;
   estimatedCredits: number; // Estimated credits for the campaign
 }
+
 const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
   campaignName,
   setCampaignName,
@@ -362,6 +365,11 @@ const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [goalError, setGoalError] = useState<string | null>(null); // Error for campaign goal
   const [dateError, setDateError] = useState<string | null>(null); // Error for date validation
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: startDate ? new Date(startDate) : undefined,
+    to: endDate ? new Date(endDate) : undefined
+  });
 
   // Handle input change for the campaign name
   const handleCampaignNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -403,26 +411,23 @@ const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
     }
   };
 
-  // Validate that the end date is after the start date
-  const handleDateChange = (
-    setter: (date: string) => void,
-    date: string,
-    isStart: boolean
-  ) => {
-    setter(date);
+  // Handle the date selection from the calendar
+  const handleDateSelection = (range: DateRange | undefined) => {
+    setDateRange(range);
 
-    if (isStart) {
-      if (endDate && date > endDate) {
-        setDateError('The start date cannot be after the end date.');
-      } else {
-        setDateError(null);
-      }
+    if (range?.from) {
+      setStartDate(format(range.from, 'yyyy-MM-dd'));
+    }
+    if (range?.to) {
+      setEndDate(format(range.to, 'yyyy-MM-dd'));
     } else {
-      if (startDate && date < startDate) {
-        setDateError('The end date cannot be before the start date.');
-      } else {
-        setDateError(null);
-      }
+      setEndDate(''); // Clear end date if not selected
+    }
+
+    if (range?.from && range?.to && range.from > range.to) {
+      setDateError('The end date cannot be before the start date.');
+    } else {
+      setDateError(null);
     }
   };
 
@@ -437,11 +442,12 @@ const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
     campaignGoal.length > 0;
 
   return (
-    <div>
+    <div className="mx-auto max-w-lg">
+      {' '}
+      {/* Ensure content does not overflow */}
       <h2 className="mb-4 text-lg font-semibold dark:text-white">
         Finalize your campaign
       </h2>
-
       {/* Campaign Name Input */}
       <label className="mb-1 block text-sm dark:text-white">
         Campaign Name
@@ -454,7 +460,6 @@ const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
         maxLength={30}
       />
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-
       {/* Campaign Goal Textarea */}
       <label className="mb-1 block text-sm dark:text-white">
         Campaign Goal
@@ -468,30 +473,22 @@ const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
         maxLength={300} // Limit to 300 characters
       />
       {goalError && <p className="text-red-500">{goalError}</p>}
-
-      {/* Start Date Input */}
-      <label className="mb-1 block text-sm dark:text-white">Start Date</label>
-      <Input
-        type="date"
-        value={startDate}
-        onChange={(e) => handleDateChange(setStartDate, e.target.value, true)}
-        className="mb-4 w-full"
-      />
-
-      {/* End Date Input */}
-      <label className="mb-1 block text-sm dark:text-white">End Date</label>
-      <Input
-        type="date"
-        value={endDate}
-        onChange={(e) => handleDateChange(setEndDate, e.target.value, false)}
-        className="mb-4 w-full"
-      />
+      {/* Inline Calendar for Date Range Selection */}
+      <label className="mb-1 block text-center text-sm font-bold dark:text-white">
+        Select Start Date And End Date
+      </label>
+      <div className="mb-4 w-full max-w-lg overflow-auto">
+        <Calendar
+          mode="range"
+          selected={dateRange}
+          onSelect={handleDateSelection}
+          numberOfMonths={2} // Keep 2 months visible
+        />
+      </div>
       {dateError && <p className="text-red-500">{dateError}</p>}
-
       <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
         This campaign will cost {estimatedCredits} credits.
       </p>
-
       {/* Only show Launch button if campaign name, goal, and date range are valid */}
       <Button
         onClick={handleLaunch}
@@ -501,7 +498,6 @@ const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
       >
         Launch Campaign
       </Button>
-
       <Button onClick={handleBack} className="mt-2 w-full" type="button">
         Back
       </Button>

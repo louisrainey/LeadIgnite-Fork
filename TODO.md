@@ -6,12 +6,6 @@
 
 # ? Enable Close and Open Listing Accordian? (Add Max Height)
 
-# Add New team modal , and employee permissions , invite by email with permissions
-
-# Kanban add state
-
-# Add campaigns to global state , so we can easily switch, filter
-
 # Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
 
 <!-- Uncaught InternalError: too much recursion
@@ -22,6 +16,14 @@
     $d3863c46a17e8a28$var$focus index.mjs:247
     handleFocusOut index.mjs:62
 index.mjs:247 -->
+
+# 💪 Add New team modal , and employee permissions , invite by email with permissions
+
+# 💪 Kanban add state
+
+<!-- #✅  Add campaigns to global state , so we can easily switch, filter -->
+
+<!-- #✅  Fix Date range picker in campaigns -->
 
 <!-- #✅  add page for user voice , script -->
 
