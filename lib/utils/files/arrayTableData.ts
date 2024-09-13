@@ -10,7 +10,8 @@ import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import {
   exportEmailCampaignBulkToExcel,
   exportCampaignMessagesBulkToExcel,
-  exportSocialTableBulkToExcel
+  exportSocialTableBulkToExcel,
+  exportCallCampaignsToExcel
 } from './loopDownloadTableData';
 
 // Email campaign columns
@@ -54,13 +55,18 @@ const socialColumns = [
 ];
 
 // Call campaign columns (assuming similar structure)
-const callColumns = [
+export const callColumns = [
   { header: 'Campaign Name', accessorKey: 'name' },
-  { header: 'Caller ID', accessorKey: 'callerId' },
-  { header: 'Start Date', accessorKey: 'startDate' },
-  { header: 'End Date', accessorKey: 'endDate' },
-  { header: 'Status', accessorKey: 'status' },
-  { header: 'Total Calls', accessorKey: 'totalCalls' }
+  { header: 'Campaign Status', accessorKey: 'campaignStatus' }, // New column for campaign status
+  { header: 'Call Status', accessorKey: 'status' }, // Renamed to clarify it's for the call status
+  { header: 'Created At', accessorKey: 'createdAt' },
+  { header: 'Updated At', accessorKey: 'updatedAt' },
+  { header: 'Started At', accessorKey: 'startedAt' },
+  { header: 'Ended At', accessorKey: 'endedAt' },
+  { header: 'Total Cost', accessorKey: 'costBreakdown.total' },
+  { header: 'Provider', accessorKey: 'phoneCallProvider' },
+  { header: 'Transcript', accessorKey: 'transcript' },
+  { header: 'Recording URL', accessorKey: 'recordingUrl' }
 ];
 
 // Function to export multiple campaigns to ZIP
@@ -124,7 +130,7 @@ export async function exportMultipleCampaignsToZip(
 
       case 'call':
         columns = callColumns;
-        buffer = await exportSocialTableBulkToExcel(
+        buffer = await exportCallCampaignsToExcel(
           'Call Campaign',
           campaignType,
           columns,
