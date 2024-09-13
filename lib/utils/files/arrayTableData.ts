@@ -1,9 +1,12 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
-import { GetEmailByIdResponse } from '@/types/goHighLevel/conversations';
+import {
+  EmailCampaign,
+  GetEmailByIdResponse
+} from '@/types/goHighLevel/conversations';
 import { TextMessage, TextMessageCampaign } from '@/types/goHighLevel/text';
-import { SocialMediaCampaign } from '@/types/_dashboard/campaign';
+import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import {
   exportEmailCampaignBulkToExcel,
   exportCampaignMessagesBulkToExcel,
@@ -50,94 +53,102 @@ const socialColumns = [
   { header: 'Actions', accessorKey: 'actions' }
 ];
 
-// Function to export all campaign types into a ZIP
-export async function exportAllCampaignsToZip(
-  emailCampaigns: GetEmailByIdResponse[],
-  textCampaigns: TextMessageCampaign[],
-  socialCampaigns: SocialMediaCampaign[],
-  callCampaigns: any[] // Assuming call campaigns also exist, if needed
+// Call campaign columns (assuming similar structure)
+const callColumns = [
+  { header: 'Campaign Name', accessorKey: 'name' },
+  { header: 'Caller ID', accessorKey: 'callerId' },
+  { header: 'Start Date', accessorKey: 'startDate' },
+  { header: 'End Date', accessorKey: 'endDate' },
+  { header: 'Status', accessorKey: 'status' },
+  { header: 'Total Calls', accessorKey: 'totalCalls' }
+];
+
+// Function to export multiple campaigns to ZIP
+export async function exportMultipleCampaignsToZip(
+  campaignType: 'call' | 'email' | 'text' | 'social',
+  campaigns: (
+    | CallCampaign
+    | EmailCampaign
+    | TextMessageCampaign
+    | SocialMediaCampaign
+  )[], // An array of mixed campaigns
+  filename: string
 ) {
   const zip = new JSZip();
 
-  // Helper function to add files to the ZIP
-  const addToZip = async (
-    campaignType: 'email' | 'text' | 'social',
-    filename: string,
-    data: any[],
-    columns: any[]
+  // Helper function to process and add each campaign to the zip
+  const processCampaign = async (
+    campaign:
+      | CallCampaign
+      | EmailCampaign
+      | TextMessageCampaign
+      | SocialMediaCampaign,
+    index: number
   ) => {
+    let columns: any[] = [];
     let buffer: Uint8Array | undefined;
+    const campaignFilename = `${filename}_campaign_${index + 1}.xlsx`; // Unique filename per campaign
+
     switch (campaignType) {
       case 'email':
+        columns = emailColumns;
         buffer = await exportEmailCampaignBulkToExcel(
-          'Email Campaigns',
+          'Email Campaign',
           columns,
-          data,
-          filename
+          (campaign as EmailCampaign).emails, // Extract emails for EmailCampaign
+          campaignFilename
         );
         break;
+
       case 'text':
+        columns = textMessageColumns;
+        const textMessages = (campaign as TextMessageCampaign).messages; // Extract messages for TextMessageCampaign
         buffer = await exportCampaignMessagesBulkToExcel(
-          'Text Campaigns',
+          'Text Campaign',
           columns,
-          data,
-          filename
+          textMessages, // Export messages
+          campaignFilename
         );
         break;
+
       case 'social':
+        columns = socialColumns;
         buffer = await exportSocialTableBulkToExcel(
-          'Social Campaigns',
+          'Social Campaign',
           campaignType,
           columns,
-          data,
-          filename
+          [campaign as SocialMediaCampaign], // Export SocialMediaCampaign
+          campaignFilename
         );
         break;
+
+      case 'call':
+        columns = callColumns;
+        buffer = await exportSocialTableBulkToExcel(
+          'Call Campaign',
+          campaignType,
+          columns,
+          [campaign as CallCampaign], // Export CallCampaign
+          campaignFilename
+        );
+        break;
+
+      default:
+        console.error('Unsupported campaign type');
+        return;
     }
+
     if (buffer) {
-      zip.file(filename, buffer); // Add buffer to the ZIP
+      zip.file(campaignFilename, buffer); // Add the campaign data to the zip
     }
   };
 
-  // Export email campaigns and add to ZIP
-  if (emailCampaigns.length > 0) {
-    await addToZip(
-      'email',
-      'Email_Campaigns.xlsx',
-      emailCampaigns,
-      emailColumns
-    );
+  // Loop over each campaign and process it
+  for (let i = 0; i < campaigns.length; i++) {
+    await processCampaign(campaigns[i], i); // Process each campaign
   }
-
-  // Export text campaigns and add to ZIP
-  if (textCampaigns.length > 0) {
-    // For each text campaign, export the messages
-    for (const campaign of textCampaigns) {
-      await addToZip(
-        'text',
-        `${campaign.name}_Text_Campaign.xlsx`,
-        campaign.messages,
-        textMessageColumns
-      );
-    }
-  }
-
-  // Export social campaigns and add to ZIP
-  if (socialCampaigns.length > 0) {
-    await addToZip(
-      'social',
-      'Social_Campaigns.xlsx',
-      socialCampaigns,
-      socialColumns
-    );
-  }
-
-  // If you want to export call campaigns, you can do it similarly:
-  // if (callCampaigns.length > 0) {
-  //   await addToZip('call', 'Call_Campaigns.xlsx', callCampaigns, callColumns);
-  // }
 
   // Generate ZIP and download
   const zipBlob = await zip.generateAsync({ type: 'blob' });
-  saveAs(zipBlob, 'Campaigns_Export.zip');
+  saveAs(zipBlob, `${campaignType}_Campaigns_Export.zip`);
 }
