@@ -6,7 +6,7 @@ import MultiStepCampaign from '@/components/reusables/modals/startCampaigns';
 
 import { CallCampaignTable } from '@/components/tables/calls-table/call-campaign-table';
 import { callCampaignColumns } from '@/components/tables/calls-table/columns';
-import { TextMessageCampaignTable } from '@/components/tables/text-table/social-campaign-table';
+import { TextMessageCampaignTable } from '@/components/tables/text-table/text-campaign-table';
 import { textMessageCampaignColumns } from '@/components/tables/text-table/columns';
 import { SocialMediaCampaignTable } from '@/components/tables/socials-table/social-campaign-table';
 import { socialMediaCampaignColumns } from '@/components/tables/socials-table/columns';
@@ -51,7 +51,7 @@ const CampaignsMainContent: React.FC = () => {
           <CallCampaignTable
             columns={callCampaignColumns}
             data={filteredCampaigns as CallCampaign[]} // Type assertion for CallCampaign data
-            searchKey="calls"
+            searchKey="name"
             pageCount={Math.ceil(filteredCampaigns.length / 10)}
           />
         );

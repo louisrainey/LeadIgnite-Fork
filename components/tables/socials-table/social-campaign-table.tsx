@@ -5,10 +5,11 @@ import {
   PaginationState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -42,6 +43,7 @@ export function SocialMediaCampaignTable<TData, TValue>({
   const searchParams = useSearchParams();
   const page = searchParams?.get('page') ?? '1';
   const per_page = searchParams?.get('limit') ?? '10';
+  const [search, setSearch] = useState('');
 
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
@@ -83,24 +85,23 @@ export function SocialMediaCampaignTable<TData, TValue>({
     data: data.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize), // Limit data by current page and page size
     columns,
     pageCount,
+    getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     state: {
-      pagination: { pageIndex, pageSize }
+      pagination: { pageIndex, pageSize },
+      globalFilter: search // This will be used to filter based on search
     },
     onPaginationChange: setPagination,
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true
   });
-
   return (
     <>
       <Input
         placeholder={`Search ${searchKey}...`}
-        value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
-        onChange={(event) =>
-          table.getColumn(searchKey)?.setFilterValue(event.target.value)
-        }
-        className="my-5 w-full md:max-w-sm"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full max-w-sm"
       />
 
       <div className="w-full overflow-x-auto">
