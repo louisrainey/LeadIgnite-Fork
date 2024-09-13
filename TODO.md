@@ -2,9 +2,9 @@
 
 # Add cancel while drawing
 
-# ? Enable Close and Open Listing Accordian? (Add Max Height)
+# Add redirects to page if subscription is over , or user not correctly signed in
 
-# Fix Date range picker in campaigns
+# ? Enable Close and Open Listing Accordian? (Add Max Height)
 
 # Add New team modal , and employee permissions , invite by email with permissions
 

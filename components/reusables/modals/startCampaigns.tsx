@@ -26,9 +26,7 @@ interface ChannelSelectionModalProps {
   closeModal: () => void;
   handleNext: () => void;
   primaryChannel: string;
-  secondaryChannel: string;
   setPrimaryChannel: (channel: string) => void;
-  setSecondaryChannel: (channel: string) => void;
 }
 
 // Step 1 Modal: Channel Selection
@@ -36,45 +34,34 @@ const ChannelSelectionModal: React.FC<ChannelSelectionModalProps> = ({
   closeModal,
   handleNext,
   primaryChannel,
-  secondaryChannel,
-  setPrimaryChannel,
-  setSecondaryChannel
+  setPrimaryChannel
 }) => {
   const isSocialMedia = (channel: string) =>
     socialMediaPlatforms.includes(channel);
 
-  // Filter out the primary channel from the secondary channel options
-  const filteredSecondaryChannels = allChannels.filter(
-    (channel) => channel !== primaryChannel
-  );
-
-  // Update handleNext to check if both channels are social media platforms or the same channel
-  const validateChannels = () => {
-    if (!primaryChannel || !secondaryChannel) {
-      return false; // Ensure both primary and secondary channels are selected
-    }
-    if (isSocialMedia(primaryChannel) && isSocialMedia(secondaryChannel)) {
-      alert(
-        'Primary and secondary channels cannot both be social media platforms.'
-      );
-      return false;
+  // Validate that a primary channel is selected
+  const validateChannel = () => {
+    if (!primaryChannel) {
+      return false; // Ensure a primary channel is selected
     }
     return true;
   };
 
   const handleNextStep = () => {
-    if (validateChannels()) {
+    if (validateChannel()) {
       handleNext();
+    } else {
+      alert('Please select a primary channel.');
     }
   };
 
   return (
     <div>
       <h2 className="mb-4 text-center text-lg font-semibold dark:text-white">
-        Select Communication Channels
+        Select Communication Channel
       </h2>
       <p className="mb-4 text-center text-gray-500 dark:text-gray-400">
-        Choose primary and secondary channels
+        Choose a primary communication channel
       </p>
 
       {/* Primary Channel Select */}
@@ -82,34 +69,13 @@ const ChannelSelectionModal: React.FC<ChannelSelectionModalProps> = ({
         Primary Channel
       </label>
       <Select onValueChange={setPrimaryChannel}>
-        <SelectTrigger className="mb-4 w-full rounded-md bg-gray-800 p-2 text-white">
+        <SelectTrigger className="mb-4 w-full rounded-md bg-white p-2 text-black dark:bg-gray-800 dark:text-white">
           <SelectValue placeholder="Choose a primary channel" />
         </SelectTrigger>
         <SelectContent>
           {allChannels.map((channel) => (
             <SelectItem
-              className="cursor-pointer"
-              key={channel}
-              value={channel}
-            >
-              {channel.charAt(0).toUpperCase() + channel.slice(1)}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {/* Secondary Channel Select */}
-      <label className="mb-2 block text-sm font-semibold dark:text-gray-200">
-        Secondary Channel
-      </label>
-      <Select onValueChange={setSecondaryChannel}>
-        <SelectTrigger className="mb-4 w-full rounded-md bg-gray-800 p-2 text-white">
-          <SelectValue placeholder="Choose a secondary channel" />
-        </SelectTrigger>
-        <SelectContent>
-          {filteredSecondaryChannels.map((channel) => (
-            <SelectItem
-              className="cursor-pointer"
+              className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600"
               key={channel}
               value={channel}
             >
@@ -122,9 +88,9 @@ const ChannelSelectionModal: React.FC<ChannelSelectionModalProps> = ({
       {/* Button to proceed to the next step */}
       <Button
         onClick={handleNextStep}
-        disabled={!primaryChannel || !secondaryChannel}
+        disabled={!primaryChannel}
         className={`mt-4 w-full ${
-          !primaryChannel || !secondaryChannel
+          !primaryChannel
             ? 'cursor-not-allowed bg-gray-600'
             : 'bg-blue-600 text-white hover:bg-blue-700'
         }`}
@@ -136,7 +102,6 @@ const ChannelSelectionModal: React.FC<ChannelSelectionModalProps> = ({
 };
 interface ChannelCustomizationModalProps {
   primaryChannel: string;
-  secondaryChannel: string;
   handleNext: () => void;
   handleBack: () => void;
   phoneNumber?: string | null; // Optional prop for phone number
@@ -144,7 +109,6 @@ interface ChannelCustomizationModalProps {
   socialAccounts?: string[]; // List of connected social media accounts
   onConnectAccount?: (platform: string) => void; // Function to connect a new account
 }
-// Step 2 Modal: Channel Customization
 
 // Mapping of actions based on the platform type
 const platformActions: { [key: string]: string[] } = {
@@ -159,9 +123,9 @@ const platformActions: { [key: string]: string[] } = {
   ],
   twitter: ['📩 Followers', 'Follow', 'Like']
 };
+
 const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
   primaryChannel,
-  secondaryChannel,
   handleNext,
   handleBack,
   phoneNumber = null,
@@ -174,8 +138,6 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
   );
   const [inputEmail, setInputEmail] = useState<string>(email || '');
   const [selectedPrimaryAccount, setSelectedPrimaryAccount] =
-    useState<string>('');
-  const [selectedSecondaryAccount, setSelectedSecondaryAccount] =
     useState<string>('');
   const [selectedActions, setSelectedActions] = useState<string[]>([]);
   const [isNextEnabled, setIsNextEnabled] = useState<boolean>(false);
@@ -229,45 +191,31 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
         ? isEmailValid(inputEmail)
         : selectedPrimaryAccount.length > 0 && selectedActions.length > 0;
 
-    const isSecondaryValid =
-      secondaryChannel === 'phone'
-        ? inputPhoneNumber.length === 12
-        : secondaryChannel === 'email'
-        ? isEmailValid(inputEmail)
-        : selectedSecondaryAccount.length > 0 && selectedActions.length > 0;
-
-    setIsNextEnabled(isPrimaryValid && isSecondaryValid);
+    setIsNextEnabled(isPrimaryValid);
   }, [
     primaryChannel,
-    secondaryChannel,
     inputPhoneNumber,
     inputEmail,
     selectedPrimaryAccount,
-    selectedSecondaryAccount,
     selectedActions
   ]);
 
   // Detect when a new account is connected and update the state
   useEffect(() => {
-    console.log(`Connected accounts count: ${connectedAccounts.length}`); // Log the count of connected accounts
-
     if (connectedAccounts.length > 0) {
       setIsNextEnabled(true); // Enable "Next" button if any account is connected
     }
   }, [connectedAccounts]);
 
   // Render customization options based on the channel type
-  const renderCustomization = (
-    channel: string,
-    channelType: 'primary' | 'secondary'
-  ) => {
+  const renderCustomization = (channel: string) => {
     const actions = platformActions[channel.toLowerCase()] || [];
 
     if (channel === 'phone') {
       return (
         <>
           <label className="mb-1 block text-sm dark:text-white">
-            {channelType === 'primary' ? 'Primary' : 'Secondary'} Phone Number
+            Primary Phone Number
           </label>
           <Input
             value={inputPhoneNumber}
@@ -285,7 +233,7 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
       return (
         <>
           <label className="mb-1 block text-sm dark:text-white">
-            {channelType === 'primary' ? 'Primary' : 'Secondary'} Email Address
+            Primary Email Address
           </label>
           <Input
             value={inputEmail}
@@ -304,18 +252,13 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
     return (
       <>
         <label className="mb-1 block text-sm dark:text-white">
-          {channelType === 'primary' ? 'Primary' : 'Secondary'}{' '}
-          {channel.charAt(0).toUpperCase() + channel.slice(1)} Account
+          Primary {channel.charAt(0).toUpperCase() + channel.slice(1)} Account
         </label>
         {connectedAccounts.length > 0 ? (
           <div>
             {/* Automatically display the connected account without requiring selection */}
             <Input
-              value={
-                channelType === 'primary'
-                  ? selectedPrimaryAccount
-                  : selectedSecondaryAccount
-              }
+              value={selectedPrimaryAccount}
               readOnly
               className="mb-4 w-full rounded-md bg-gray-800 p-2 text-white"
             />
@@ -325,34 +268,14 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
             onClick={() => {
               const mockAccount = 'connected-account';
               const shown_account = channel.toUpperCase();
-              // Check if onConnectAccount is provided
+
               if (onConnectAccount) {
-                // Call the onConnectAccount function
                 onConnectAccount(channel);
-
-                // Simulate account connection by updating connected accounts
                 setConnectedAccounts((prev) => [...prev, shown_account]);
-
-                // Automatically set the connected account for primary or secondary
-                if (channelType === 'primary') {
-                  setSelectedPrimaryAccount(shown_account);
-                } else {
-                  setSelectedSecondaryAccount(shown_account);
-                }
+                setSelectedPrimaryAccount(shown_account);
               } else {
-                // If onConnectAccount is not provided, simulate the connection directly
-                setConnectedAccounts((prev) => {
-                  const updatedAccounts = [...prev, shown_account];
-                  console.log('Connected accounts updated:', updatedAccounts); // Log the updated accounts
-                  return updatedAccounts;
-                });
-
-                // Automatically set the connected account as primary or secondary
-                if (channelType === 'primary') {
-                  setSelectedPrimaryAccount(shown_account);
-                } else {
-                  setSelectedSecondaryAccount(shown_account);
-                }
+                setConnectedAccounts((prev) => [...prev, shown_account]);
+                setSelectedPrimaryAccount(shown_account);
               }
             }}
             className="mb-4 w-full bg-blue-600 text-white hover:bg-blue-700"
@@ -384,7 +307,7 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
   return (
     <div>
       <h2 className="mb-4 text-lg font-semibold dark:text-white">
-        Customize your Channels
+        Customize your Channel
       </h2>
 
       {/* Primary Channel Customization */}
@@ -392,15 +315,7 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
         <h3 className="text-md font-semibold dark:text-white">
           Primary Channel
         </h3>
-        {renderCustomization(primaryChannel, 'primary')}
-      </div>
-
-      {/* Secondary Channel Customization */}
-      <div>
-        <h3 className="text-md font-semibold dark:text-white">
-          Secondary Channel
-        </h3>
-        {renderCustomization(secondaryChannel, 'secondary')}
+        {renderCustomization(primaryChannel)}
       </div>
 
       {/* Next and Back Buttons */}
@@ -419,20 +334,8 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
 };
 
 // Define types for the props
-interface FinalizeCampaignModalProps {
-  campaignName: string;
-  setCampaignName: (name: string) => void;
-  startDate: string;
-  setStartDate: (date: string) => void;
-  endDate: string;
-  setEndDate: (date: string) => void;
-  handleLaunch: () => void;
-  handleBack: () => void;
-  estimatedCredits: number; // Estimated credits for the campaign
-}
 
 // Step 3 Modal: Finalize Campaign
-
 interface FinalizeCampaignModalProps {
   campaignName: string;
   setCampaignName: (name: string) => void;
@@ -456,22 +359,15 @@ const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
   estimatedCredits
 }) => {
   const [campaignGoal, setCampaignGoal] = useState(''); // State for campaign goal
-  const [selectedVoice, setSelectedVoice] = useState('AI Voice 1'); // State for AI voice selection
-  const [selectedScript, setSelectedScript] = useState('Sales Script 1'); // State for sales script selection
-  const [selectedAgent, setSelectedAgent] = useState('Avatar Agent 1'); // State for avatar agent selection
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [goalError, setGoalError] = useState<string | null>(null); // Error for campaign goal
-
-  const aiVoices = ['AI Voice 1', 'AI Voice 2', 'AI Voice 3']; // AI Voice options
-  const salesScripts = ['Sales Script 1', 'Sales Script 2', 'Sales Script 3']; // Sales Script options
-  const avatarAgents = ['Avatar Agent 1', 'Avatar Agent 2', 'Avatar Agent 3']; // Avatar Agent options
+  const [dateError, setDateError] = useState<string | null>(null); // Error for date validation
 
   // Handle input change for the campaign name
   const handleCampaignNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
     setCampaignName(name);
 
-    // Only validate if the user has typed at least one character
     if (name.length > 0) {
       if (
         name.length < 5 ||
@@ -506,15 +402,36 @@ const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
       setGoalError(null); // Clear error if valid
     }
   };
-  const handleCreateOption = (path: string) => {
-    router.push(path); // Navigate to the "create" page
+
+  // Validate that the end date is after the start date
+  const handleDateChange = (
+    setter: (date: string) => void,
+    date: string,
+    isStart: boolean
+  ) => {
+    setter(date);
+
+    if (isStart) {
+      if (endDate && date > endDate) {
+        setDateError('The start date cannot be after the end date.');
+      } else {
+        setDateError(null);
+      }
+    } else {
+      if (startDate && date < startDate) {
+        setDateError('The end date cannot be before the start date.');
+      } else {
+        setDateError(null);
+      }
+    }
   };
 
-  // Check if both campaign name, goal, and date range are selected to enable the button
+  // Check if both campaign name, goal, and valid date range are selected to enable the button
   const isNextEnabled =
     campaignName.length >= 5 &&
     !errorMessage &&
     !goalError &&
+    !dateError &&
     startDate &&
     endDate &&
     campaignGoal.length > 0;
@@ -552,108 +469,24 @@ const FinalizeCampaignModal: React.FC<FinalizeCampaignModalProps> = ({
       />
       {goalError && <p className="text-red-500">{goalError}</p>}
 
-      {/* AI Voice Selector */}
-      <label className="mb-1 block text-sm dark:text-white">
-        Select AI Voice
-      </label>
-      <Select
-        onValueChange={(value) =>
-          value === 'create'
-            ? handleCreateOption('/create-ai-voice')
-            : setSelectedVoice(value)
-        }
-        defaultValue={selectedVoice}
-      >
-        <SelectTrigger className="mb-4 w-full">
-          <SelectValue placeholder="Select AI Voice" />
-        </SelectTrigger>
-        <SelectContent>
-          {aiVoices.map((voice) => (
-            <SelectItem className="cursor-pointer" key={voice} value={voice}>
-              {voice}
-            </SelectItem>
-          ))}
-          <SelectItem className="cursor-pointer" value="create">
-            Create AI Voice
-          </SelectItem>{' '}
-          {/* Create AI Voice Option */}
-        </SelectContent>
-      </Select>
-
-      {/* Sales Script Selector */}
-      <label className="mb-1 block text-sm dark:text-white">
-        Select Sales Script
-      </label>
-      <Select
-        onValueChange={(value) =>
-          value === 'create'
-            ? handleCreateOption('/create-sales-script')
-            : setSelectedScript(value)
-        }
-        defaultValue={selectedScript}
-      >
-        <SelectTrigger className="mb-4 w-full">
-          <SelectValue placeholder="Select Sales Script" />
-        </SelectTrigger>
-        <SelectContent>
-          {salesScripts.map((script) => (
-            <SelectItem className="cursor-pointer" key={script} value={script}>
-              {script}
-            </SelectItem>
-          ))}
-          <SelectItem className="cursor-pointer" value="create">
-            Create Sales Script
-          </SelectItem>{' '}
-          {/* Create Sales Script Option */}
-        </SelectContent>
-      </Select>
-
-      {/* Avatar Agent Selector */}
-      <label className="mb-1 block text-sm dark:text-white">
-        Select Avatar Agent
-      </label>
-      <Select
-        onValueChange={(value) =>
-          value === 'create'
-            ? handleCreateOption('/create-avatar-agent')
-            : setSelectedAgent(value)
-        }
-        defaultValue={selectedAgent}
-      >
-        <SelectTrigger className="mb-4 w-full">
-          <SelectValue placeholder="Select Avatar Agent" />
-        </SelectTrigger>
-        <SelectContent>
-          {avatarAgents.map((agent) => (
-            <SelectItem className="cursor-pointer" key={agent} value={agent}>
-              {agent}
-            </SelectItem>
-          ))}
-          <SelectItem className="cursor-pointer" value="create">
-            Create Avatar Agent
-          </SelectItem>{' '}
-          {/* Create Avatar Agent Option */}
-        </SelectContent>
-      </Select>
-
-      {/* Date Range Picker */}
-      <label className="mb-1 block text-sm dark:text-white">
-        Select Date Range
-      </label>
-      <DatePickerWithRange
-        from={startDate ? new Date(startDate) : undefined}
-        to={endDate ? new Date(endDate) : undefined}
-        setDateRange={(range) => {
-          if (range?.from) {
-            setStartDate(format(range.from, 'yyyy-MM-dd'));
-          }
-          if (range?.to) {
-            setEndDate(format(range.to, 'yyyy-MM-dd'));
-          } else {
-            setEndDate('');
-          }
-        }}
+      {/* Start Date Input */}
+      <label className="mb-1 block text-sm dark:text-white">Start Date</label>
+      <Input
+        type="date"
+        value={startDate}
+        onChange={(e) => handleDateChange(setStartDate, e.target.value, true)}
+        className="mb-4 w-full"
       />
+
+      {/* End Date Input */}
+      <label className="mb-1 block text-sm dark:text-white">End Date</label>
+      <Input
+        type="date"
+        value={endDate}
+        onChange={(e) => handleDateChange(setEndDate, e.target.value, false)}
+        className="mb-4 w-full"
+      />
+      {dateError && <p className="text-red-500">{dateError}</p>}
 
       <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
         This campaign will cost {estimatedCredits} credits.
@@ -722,16 +555,13 @@ const MultiStepCampaign: React.FC<{ closeModal: () => void }> = ({
                 closeModal={closeModal}
                 handleNext={handleNext}
                 primaryChannel={primaryChannel}
-                secondaryChannel={secondaryChannel}
                 setPrimaryChannel={setPrimaryChannel}
-                setSecondaryChannel={setSecondaryChannel}
               />
             )}
 
             {step === 2 && (
               <ChannelCustomizationModal
                 primaryChannel={primaryChannel || ''} // Default to empty string if null
-                secondaryChannel={secondaryChannel || ''} // Default to empty string if null
                 handleNext={handleNext}
                 handleBack={handleBack}
               />
