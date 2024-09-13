@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import { RefreshCw } from 'lucide-react';
 import * as OutReachAnimation from '@/public/lottie/CampaignPing.json';
@@ -20,6 +20,16 @@ import { exportMultipleCampaignsToZip } from '@/lib/utils/files/arrayTableData';
 
 const CampaignsMainContent: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(new Date()); // Tracks the last updated time
+  const [minutesAgo, setMinutesAgo] = useState(0); // Tracks how many minutes ago the update happened
+
+  const calculateMinutesAgo = () => {
+    const now = new Date();
+    const diff = Math.floor(
+      (now.getTime() - lastUpdated.getTime()) / (1000 * 60)
+    ); // Difference in minutes
+    setMinutesAgo(diff);
+  };
 
   // Zustand store state selectors
   const currentCampaignType = useCampaignStore(
@@ -79,6 +89,23 @@ const CampaignsMainContent: React.FC = () => {
     );
   };
 
+  const handleRefresh = () => {
+    setLastUpdated(new Date()); // Set last updated time to now
+    calculateMinutesAgo(); // Immediately calculate how many minutes ago
+  };
+  // Set up an interval to update the "minutes ago" every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      calculateMinutesAgo();
+    }, 60000); // Every 60 seconds
+
+    // Run the calculation immediately when the component mounts
+    calculateMinutesAgo();
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, [lastUpdated]);
+
   const renderCampaignTable = () => {
     switch (currentCampaignType) {
       case 'email':
@@ -136,8 +163,13 @@ const CampaignsMainContent: React.FC = () => {
 
         <div className="flex items-center space-x-4 text-gray-500 dark:text-gray-400">
           <div className="flex items-center space-x-2">
-            <span>Updated 8 minutes ago</span>
-            <button className="rounded-md p-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-700">
+            <span>
+              Updated {minutesAgo} {minutesAgo === 1 ? 'minute' : 'minutes'} ago
+            </span>
+            <button
+              className="rounded-md p-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-700"
+              onClick={handleRefresh} // Trigger manual refresh
+            >
               <RefreshCw
                 size={18}
                 className="text-gray-600 dark:text-gray-300"
