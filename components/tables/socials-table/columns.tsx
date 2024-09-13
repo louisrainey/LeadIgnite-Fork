@@ -1,13 +1,31 @@
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useState } from 'react';
 import { SocialAction, SocialMediaCampaign } from '@/types/_dashboard/campaign';
-import { exportTableDataToExcel } from '@/lib/utils/files/tableData';
+import { exportSocialTableDataToExcel } from '@/lib/utils/files/downloadTableData';
 
 // Color statuses for the social media campaign
-const statusColor: Record<SocialMediaCampaign['status'], string> = {
+// Color statuses for the social media campaign
+const statusColor: Record<
+  | 'pending'
+  | 'completed'
+  | 'failed'
+  | 'delivered'
+  | 'delivering'
+  | 'missed'
+  | 'queued'
+  | 'read'
+  | 'unread',
+  string
+> = {
   pending: 'bg-orange-100 text-orange-600',
   completed: 'bg-green-100 text-green-600',
-  failed: 'bg-red-100 text-red-600'
+  failed: 'bg-red-100 text-red-600',
+  delivered: 'bg-blue-100 text-blue-600',
+  delivering: 'bg-yellow-100 text-yellow-600',
+  missed: 'bg-gray-100 text-gray-600',
+  queued: 'bg-purple-100 text-purple-600',
+  read: 'bg-indigo-100 text-indigo-600',
+  unread: 'bg-teal-100 text-teal-600'
 };
 
 // Define your types for row.original
@@ -247,7 +265,7 @@ export const socialMediaCampaignColumns: ColumnDef<SocialMediaCampaign>[] = [
           console.log('Data to export:', data);
 
           // Call the export function (ensure it's defined elsewhere in your code)
-          exportTableDataToExcel(
+          exportSocialTableDataToExcel(
             'Campaign Data', // Sheet name
             'social', // Campaign type
             columns, // Column definitions

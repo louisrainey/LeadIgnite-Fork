@@ -3,7 +3,7 @@ import { TextMessageCampaign, TextMessage } from '@/types/goHighLevel/text';
 import { saveAs } from 'file-saver'; // Import the saveAs function
 import { GetEmailByIdResponse } from '@/types/goHighLevel/conversations';
 // Function to export campaign data to Excel
-export async function exportTableDataToExcel(
+export async function exportSocialTableDataToExcel(
   sheetName: string,
   campaignType: 'text' | 'email' | 'social' | 'call',
   columns: { header: string; accessorKey: string }[],

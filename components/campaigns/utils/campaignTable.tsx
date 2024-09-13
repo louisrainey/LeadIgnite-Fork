@@ -103,7 +103,7 @@ const CampaignsMainContent: React.FC = () => {
 
           <button className="flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
             <i className="fas fa-file-export mr-2"></i>
-            Export to CSV
+            Export Excel
           </button>
         </div>
       </div>

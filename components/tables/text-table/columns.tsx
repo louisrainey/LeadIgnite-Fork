@@ -1,14 +1,31 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { TextMessageCampaign, TextMessage } from '@/types/goHighLevel/text';
 import { EyeIcon } from 'lucide-react';
-import { exportCampaignMessagesToExcel } from '@/lib/utils/files/tableData';
+import { exportCampaignMessagesToExcel } from '@/lib/utils/files/downloadTableData';
 
 // Color statuses for the text message campaign
-const statusColor: Record<TextMessageCampaign['status'], string> = {
-  pending: 'bg-orange-100 text-orange-600',
-  'in-progress': 'bg-blue-100 text-blue-600',
-  completed: 'bg-green-100 text-green-600',
-  failed: 'bg-red-100 text-red-600'
+// Assuming TextMessageCampaign['status'] includes the following:
+type TextMessageCampaignStatus =
+  | 'delivered'
+  | 'delivering'
+  | 'failed'
+  | 'pending'
+  | 'completed'
+  | 'missed'
+  | 'queued'
+  | 'read'
+  | 'unread';
+
+const statusColor: Record<TextMessageCampaignStatus, string> = {
+  delivered: 'bg-green-200 text-green-700', // Delivered - lighter green for success
+  delivering: 'bg-yellow-100 text-yellow-600', // Delivering - yellow for in-progress
+  failed: 'bg-red-100 text-red-600', // Failed - red for errors
+  pending: 'bg-orange-100 text-orange-600', // Pending - orange for waiting
+  completed: 'bg-green-100 text-green-600', // Completed - green for success
+  missed: 'bg-gray-200 text-gray-600', // Missed - gray for neutral status
+  queued: 'bg-purple-100 text-purple-600', // Queued - purple for waiting in queue
+  read: 'bg-blue-100 text-blue-600', // Read - blue to indicate action has been completed
+  unread: 'bg-indigo-100 text-indigo-600' // Unread - indigo for something not seen yet
 };
 
 // Functional component for viewing an individual message
