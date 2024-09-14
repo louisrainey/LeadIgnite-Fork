@@ -2,11 +2,9 @@
 
 # Add cancel while drawing
 
-# Add Leads,LeadList to global state , so we can easily switch, filter
-
 # Create user profile
 
-# Lead Manager Add pagination , Fix status select
+# Switch lead results to use shad ui drawer https://ui.shadcn.com/docs/components/drawer
 
 # Add redirects to page if subscription is over , or user not correctly signed in
 
@@ -14,7 +12,11 @@
 
 # ? Enable Close and Open Listing Accordian? (Add Max Height)
 
-# Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
+# 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
+
+# Switch alerts to use sonner https://ui.shadcn.com/docs/components/sonner
+
+# ⁉️ optimize load speeds
 
 <!-- Uncaught InternalError: too much recursion
     $d3863c46a17e8a28$var$focus index.mjs:247
@@ -28,6 +30,10 @@ index.mjs:247 -->
 # 💪 Add New team modal , and employee permissions , invite by email with permissions
 
 # 💪 Kanban add state
+
+<!-- #✅ Add Leads,LeadList to global state , so we can easily switch, filter -->
+
+<!-- #✅ Lead Manager Add pagination , Fix status select -->
 
 <!-- #✅  Add campaigns to global state , so we can easily switch, filter -->
 
