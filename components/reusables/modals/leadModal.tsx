@@ -17,7 +17,10 @@ const AddLeadModal = ({
   const [zipCode, setZipCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('1');
   const [email, setEmail] = useState('');
-
+  const [facebook, setFacebook] = useState('');
+  const [linkedin, setLinkedin] = useState('');
+  const [instagram, setInstagram] = useState('');
+  const [twitter, setTwitter] = useState('');
   // State for validation errors
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -31,7 +34,11 @@ const AddLeadModal = ({
       state: field === 'state' ? value : state,
       zipCode: field === 'zipCode' ? value : zipCode,
       phoneNumber: field === 'phoneNumber' ? value : phoneNumber,
-      email: field === 'email' ? value : email
+      email: field === 'email' ? value : email,
+      facebook: field === 'facebook' ? value : facebook,
+      linkedin: field === 'linkedin' ? value : linkedin,
+      instagram: field === 'instagram' ? value : instagram,
+      twitter: field === 'twitter' ? value : twitter
     });
 
     if (!result.success) {
@@ -54,7 +61,11 @@ const AddLeadModal = ({
       state,
       zipCode,
       phoneNumber,
-      email
+      email,
+      facebook,
+      linkedin,
+      instagram,
+      twitter
     });
 
     if (!result.success) {
@@ -75,6 +86,10 @@ const AddLeadModal = ({
     setZipCode('');
     setPhoneNumber('1');
     setEmail('');
+    setFacebook('');
+    setLinkedin('');
+    setInstagram('');
+    setTwitter('');
     setErrors({});
     onClose();
   };
@@ -292,6 +307,103 @@ const AddLeadModal = ({
           {errors.email && (
             <p className="text-sm text-red-500">{errors.email}</p>
           )}
+        </div>
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+          {/* Facebook Input */}
+          <div>
+            <label
+              htmlFor="facebook"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Facebook
+            </label>
+            <input
+              id="facebook"
+              type="url"
+              placeholder="Enter Facebook profile URL"
+              value={facebook}
+              onChange={(e) => {
+                setFacebook(e.target.value);
+                validateField('facebook', e.target.value);
+              }}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-500"
+            />
+            {errors.facebook && (
+              <p className="text-sm text-red-500">{errors.facebook}</p>
+            )}
+          </div>
+
+          {/* LinkedIn Input */}
+          <div>
+            <label
+              htmlFor="linkedin"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              LinkedIn
+            </label>
+            <input
+              id="linkedin"
+              type="url"
+              placeholder="Enter LinkedIn profile URL"
+              value={linkedin}
+              onChange={(e) => {
+                setLinkedin(e.target.value);
+                validateField('linkedin', e.target.value);
+              }}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-500"
+            />
+            {errors.linkedin && (
+              <p className="text-sm text-red-500">{errors.linkedin}</p>
+            )}
+          </div>
+
+          {/* Instagram Input */}
+          <div>
+            <label
+              htmlFor="instagram"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Instagram
+            </label>
+            <input
+              id="instagram"
+              type="url"
+              placeholder="Enter Instagram profile URL"
+              value={instagram}
+              onChange={(e) => {
+                setInstagram(e.target.value);
+                validateField('instagram', e.target.value);
+              }}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-500"
+            />
+            {errors.instagram && (
+              <p className="text-sm text-red-500">{errors.instagram}</p>
+            )}
+          </div>
+
+          {/* Twitter Input */}
+          <div>
+            <label
+              htmlFor="twitter"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Twitter
+            </label>
+            <input
+              id="twitter"
+              type="url"
+              placeholder="Enter Twitter profile URL"
+              value={twitter}
+              onChange={(e) => {
+                setTwitter(e.target.value);
+                validateField('twitter', e.target.value);
+              }}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-500"
+            />
+            {errors.twitter && (
+              <p className="text-sm text-red-500">{errors.twitter}</p>
+            )}
+          </div>
         </div>
 
         {/* Add Lead Button */}
