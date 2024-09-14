@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Download } from 'lucide-react';
 import { LeadList } from '@/constants/dashboard/leadList'; // Assuming this is the correct path
+import { exportLeadListsToExcel } from '@/lib/utils/files/loopDownloadTableData';
 
 // Columns configuration for LeadList
 export const columns: ColumnDef<LeadList>[] = [
@@ -64,14 +65,34 @@ export const columns: ColumnDef<LeadList>[] = [
     ) // Added socials column
   },
   {
-    accessorKey: 'dataLink',
-    header: 'Action',
+    accessorKey: 'export',
+    header: 'Export to Excel',
     cell: ({ row }) => (
-      <a href={row.original.dataLink} target="_blank" rel="noopener noreferrer">
-        <button className="rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-gray-800">
-          <Download className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-        </button>
-      </a>
+      <button
+        className="rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-gray-800"
+        onClick={async () => {
+          const leadList = row.original;
+          const excelBuffer = await exportLeadListsToExcel(
+            [leadList],
+            `${leadList.listName}.xlsx`
+          );
+
+          // Trigger file download
+          const blob = new Blob([excelBuffer], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${leadList.listName}.xlsx`; // Set the filename to the list name
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a); // Cleanup
+          window.URL.revokeObjectURL(url); // Revoke the URL after download
+        }}
+      >
+        <Download className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+      </button>
     )
   }
 ];

@@ -94,26 +94,30 @@ export const LeadClient: React.FC = () => {
         />
 
         {/* Right-aligned buttons */}
-        <div className="flex flex-col items-center space-y-2 ">
-          {/* Export Filtered Leads Button */}
+        <div className="flex flex-col items-center space-y-2">
+          {/* Create Lead and Export Leads Buttons Side by Side */}
+          <div className="flex space-x-4">
+            {/* Create Lead Button */}
+            <Button
+              onClick={openModal}
+              className="flex items-center space-x-2 rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+            >
+              <Plus className="h-5 w-5" />
+              <span>Create Lead</span>
+            </Button>
 
-          {/* Create Lead Button */}
-          <Button
-            onClick={openModal}
-            className="flex items-center space-x-2 rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
-          >
-            <Plus className="h-5 w-5" />
-            <span>Create Lead</span>
-          </Button>
-          <Button
-            onClick={exportFilteredLeads} // Trigger the download on click
-            className="flex items-center space-x-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-          >
-            <Download className="h-5 w-5" />
-            <span>Export Leads</span>
-          </Button>
+            {/* Export Filtered Leads Button */}
+            <Button
+              onClick={exportFilteredLeads} // Trigger the download on click
+              className="flex items-center space-x-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+            >
+              <Download className="h-5 w-5" />
+              <span>Export Leads</span>
+            </Button>
+          </div>
 
-          <div className="flex space-x-2">
+          {/* Today's Follow Ups and Filter Dropdown Buttons */}
+          <div className="mt-4 flex space-x-2">
             {/* Today's Follow Ups Button */}
             <Button
               variant="outline"

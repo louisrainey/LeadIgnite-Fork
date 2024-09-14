@@ -1,74 +1,92 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent
+} from '@/components/ui/popover';
 import {
   Select,
   SelectTrigger,
+  SelectValue,
   SelectContent,
   SelectGroup,
-  SelectItem,
-  SelectValue
+  SelectItem
 } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react'; // Icon for the close button
+import { ChevronDown, Filter } from 'lucide-react';
 
-interface FilterDropdownProps {
-  selectedListName: string | undefined;
-  setSelectedListName: (value: string) => void;
-  selectedRecordRange: string | undefined;
-  setSelectedRecordRange: (value: string) => void;
-  selectedUploadDate: string | undefined;
-  setSelectedUploadDate: (value: string) => void;
+// Define the types for the props
+interface LeadListFilterDropdownProps {
+  selectedRecordsRange: 'all' | '0-500' | '500-1000' | '1000+' | undefined;
+  setSelectedRecordsRange: (
+    value: 'all' | '0-500' | '500-1000' | '1000+' | undefined
+  ) => void;
+  selectedUploadDate:
+    | 'all'
+    | 'Last 7 Days'
+    | 'Last 30 Days'
+    | 'Last 90 Days'
+    | undefined;
+  setSelectedUploadDate: (
+    value: 'all' | 'Last 7 Days' | 'Last 30 Days' | 'Last 90 Days' | undefined
+  ) => void;
   resetFilter: () => void;
   applyFilter: () => void;
-  closeDropdown: () => void; // Function to close dropdown from parent
 }
 
-const FilterListsDropdown: React.FC<FilterDropdownProps> = ({
-  selectedListName,
-  setSelectedListName,
-  selectedRecordRange,
-  setSelectedRecordRange,
+// The new dropdown component for lead list filters
+const LeadListFilterDropdown: React.FC<LeadListFilterDropdownProps> = ({
+  selectedRecordsRange,
+  setSelectedRecordsRange,
   selectedUploadDate,
   setSelectedUploadDate,
   resetFilter,
-  applyFilter,
-  closeDropdown // This function will be triggered when the X button is clicked
+  applyFilter
 }) => {
-  // Disable the apply button if none of the filters are selected
-  const isApplyDisabled =
-    (!selectedListName || selectedListName === 'None') &&
-    (!selectedRecordRange || selectedRecordRange === 'None') &&
-    (!selectedUploadDate || selectedUploadDate === 'None');
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  // Toggle the popover's visibility
+  const togglePopover = () => {
+    setIsPopoverOpen(!isPopoverOpen);
+  };
 
   return (
-    <div className="absolute right-0 z-10 mt-2 w-64 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-800">
-      {/* Close Button */}
-      <div className="flex justify-end p-2">
-        <button
-          onClick={closeDropdown}
-          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+      {/* Button with Filter icon and Chevron */}
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          className="border-blue-600 text-blue-600"
+          onClick={togglePopover}
         >
-          <X className="h-5 w-5" />
-        </button>
-      </div>
+          <Filter className="mr-2" />
+          Filter Lead Lists
+          <ChevronDown className="ml-2" />
+        </Button>
+      </PopoverTrigger>
 
-      <div className="space-y-4 p-4">
-        {/* List Name Filter */}
-
-        {/* Record Range Filter */}
+      <PopoverContent className="w-64 space-y-4 p-4">
+        {/* Records Range Select */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Records Range
           </label>
           <Select
-            value={selectedRecordRange || 'None'}
-            onValueChange={(value) => setSelectedRecordRange(value)}
+            value={selectedRecordsRange || ''}
+            onValueChange={(value) =>
+              setSelectedRecordsRange(
+                value as 'all' | '0-500' | '500-1000' | '1000+' | undefined
+              )
+            }
           >
-            <SelectTrigger className="ui-select w-full">
-              <SelectValue placeholder="Select record range" />
+            <SelectTrigger className="w-full">
+              <SelectValue>
+                {selectedRecordsRange ? selectedRecordsRange : 'None'}
+              </SelectValue>
             </SelectTrigger>
-            <SelectContent className="ui-select">
+            <SelectContent>
               <SelectGroup>
-                <SelectItem value="None">None</SelectItem>
+                <SelectItem value="all">None</SelectItem>
                 <SelectItem value="0-500">0-500</SelectItem>
                 <SelectItem value="500-1000">500-1000</SelectItem>
                 <SelectItem value="1000+">1000+</SelectItem>
@@ -77,24 +95,35 @@ const FilterListsDropdown: React.FC<FilterDropdownProps> = ({
           </Select>
         </div>
 
-        {/* Upload Date Filter */}
+        {/* Upload Date Select */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Upload Date
           </label>
           <Select
-            value={selectedUploadDate || 'None'}
-            onValueChange={(value) => setSelectedUploadDate(value)}
+            value={selectedUploadDate || ''}
+            onValueChange={(value) =>
+              setSelectedUploadDate(
+                value as
+                  | 'all'
+                  | 'Last 7 Days'
+                  | 'Last 30 Days'
+                  | 'Last 90 Days'
+                  | undefined
+              )
+            }
           >
-            <SelectTrigger className="ui-select w-full">
-              <SelectValue placeholder="Select upload date" />
+            <SelectTrigger className="w-full">
+              <SelectValue>
+                {selectedUploadDate ? selectedUploadDate : 'None'}
+              </SelectValue>
             </SelectTrigger>
-            <SelectContent className="ui-select">
+            <SelectContent>
               <SelectGroup>
-                <SelectItem value="None">None</SelectItem>
-                <SelectItem value="last7days">Last 7 Days</SelectItem>
-                <SelectItem value="last30days">Last 30 Days</SelectItem>
-                <SelectItem value="last90days">Last 90 Days</SelectItem>
+                <SelectItem value="all">None</SelectItem>
+                <SelectItem value="Last 7 Days">Last 7 Days</SelectItem>
+                <SelectItem value="Last 30 Days">Last 30 Days</SelectItem>
+                <SelectItem value="Last 90 Days">Last 90 Days</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -105,17 +134,13 @@ const FilterListsDropdown: React.FC<FilterDropdownProps> = ({
           <Button variant="outline" onClick={resetFilter}>
             Reset
           </Button>
-          <Button
-            variant="default"
-            onClick={applyFilter}
-            disabled={isApplyDisabled}
-          >
+          <Button variant="default" onClick={applyFilter}>
             Apply
           </Button>
         </div>
-      </div>
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 
-export default FilterListsDropdown;
+export default LeadListFilterDropdown;
