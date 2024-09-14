@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { LeadTypeGlobal, mockGeneratedLeads } from '@/constants/data'; // Assuming you have mock leads data
+import { exportLeadsToExcel } from '../utils/files/loopDownloadTableData';
 
 // Define the state and actions for managing leads
 interface LeadState {
@@ -12,6 +13,7 @@ interface LeadState {
   filterByCampaignID: (campaignID: string) => void; // Filter by campaign ID
   resetFilters: () => void; // Reset all filters
   getNumberOfLeads: () => number; // Get the count of filtered leads
+  exportFilteredLeadsToFile: () => Promise<void>; // New export function
 }
 
 // Create Zustand store for lead management
@@ -73,5 +75,60 @@ export const useLeadStore = create<LeadState>((set, get) => ({
   getNumberOfLeads: () => {
     const { filteredLeads } = get();
     return filteredLeads.length;
+  },
+
+  // New function to export filtered leads to a ZIP file
+  // New function to export filtered leads to a single Excel file
+  exportFilteredLeadsToFile: async () => {
+    const { filteredLeads } = get(); // Get the filtered leads from the state
+
+    // Define the columns for the Excel export
+    const columns = [
+      { header: 'Lead ID', accessorKey: 'id' as keyof LeadTypeGlobal },
+      {
+        header: 'First Name',
+        accessorKey: 'firstName' as keyof LeadTypeGlobal
+      },
+      { header: 'Last Name', accessorKey: 'lastName' as keyof LeadTypeGlobal },
+      { header: 'Phone', accessorKey: 'phone' as keyof LeadTypeGlobal },
+      { header: 'Email', accessorKey: 'email' as keyof LeadTypeGlobal },
+      { header: 'Status', accessorKey: 'status' as keyof LeadTypeGlobal },
+      { header: 'Follow Up', accessorKey: 'followUp' as keyof LeadTypeGlobal },
+      {
+        header: 'Campaign ID',
+        accessorKey: 'campaignID' as keyof LeadTypeGlobal
+      },
+      { header: 'Address', accessorKey: 'address1' as keyof LeadTypeGlobal },
+      { header: 'Social Media Profiles', accessorKey: 'socials' } // Single column for combined social links
+    ];
+
+    // Check if there are any leads to export
+    if (filteredLeads.length === 0) {
+      alert('No leads available for export.');
+      return;
+    }
+
+    // Call the utility function to create the Excel file
+    const excelBuffer = await exportLeadsToExcel(
+      filteredLeads, // Pass the filtered leads
+      columns, // Pass the column definitions
+      'filtered_leads_export.xlsx' // This will be the filename
+    );
+
+    // Create a Blob from the Excel buffer and trigger download
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'filtered_leads_export.xlsx'; // Set the Excel file name
+    document.body.appendChild(a);
+    a.click(); // Trigger the download
+    document.body.removeChild(a); // Remove the temporary link
+
+    // Clean up the object URL after download
+    window.URL.revokeObjectURL(url);
   }
 }));

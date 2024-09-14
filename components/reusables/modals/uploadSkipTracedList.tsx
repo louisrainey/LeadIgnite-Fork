@@ -12,7 +12,7 @@ import {
   SelectItem
 } from '@/components/ui/select';
 import { useDropzone } from 'react-dropzone';
-import { leadSchema } from '@/types/zod/leadSchema'; // Assuming this contains your Zod schema for validation
+import { leadSchema } from '@/types/zod/leadSchema';
 import { handleListUpload } from '@/lib/utils/files/extractheadrsFromFiles';
 
 // Define the form values type
@@ -27,14 +27,17 @@ interface FormValues {
   zipCodeField: string;
   phone1Field: string;
   phone2Field?: string;
-  emailField?: string; // Making email optional
+  emailField?: string; // Optional email
+  facebookField?: string; // Optional Facebook profile URL
+  linkedinField?: string; // Optional LinkedIn profile URL
+  instagramField?: string; // Optional Instagram profile URL
+  twitterField?: string; // Optional Twitter profile URL
 }
 
 interface UploadListModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
 const UploadListModal: React.FC<UploadListModalProps> = ({
   isOpen,
   onClose
@@ -42,36 +45,51 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [headers, setHeaders] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [selectedHeader, setSelectedHeader] = useState<string | null>(null); // Track the currently selected header
-  const [availableHeaders, setAvailableHeaders] = useState<string[]>(headers); // Track the available headers to show in dropdown
 
   const {
     register,
     watch,
     handleSubmit,
-    setValue,
-    formState: { errors },
-    trigger
+    formState: { errors }
   } = useForm<FormValues>({
-    resolver: zodResolver(leadSchema), // Use Zod schema for validation
-    mode: 'onChange' // This ensures validation happens on typing
+    resolver: zodResolver(leadSchema),
+    mode: 'onChange'
   });
+
   const listName = watch('listName');
+  const firstNameField = watch('firstNameField');
+  const lastNameField = watch('lastNameField');
+  const streetAddressField = watch('streetAddressField');
+  const cityField = watch('cityField');
+  const stateField = watch('stateField');
+  const zipCodeField = watch('zipCodeField');
+  const phone1Field = watch('phone1Field');
+
+  // Determine if all required fields are filled and a file is uploaded
+  const areRequiredFieldsFilled =
+    listName?.trim() &&
+    uploadedFile &&
+    firstNameField &&
+    lastNameField &&
+    streetAddressField &&
+    cityField &&
+    stateField &&
+    zipCodeField &&
+    phone1Field;
+
   // Handle file drop
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length) {
       const file = acceptedFiles[0];
-      setUploadedFile(file); // Set the uploaded file
+      setUploadedFile(file);
 
       try {
-        const extractedHeaders: string[] = await handleListUpload(file); // Call handleListUpload function
-        setHeaders(extractedHeaders); // Set extracted headers
-        console.log(headers);
-        setError(null); // Clear any previous errors
+        const extractedHeaders: string[] = await handleListUpload(file);
+        setHeaders(extractedHeaders);
+        setError(null);
       } catch (err) {
-        setError('Error extracting headers from the file'); // Handle errors
-        console.log(error);
-        setHeaders([]); // Clear headers if there's an error
+        setError('Error extracting headers from the file');
+        setHeaders([]);
       }
     }
   };
@@ -91,7 +109,6 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
   const onSubmit = (data: FormValues) => {
     console.log('Form Data:', data);
     alert('submitted');
-    // Handle form submission, e.g., send data to API
   };
 
   // If the modal is not open, don't render it
@@ -131,24 +148,19 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
           </div>
 
           {/* File Upload */}
-          {/* File Upload Input (Dropzone) */}
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Skip-traced list*
             </label>
             <div
-              {...getRootProps()} // Properly apply dropzone props
-              className={`mt-2 border-2 border-dashed p-4 
-          ${
-            !listName?.trim()
-              ? 'cursor-not-allowed bg-gray-200 dark:bg-gray-700'
-              : 'cursor-pointer border-gray-300 dark:border-gray-600'
-          }`}
+              {...getRootProps()}
+              className={`mt-2 border-2 border-dashed p-4 ${
+                !listName?.trim()
+                  ? 'cursor-not-allowed bg-gray-200 dark:bg-gray-700'
+                  : 'cursor-pointer border-gray-300 dark:border-gray-600'
+              }`}
             >
-              <input
-                {...getInputProps()}
-                disabled={!listName?.trim()} // Disable input if listName is invalid
-              />
+              <input {...getInputProps()} disabled={!listName?.trim()} />
               {uploadedFile ? (
                 <p>{uploadedFile.name}</p>
               ) : (
@@ -168,276 +180,141 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
 
           {/* Fields Mapping */}
           <div className="mt-4 grid grid-cols-2 gap-4">
-            {/* First Name */}
-            <div>
-              <label className="block text-sm font-medium dark:text-gray-300">
-                First Name*
-              </label>
-              <Select
-                disabled={!listName?.trim() || !uploadedFile}
-                {...register('firstNameField')}
-              >
-                <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <SelectValue placeholder="Match first name" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {headers.map((header, index) => (
-                      <SelectItem key={index} value={header}>
-                        {header}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.firstNameField && (
-                <p className="text-sm text-red-500">
-                  {errors.firstNameField.message}
-                </p>
-              )}
-            </div>
+            <FieldMappingSelect
+              label="First Name"
+              placeholder="Match first name"
+              headers={headers}
+              register={register('firstNameField')}
+              error={errors.firstNameField}
+            />
+            <FieldMappingSelect
+              label="Last Name"
+              placeholder="Match last name"
+              headers={headers}
+              register={register('lastNameField')}
+              error={errors.lastNameField}
+            />
+            <FieldMappingSelect
+              label="Street Address"
+              placeholder="Match street address"
+              headers={headers}
+              register={register('streetAddressField')}
+              error={errors.streetAddressField}
+            />
+            <FieldMappingSelect
+              label="City"
+              placeholder="Match city"
+              headers={headers}
+              register={register('cityField')}
+              error={errors.cityField}
+            />
+            <FieldMappingSelect
+              label="State"
+              placeholder="Match state"
+              headers={headers}
+              register={register('stateField')}
+              error={errors.stateField}
+            />
+            <FieldMappingSelect
+              label="Zip Code"
+              placeholder="Match ZIP code"
+              headers={headers}
+              register={register('zipCodeField')}
+              error={errors.zipCodeField}
+            />
+            <FieldMappingSelect
+              label="Phone 1"
+              placeholder="Match phone 1"
+              headers={headers}
+              register={register('phone1Field')}
+              error={errors.phone1Field}
+            />
+            <FieldMappingSelect
+              label="Phone 2"
+              placeholder="Match phone 2"
+              headers={headers}
+              register={register('phone2Field')}
+            />
+            <FieldMappingSelect
+              label="Email"
+              placeholder="Match email"
+              headers={headers}
+              register={register('emailField')}
+            />
 
-            {/* Last Name */}
-            <div>
-              <label className="block text-sm font-medium dark:text-gray-300">
-                Last Name*
-              </label>
-              <Select
-                disabled={!listName?.trim() || !uploadedFile}
-                {...register('lastNameField')}
-              >
-                <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <SelectValue placeholder="Match last name" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {headers.map((header, index) => (
-                      <SelectItem key={index} value={header}>
-                        {header}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.lastNameField && (
-                <p className="text-sm text-red-500">
-                  {errors.lastNameField.message}
-                </p>
-              )}
-            </div>
-
-            {/* Street Address */}
-            <div>
-              <label className="block text-sm font-medium dark:text-gray-300">
-                Street Address*
-              </label>
-              <Select
-                disabled={!listName?.trim() || !uploadedFile}
-                {...register('streetAddressField')}
-              >
-                <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <SelectValue placeholder="Match street address" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {headers.map((header, index) => (
-                      <SelectItem key={index} value={header}>
-                        {header}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.streetAddressField && (
-                <p className="text-sm text-red-500">
-                  {errors.streetAddressField.message}
-                </p>
-              )}
-            </div>
-
-            {/* City */}
-            <div>
-              <label className="block text-sm font-medium dark:text-gray-300">
-                City*
-              </label>
-              <Select
-                disabled={!listName?.trim() || !uploadedFile}
-                {...register('cityField')}
-              >
-                <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <SelectValue placeholder="Match city" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {headers.map((header, index) => (
-                      <SelectItem key={index} value={header}>
-                        {header}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.cityField && (
-                <p className="text-sm text-red-500">
-                  {errors.cityField.message}
-                </p>
-              )}
-            </div>
-
-            {/* State */}
-            <div>
-              <label className="block text-sm font-medium dark:text-gray-300">
-                State*
-              </label>
-              <Select
-                disabled={!listName?.trim() || !uploadedFile}
-                {...register('stateField')}
-              >
-                <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <SelectValue placeholder="Match state" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {headers.map((header, index) => (
-                      <SelectItem key={index} value={header}>
-                        {header}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.stateField && (
-                <p className="text-sm text-red-500">
-                  {errors.stateField.message}
-                </p>
-              )}
-            </div>
-
-            {/* Zip Code */}
-            <div>
-              <label className="block text-sm font-medium dark:text-gray-300">
-                Zip Code*
-              </label>
-              <Select
-                disabled={!listName?.trim() || !uploadedFile}
-                {...register('zipCodeField')}
-              >
-                <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <SelectValue placeholder="Match ZIP code" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {headers.map((header, index) => (
-                      <SelectItem key={index} value={header}>
-                        {header}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.zipCodeField && (
-                <p className="text-sm text-red-500">
-                  {errors.zipCodeField.message}
-                </p>
-              )}
-            </div>
-
-            {/* Phone 1 */}
-            <div>
-              <label className="block text-sm font-medium dark:text-gray-300">
-                Phone 1*
-              </label>
-              <Select
-                disabled={!listName?.trim() || !uploadedFile}
-                {...register('phone1Field')}
-              >
-                <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <SelectValue placeholder="Match phone 1" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {headers.map((header, index) => (
-                      <SelectItem key={index} value={header}>
-                        {header}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.phone1Field && (
-                <p className="text-sm text-red-500">
-                  {errors.phone1Field.message}
-                </p>
-              )}
-            </div>
-
-            {/* Phone 2 (Optional) */}
-            <div>
-              <label className="block text-sm font-medium dark:text-gray-300">
-                Phone 2
-              </label>
-              <Select
-                disabled={!listName?.trim() || !uploadedFile}
-                {...register('phone2Field')}
-              >
-                <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <SelectValue placeholder="Match phone 2" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {headers.map((header, index) => (
-                      <SelectItem key={index} value={header}>
-                        {header}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Email (Optional) */}
-            <div>
-              <label className="block text-sm font-medium dark:text-gray-300">
-                Email
-              </label>
-              <Select
-                disabled={!listName?.trim() || !uploadedFile}
-                {...register('emailField')}
-              >
-                <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <SelectValue placeholder="Match email" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {headers.map((header, index) => (
-                      <SelectItem key={index} value={header}>
-                        {header}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.emailField && (
-                <p className="text-sm text-red-500">
-                  {errors.emailField.message}
-                </p>
-              )}
-            </div>
+            {/* Social Media Fields */}
+            <FieldMappingSelect
+              label="Facebook (Optional)"
+              placeholder="Match Facebook profile"
+              headers={headers}
+              register={register('facebookField')}
+            />
+            <FieldMappingSelect
+              label="LinkedIn (Optional)"
+              placeholder="Match LinkedIn profile"
+              headers={headers}
+              register={register('linkedinField')}
+            />
+            <FieldMappingSelect
+              label="Instagram (Optional)"
+              placeholder="Match Instagram profile"
+              headers={headers}
+              register={register('instagramField')}
+            />
+            <FieldMappingSelect
+              label="Twitter (Optional)"
+              placeholder="Match Twitter profile"
+              headers={headers}
+              register={register('twitterField')}
+            />
           </div>
 
+          {/* Upload Button is now conditionally enabled based on required fields */}
           <Button
-            disabled={!listName?.trim() || !uploadedFile} // Check if listName is valid and a file is uploaded
+            disabled={!areRequiredFieldsFilled}
             type="submit"
             className={`mt-4 ${
-              !listName?.trim() || !uploadedFile
+              !areRequiredFieldsFilled
                 ? 'bg-gray-400'
                 : 'bg-blue-600 text-white hover:bg-blue-700'
-            } `}
+            }`}
           >
             Upload
           </Button>
         </form>
       </div>
+    </div>
+  );
+};
+
+// Field Mapping Select Component
+const FieldMappingSelect: React.FC<{
+  label: string;
+  placeholder: string;
+  headers: string[];
+  register: any;
+  error?: any;
+}> = ({ label, placeholder, headers, register, error }) => {
+  return (
+    <div>
+      <label className="block text-sm font-medium dark:text-gray-300">
+        {label}*
+      </label>
+      <Select disabled={!headers.length} {...register}>
+        <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {headers.map((header, index) => (
+              <SelectItem key={index} value={header}>
+                {header}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      {error && <p className="text-sm text-red-500">{error.message}</p>}
     </div>
   );
 };
