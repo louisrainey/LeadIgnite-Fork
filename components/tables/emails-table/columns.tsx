@@ -7,6 +7,7 @@ import {
 } from '@/types/goHighLevel/conversations';
 import { EyeIcon } from 'lucide-react';
 import { exportEmailCampaignToExcel } from '@/lib/utils/files/downloadTableData';
+import { Checkbox } from '@/components/ui/checkbox';
 
 // Color statuses for the email campaign
 const statusColor: Record<EmailCampaign['status'], string> = {
@@ -45,6 +46,25 @@ const handleEmailSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
   }
 };
 export const emailCampaignColumns: ColumnDef<EmailCampaign>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false
+  },
   {
     accessorKey: 'name',
     header: 'Campaign Name',

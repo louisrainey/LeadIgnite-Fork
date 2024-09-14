@@ -1,8 +1,9 @@
 import { NavItem } from '@/types';
-
+import { faker } from '@faker-js/faker';
 export const APP_TESTING_MODE = true;
 
-export type Lead = {
+export type LeadStatus = 'New Lead' | 'Contacted' | 'Closed' | 'Lost';
+export type LeadTypeGlobal = {
   id: number; // Unique identifier for the lead
   firstName: string; // First name of the lead
   lastName: string; // Last name of the lead
@@ -11,13 +12,54 @@ export type Lead = {
   bed: number; // Number of bedrooms in the property
   bath: number; // Number of bathrooms in the property
   sqft: number; // Square footage of the property
-  status: string; // Lead status (e.g., "New Lead", "Contacted", "Closed", "Lost")
+  status: LeadStatus; // Lead status (e.g., "New Lead", "Contacted", "Closed", "Lost")
   followUp: string | null; // Follow-up date (can be null if none is set)
   lastUpdate: string; // Last update timestamp
   address1: string; // Address of the lead (optional)
+  campaignID?: string;
 };
 
-export const leads: Lead[] = [
+// Function to generate mock leads
+// Function to generate mock leads
+export function generateMockLeads(count: number): LeadTypeGlobal[] {
+  const leads: LeadTypeGlobal[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const lead: LeadTypeGlobal = {
+      id: i + 1,
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      phone: faker.phone.number(), // Generate North American style phone number
+      summary: faker.lorem.sentence(), // Random summary
+      bed: faker.number.int({ min: 1, max: 5 }), // Random number of bedrooms (1-5)
+      bath: faker.number.int({ min: 1, max: 4 }), // Random number of bathrooms (1-4)
+      sqft: faker.number.int({ min: 500, max: 5000 }), // Random square footage (500-5000 sqft)
+      status: faker.helpers.arrayElement([
+        'New Lead',
+        'Contacted',
+        'Closed',
+        'Lost'
+      ]), // Random lead status
+      followUp:
+        faker.helpers.maybe(
+          () => faker.date.future().toISOString().split('T')[0],
+          { probability: 0.5 }
+        ) || null, // Ensure null if undefined
+      lastUpdate: faker.date.recent().toISOString().split('T')[0], // Recent date as last update
+      address1: faker.location.streetAddress(), // Random street address
+      campaignID:
+        faker.helpers.maybe(() => faker.string.uuid(), { probability: 0.8 }) ||
+        undefined // Ensure null if undefined
+    };
+
+    leads.push(lead);
+  }
+
+  return leads;
+}
+
+export const mockGeneratedLeads = APP_TESTING_MODE && generateMockLeads(100);
+export const staticMockLeadData: LeadTypeGlobal[] = [
   {
     id: 1,
     firstName: 'Candice',

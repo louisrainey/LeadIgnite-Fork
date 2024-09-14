@@ -2,7 +2,15 @@
 
 # Add cancel while drawing
 
+# Add Leads,LeadList to global state , so we can easily switch, filter
+
+# Create user profile
+
+# Lead Manager Add pagination , Fix status select
+
 # Add redirects to page if subscription is over , or user not correctly signed in
+
+# Add Skip tracing capability
 
 # ? Enable Close and Open Listing Accordian? (Add Max Height)
 

@@ -1,22 +1,29 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent
+} from '@/components/ui/popover';
 import {
   Select,
   SelectTrigger,
+  SelectValue,
   SelectContent,
   SelectGroup,
-  SelectItem,
-  SelectValue
+  SelectItem
 } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
+import { ChevronDown, Filter } from 'lucide-react';
+import { LeadStatus } from '@/constants/data';
 
 interface FilterDropdownProps {
   selectedCampaign: string | undefined;
   setSelectedCampaign: (value: string) => void;
-  selectedStatus: string | undefined;
-  setSelectedStatus: (value: string) => void;
+  selectedStatus: LeadStatus | undefined;
+  setSelectedStatus: (value: LeadStatus) => void;
   resetFilter: () => void;
   applyFilter: () => void;
-  closeDropdown: () => void; // Function to close dropdown from parent
+  availableCampaigns: string[]; // Dynamically pass available campaign IDs
 }
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({
@@ -26,64 +33,67 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   setSelectedStatus,
   resetFilter,
   applyFilter,
-  closeDropdown
+  availableCampaigns
 }) => {
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  // Custom close handler that only closes the dropdown if clicking outside of it
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
-      const target = event.target as Element; // Cast to Element
-
-      // Prevent closing if click happens inside the dropdown or a Select dropdown
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(target) &&
-        !target.closest('.ui-select') // Exclude the `Select` dropdowns by checking class or unique identifier
-      ) {
-        closeDropdown();
-      }
-    },
-    [closeDropdown]
-  );
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [handleClickOutside]);
-
-  // Disable the apply button if neither campaign nor status is selected
-  const isApplyDisabled =
-    (selectedCampaign === undefined || selectedCampaign === 'None') &&
-    (selectedStatus === undefined || selectedStatus === 'None');
+  // Toggle the popover's visibility
+  const togglePopover = () => {
+    setIsPopoverOpen(!isPopoverOpen);
+  };
 
   return (
-    <div
-      ref={dropdownRef}
-      className="absolute right-0 z-10 mt-2 w-64 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-800"
-    >
-      <div className="space-y-4 p-4">
+    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+      {/* Button with Filter icon and Chevron */}
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          className="border-blue-600 text-blue-600"
+          onClick={togglePopover}
+        >
+          <Filter className="mr-2" />
+          Filter
+          <ChevronDown className="ml-2" />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-64 space-y-4 p-4">
         {/* Campaign Select */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Campaign
           </label>
           <Select
-            value={selectedCampaign || 'None'}
-            onValueChange={(value) => {
-              setSelectedCampaign(value);
-            }}
+            value={selectedCampaign || ''}
+            onValueChange={setSelectedCampaign}
           >
-            <SelectTrigger className="ui-select w-full">
-              <SelectValue placeholder="Select campaign(s)" />
+            <SelectTrigger className="w-full truncate">
+              {' '}
+              {/* Added truncate here */}
+              <SelectValue>
+                {selectedCampaign ? (
+                  <span className="block w-full overflow-hidden truncate text-ellipsis whitespace-nowrap">
+                    {selectedCampaign}
+                  </span> // Ellipsis for long campaign names
+                ) : (
+                  'Select Campaign'
+                )}
+              </SelectValue>
             </SelectTrigger>
-            <SelectContent className="ui-select">
+            <SelectContent>
               <SelectGroup>
-                <SelectItem value="None">None</SelectItem>
-                <SelectItem value="campaign1">Campaign 1</SelectItem>
-                <SelectItem value="campaign2">Campaign 2</SelectItem>
+                {availableCampaigns.length > 0 ? (
+                  availableCampaigns.map((campaign) => (
+                    <SelectItem key={campaign} value={campaign}>
+                      <span className="block w-full overflow-hidden truncate text-ellipsis whitespace-nowrap">
+                        {campaign}
+                      </span>{' '}
+                      {/* Truncate long text */}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="None">No Campaigns Available</SelectItem>
+                )}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -95,21 +105,21 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
             Status
           </label>
           <Select
-            value={selectedStatus || 'None'}
-            onValueChange={(value) => {
-              setSelectedStatus(value);
-            }}
+            value={selectedStatus || ''}
+            onValueChange={(value) => setSelectedStatus(value as LeadStatus)}
           >
-            <SelectTrigger className="ui-select w-full">
-              <SelectValue placeholder="Select status(es)" />
+            <SelectTrigger className="w-full">
+              <SelectValue>
+                {selectedStatus ? selectedStatus : 'Select Status'}{' '}
+                {/* Placeholder when not selected */}
+              </SelectValue>
             </SelectTrigger>
-            <SelectContent className="ui-select">
+            <SelectContent>
               <SelectGroup>
-                <SelectItem value="None">None</SelectItem>
-                <SelectItem value="new">New</SelectItem>
-                <SelectItem value="contacted">Contacted</SelectItem>
-                <SelectItem value="closed">Closed</SelectItem>
-                <SelectItem value="lost">Lost</SelectItem>
+                <SelectItem value="New Lead">New Lead</SelectItem>
+                <SelectItem value="Contacted">Contacted</SelectItem>
+                <SelectItem value="Closed">Closed</SelectItem>
+                <SelectItem value="Lost">Lost</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -120,16 +130,12 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
           <Button variant="outline" onClick={resetFilter}>
             Reset
           </Button>
-          <Button
-            variant="default"
-            onClick={applyFilter}
-            disabled={isApplyDisabled}
-          >
+          <Button variant="default" onClick={applyFilter}>
             Apply
           </Button>
         </div>
-      </div>
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 

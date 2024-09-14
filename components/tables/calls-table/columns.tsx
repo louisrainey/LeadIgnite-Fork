@@ -3,6 +3,7 @@ import { CallCampaign } from '@/types/_dashboard/campaign';
 import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 import { ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const statusColor: Record<CallCampaign['status'], string> = {
   delivering: 'bg-green-100 text-green-600',
@@ -18,6 +19,25 @@ const statusColor: Record<CallCampaign['status'], string> = {
 
 // Adjust the column structure to match the table design
 export const callCampaignColumns: ColumnDef<CallCampaign>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false
+  },
   {
     accessorKey: 'name',
     header: 'Campaign Name',

@@ -2,6 +2,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import React, { useState } from 'react';
 import { SocialAction, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import { exportSocialTableDataToExcel } from '@/lib/utils/files/downloadTableData';
+import { Checkbox } from '@/components/ui/checkbox';
 
 // Color statuses for the social media campaign
 // Color statuses for the social media campaign
@@ -142,6 +143,25 @@ const PlatformActionsDropdown = ({
 
 // Columns for the social media campaign table
 export const socialMediaCampaignColumns: ColumnDef<SocialMediaCampaign>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false
+  },
   {
     accessorKey: 'name',
     header: 'Campaign Name',

@@ -1,10 +1,9 @@
 'use client';
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { Lead } from '@/constants/data';
+import { LeadStatus } from '@/constants/data';
 import { Plus, Filter, Calendar, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
@@ -14,12 +13,10 @@ import Lottie from 'lottie-react';
 import searchAnimation from '@/public/lottie/SearchPing.json'; // Lottie JSON file path
 import FilterDropdown from './utils/filterLeads';
 import { LeadDataTable } from './lead-data-table';
+import { useLeadStore } from '@/lib/stores/lead';
+import { formatISO, startOfToday, endOfToday } from 'date-fns'; // Ensure you import these utilities
 
-interface ProductsClientProps {
-  data: Lead[];
-}
-
-export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
+export const LeadClient: React.FC = () => {
   const router = useRouter();
 
   // State for modal visibility
@@ -27,11 +24,19 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false); // State for filter dropdown visibility
   const [searchKey, setSearchKey] = useState(''); // Local state to manage search key
 
+  // Zustand store states and actions
+  const allLeads = useLeadStore((state) => state.leads);
+  const leads = useLeadStore((state) => state.filteredLeads);
+  const filterByStatus = useLeadStore((state) => state.filterByStatus);
+  const filterByFollowUp = useLeadStore((state) => state.filterByFollowUp);
+  const filterByCampaignID = useLeadStore((state) => state.filterByCampaignID);
+  const resetFilters = useLeadStore((state) => state.resetFilters);
+
   // Filter state
   const [selectedCampaign, setSelectedCampaign] = useState<
     string | undefined
   >();
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>();
+  const [selectedStatus, setSelectedStatus] = useState<LeadStatus>();
 
   const filterDropdownRef = useRef<HTMLDivElement | null>(null); // Ref for dropdown
 
@@ -40,6 +45,14 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
   const toggleFilter = () => setIsFilterOpen((prev) => !prev);
 
   const applyFilter = () => {
+    if (selectedStatus) {
+      filterByStatus(selectedStatus);
+    }
+
+    if (selectedCampaign) {
+      filterByCampaignID(selectedCampaign);
+    }
+
     console.log('Applying Filter:', { selectedCampaign, selectedStatus });
     setIsFilterOpen(false); // Close the dropdown after applying the filter
   };
@@ -51,16 +64,29 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
   const resetFilter = () => {
     setSelectedCampaign(undefined);
     setSelectedStatus(undefined);
+    resetFilters(); // Reset all the filters using the Zustand store
   };
 
-  // Close dropdown when clicking outside of it
+  const filterByTodayFollowUps = () => {
+    const todayStart = formatISO(startOfToday());
+    const todayEnd = formatISO(endOfToday());
+    filterByFollowUp(todayStart, todayEnd); // Trigger filtering by today's follow-ups
+  };
+
+  // Memoize the unique campaign IDs from filtered leads
+  const availableCampaigns = useMemo(() => {
+    const campaignIds = allLeads
+      .map((lead) => lead.campaignID) // Extract campaign IDs
+      .filter((campaignID): campaignID is string => !!campaignID); // Filter out undefined/null and cast to string
+    return Array.from(new Set(campaignIds)); // Return only unique campaign IDs
+  }, [leads]);
 
   return (
     <>
       <div className="flex items-start justify-between">
         {/* Heading Component */}
         <Heading
-          title={`Lead Manager (${data.length})`}
+          title={`Lead Manager (${leads.length})`}
           description="See a list of existing leads and follow ups, or create new leads."
         />
 
@@ -79,6 +105,7 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
             <Button
               variant="outline"
               className="overflow-hidden truncate whitespace-nowrap border-blue-600 text-blue-600"
+              onClick={filterByTodayFollowUps} // Trigger the filter for today's follow-ups
             >
               <Calendar className="mr-2" />
               Today&apos;s Follow Ups
@@ -86,27 +113,15 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
 
             {/* Filter Button with Dropdown */}
             <div className="relative" ref={filterDropdownRef}>
-              <Button
-                variant="outline"
-                className="border-blue-600 text-blue-600"
-                onClick={toggleFilter}
-              >
-                <Filter className="mr-2" />
-                Filter
-                <ChevronDown className="ml-2" />
-              </Button>
-
-              {isFilterOpen && (
-                <FilterDropdown
-                  selectedCampaign={selectedCampaign}
-                  setSelectedCampaign={setSelectedCampaign}
-                  selectedStatus={selectedStatus}
-                  setSelectedStatus={setSelectedStatus}
-                  resetFilter={resetFilter}
-                  applyFilter={applyFilter}
-                  closeDropdown={closeFilterDropdown} // Pass the close function to the dropdown
-                />
-              )}
+              <FilterDropdown
+                selectedCampaign={selectedCampaign}
+                setSelectedCampaign={setSelectedCampaign}
+                selectedStatus={selectedStatus}
+                setSelectedStatus={setSelectedStatus}
+                resetFilter={resetFilter}
+                applyFilter={applyFilter}
+                availableCampaigns={availableCampaigns} // Pass available campaign IDs to the dropdown
+              />
             </div>
           </div>
         </div>
@@ -115,8 +130,13 @@ export const LeadClient: React.FC<ProductsClientProps> = ({ data }) => {
       <Separator />
 
       {/* Lead Data Table */}
-      {data.length > 1 ? (
-        <LeadDataTable searchKey="Leads" columns={columns} data={data} />
+      {leads.length > 0 ? (
+        <LeadDataTable
+          pageCount={10}
+          searchKey="Leads"
+          columns={columns}
+          data={leads}
+        />
       ) : (
         <div className="flex h-[60vh] flex-col items-center justify-center">
           <Lottie animationData={searchAnimation} loop autoplay />

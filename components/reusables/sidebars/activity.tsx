@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
+import { LeadTypeGlobal } from '@/constants/data';
 
 interface ActivitySidebarProps {
   onClose: () => void; // Prop to close the sidebar
+  leadData: LeadTypeGlobal;
 }
 
-const ActivitySidebar: React.FC<ActivitySidebarProps> = ({ onClose }) => {
+const ActivitySidebar: React.FC<ActivitySidebarProps> = ({
+  onClose,
+  leadData
+}) => {
   const [currentState, setCurrentState] = useState<
     'initial' | 'writing' | 'sent'
   >('initial');
@@ -37,7 +42,10 @@ const ActivitySidebar: React.FC<ActivitySidebarProps> = ({ onClose }) => {
     <div className="fixed right-0 top-0 z-50 h-screen w-80 border-l border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-800">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold dark:text-white">Activity</h2>
+        <h2 className="text-lg font-semibold dark:text-white">
+          {' '}
+          {leadData.firstName} Activity
+        </h2>
         <button
           className="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100"
           onClick={onClose} // Close sidebar
