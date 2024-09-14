@@ -1,5 +1,4 @@
 import { z } from 'zod';
-
 export const leadSchema = z.object({
   firstName: z
     .string()
@@ -48,16 +47,41 @@ export const leadSchema = z.object({
       /^[0-9\-+()\s]*$/,
       'Phone Number 2 can only contain numbers and special characters like - + ( )'
     )
-    .optional(), // Making phone number 2 optional
+    .optional(),
 
-  email: z.string().email('Please enter a valid email address').optional(), // Making email optional
+  email: z.string().email('Please enter a valid email address').optional(),
 
-  // Social media platforms (optional)
-  facebook: z.string().url('Please enter a valid Facebook URL').optional(), // Facebook profile is optional
+  // Social media fields (optional, validate only if not empty or undefined)
+  facebook: z
+    .string()
+    .optional()
+    .refine(
+      (value) => !value || /^https?:\/\/(www\.)?facebook\.com\/.+$/.test(value),
+      { message: 'Please enter a valid Facebook URL' }
+    ),
 
-  linkedin: z.string().url('Please enter a valid LinkedIn URL').optional(), // LinkedIn profile is optional
+  linkedin: z
+    .string()
+    .optional()
+    .refine(
+      (value) => !value || /^https?:\/\/(www\.)?linkedin\.com\/.+$/.test(value),
+      { message: 'Please enter a valid LinkedIn URL' }
+    ),
 
-  instagram: z.string().url('Please enter a valid Instagram URL').optional(), // Instagram profile is optional
+  instagram: z
+    .string()
+    .optional()
+    .refine(
+      (value) =>
+        !value || /^https?:\/\/(www\.)?instagram\.com\/.+$/.test(value),
+      { message: 'Please enter a valid Instagram URL' }
+    ),
 
-  twitter: z.string().url('Please enter a valid Twitter URL').optional() // Twitter profile is optional
+  twitter: z
+    .string()
+    .optional()
+    .refine(
+      (value) => !value || /^https?:\/\/(www\.)?twitter\.com\/.+$/.test(value),
+      { message: 'Please enter a valid Twitter URL' }
+    )
 });
