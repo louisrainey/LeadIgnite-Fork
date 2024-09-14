@@ -14,6 +14,8 @@
 
 # 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
 
+# 🪳 Fix add lead list modal to remove row once slecte4d and also only show continue button once all rows except socials are matched
+
 # Switch alerts to use sonner https://ui.shadcn.com/docs/components/sonner
 
 # ⁉️ optimize load speeds
