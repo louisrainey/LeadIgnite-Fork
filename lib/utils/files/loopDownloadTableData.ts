@@ -1,3 +1,4 @@
+import { LeadList } from '@/constants/dashboard/leadList';
 import { LeadTypeGlobal } from '@/constants/data';
 import {
   CallCampaign,
@@ -328,4 +329,163 @@ export async function exportLeadsToExcel(
   const uint8Array = new Uint8Array(buffer); // Ensure it's converted to Uint8Array
 
   return uint8Array; // Return the Uint8Array for further processing (e.g., download)
+}
+
+// Utility function to export LeadLists to Excel with their associated leads
+export async function exportLeadListsToExcel(
+  leadLists: LeadList[], // Array of LeadList objects to export
+  filename: string = 'lead_lists.xlsx' // Filename for the Excel file
+): Promise<Uint8Array> {
+  const workbook = new ExcelJS.Workbook();
+
+  leadLists.forEach((leadList) => {
+    // Create a new worksheet for each LeadList, named after the list name
+    const worksheet = workbook.addWorksheet(
+      leadList.listName || `LeadList ${leadList.id}`
+    );
+
+    // Define the columns for each worksheet
+    worksheet.columns = [
+      { header: 'Lead ID', key: 'id', width: 10 },
+      { header: 'First Name', key: 'firstName', width: 15 },
+      { header: 'Last Name', key: 'lastName', width: 15 },
+      { header: 'Email', key: 'email', width: 25 },
+      { header: 'Phone', key: 'phone', width: 15 },
+      { header: 'Summary', key: 'summary', width: 30 },
+      { header: 'Bedrooms', key: 'bed', width: 10 },
+      { header: 'Bathrooms', key: 'bath', width: 10 },
+      { header: 'Square Footage', key: 'sqft', width: 15 },
+      { header: 'Status', key: 'status', width: 15 },
+      { header: 'Follow Up', key: 'followUp', width: 20 },
+      { header: 'Last Update', key: 'lastUpdate', width: 20 },
+      { header: 'Address', key: 'address1', width: 30 },
+      { header: 'Campaign ID', key: 'campaignID', width: 20 },
+      { header: 'Facebook', key: 'facebook', width: 20 },
+      { header: 'LinkedIn', key: 'linkedin', width: 20 },
+      { header: 'Instagram', key: 'instagram', width: 20 },
+      { header: 'Twitter', key: 'twitter', width: 20 }
+    ];
+
+    // Add the list metadata (like listName, uploadDate, and total counts) as headers
+    worksheet.addRow([]);
+    worksheet.addRow(['List Name', leadList.listName]);
+    worksheet.addRow(['Upload Date', leadList.uploadDate]);
+    worksheet.addRow(['Total Records', leadList.records]);
+    worksheet.addRow(['Phone Count', leadList.phone]);
+    worksheet.addRow(['Email Count', leadList.emails]);
+    worksheet.addRow([]);
+    worksheet.addRow(['Leads Data']);
+    worksheet.addRow([]);
+
+    // Add leads to the worksheet with full lead data
+    leadList.leads.forEach((lead: LeadTypeGlobal) => {
+      worksheet.addRow({
+        id: lead.id,
+        firstName: lead.firstName,
+        lastName: lead.lastName,
+        email: lead.email,
+        phone: lead.phone,
+        summary: lead.summary,
+        bed: lead.bed,
+        bath: lead.bath,
+        sqft: lead.sqft,
+        status: lead.status,
+        followUp: lead.followUp,
+        lastUpdate: lead.lastUpdate,
+        address1: lead.address1,
+        campaignID: lead.campaignID,
+        facebook: lead.socials?.facebook || 'N/A', // Handle optional socials
+        linkedin: lead.socials?.linkedin || 'N/A',
+        instagram: lead.socials?.instagram || 'N/A',
+        twitter: lead.socials?.twitter || 'N/A'
+      });
+    });
+  });
+
+  // Write the workbook to a buffer
+  const buffer = await workbook.xlsx.writeBuffer();
+  return new Uint8Array(buffer); // Return the file as Uint8Array
+}
+
+export async function exportLeadListsToZip(
+  leadLists: LeadList[], // Array of LeadList objects
+  zipFilename: string = 'lead_lists_export.zip' // Filename for the resulting ZIP file
+): Promise<Uint8Array> {
+  const zip = new JSZip(); // Initialize JSZip instance
+
+  // Iterate through each lead list
+  for (const leadList of leadLists) {
+    const workbook = new ExcelJS.Workbook(); // Create a new Excel workbook for each lead list
+    const worksheet = workbook.addWorksheet(
+      leadList.listName || `LeadList_${leadList.id}`
+    ); // Create a worksheet named after the lead list
+
+    // Define the columns for the worksheet
+    worksheet.columns = [
+      { header: 'Lead ID', key: 'id', width: 10 },
+      { header: 'First Name', key: 'firstName', width: 15 },
+      { header: 'Last Name', key: 'lastName', width: 15 },
+      { header: 'Email', key: 'email', width: 25 },
+      { header: 'Phone', key: 'phone', width: 15 },
+      { header: 'Summary', key: 'summary', width: 30 },
+      { header: 'Bedrooms', key: 'bed', width: 10 },
+      { header: 'Bathrooms', key: 'bath', width: 10 },
+      { header: 'Square Footage', key: 'sqft', width: 15 },
+      { header: 'Status', key: 'status', width: 15 },
+      { header: 'Follow Up', key: 'followUp', width: 20 },
+      { header: 'Last Update', key: 'lastUpdate', width: 20 },
+      { header: 'Address', key: 'address1', width: 30 },
+      { header: 'Campaign ID', key: 'campaignID', width: 20 },
+      { header: 'Facebook', key: 'facebook', width: 20 },
+      { header: 'LinkedIn', key: 'linkedin', width: 20 },
+      { header: 'Instagram', key: 'instagram', width: 20 },
+      { header: 'Twitter', key: 'twitter', width: 20 }
+    ];
+
+    // Add the list metadata (listName, uploadDate, total counts) as headers
+    worksheet.addRow([]); // Blank row for spacing
+    worksheet.addRow(['List Name', leadList.listName]);
+    worksheet.addRow(['Upload Date', leadList.uploadDate]);
+    worksheet.addRow(['Total Records', leadList.records]);
+    worksheet.addRow(['Phone Count', leadList.phone]);
+    worksheet.addRow(['Email Count', leadList.emails]);
+    worksheet.addRow([]);
+    worksheet.addRow(['Leads Data']);
+    worksheet.addRow([]);
+
+    // Add each lead in the lead list as a row in the worksheet
+    leadList.leads.forEach((lead: LeadTypeGlobal) => {
+      worksheet.addRow({
+        id: lead.id,
+        firstName: lead.firstName,
+        lastName: lead.lastName,
+        email: lead.email,
+        phone: lead.phone,
+        summary: lead.summary,
+        bed: lead.bed,
+        bath: lead.bath,
+        sqft: lead.sqft,
+        status: lead.status,
+        followUp: lead.followUp,
+        lastUpdate: lead.lastUpdate,
+        address1: lead.address1,
+        campaignID: lead.campaignID,
+        facebook: lead.socials?.facebook || 'N/A',
+        linkedin: lead.socials?.linkedin || 'N/A',
+        instagram: lead.socials?.instagram || 'N/A',
+        twitter: lead.socials?.twitter || 'N/A'
+      });
+    });
+
+    // Write the Excel file to a buffer
+    const excelBuffer = await workbook.xlsx.writeBuffer();
+    // Add the Excel file to the ZIP archive
+    zip.file(
+      `${leadList.listName || `LeadList_${leadList.id}`}.xlsx`,
+      excelBuffer
+    );
+  }
+
+  // Generate and return the ZIP file as a Uint8Array
+  return zip.generateAsync({ type: 'uint8array' });
 }
