@@ -140,29 +140,10 @@ export type Stat = {
 
 // Reusable type for campaign data
 // Updated Campaign type to include primaryType and secondaryType
-export type CampaignGlobalType = (
+export type CampaignGlobalType =
   | TextCampaign
   | CallCampaign
   | SocialMediaCampaign
-  | EmailCampaign
-) & {
-  primaryType: CampaignType;
-  secondaryType: CampaignType;
-};
+  | EmailCampaign;
 
 // Optional runtime validation logic
-export function validateCampaignTypes(campaign: CampaignGlobalType) {
-  if (campaign.primaryType === campaign.secondaryType) {
-    throw new Error('Primary and secondary types cannot be the same.');
-  }
-
-  const socialMediaTypes = ['dm']; // Add other social media types here if needed
-  if (
-    socialMediaTypes.includes(campaign.primaryType) &&
-    socialMediaTypes.includes(campaign.secondaryType)
-  ) {
-    throw new Error(
-      'Both primary and secondary types cannot be social media types.'
-    );
-  }
-}

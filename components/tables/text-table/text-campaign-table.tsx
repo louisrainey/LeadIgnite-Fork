@@ -9,7 +9,7 @@ import {
   getPaginationRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -46,13 +46,12 @@ export function TextMessageCampaignTable<TData, TValue>({
   const per_page = searchParams?.get('limit') ?? '10';
   const [search, setSearch] = useState('');
 
-  const [{ pageIndex, pageSize }, setPagination] =
-    React.useState<PaginationState>({
-      pageIndex: Number(page) - 1,
-      pageSize: Number(per_page)
-    });
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: Number(page) - 1,
+    pageSize: Number(per_page)
+  });
 
-  const createQueryString = React.useCallback(
+  const createQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
       const newSearchParams = new URLSearchParams(searchParams?.toString());
 
@@ -69,7 +68,7 @@ export function TextMessageCampaignTable<TData, TValue>({
     [searchParams]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
@@ -79,7 +78,6 @@ export function TextMessageCampaignTable<TData, TValue>({
         scroll: false
       }
     );
-    console.log('Text Message Campaign Data', data);
   }, [pageIndex, pageSize, router, pathname, createQueryString]);
 
   const table = useReactTable({
@@ -105,18 +103,15 @@ export function TextMessageCampaignTable<TData, TValue>({
         onChange={(e) => setSearch(e.target.value)}
         className="w-full max-w-sm"
       />
+
       {/* Add horizontal scroll with overflow-x-auto */}
       <div className="w-full overflow-x-auto">
-        {' '}
-        {/* Ensure horizontal scroll */}
         <Table className="min-w-[1200px]">
-          {' '}
-          {/* Set minimum width to trigger horizontal scroll */}
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-left">
+                  <TableHead key={header.id} className="text-center">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -128,21 +123,17 @@ export function TextMessageCampaignTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell, index) => (
-                    <TableCell
-                      key={cell.id}
-                      className={index === 0 ? 'text-left' : ''}
-                    >
-                      <span className="text-left">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </span>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="text-center">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>

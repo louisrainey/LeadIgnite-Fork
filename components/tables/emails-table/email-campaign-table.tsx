@@ -78,7 +78,6 @@ export function EmailCampaignTable<TData, TValue>({
         scroll: false
       }
     );
-    console.log('Email Table Data', data);
   }, [pageIndex, pageSize, router, pathname, createQueryString]);
 
   const table = useReactTable({
@@ -109,16 +108,12 @@ export function EmailCampaignTable<TData, TValue>({
 
       {/* Add horizontal scroll with overflow-x-auto */}
       <div className="w-full overflow-x-auto">
-        {' '}
-        {/* Ensure horizontal scroll */}
         <Table className="min-w-[1200px]">
-          {' '}
-          {/* Set minimum width to trigger horizontal scroll */}
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-left">
+                  <TableHead key={header.id} className="text-center">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -134,12 +129,9 @@ export function EmailCampaignTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell, index) => (
-                    <TableCell
-                      key={cell.id}
-                      className={index === 0 ? 'text-left' : ''}
-                    >
-                      <span className="text-left">
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="text-center">
+                      <span className="text-center">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

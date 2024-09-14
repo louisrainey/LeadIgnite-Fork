@@ -2,14 +2,14 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Lead } from '@/constants/data'; // Assuming 'User' contains contact details
+import { LeadTypeGlobal } from '@/constants/data'; // Assuming 'Lead' contains contact details
 import { CellAction } from './cell-action'; // Assuming CellAction is used for row actions
-import { Calendar } from 'lucide-react';
+import { Calendar, MessageCircle } from 'lucide-react';
+import { useState } from 'react';
 
-// Assuming the User type matches the lead/contact structure
-// Update User type definition accordingly if necessary
+// Assuming the Lead type matches the lead/contact structure
 
-export const columns: ColumnDef<Lead>[] = [
+export const columns: ColumnDef<LeadTypeGlobal>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -73,14 +73,21 @@ export const columns: ColumnDef<Lead>[] = [
     header: 'Status',
     cell: ({ row }) => (
       <select
-        className={`rounded px-2 py-1 text-sm ${getStatusColor(
-          row.original.status
-        )}`}
+        className={`rounded px-2 py-1 text-sm`}
         value={row.original.status}
-        onChange={(e) => handleStatusChange(row.id, e.target.value)}
+        onChange={(e) =>
+          handleStatusChange(row.original.id.toString(), e.target.value)
+        }
       >
         {statusOptions.map((option) => (
-          <option key={option.value} value={option.value}>
+          <option
+            key={option.value}
+            value={option.value}
+            style={{
+              backgroundColor: option.bgColor,
+              color: option.textColor
+            }}
+          >
             {option.label}
           </option>
         ))}
@@ -98,19 +105,33 @@ export const columns: ColumnDef<Lead>[] = [
     )
   },
   {
-    accessorKey: 'lastUpdate',
-    header: 'Last Update',
-    cell: ({ row }) => <span>{row.original.lastUpdate || 'Today'}</span>
+    accessorKey: 'lastContactDate',
+    header: 'Last Contact Date',
+    cell: ({ row }) => (
+      <div className="flex items-center">
+        <Calendar className="mr-2" />
+        {row.original.lastUpdate || 'Not Contacted'}
+      </div>
+    )
   },
   {
-    id: 'actions',
-    cell: ({ row }) => <CellAction data={row.original} />
+    accessorKey: 'actions',
+    header: 'Activity',
+    cell: ({ row }) => (
+      <button
+        className="text-center"
+        onClick={() => openSidebar(row.original.id.toString())}
+      >
+        <MessageCircle className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+      </button>
+    )
   }
 ];
 
 // Function to handle status change (can be moved into a component where state is maintained)
 const handleStatusChange = (id: string, newValue: string) => {
   // Your logic to handle status change, e.g., updating state or making an API call
+  console.log(`Status changed for Lead ID ${id} to ${newValue}`);
 };
 
 // Function to get status color (should match your dark mode colors)
@@ -141,11 +162,8 @@ const statusOptions = [
   }
 ];
 
-const getStatusColor = (status: string) => {
-  const selectedStatus = statusOptions.find(
-    (option) => option.value === status
-  );
-  return selectedStatus
-    ? `${selectedStatus.bgColor} ${selectedStatus.textColor}`
-    : '';
+// Sidebar logic
+const openSidebar = (leadId: string) => {
+  // Logic to open the sidebar for a given lead
+  console.log(`Opening sidebar for Lead ID ${leadId}`);
 };
