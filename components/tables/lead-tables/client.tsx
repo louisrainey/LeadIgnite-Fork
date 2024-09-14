@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { LeadStatus } from '@/constants/data';
-import { Plus, Filter, Calendar, ChevronDown } from 'lucide-react';
+import { Plus, Filter, Calendar, ChevronDown, Download } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { columns } from './columns';
+import { leadListColumns } from './columns';
 import { Input } from '@/components/ui/input';
 import AddLeadModal from '@/components/reusables/modals/leadModal';
 import Lottie from 'lottie-react';
@@ -31,6 +31,9 @@ export const LeadClient: React.FC = () => {
   const filterByFollowUp = useLeadStore((state) => state.filterByFollowUp);
   const filterByCampaignID = useLeadStore((state) => state.filterByCampaignID);
   const resetFilters = useLeadStore((state) => state.resetFilters);
+  const exportFilteredLeads = useLeadStore(
+    (state) => state.exportFilteredLeadsToFile
+  ); // Get the export function from Zustand
 
   // Filter state
   const [selectedCampaign, setSelectedCampaign] = useState<
@@ -91,13 +94,23 @@ export const LeadClient: React.FC = () => {
         />
 
         {/* Right-aligned buttons */}
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col items-center space-y-2 ">
+          {/* Export Filtered Leads Button */}
+
           {/* Create Lead Button */}
           <Button
             onClick={openModal}
-            className="w-full rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+            className="flex items-center space-x-2 rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
           >
-            <Plus className="mr-2" /> Create Lead
+            <Plus className="h-5 w-5" />
+            <span>Create Lead</span>
+          </Button>
+          <Button
+            onClick={exportFilteredLeads} // Trigger the download on click
+            className="flex items-center space-x-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+          >
+            <Download className="h-5 w-5" />
+            <span>Export Leads</span>
           </Button>
 
           <div className="flex space-x-2">
@@ -134,7 +147,7 @@ export const LeadClient: React.FC = () => {
         <LeadDataTable
           pageCount={10}
           searchKey="Leads"
-          columns={columns}
+          columns={leadListColumns}
           data={leads}
         />
       ) : (

@@ -1,3 +1,4 @@
+import { LeadTypeGlobal } from '@/constants/data';
 import {
   CallCampaign,
   SocialAction,
@@ -10,6 +11,7 @@ import {
 import { TextMessage } from '@/types/goHighLevel/text';
 import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 import ExcelJS from 'exceljs';
+import JSZip from 'jszip';
 
 export async function exportEmailCampaignBulkToExcel(
   sheetName: string,
@@ -232,4 +234,98 @@ export async function exportCallCampaignsToExcel(
 
   // Create and return the Excel buffer for download
   return workbook.xlsx.writeBuffer() as Promise<Uint8Array>;
+}
+
+// export async function exportLeadsBulkToZip(
+//   leads: LeadTypeGlobal[], // Now correctly typed
+//   columns: { header: string; accessorKey: keyof LeadTypeGlobal }[],
+//   zipFilename: string
+// ): Promise<Uint8Array> {
+//   const zip = new JSZip(); // Initialize JSZip instance
+
+//   for (const lead of leads) {
+//     const workbook = new ExcelJS.Workbook();
+//     const worksheet = workbook.addWorksheet(
+//       `${lead.firstName}_${lead.lastName}_Lead`
+//     );
+
+//     worksheet.columns = columns.map((col) => ({
+//       header: col.header,
+//       key: col.accessorKey as string,
+//       width: 30
+//     }));
+
+//     // Map the lead data, including manually handling nested socials
+//     const rowData = {
+//       id: lead.id,
+//       firstName: lead.firstName,
+//       lastName: lead.lastName,
+//       phone: lead.phone,
+//       email: lead.email,
+//       status: lead.status,
+//       followUp: lead.followUp,
+//       campaignID: lead.campaignID,
+//       address1: lead.address1,
+//       facebook: lead.socials?.facebook || 'N/A',
+//       linkedin: lead.socials?.linkedin || 'N/A',
+//       instagram: lead.socials?.instagram || 'N/A',
+//       twitter: lead.socials?.twitter || 'N/A'
+//     };
+
+//     worksheet.addRow(rowData); // Add the lead's data as a row
+
+//     const excelBuffer = await workbook.xlsx.writeBuffer();
+//     zip.file(`${lead.firstName}_${lead.lastName}_Lead.xlsx`, excelBuffer); // Add file to ZIP
+//   }
+
+//   return zip.generateAsync({ type: 'uint8array' }); // Return the ZIP as a Uint8Array
+// }
+
+export async function exportLeadsToExcel(
+  leads: LeadTypeGlobal[], // Array of leads to be exported
+  columns: { header: string; accessorKey: keyof LeadTypeGlobal | string }[], // Column definitions
+  filename: string // The desired filename for the Excel file
+): Promise<Uint8Array> {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Leads'); // Create a single worksheet named "Leads"
+
+  // Define the columns for the worksheet, no need to check for `keyof LeadTypeGlobal` here
+  worksheet.columns = columns.map((col) => ({
+    header: col.header,
+    key: col.accessorKey, // This will map the data keys from the rowData
+    width: 30 // Optional: Set a default width for all columns
+  }));
+
+  // Add each lead as a row to the worksheet
+  leads.forEach((lead) => {
+    const rowData = {
+      id: lead.id,
+      firstName: lead.firstName,
+      lastName: lead.lastName,
+      phone: lead.phone,
+      email: lead.email,
+      status: lead.status,
+      followUp: lead.followUp,
+      campaignID: lead.campaignID,
+      address1: lead.address1,
+      // Combine social media profiles into one field
+      socials:
+        [
+          lead.socials?.facebook ? `Facebook: ${lead.socials.facebook}` : '',
+          lead.socials?.linkedin ? `LinkedIn: ${lead.socials.linkedin}` : '',
+          lead.socials?.instagram ? `Instagram: ${lead.socials.instagram}` : '',
+          lead.socials?.twitter ? `Twitter: ${lead.socials.twitter}` : ''
+        ]
+          .filter(Boolean) // Remove any empty strings
+          .join(', ') || 'No Social Profiles' // Fallback if no profiles exist
+    };
+
+    worksheet.addRow(rowData); // Add the lead's data as a row
+  });
+
+  // Generate the Excel file buffer and cast to Uint8Array
+  const buffer = await workbook.xlsx.writeBuffer();
+  const uint8Array = new Uint8Array(buffer); // Ensure it's converted to Uint8Array
+
+  return uint8Array; // Return the Uint8Array for further processing (e.g., download)
 }

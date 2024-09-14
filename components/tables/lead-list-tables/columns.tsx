@@ -47,6 +47,23 @@ export const columns: ColumnDef<LeadList>[] = [
     cell: ({ row }) => <span>{row.original.phone}</span>
   },
   {
+    accessorKey: 'emails',
+    header: 'Emails',
+    cell: ({ row }) => <span>{row.original.emails}</span> // Added emails column
+  },
+  {
+    accessorKey: 'socials',
+    header: 'Socials',
+    cell: ({ row }) => (
+      <div className="flex flex-col space-y-1">
+        <span>Facebook: {row.original.socials.facebook}</span>
+        <span>LinkedIn: {row.original.socials.linkedin}</span>
+        <span>Instagram: {row.original.socials.instagram}</span>
+        <span>Twitter: {row.original.socials.twitter}</span>
+      </div>
+    ) // Added socials column
+  },
+  {
     accessorKey: 'dataLink',
     header: 'Action',
     cell: ({ row }) => (

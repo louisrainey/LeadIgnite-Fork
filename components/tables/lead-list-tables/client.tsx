@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import Lottie from 'lottie-react';
 import searchAnimation from '@/public/lottie/SearchPing.json'; // Lottie JSON file path
 import FilterListsDropdown from './utils/filterLeads'; // Import the filter component
-import { LeadListDataTable } from './lead-data-table';
+import { LeadListDataTable } from './lead-list-data-table';
 import { LeadList } from '@/constants/dashboard/leadList';
 import UploadListModal from '@/components/reusables/modals/uploadSkipTracedList';
 
@@ -65,7 +65,7 @@ export const LeadListClient: React.FC<LeadListClientProps> = ({ data }) => {
         {/* Heading Component */}
         <Heading
           title={`Lead Manager (${data.length})`}
-          description="See a list of existing leads and follow ups, or create new leads."
+          description="See a list of existing lead lists or upload a new list."
         />
 
         {/* Right-aligned buttons */}
@@ -114,7 +114,12 @@ export const LeadListClient: React.FC<LeadListClientProps> = ({ data }) => {
 
       {/* Lead Data Table */}
       {data.length > 1 ? (
-        <LeadListDataTable searchKey="Lists" columns={columns} data={data} />
+        <LeadListDataTable
+          pageCount={10}
+          searchKey="Lists"
+          columns={columns}
+          data={data}
+        />
       ) : (
         <div className="flex h-[60vh] flex-col items-center justify-center">
           <Lottie animationData={searchAnimation} loop autoplay />

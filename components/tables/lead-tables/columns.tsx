@@ -6,10 +6,11 @@ import { LeadTypeGlobal } from '@/constants/data'; // Assuming 'Lead' contains c
 import { CellAction } from './cell-action'; // Assuming CellAction is used for row actions
 import { Calendar, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
+import { exportLeadsTableDataToExcel } from '@/lib/utils/files/downloadTableData';
 
 // Assuming the Lead type matches the lead/contact structure
 
-export const columns: ColumnDef<LeadTypeGlobal>[] = [
+export const leadListColumns: ColumnDef<LeadTypeGlobal>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -43,10 +44,77 @@ export const columns: ColumnDef<LeadTypeGlobal>[] = [
       </div>
     )
   },
+
   {
     accessorKey: 'phone',
     header: 'Phone',
     cell: ({ row }) => <span>{row.original.phone}</span>
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email Address',
+    cell: ({ row }: { row: { original: LeadTypeGlobal } }) => {
+      const email = row.original.email; // Assume a single email address for simplicity
+
+      return email ? (
+        <a href={`mailto:${email}`} className="text-blue-500 hover:underline">
+          {email}
+        </a>
+      ) : (
+        <span className="text-gray-500">No Email</span>
+      );
+    }
+  },
+  {
+    accessorKey: 'socials',
+    header: 'Social Media Profiles',
+    cell: ({ row }: { row: { original: LeadTypeGlobal } }) => {
+      const { socials } = row.original;
+
+      return (
+        <div className="flex flex-col space-y-2">
+          {socials?.facebook && (
+            <a
+              href={socials.facebook}
+              target="_blank"
+              className="text-blue-500 hover:underline"
+            >
+              Facebook
+            </a>
+          )}
+          {socials?.linkedin && (
+            <a
+              href={socials.linkedin}
+              target="_blank"
+              className="text-blue-500 hover:underline"
+            >
+              LinkedIn
+            </a>
+          )}
+          {socials?.instagram && (
+            <a
+              href={socials.instagram}
+              target="_blank"
+              className="text-blue-500 hover:underline"
+            >
+              Instagram
+            </a>
+          )}
+          {socials?.twitter && (
+            <a
+              href={socials.twitter}
+              target="_blank"
+              className="text-blue-500 hover:underline"
+            >
+              Twitter
+            </a>
+          )}
+          {!socials && (
+            <span className="text-gray-500">No Social Profiles</span>
+          )}
+        </div>
+      );
+    }
   },
   {
     accessorKey: 'summary',
@@ -123,6 +191,84 @@ export const columns: ColumnDef<LeadTypeGlobal>[] = [
         onClick={() => openSidebar(row.original.id.toString())}
       >
         <MessageCircle className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+      </button>
+    )
+  },
+  {
+    accessorKey: 'download',
+    header: 'Download',
+    cell: ({ row }: { row: { original: LeadTypeGlobal } }) => (
+      <button
+        className="text-blue-500 hover:underline"
+        onClick={() => {
+          // Define the columns for the Excel export, including the email and social links
+          const columns = [
+            { header: 'Lead ID', accessorKey: 'id' },
+            { header: 'Name', accessorKey: 'name' },
+            { header: 'Phone', accessorKey: 'phone' },
+            { header: 'Email', accessorKey: 'email' },
+            { header: 'Summary', accessorKey: 'summary' },
+            { header: 'Bedrooms', accessorKey: 'bed' },
+            { header: 'Bathrooms', accessorKey: 'bath' },
+            { header: 'Square Footage', accessorKey: 'sqft' },
+            { header: 'Status', accessorKey: 'status' },
+            { header: 'Follow Up', accessorKey: 'followUp' },
+            { header: 'Last Update', accessorKey: 'lastUpdate' },
+            { header: 'Address', accessorKey: 'address1' },
+            // Add a single column for social media profiles
+            { header: 'Social Media Profiles', accessorKey: 'socials' } // Combined socials
+          ];
+
+          // Generate the data array for the Excel export
+          const data = [
+            {
+              id: row.original.id,
+              name: `${row.original.firstName} ${row.original.lastName}`,
+              phone: row.original.phone,
+              email: row.original.email ?? 'No Email',
+              summary: row.original.summary,
+              bed: row.original.bed,
+              bath: row.original.bath,
+              sqft: row.original.sqft,
+              status: row.original.status,
+              followUp: row.original.followUp,
+              lastUpdate: row.original.lastUpdate,
+              address1: row.original.address1,
+
+              // Combine the social media links into one string
+              socials:
+                [
+                  row.original.socials?.facebook
+                    ? `Facebook: ${row.original.socials.facebook}`
+                    : '',
+                  row.original.socials?.linkedin
+                    ? `LinkedIn: ${row.original.socials.linkedin}`
+                    : '',
+                  row.original.socials?.instagram
+                    ? `Instagram: ${row.original.socials.instagram}`
+                    : '',
+                  row.original.socials?.twitter
+                    ? `Twitter: ${row.original.socials.twitter}`
+                    : ''
+                ]
+                  .filter(Boolean) // Remove empty strings
+                  .join(', ') || 'No Social Profiles' // Join and fallback if no socials
+            }
+          ];
+
+          // Debug: Log the data that will be exported
+          console.log('Data to export:', data);
+
+          // Call the export function for Leads with Social Links and Email
+          exportLeadsTableDataToExcel(
+            'Lead Data', // Sheet name
+            columns, // Column definitions
+            data, // Data array to be exported
+            `${row.original.firstName}-${row.original.lastName}-lead.xlsx` // Filename
+          );
+        }}
+      >
+        Download Excel
       </button>
     )
   }
