@@ -474,7 +474,6 @@ export default function LeadsComponent() {
           center={center}
           markers={markers}
           zoom={10}
-          propertyResults={properties}
         />
       </div>
     </form>

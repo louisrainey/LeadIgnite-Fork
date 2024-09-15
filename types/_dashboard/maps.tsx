@@ -12,7 +12,7 @@ export type Coordinate = {
   lat: number;
   lng: number;
 };
-type Phone = {
+export type LeadLocationPhone = {
   ext: string | null;
   number: string | null;
   primary: boolean | null;
@@ -23,7 +23,7 @@ export type PropertyDetails = {
   id?: string;
   agent: string;
   agent_email: string | null;
-  agent_phones: Phone[] | null;
+  agent_phones: LeadLocationPhone[] | null;
   alt_photos: string; // This could be a string or an array of strings if needed to split by commas
   assessed_value: number;
   beds: number;

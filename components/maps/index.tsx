@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   GoogleMap,
   LoadScript,
@@ -6,14 +6,14 @@ import {
   DrawingManager
 } from '@react-google-maps/api';
 import PropertyListView from './properties/propertyList';
-import { PropertyDetails } from '@/types/_dashboard/maps';
+import { usePropertyStore } from '@/lib/stores/leadSearch/drawer';
+import { MockInHouseLeadAgrigator } from '@/constants/dashboard/properties';
 
 interface MapComponentProps {
   apiKey: string;
   center: { lat: number; lng: number };
   markers: { lat: number; lng: number }[];
   zoom: number;
-  propertyResults: PropertyDetails[]; // Ensure you pass this prop correctly
 }
 
 const mapContainerStyle = {
@@ -25,15 +25,24 @@ const MapComponent: React.FC<MapComponentProps> = ({
   apiKey,
   center,
   markers,
-  zoom,
-  propertyResults // Destructure propertyResults from props
+  zoom
 }) => {
-  const [drawingMode, setDrawingMode] =
-    useState<google.maps.drawing.OverlayType | null>(null);
-  const [shapeDrawn, setShapeDrawn] = useState(false);
-  const [boundaryApplied, setBoundaryApplied] = useState(false);
-  const [isPropertyListVisible, setIsPropertyListVisible] = useState(true);
+  // Get the relevant state from Zustand store
+  const {
+    properties,
+    visibleProperties, // Zustand-managed properties list
+    setProperties, // Action to set properties in the store
+    isDrawerOpen, // Drawer visibility state
+    setIsDrawerOpen, // Action to control drawer state
+    loadMoreProperties, // Action to load more properties (pagination)
+    hasMore, // Whether there are more properties to load
+    isLoading // Loading state
+  } = usePropertyStore();
 
+  const [drawingMode, setDrawingMode] =
+    React.useState<google.maps.drawing.OverlayType | null>(null);
+  const [shapeDrawn, setShapeDrawn] = React.useState(false);
+  const [boundaryApplied, setBoundaryApplied] = React.useState(false);
   const shapeRef = useRef<any>(null);
 
   const onShapeComplete = (shape: any) => {
@@ -50,7 +59,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
       shapeRef.current.setMap(null); // Remove shape from map
       shapeRef.current = null; // Clear the reference
     }
-    setShapeDrawn(false);
+    setDrawingMode(null); // Stop the drawing mode
+    setShapeDrawn(false); // Reset shape drawn state
     console.log('Drawing canceled');
   };
 
@@ -62,16 +72,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
   };
 
-  const handlePropertyListOpen = (event: React.MouseEvent) => {
-    event.preventDefault(); // Prevent form submission
-    console.log('Property list opened');
-  };
-
-  const handlePropertyListClose = (event: React.MouseEvent) => {
-    event.preventDefault(); // Prevent form submission
-    console.log('Property list closed');
-    setIsPropertyListVisible(false);
-  };
   const handleRemoveBoundaries = () => {
     if (shapeRef.current) {
       shapeRef.current.setMap(null); // Remove the shape completely
@@ -80,6 +80,32 @@ const MapComponent: React.FC<MapComponentProps> = ({
     setBoundaryApplied(false);
     console.log('Boundaries removed');
   };
+
+  // Load properties into the Zustand store, but don't override unless necessary
+  // useEffect(() => {
+  //   // Assuming fetchProperties is a function that fetches new properties from an API
+  //   const fetchProperties = async () => {
+  //     const newProperties = await fetch('https://api.example.com/properties').then(res => res.json());
+  //     if (newProperties && newProperties.length > 0) {
+  //       setProperties((prevProperties) => [...prevProperties, ...newProperties]);
+  //     }
+  //   };
+
+  //   fetchProperties();
+  // }, [setProperties]);
+
+  // Log the state of visibleProperties and isDrawerOpen whenever they change
+
+  useEffect(() => {
+    setProperties(MockInHouseLeadAgrigator); // Use mock data to initialize Zustand properties
+  }, [setProperties]);
+
+  useEffect(() => {
+    console.log('Properties', properties);
+
+    console.log('Visible Properties:', visibleProperties);
+    console.log('Is Drawer Open:', isDrawerOpen);
+  }, [visibleProperties, isDrawerOpen]);
 
   return (
     <LoadScript googleMapsApiKey={apiKey} libraries={['drawing']}>
@@ -90,66 +116,80 @@ const MapComponent: React.FC<MapComponentProps> = ({
             center={center}
             zoom={zoom}
           >
+            {/* Render markers */}
             {markers.map((marker, index) => (
               <Marker key={index} position={marker} />
             ))}
 
+            {/* Drawing Mode */}
             {!boundaryApplied && (
               <div className="absolute left-1/2 top-4 z-10 -translate-x-1/2 transform rounded-lg bg-white p-2 text-center opacity-50 shadow-lg transition-opacity duration-300 hover:opacity-100">
                 {!drawingMode ? (
                   <p className="mb-2 text-sm font-semibold text-gray-800">
-                    Draw a shape around the properties you`d like to search for
+                    Draw a shape around the properties you’d like to search for
                   </p>
                 ) : (
-                  <p className="mb-2 text-center text-sm font-semibold text-gray-800">
+                  <p className="mb-2 text-sm font-semibold text-gray-800">
                     Start Drawing!
                   </p>
                 )}
+
+                {/* Drawing buttons */}
                 {!shapeDrawn && (
-                  <div className="mb-2 flex justify-center space-x-2">
-                    <button
-                      className="rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
-                      }}
-                    >
-                      Polygon
-                    </button>
-                    <button
-                      className="rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setDrawingMode(
-                          google.maps.drawing.OverlayType.RECTANGLE
-                        );
-                      }}
-                    >
-                      Rectangle
-                    </button>
-                    <button
-                      className="rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setDrawingMode(google.maps.drawing.OverlayType.CIRCLE);
-                      }}
-                    >
-                      Circle
-                    </button>
-                    <button
-                      className="rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setDrawingMode(
-                          google.maps.drawing.OverlayType.POLYLINE
-                        );
-                      }}
-                    >
-                      Polyline
-                    </button>
+                  <div className="mb-2 flex flex-col items-center space-y-2">
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        className="rounded bg-blue-600 px-4 py-2 text-xs text-white hover:bg-blue-700"
+                        onClick={() =>
+                          setDrawingMode(
+                            google.maps.drawing.OverlayType.POLYGON
+                          )
+                        }
+                      >
+                        Polygon
+                      </button>
+                      <button
+                        className="rounded bg-blue-600 px-4 py-2 text-xs text-white hover:bg-blue-700"
+                        onClick={() =>
+                          setDrawingMode(
+                            google.maps.drawing.OverlayType.RECTANGLE
+                          )
+                        }
+                      >
+                        Rectangle
+                      </button>
+                      <button
+                        className="rounded bg-blue-600 px-4 py-2 text-xs text-white hover:bg-blue-700"
+                        onClick={() =>
+                          setDrawingMode(google.maps.drawing.OverlayType.CIRCLE)
+                        }
+                      >
+                        Circle
+                      </button>
+                      <button
+                        className="rounded bg-blue-600 px-4 py-2 text-xs text-white hover:bg-blue-700"
+                        onClick={() =>
+                          setDrawingMode(
+                            google.maps.drawing.OverlayType.POLYLINE
+                          )
+                        }
+                      >
+                        Polyline
+                      </button>
+                    </div>
+                    {/* Cancel button */}
+                    {drawingMode && (
+                      <button
+                        className="mt-2 rounded bg-red-600 px-4 py-2 text-xs text-white hover:bg-red-700"
+                        onClick={handleCancel}
+                      >
+                        Cancel Drawing
+                      </button>
+                    )}
                   </div>
                 )}
 
+                {/* Apply and Cancel buttons after drawing */}
                 {shapeDrawn && (
                   <div className="flex justify-center space-x-4">
                     <button
@@ -169,6 +209,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
               </div>
             )}
 
+            {/* Remove Boundaries */}
             {boundaryApplied && (
               <div
                 onClick={handleRemoveBoundaries}
@@ -179,6 +220,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
               </div>
             )}
 
+            {/* Drawing Manager */}
             <DrawingManager
               onPolygonComplete={onShapeComplete}
               onRectangleComplete={onShapeComplete}
@@ -198,16 +240,20 @@ const MapComponent: React.FC<MapComponentProps> = ({
               }}
             />
 
-            {isPropertyListVisible && propertyResults.length > 1 && (
+            {/* Property List View */}
+            {isDrawerOpen && visibleProperties.length > 0 && (
               <div
                 className="absolute bottom-0 left-0 z-50 w-full"
                 style={{ maxWidth: '100%', overflow: 'hidden' }}
               >
-                <PropertyListView
-                  properties={propertyResults}
-                  onOpen={handlePropertyListOpen}
-                  onClose={handlePropertyListClose}
-                />
+                <PropertyListView properties={visibleProperties} />
+                {hasMore && !isLoading && (
+                  <div className="flex justify-center p-4">
+                    <button onClick={loadMoreProperties}>
+                      Load More Properties
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </GoogleMap>
