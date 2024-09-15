@@ -483,7 +483,7 @@ export default function LeadsComponent() {
           markers={markers}
           zoom={10}
         />
-        {properties.length > 0 && (
+        {properties.length > 0 && !isDrawerOpen && (
           <Button
             type="button"
             className="absolute right-20 top-5"
