@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { marked } from 'marked'; // Ensure this is the latest version that returns a Promise
+import { toast } from 'sonner';
 
 interface UploadEmailBodyProps {
   onFileUpload: (fileContent: string) => void; // Callback to pass file content to parent
@@ -21,7 +22,7 @@ export const UploadEmailBody: React.FC<UploadEmailBodyProps> = ({
     if (file) {
       const fileType = file.name.split('.').pop()?.toLowerCase();
       if (!['md', 'html'].includes(fileType || '')) {
-        alert('Only .md (Markdown) and .html (HTML) files are allowed.');
+        toast('Only .md (Markdown) and .html (HTML) files are allowed.');
         return;
       }
 

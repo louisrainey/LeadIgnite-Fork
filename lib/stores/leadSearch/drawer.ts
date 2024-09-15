@@ -23,7 +23,7 @@ const MIN_DRAWER_HEIGHT = 100;
 
 export const usePropertyStore = create<PropertyStoreState>((set, get) => ({
   // Initial states
-  isDrawerOpen: true,
+  isDrawerOpen: false,
   drawerHeight: 800,
   properties: [],
   visibleProperties: [],

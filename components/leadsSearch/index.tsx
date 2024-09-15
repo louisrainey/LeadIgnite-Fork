@@ -35,6 +35,8 @@ import {
 import PropertyListView from '@/components/maps/properties/propertyList';
 import { detailed_properties_saved } from '@/constants/dashboard/properties';
 import { checkForSQLInjection } from '@/constants/utility/sqlCheck';
+import { toast } from 'sonner';
+import { usePropertyStore } from '@/lib/stores/leadSearch/drawer';
 
 export default function LeadsComponent() {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -46,10 +48,16 @@ export default function LeadsComponent() {
     lat: 39.7392,
     lng: -104.9903
   });
-
-  const [properties, setProperties] = useState<PropertyDetails[]>(
-    detailed_properties_saved
-  ); // Add this state
+  const {
+    properties,
+    visibleProperties, // Zustand-managed properties list
+    setProperties, // Action to set properties in the store
+    isDrawerOpen, // Drawer visibility state
+    setIsDrawerOpen, // Action to control drawer state
+    loadMoreProperties, // Action to load more properties (pagination)
+    hasMore, // Whether there are more properties to load
+    isLoading // Loading state
+  } = usePropertyStore();
 
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(mapFormSchema),
@@ -76,7 +84,7 @@ export default function LeadsComponent() {
 
   const onSubmit = async (data: MapFormSchemaType) => {
     const apiKey = process.env.NEXT_PUBLIC_GMAPS_KEY || '';
-    alert('Submitted');
+    toast('Submitted');
     // Use the location from form data to fetch addresses from the mock API
     const fetchedCoordinates = await mockFetchAddressesFromApi([data.location]);
     console.log('Fetched Coordinates:', fetchedCoordinates);
@@ -475,6 +483,16 @@ export default function LeadsComponent() {
           markers={markers}
           zoom={10}
         />
+        {properties.length > 0 && (
+          <Button
+            type="button"
+            className="absolute right-20 top-5"
+            onClick={() => setIsDrawerOpen(true)}
+          >
+            Open Properties
+            <span className="animate-light-sweep absolute inset-0 -translate-x-[50%] transform bg-gradient-to-r from-transparent via-white to-transparent opacity-75"></span>{' '}
+          </Button>
+        )}
       </div>
     </form>
   );

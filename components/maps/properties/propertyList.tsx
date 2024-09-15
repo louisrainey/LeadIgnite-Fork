@@ -9,6 +9,7 @@ import PropertyCard from './propertyCard';
 import { PropertyDetails } from '@/types/_dashboard/maps';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { usePropertyStore } from '@/lib/stores/leadSearch/drawer'; // Zustand store import
+import { toast } from 'sonner';
 
 interface PropertyListProps {
   properties: PropertyDetails[];
@@ -35,6 +36,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 
   // Handle infinite scrolling and loading more properties when the user reaches the bottom
   useEffect(() => {
+    toast('Drawer Opened');
     if (!hasMore) return;
 
     const loadMoreObserver = new IntersectionObserver(

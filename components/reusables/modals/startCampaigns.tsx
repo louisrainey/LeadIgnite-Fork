@@ -21,6 +21,7 @@ import { format } from 'date-fns';
 import { DatePickerWithRange } from './dateRangePicker';
 import { Textarea } from '@/components/ui/textarea';
 import router from 'next/router';
+import { toast } from 'sonner';
 const socialMediaPlatforms = ['twitter', 'instagram', 'linkedin'];
 const allChannels = ['phone', 'email', 'twitter', 'instagram', 'linkedin'];
 
@@ -53,7 +54,7 @@ const ChannelSelectionModal: React.FC<ChannelSelectionModalProps> = ({
     if (validateChannel()) {
       handleNext();
     } else {
-      alert('Please select a primary channel.');
+      toast('Please select a primary channel.');
     }
   };
 
@@ -522,7 +523,7 @@ const MultiStepCampaign: React.FC<{ closeModal: () => void }> = ({
 
   const handleNext = () => {
     if (isSocialMedia(primaryChannel) && isSocialMedia(secondaryChannel)) {
-      alert(
+      toast(
         'Primary and secondary channels cannot both be social media platforms.'
       );
       return;
@@ -532,7 +533,7 @@ const MultiStepCampaign: React.FC<{ closeModal: () => void }> = ({
 
   const handleBack = () => setStep(step - 1);
   const handleLaunch = () => {
-    alert(`Campaign "${campaignName}" launched!`);
+    toast(`Campaign "${campaignName}" launched!`);
     closeModal();
   };
 

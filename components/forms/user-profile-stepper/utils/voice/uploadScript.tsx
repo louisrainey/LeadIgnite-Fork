@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'sonner';
 
 interface UploadSalesScriptProps {
   onFileUpload: (fileContent: string) => void; // Callback to pass the file content to the parent
@@ -20,7 +21,7 @@ const UploadSalesScript: React.FC<UploadSalesScriptProps> = ({
     if (file) {
       const fileType = file.name.split('.').pop()?.toLowerCase();
       if (!['txt', 'doc', 'docx'].includes(fileType || '')) {
-        alert('Only .txt, .doc, or .docx files are allowed.');
+        toast('Only .txt, .doc, or .docx files are allowed.');
         return;
       }
 

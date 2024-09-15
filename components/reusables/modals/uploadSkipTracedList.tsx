@@ -14,6 +14,7 @@ import {
 import { useDropzone } from 'react-dropzone';
 import { leadSchema } from '@/types/zod/leadSchema';
 import { handleListUpload } from '@/lib/utils/files/extractheadrsFromFiles';
+import { toast } from 'sonner';
 
 // Define the form values type
 interface FormValues {
@@ -108,7 +109,7 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
   // Form submission handler
   const onSubmit = (data: FormValues) => {
     console.log('Form Data:', data);
-    alert('submitted');
+    toast('submitted');
   };
 
   // If the modal is not open, don't render it
