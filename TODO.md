@@ -1,14 +1,10 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# Switch alerts to use sonner https://ui.shadcn.com/docs/components/sonner
-
 # Create user profile
 
 # Add redirects to page if subscription is over , or user not correctly signed in
 
 # Add Skip tracing capability
-
-# ? Enable Close and Open Listing Accordian? (Add Max Height)
 
 # 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
 
@@ -16,7 +12,7 @@
 
 # 🪳 Fix Leads Not laoding when i get to bottom
 
-# 🪳 Fix Multiple toasts showing when drawer is opened
+# 🪳 Fix Multiple toasts showing when drawer is opened (Maybe multi renders)
 
 # ⁉️ optimize load speeds
 
@@ -32,6 +28,8 @@ index.mjs:247 -->
 # 💪 Add New team modal , and employee permissions , invite by email with permissions
 
 # 💪 Kanban add state
+
+<!-- #✅ Switch alerts to use sonner https://ui.shadcn.com/docs/components/sonner -->
 
 <!-- #✅ Switch lead results to use shad ui drawer https://ui.shadcn.com/docs/components/drawer -->
 
