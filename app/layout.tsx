@@ -25,10 +25,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${inter.className}  `} suppressHydrationWarning={true}>
         <NextTopLoader showSpinner={false} />
-        <Providers session={session}>
-          <Toaster />
-          {children}
-        </Providers>
+        <Providers session={session}>{children}</Providers>
       </body>
     </html>
   );
