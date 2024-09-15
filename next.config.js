@@ -6,7 +6,9 @@ const nextConfig = {
       'www.realtor.com',
       'unsplash.com',
       'pixabay.com',
-      'ap.rdcpix.com'
+      'ap.rdcpix.com',
+      'loremflickr.com',
+      'picsum.photos'
     ]
   }
 };

@@ -1,6 +1,116 @@
-import { PropertyDetails } from '@/types/_dashboard/maps';
+import { LeadLocationPhone, PropertyDetails } from '@/types/_dashboard/maps';
 import { v4 as uuidv4 } from 'uuid';
+import { faker } from '@faker-js/faker';
+import { APP_TESTING_MODE } from '../data';
+// Helper function to generate random phone numbers
 
+// Helper function to generate random phone numbers
+// Generate random phone numbers with extensions
+const generatePhones = (): LeadLocationPhone[] => {
+  return [
+    {
+      ext:
+        faker.helpers.maybe(() => faker.string.numeric(4), {
+          probability: 0.5
+        }) ?? null, // Ensures `null` instead of `undefined`
+      number: faker.phone.number(), // Generates a random phone number
+      primary: true,
+      type: faker.helpers.arrayElement(['Office', 'Mobile', 'Home', 'Fax']) // Randomly choose one of the types
+    },
+    {
+      ext:
+        faker.helpers.maybe(() => faker.string.numeric(4), {
+          probability: 0.5
+        }) ?? null, // Ensures `null` instead of `undefined`
+      number: faker.phone.number(),
+      primary: false,
+      type: faker.helpers.arrayElement(['Office', 'Mobile', 'Home', 'Fax'])
+    }
+  ];
+};
+// Helper function to generate property details
+export const generateFakeProperty = (): PropertyDetails => {
+  const lat = faker.location.latitude();
+  const lng = faker.location.longitude();
+
+  return {
+    id: faker.string.uuid(),
+    agent: faker.person.fullName(),
+    agent_email: faker.internet.email(),
+    agent_phones: generatePhones(),
+    alt_photos: faker.image.url(),
+    assessed_value: faker.number.float({
+      min: 100000,
+      max: 1000000,
+      fractionDigits: 0
+    }), // Generates integer values
+    beds: faker.number.int({ min: 1, max: 6 }),
+    broker: faker.company.name() ?? null,
+    broker_phone: faker.phone.number() ?? null,
+    broker_website: faker.internet.url() ?? null,
+    city: faker.location.city(),
+    county: faker.location.county(),
+    days_on_mls: faker.number.int({ min: 1, max: 365 }),
+    estimated_value: faker.number.float({
+      min: 200000,
+      max: 2000000,
+      fractionDigits: 0
+    }), // Generates integer values
+    fips_code: faker.string.numeric(5),
+    full_baths: faker.number.int({ min: 1, max: 3 }),
+    full_street_line: faker.location.streetAddress(),
+    half_baths: faker.number.int({ min: 0, max: 2 }),
+    hoa_fee: faker.number.float({ min: 50, max: 500, fractionDigits: 2 }), // Generates float values with two decimal places
+    last_sold_date: faker.date.past().toISOString(),
+    latitude: Number(lat),
+    list_date: faker.date.past().toISOString(),
+    list_price: faker.number.int({ min: 100000, max: 2000000 }),
+    longitude: Number(lng),
+    lot_sqft: faker.number.int({ min: 1000, max: 10000 }),
+    mls: faker.string.uuid(),
+    mls_id: faker.string.uuid(),
+    nearby_schools: faker.company.name(),
+    neighborhoods: faker.location.city(),
+    parking_garage: faker.number.int({ min: 0, max: 3 }),
+    price_per_sqft: faker.number.float({
+      min: 50,
+      max: 500,
+      fractionDigits: 2
+    }), // Generates float values with two decimal places
+    primary_photo: faker.image.url(),
+    property_url: faker.internet.url(),
+    sold_price: faker.number.int({ min: 100000, max: 2000000 }),
+    sqft: faker.number.int({ min: 500, max: 5000 }),
+    state: faker.location.state(),
+    status: faker.helpers.arrayElement(['active', 'sold', 'pending']),
+    stories: faker.number.int({ min: 1, max: 3 }),
+    street: faker.location.street(),
+    style: faker.helpers.arrayElement([
+      'Modern',
+      'Victorian',
+      'Colonial',
+      'Contemporary'
+    ]),
+    text: faker.lorem.sentence(),
+    unit:
+      faker.helpers.maybe(() => faker.string.alpha(3), { probability: 0.3 }) ??
+      null,
+    year_built: faker.number.int({ min: 1900, max: 2023 }),
+    zip_code: faker.location.zipCode(),
+    mortgage_balance: faker.helpers.maybe(
+      () => faker.number.int({ min: 10000, max: 1000000 }),
+      { probability: 0.5 }
+    )
+  };
+};
+
+// Generate a list of fake properties
+export const generateFakeProperties = (count: number): PropertyDetails[] => {
+  return Array.from({ length: count }, generateFakeProperty);
+};
+
+export const MockInHouseLeadAgrigator =
+  APP_TESTING_MODE && generateFakeProperties(100);
 export let detailed_properties_saved: PropertyDetails[] = [
   {
     agent: 'Sharon Rojo',

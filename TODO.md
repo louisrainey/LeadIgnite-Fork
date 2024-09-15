@@ -1,6 +1,6 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# Add cancel while drawing
+# Switch alerts to use sonner https://ui.shadcn.com/docs/components/sonner
 
 # Create user profile
 
@@ -16,7 +16,7 @@
 
 # 🪳 Fix add lead list modal to remove row once slecte4d and also only show continue button once all rows except socials are matched
 
-# Switch alerts to use sonner https://ui.shadcn.com/docs/components/sonner
+# 🪳 Fix Leads Not laoding when i get to bottom
 
 # ⁉️ optimize load speeds
 
@@ -32,6 +32,8 @@ index.mjs:247 -->
 # 💪 Add New team modal , and employee permissions , invite by email with permissions
 
 # 💪 Kanban add state
+
+<!-- # ✅ Add cancel while drawing -->
 
 <!-- #✅ Add Leads,LeadList to global state , so we can easily switch, filter -->
 

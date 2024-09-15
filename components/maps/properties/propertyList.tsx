@@ -1,130 +1,46 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useRef, useEffect, MouseEvent } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { X } from 'lucide-react';
-import { PropertyDetails } from '@/types/_dashboard/maps';
+import { X, Loader2 } from 'lucide-react';
 import PropertyCard from './propertyCard';
-import { Loader2 } from 'lucide-react'; // Import a loading spinner icon from lucide-react
+import { PropertyDetails } from '@/types/_dashboard/maps';
+import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
+import { usePropertyStore } from '@/lib/stores/leadSearch/drawer'; // Zustand store import
 
 interface PropertyListProps {
   properties: PropertyDetails[];
-  onClose: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  onOpen: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-const PropertyListView: React.FC<PropertyListProps> = ({
-  properties,
-  onClose,
-  onOpen
-}) => {
-  const [isPanelOpen, setIsPanelOpen] = useState(true);
-  const [panelHeight, setPanelHeight] = useState(300);
-  const [progressValue, setProgressValue] = useState(0);
-  const [listSizeLabel, setListSizeLabel] = useState('');
-  const [visibleProperties, setVisibleProperties] = useState<PropertyDetails[]>(
-    []
-  );
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+const MIN_DRAWER_HEIGHT = 100; // Set a minimum height for the drawer to prevent it from being closed completely.
 
-  const observer = useRef<IntersectionObserver | null>(null);
+const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
+  // Destructure Zustand store state and actions
+  const {
+    isDrawerOpen,
+    setIsDrawerOpen,
+    drawerHeight,
+    setDrawerHeight,
+    visibleProperties,
+    progressValue,
+    listSizeLabel,
+    hasMore,
+    isLoading,
+    loadMoreProperties
+  } = usePropertyStore();
+
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  const maxCardsPerLoad = 6;
-
-  useEffect(() => {
-    const propertyCount = properties.length;
-
-    if (propertyCount <= 100) {
-      setProgressValue(25);
-      setListSizeLabel('Specific');
-    } else if (propertyCount <= 10000) {
-      setProgressValue(50);
-      setListSizeLabel('Moderate');
-    } else {
-      setProgressValue(75);
-      setListSizeLabel('Broad');
-    }
-  }, [properties.length]);
-
-  useEffect(() => {
-    if (isPanelOpen) {
-      onOpen(
-        new MouseEvent('click') as unknown as React.MouseEvent<
-          HTMLButtonElement,
-          MouseEvent
-        >
-      );
-    } else {
-      onClose(
-        new MouseEvent('click') as unknown as React.MouseEvent<
-          HTMLButtonElement,
-          MouseEvent
-        >
-      );
-    }
-  }, [isPanelOpen, onOpen, onClose]);
-
-  const togglePanel = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    event.preventDefault();
-    setIsPanelOpen(!isPanelOpen);
-  };
-
-  const startResizing = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
-    event.preventDefault();
-    window.addEventListener('mousemove', resizePanel);
-    window.addEventListener('mouseup', stopResizing);
-  };
-
-  const resizePanel = (event: MouseEvent) => {
-    const newY = window.innerHeight - event.clientY;
-    if (newY >= 100 && newY <= window.innerHeight) {
-      setPanelHeight(newY);
-    }
-  };
-
-  const stopResizing = () => {
-    window.removeEventListener('mousemove', resizePanel);
-    window.removeEventListener('mouseup', stopResizing);
-  };
-
-  const loadMoreProperties = useCallback(() => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setVisibleProperties((prev) => {
-        const nextProperties = properties.slice(
-          prev.length,
-          prev.length + maxCardsPerLoad
-        );
-        if (nextProperties.length < maxCardsPerLoad) {
-          setHasMore(false);
-        }
-        setIsLoading(false);
-        return [...prev, ...nextProperties];
-      });
-    }, 1000); // Simulate network delay
-  }, [properties]);
-
-  useEffect(() => {
-    if (visibleProperties.length === 0 && properties.length > 0) {
-      loadMoreProperties(); // Load initial set of properties
-    }
-  }, [loadMoreProperties, properties]);
-
+  // Handle infinite scrolling and loading more properties when the user reaches the bottom
   useEffect(() => {
     if (!hasMore) return;
 
     const loadMoreObserver = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !isLoading) {
-          loadMoreProperties();
+          loadMoreProperties(); // Trigger loading more properties from Zustand store
         }
       },
       { threshold: 1.0 }
@@ -141,30 +57,62 @@ const PropertyListView: React.FC<PropertyListProps> = ({
     };
   }, [hasMore, loadMoreProperties, isLoading]);
 
+  // Start resizing the drawer
+  // Remove the unnecessary generic arguments for React's MouseEvent
+  const startResizing = (event: React.MouseEvent) => {
+    event.preventDefault();
+    window.addEventListener('mousemove', resizeDrawer);
+    window.addEventListener('mouseup', stopResizing);
+  };
+
+  // Resize the drawer's height
+  const resizeDrawer = (event: globalThis.MouseEvent) => {
+    const newHeight = window.innerHeight - event.clientY;
+    if (newHeight >= MIN_DRAWER_HEIGHT && newHeight <= window.innerHeight) {
+      setDrawerHeight(newHeight); // Update drawer height using Zustand
+    }
+  };
+
+  // Stop resizing
+  const stopResizing = () => {
+    window.removeEventListener('mousemove', resizeDrawer);
+    window.removeEventListener('mouseup', stopResizing);
+  };
+
+  // Don't render anything if there are not enough properties
+  if (properties.length <= 1) {
+    return null;
+  }
+
   return (
     <div
-      style={{ height: `${isPanelOpen ? panelHeight : 40}px`, width: '100%' }}
+      style={{ position: 'absolute', right: 0, width: '400px', height: '100%' }}
     >
-      <Card className="h-full overflow-hidden rounded-none">
-        <div
-          className="flex cursor-pointer items-center justify-between bg-secondary p-2"
-          onMouseDown={startResizing}
-        >
-          <h2 className="text-lg font-semibold">
-            {properties.length} Properties Fetched
-          </h2>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="icon" onClick={togglePanel}>
-              <X className="h-4 w-4" />
-            </Button>
+      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <DrawerContent className="p-0" style={{ maxHeight: drawerHeight }}>
+          {/* Drawer header and resize bar */}
+          <div
+            className="flex cursor-ns-resize items-center justify-between bg-secondary p-4"
+            onMouseDown={startResizing} // Corrected event handler
+          >
+            <h2 className="text-lg font-semibold">
+              {properties.length} Properties Fetched
+            </h2>
+            <DrawerClose asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsDrawerOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DrawerClose>
           </div>
-        </div>
-        {isPanelOpen && (
+
+          {/* Drawer content */}
           <CardContent
-            className="overflow-auto p-4"
-            style={{
-              height: isPanelOpen ? `calc(${panelHeight}px - 40px)` : '40px'
-            }}
+            className="overflow-auto"
+            style={{ height: drawerHeight - 60 }}
           >
             <div className="space-y-4">
               <div className="space-y-2">
@@ -186,6 +134,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({
                   <Button type="button">Create List</Button>
                 </div>
               </div>
+
               <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                 {visibleProperties.map((property, index) => (
                   <div key={index} className="p-4">
@@ -200,8 +149,8 @@ const PropertyListView: React.FC<PropertyListProps> = ({
               </div>
             </div>
           </CardContent>
-        )}
-      </Card>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
