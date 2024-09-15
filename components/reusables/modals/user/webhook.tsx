@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { ClipboardCopy, FileSearch } from 'lucide-react'; // Icons for clipboard and no history
 import { useModalStore } from '@/lib/stores/dashboard';
+import { toast } from 'sonner';
 
 // Webhook entry interface
 interface WebhookEntry {
@@ -65,7 +66,7 @@ export const WebhookModal: React.FC = () => {
   // Function to copy payload to clipboard
   const copyToClipboard = () => {
     navigator.clipboard.writeText(webhookPayload);
-    alert('Payload copied to clipboard!');
+    toast('Payload copied to clipboard!');
   };
 
   // Function to handle webhook testing

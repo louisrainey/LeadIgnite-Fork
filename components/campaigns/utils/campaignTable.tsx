@@ -3,7 +3,7 @@ import Lottie from 'lottie-react';
 import { RefreshCw } from 'lucide-react';
 import * as OutReachAnimation from '@/public/lottie/CampaignPing.json';
 import MultiStepCampaign from '@/components/reusables/modals/startCampaigns';
-
+import { toast } from 'sonner';
 import { CallCampaignTable } from '@/components/tables/calls-table/call-campaign-table';
 import { callCampaignColumns } from '@/components/tables/calls-table/columns';
 import { TextMessageCampaignTable } from '@/components/tables/text-table/text-campaign-table';
@@ -50,7 +50,7 @@ const CampaignsMainContent: React.FC = () => {
   // Function to handle export based on the current campaign type and filtered data
   const handleExport = async () => {
     if (!filteredCampaigns || filteredCampaigns.length === 0) {
-      alert('No campaigns available for export');
+      toast('No campaigns available for export');
       return;
     }
 
@@ -77,7 +77,7 @@ const CampaignsMainContent: React.FC = () => {
         filename = `${filteredCampaigns[0].name}_Call_Campaigns_${formattedDate}.xlsx`; // Append the formatted date
         break;
       default:
-        alert('Unsupported campaign type');
+        toast('Unsupported campaign type');
         return;
     }
 

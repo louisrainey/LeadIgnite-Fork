@@ -4,8 +4,6 @@
 
 # Create user profile
 
-# Switch lead results to use shad ui drawer https://ui.shadcn.com/docs/components/drawer
-
 # Add redirects to page if subscription is over , or user not correctly signed in
 
 # Add Skip tracing capability
@@ -17,6 +15,8 @@
 # 🪳 Fix add lead list modal to remove row once slecte4d and also only show continue button once all rows except socials are matched
 
 # 🪳 Fix Leads Not laoding when i get to bottom
+
+# 🪳 Fix Multiple toasts showing when drawer is opened
 
 # ⁉️ optimize load speeds
 
@@ -32,6 +32,8 @@ index.mjs:247 -->
 # 💪 Add New team modal , and employee permissions , invite by email with permissions
 
 # 💪 Kanban add state
+
+<!-- #✅ Switch lead results to use shad ui drawer https://ui.shadcn.com/docs/components/drawer -->
 
 <!-- # ✅ Add cancel while drawing -->
 

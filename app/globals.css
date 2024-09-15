@@ -78,3 +78,21 @@
     height: 100dvh;
   }
 }
+@keyframes light-sweep {
+  0% {
+    transform: translateX(
+      -50%
+    ); /* Start just outside the left edge of the button */
+  }
+  100% {
+    transform: translateX(
+      50%
+    ); /* Move just outside the right edge of the button */
+  }
+}
+
+@layer utilities {
+  .animate-light-sweep {
+    animation: light-sweep 1.5s infinite;
+  }
+}

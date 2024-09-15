@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { LeadList, mockLeadListData } from '@/constants/dashboard/leadList'; // Assuming you have mock lead lists data
 import { exportLeadListsToZip } from '../utils/files/loopDownloadTableData';
+import { toast } from 'sonner';
 
 // Define the state and actions for managing lead lists
 interface LeadListState {
@@ -77,7 +78,7 @@ export const useLeadListStore = create<LeadListState>((set, get) => ({
 
     // Check if there are any lead lists to export
     if (filteredLeadLists.length === 0) {
-      alert('No lead lists available for export.');
+      toast('No lead lists available for export.');
       return;
     }
 

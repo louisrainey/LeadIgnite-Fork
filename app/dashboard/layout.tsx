@@ -12,7 +12,7 @@ import {
 } from '@/types/_faker/profile/userData';
 import { mockSubscriptions } from '@/types/_faker/profile/userSubscription';
 import type { Metadata } from 'next';
-
+import { Toaster } from '@/components/ui/sonner';
 export const metadata: Metadata = {
   title:
     'Lead Ignite Dashboard | Real Estate Property Search & Market Analysis',
@@ -41,6 +41,7 @@ export default function DashboardLayout({
       <SecurityModal />
       <UpgradeModal />
       <WebhookModal />
+      <Toaster />
     </div>
   );
 }

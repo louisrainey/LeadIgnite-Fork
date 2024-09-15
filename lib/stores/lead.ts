@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { LeadTypeGlobal, mockGeneratedLeads } from '@/constants/data'; // Assuming you have mock leads data
 import { exportLeadsToExcel } from '../utils/files/loopDownloadTableData';
+import { toast } from 'sonner';
 
 // Define the state and actions for managing leads
 interface LeadState {
@@ -48,7 +49,7 @@ export const useLeadStore = create<LeadState>((set, get) => ({
 
     // Check if no leads were found for today
     if (filteredLeads.length === 0) {
-      alert("No leads found for today's follow-ups.");
+      toast("No leads found for today's follow-ups.");
       return;
     }
 
@@ -104,7 +105,7 @@ export const useLeadStore = create<LeadState>((set, get) => ({
 
     // Check if there are any leads to export
     if (filteredLeads.length === 0) {
-      alert('No leads available for export.');
+      toast('No leads available for export.');
       return;
     }
 
