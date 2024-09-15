@@ -4,7 +4,6 @@ import { DashboardNav } from '@/components/dashboard-nav';
 import { navItems } from '@/constants/data';
 import { cn } from '@/lib/utils';
 import { ChevronLeft, FlameIcon } from 'lucide-react';
-import { useSidebar } from '@/hooks/useSidebar';
 import Link from 'next/link';
 
 type SidebarProps = {
@@ -12,31 +11,29 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ className }: SidebarProps) {
-  const { isMinimized, toggle } = useSidebar();
+  // Initialize `isMinimized` to true so the sidebar is minimized by default
+  const [isMinimized, setIsMinimized] = useState(true);
 
   const handleToggle = () => {
-    toggle();
+    setIsMinimized((prev) => !prev);
   };
 
   return (
     <aside
       className={cn(
-        `relative  hidden h-screen flex-none border-r bg-card transition-[width] duration-500 md:block`,
+        `relative hidden h-screen flex-none border-r bg-card transition-[width] duration-500 md:block`,
         !isMinimized ? 'w-72' : 'w-[72px]',
         className
       )}
     >
       <div className="hidden p-5 pt-10 lg:block">
-        <Link
-          href={'https://github.com/Kiranism/next-shadcn-dashboard-starter'}
-          target="_blank"
-        >
+        <Link href="https:www.cybershoptech.com" target="_blank">
           <FlameIcon className="mr-2 h-8 w-8" />
         </Link>
       </div>
       <ChevronLeft
         className={cn(
-          'absolute -right-3 top-10 z-50  cursor-pointer rounded-full border bg-background text-3xl text-foreground',
+          'absolute -right-3 top-10 z-50 cursor-pointer rounded-full border bg-background text-3xl text-foreground',
           isMinimized && 'rotate-180'
         )}
         onClick={handleToggle}
