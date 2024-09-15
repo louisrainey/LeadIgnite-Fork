@@ -14,8 +14,6 @@
 
 # 🪳 Fix Multiple toasts showing when drawer is opened (Maybe multi renders)
 
-# ⁉️ optimize load speeds
-
 <!-- Uncaught InternalError: too much recursion
     $d3863c46a17e8a28$var$focus index.mjs:247
     handleFocusOut index.mjs:62
@@ -24,6 +22,8 @@
     $d3863c46a17e8a28$var$focus index.mjs:247
     handleFocusOut index.mjs:62
 index.mjs:247 -->
+
+# ⁉️ optimize load speeds
 
 # 💪 Add New team modal , and employee permissions , invite by email with permissions
 
