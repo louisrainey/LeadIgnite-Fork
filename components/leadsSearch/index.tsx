@@ -111,8 +111,8 @@ export default function LeadsComponent() {
       onSubmit={() => handleSubmit(onSubmit)}
       className="flex h-screen w-full flex-col"
     >
-      <div className="border-b p-4">
-        <div className="mb-4 flex items-center space-x-2">
+      <div className="border-b p-2">
+        <div className="mb-4 flex items-center space-x-2 overflow-x-auto whitespace-nowrap">
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
             <Controller
@@ -486,11 +486,11 @@ export default function LeadsComponent() {
         {properties.length > 0 && !isDrawerOpen && (
           <Button
             type="button"
-            className="absolute right-20 top-5"
+            className="absolute right-20 top-5 overflow-hidden"
             onClick={() => setIsDrawerOpen(true)}
           >
             Open Properties
-            <span className="animate-light-sweep absolute inset-0 -translate-x-[50%] transform bg-gradient-to-r from-transparent via-white to-transparent opacity-75"></span>{' '}
+            <span className="animate-light-sweep absolute inset-0 h-full w-full -translate-x-full transform bg-gradient-to-r from-transparent via-white to-transparent opacity-75"></span>{' '}
           </Button>
         )}
       </div>
