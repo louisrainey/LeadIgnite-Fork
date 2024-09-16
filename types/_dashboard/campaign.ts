@@ -1,4 +1,4 @@
-import { EmailCampaign } from '../goHighLevel/conversations';
+import { EmailCampaign } from '../goHighLevel/email';
 import { GetCallResponse } from '../vapiAi/api/calls/get';
 
 // Common fields for all campaigns

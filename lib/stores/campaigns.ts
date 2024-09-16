@@ -8,7 +8,7 @@ import {
   SocialMediaCampaign,
   CampaignBase
 } from '@/types/_dashboard/campaign';
-import { EmailCampaign } from '@/types/goHighLevel/conversations';
+import { EmailCampaign } from '@/types/goHighLevel/email';
 import { TextMessageCampaign } from '@/types/goHighLevel/text';
 
 // Define the campaign state and actions for Zustand

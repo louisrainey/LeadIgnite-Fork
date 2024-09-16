@@ -1,4 +1,4 @@
-import { GetEmailByIdResponse } from '@/types/goHighLevel/conversations';
+import { GetEmailByIdResponse } from '@/types/goHighLevel/email';
 import axios from 'axios';
 
 // Function to get email by ID

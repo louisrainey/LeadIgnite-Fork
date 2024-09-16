@@ -12,7 +12,7 @@ import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
 import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
 import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
 import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
-import { EmailCampaign } from '@/types/goHighLevel/conversations';
+import { EmailCampaign } from '@/types/goHighLevel/email';
 import { TextMessageCampaign } from '@/types/goHighLevel/text';
 
 const creditsRemaining = 500;

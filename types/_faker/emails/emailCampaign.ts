@@ -1,4 +1,4 @@
-import { EmailCampaign } from '@/types/goHighLevel/conversations';
+import { EmailCampaign } from '@/types/goHighLevel/email';
 import { faker } from '@faker-js/faker';
 import { generateSampleEmails, sampleEmail } from './email';
 import { APP_TESTING_MODE } from '@/constants/data';

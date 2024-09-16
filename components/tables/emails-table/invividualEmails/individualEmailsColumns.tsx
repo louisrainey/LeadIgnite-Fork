@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { GetEmailByIdResponse } from '@/types/goHighLevel/conversations';
+import { GetEmailByIdResponse } from '@/types/goHighLevel/email';
 import { DownloadIcon } from 'lucide-react';
 import React from 'react';
 

@@ -14,20 +14,12 @@ import { useModalStore } from '@/lib/stores/dashboard';
 import { UserProfileSubscription } from '@/types/_faker/profile/userSubscription';
 import { downloadBillingHistoryAsXlsx } from '@/lib/utils/files/billingHistory';
 import { PaymentModal } from './paymentDetailts';
+import {
+  BillingHistoryItem,
+  PaymentDetails
+} from '@/types/_faker/profile/userData';
 
 // Mocked Data Example: Billing History and Payment Details Props
-interface BillingHistoryItem {
-  invoice: string;
-  amount: string;
-  date: string;
-  status: string;
-}
-
-interface PaymentDetails {
-  cardType: string;
-  cardLastFour: string;
-  expiry: string;
-}
 
 interface BillingModalProps {
   billingHistory: BillingHistoryItem[];
@@ -228,7 +220,8 @@ export const BillingModal: React.FC<BillingModalProps> = ({
                 >
                   <div>{entry.invoice}</div>
                   <div>{entry.amount}</div>
-                  <div>{entry.date}</div>
+                  <div>{entry.date.toLocaleDateString()}</div>
+
                   <div className="flex items-center">
                     <Badge
                       className={

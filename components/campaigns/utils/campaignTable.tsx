@@ -14,7 +14,7 @@ import { useCampaignStore } from '@/lib/stores/campaigns';
 import { EmailCampaignTable } from '@/components/tables/emails-table/email-campaign-table';
 import { emailCampaignColumns } from '@/components/tables/emails-table/columns';
 import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
-import { EmailCampaign } from '@/types/goHighLevel/conversations';
+import { EmailCampaign } from '@/types/goHighLevel/email';
 import { TextMessageCampaign } from '@/types/goHighLevel/text';
 import { exportMultipleCampaignsToZip } from '@/lib/utils/files/arrayTableData';
 
