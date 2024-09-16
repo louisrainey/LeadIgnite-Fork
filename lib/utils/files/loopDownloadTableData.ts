@@ -5,10 +5,7 @@ import {
   SocialAction,
   SocialMediaCampaign
 } from '@/types/_dashboard/campaign';
-import {
-  EmailCampaign,
-  GetEmailByIdResponse
-} from '@/types/goHighLevel/conversations';
+import { EmailCampaign, GetEmailByIdResponse } from '@/types/goHighLevel/email';
 import { TextMessage } from '@/types/goHighLevel/text';
 import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 import ExcelJS from 'exceljs';

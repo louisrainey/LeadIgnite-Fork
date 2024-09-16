@@ -45,3 +45,17 @@ export interface EmailCampaign extends CampaignBase {
   funnelID?: string; // ID of the funnel associated with the campaign (optional)
   scriptID?: string; // ID of the script being used (optional)
 }
+
+export interface EmailCampaignAnalytics extends CampaignBase {
+  emails: GetEmailByIdResponse[]; // Array of emails in the campaign
+  senderEmail: string; // Sender email address
+  recipientCount: number; // Total number of recipients
+  sentCount: number; // Successfully sent emails
+  deliveredCount: number; // Successfully delivered emails
+  openedCount: number; // Emails opened by recipients
+  bouncedCount: number; // Emails that bounced
+  failedCount: number; // Emails that failed to send
+  workflowID?: string; // Optional workflow associated with the email campaign
+  funnelID?: string; // Optional funnel associated with the campaign
+  scriptID?: string; // Optional script being used in the campaign
+}

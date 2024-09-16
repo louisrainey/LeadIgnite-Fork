@@ -1,10 +1,7 @@
 // columns.tsx
 
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  EmailCampaign,
-  GetEmailByIdResponse
-} from '@/types/goHighLevel/conversations';
+import { EmailCampaign, GetEmailByIdResponse } from '@/types/goHighLevel/email';
 import { EyeIcon } from 'lucide-react';
 import { exportEmailCampaignToExcel } from '@/lib/utils/files/downloadTableData';
 import { Checkbox } from '@/components/ui/checkbox';

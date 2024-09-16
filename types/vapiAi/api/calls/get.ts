@@ -1,5 +1,6 @@
 // Reusing the assistant types from CreateCallRequest
 
+import { CampaignBase } from '@/types/_dashboard/campaign';
 import { Assistant, ConversationMessage } from './create';
 
 // Call types
@@ -81,4 +82,21 @@ export interface Destination {
   extension: string; // Extension (optional)
   message: string; // Message (optional)
   description: string; // Description (optional)
+}
+
+export interface CallCampaignAnalytics extends CampaignBase {
+  id: string; // Campaign ID
+  callType: CallType; // Type of call (inbound, outbound, web call)
+  callStatus: CallStatus; // Status of the call
+  endedReason?: EndedReason; // Reason for call termination
+  cost: number; // Total cost of the call
+  costBreakdown: CostBreakdown; // Detailed cost breakdown
+  messages: ConversationMessage[]; // Array of messages in the call
+  recordingUrl?: string; // URL for call recording
+  stereoRecordingUrl?: string; // URL for stereo recording (optional)
+  transcript: string; // Transcript of the call
+  assistantId?: string; // Optional assistant ID for the call
+  assistant?: Assistant; // Optional assistant details
+  artifact?: ArtifactPlan; // Optional artifact plan for the call
+  analysis?: AnalysisPlan; // Optional analysis plan for the call
 }

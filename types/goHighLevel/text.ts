@@ -64,3 +64,16 @@ export interface TextMessageCampaign extends CampaignBase {
   conversationId: string;
   messages: TextMessage[]; // ID of the conversation associated with the campaign
 }
+
+export interface TextMessageCampaignAnalytics extends CampaignBase {
+  id: string; // Campaign ID
+  name: string; // Campaign name
+  createdAt: string; // Date when the campaign was created
+  sentCount: number; // Number of SMS sent
+  deliveredCount: number; // Number of SMS delivered
+  failedCount: number; // Number of SMS that failed to send
+  totalMessages: number; // Total SMS messages in the campaign
+  lastMessageSentAt: string; // Timestamp of the last message sent
+  conversationId: string; // Associated conversation ID
+  messages: TextMessage[]; // Array of messages in the campaign
+}

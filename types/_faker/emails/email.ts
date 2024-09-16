@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { GetEmailByIdResponse } from '@/types/goHighLevel/conversations';
+import { GetEmailByIdResponse } from '@/types/goHighLevel/email';
 import { APP_TESTING_MODE } from '@/constants/data';
 
 // Generate a sample email

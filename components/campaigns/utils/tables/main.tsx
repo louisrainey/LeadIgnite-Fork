@@ -13,7 +13,7 @@ import {
   SocialMediaCampaign,
   CampaignType
 } from '@/types/_dashboard/campaign';
-import { EmailCampaign } from '@/types/goHighLevel/conversations';
+import { EmailCampaign } from '@/types/goHighLevel/email';
 
 interface CampaignsTableProps {
   campaigns: Array<

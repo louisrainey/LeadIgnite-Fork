@@ -1,10 +1,7 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
-import {
-  EmailCampaign,
-  GetEmailByIdResponse
-} from '@/types/goHighLevel/conversations';
+import { EmailCampaign, GetEmailByIdResponse } from '@/types/goHighLevel/email';
 import { TextMessage, TextMessageCampaign } from '@/types/goHighLevel/text';
 import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import {

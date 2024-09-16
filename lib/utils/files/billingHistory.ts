@@ -1,13 +1,8 @@
 import { saveAs } from 'file-saver';
 import ExcelJS from 'exceljs';
+import { BillingHistoryItem } from '@/types/_faker/profile/userData';
 
 // Define the BillingHistoryItem interface
-interface BillingHistoryItem {
-  invoice: string;
-  amount: string;
-  date: string;
-  status: string;
-}
 
 // Function to download billing history as an Excel file
 export const downloadBillingHistoryAsXlsx = async (
@@ -24,7 +19,18 @@ export const downloadBillingHistoryAsXlsx = async (
 
   // Add billing history data
   billingHistory.forEach((entry: BillingHistoryItem) => {
-    worksheet.addRow([entry.invoice, entry.amount, entry.date, entry.status]);
+    // Format the date as a string (e.g., 'MM/DD/YYYY')
+    const formattedDate =
+      entry.date instanceof Date
+        ? entry.date.toLocaleDateString() // Format the Date object to a string
+        : entry.date; // In case it's already a string
+
+    worksheet.addRow([
+      entry.invoice,
+      entry.amount,
+      formattedDate,
+      entry.status
+    ]);
   });
 
   // Adjust column widths

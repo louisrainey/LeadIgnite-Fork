@@ -2,15 +2,13 @@
 
 # Create user profile
 
-# Add redirects to page if subscription is over , or user not correctly signed in
-
 # Add Skip tracing capability
 
 # 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
 
 # 🪳 Fix add lead list modal to remove row once slecte4d and also only show continue button once all rows except socials are matched
 
-# 🪳 Fix Leads Not laoding when i get to bottom
+# 🪳 Fix Leads Drawer Not laoding when i get to bottom
 
 # 🪳 Fix Multiple toasts showing when drawer is opened (Maybe multi renders)
 
@@ -28,6 +26,8 @@ index.mjs:247 -->
 # 💪 Add New team modal , and employee permissions , invite by email with permissions
 
 # 💪 Kanban add state
+
+<!-- #✅ Add redirects to page if subscription is over , or user not correctly signed in -->
 
 <!-- #✅ Switch alerts to use sonner https://ui.shadcn.com/docs/components/sonner -->
 
