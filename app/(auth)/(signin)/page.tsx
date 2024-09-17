@@ -1,15 +1,26 @@
-import { Metadata } from 'next';
+'use client';
+
 import Link from 'next/link';
+import { useEffect } from 'react'; // Remove useState, we use Zustand now
 import UserAuthForm from '@/components/forms/user-auth-form';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils/kanban/utils';
-import { Flame, FlameIcon } from 'lucide-react';
-export const metadata: Metadata = {
-  title: 'Authentication',
-  description: 'Authentication forms built using the components.'
-};
+import { FlameIcon } from 'lucide-react';
+import { useKanbanStore } from '@/lib/stores/user/login';
 
 export default function AuthenticationPage() {
+  // Step 1: Access state and actions from the Kanban store
+  const { quotes, currentQuoteIndex, nextQuote } = useKanbanStore();
+
+  // Step 2: Use effect to switch quotes every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextQuote(); // Call the store's nextQuote action
+    }, 5000); // 5000ms = 5 seconds
+
+    return () => clearInterval(interval); // Cleanup the interval on component unmount
+  }, [nextQuote]);
+
   return (
     <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
@@ -28,13 +39,14 @@ export default function AuthenticationPage() {
           Lead Ignite
         </div>
         <div className="relative z-20 mt-auto">
+          {/* Step 3: Display the current quote */}
           <blockquote className="space-y-2">
             <p className="text-lg">
-              &ldquo;This library has saved me countless hours of work and
-              helped me deliver stunning designs to my clients faster than ever
-              before.&rdquo;
+              &ldquo;{quotes[currentQuoteIndex].text}&rdquo;
             </p>
-            <footer className="text-sm">Sofia Davis</footer>
+            <footer className="text-sm">
+              {quotes[currentQuoteIndex].author}
+            </footer>
           </blockquote>
         </div>
       </div>

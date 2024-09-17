@@ -35,10 +35,9 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
   } = usePropertyStore();
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
+  const hasShownToast = useRef(false); // Initialize the ref at the component level
   // Handle infinite scrolling and loading more properties when the user reaches the bottom
   useEffect(() => {
-    toast('Drawer Opened');
     if (!hasMore) return;
 
     const loadMoreObserver = new IntersectionObserver(
@@ -60,7 +59,20 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
       }
     };
   }, [hasMore, loadMoreProperties, isLoading]);
+  // Only show the toast when the drawer is opened
 
+  // useEffect(() => {
+  //   // Only show the toast when the drawer is opened and it hasn't been shown yet
+  //   if (isDrawerOpen && !hasShownToast.current) {
+  //     toast('Drawer Opened');
+  //     hasShownToast.current = true; // Mark that the toast has been shown
+  //   }
+
+  //   // Reset the flag when the drawer is closed
+  //   if (!isDrawerOpen) {
+  //     hasShownToast.current = false;
+  //   }
+  // }, [isDrawerOpen]);
   // Start resizing the drawer
   const startResizing = (event: React.MouseEvent) => {
     event.preventDefault();
