@@ -29,7 +29,11 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
   const [redoSkipTrace, setRedoSkipTrace] = useState<boolean>(true);
 
   const calculateCost = () => {
-    return (recordsToSkip * costPerRecord).toFixed(2);
+    const totalCost = (recordsToSkip * costPerRecord).toFixed(2);
+    return Number(totalCost).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   };
 
   const handleSubmit = () => {
