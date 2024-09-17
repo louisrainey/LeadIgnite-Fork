@@ -52,7 +52,7 @@ export interface Meta {
   };
 }
 
-export interface TextMessageCampaign extends CampaignBase {
+export interface GHLTextMessageCampaign extends CampaignBase {
   id: string; // Campaign ID
   name: string; // Campaign name
   createdAt: string; // Date when the campaign was created (ISO string)

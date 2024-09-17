@@ -13,7 +13,7 @@ import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCa
 import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
 import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
 import { EmailCampaign } from '@/types/goHighLevel/email';
-import { TextMessageCampaign } from '@/types/goHighLevel/text';
+import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
 
 const creditsRemaining = 500;
 
@@ -70,7 +70,7 @@ const CampaignHeader: React.FC = () => {
 
   // Assume you have these arrays from your campaign data
   const socialCampaigns: SocialMediaCampaign[] = mockSocialMediaCampaigns; // Replace with actual data
-  const textCampaigns: TextMessageCampaign[] = mockTextCampaigns; // Replace with actual data
+  const textCampaigns: GHLTextMessageCampaign[] = mockTextCampaigns; // Replace with actual data
   const emailCampaigns: EmailCampaign[] = mockGeneratedSampleEmailCampaigns; // Replace with actual data
   const callCampaigns: CallCampaign[] = mockCallCampaignData; // Replace with actual data
 

@@ -1,11 +1,11 @@
-import { TextMessageCampaign } from '@/types/goHighLevel/text';
+import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
 import { faker } from '@faker-js/faker';
 import { generateSampleTextMessage } from './texts';
 import { APP_TESTING_MODE } from '@/constants/data';
 import { campaignStatusesGB } from '@/types/_dashboard/campaign';
 
 // Generate a single sample TextMessageCampaign
-const generateSampleTextMessageCampaign = (): TextMessageCampaign => {
+const generateSampleTextMessageCampaign = (): GHLTextMessageCampaign => {
   const totalMessages = faker.number.int({ min: 50, max: 200 });
   const sentCount = faker.number.int({ min: 30, max: totalMessages });
   const deliveredCount = faker.number.int({ min: 0, max: sentCount });
@@ -34,7 +34,7 @@ const generateSampleTextMessageCampaign = (): TextMessageCampaign => {
 // Generate an array of sample TextMessageCampaigns
 export const generateSampleTextMessageCampaigns = (
   count = 100
-): TextMessageCampaign[] => {
+): GHLTextMessageCampaign[] => {
   return Array.from({ length: count }, generateSampleTextMessageCampaign);
 };
 

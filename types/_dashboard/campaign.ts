@@ -20,6 +20,7 @@ export interface CampaignBase {
   endDate?: string;
   aiVoice?: string;
   aiScript?: string;
+  updatedAt?: string;
   aiAvatarAgent?: string;
 }
 
