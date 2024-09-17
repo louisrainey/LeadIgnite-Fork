@@ -17,6 +17,7 @@ import { CallCampaignAnalytics } from '@/types/vapiAi/api/calls/get';
 import { mockLeadListData } from '@/constants/dashboard/leadList';
 import { APP_TESTING_MODE } from '@/constants/data';
 import { mockKanbanState } from '../kanban';
+import { mockTeamMembers } from './team/members';
 
 // Mocking a user profile with Faker.js
 export const mockUserProfile: UserProfile = {
@@ -128,24 +129,7 @@ export const mockUserProfile: UserProfile = {
     lastEnabledAt: faker.date.past()
   },
 
-  teamMembers: [
-    {
-      id: faker.string.uuid(),
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email(),
-      role: faker.helpers.arrayElement(['admin', 'member']),
-      permissions: {
-        canGenerateLeads: faker.datatype.boolean(),
-        canStartCampaigns: faker.datatype.boolean(),
-        canViewReports: faker.datatype.boolean(),
-        canManageTeam: faker.datatype.boolean(),
-        canManageSubscription: faker.datatype.boolean(),
-        canAccessAI: faker.datatype.boolean(),
-        canEditCompanyProfile: faker.datatype.boolean()
-      }
-    }
-  ],
+  teamMembers: mockTeamMembers,
 
   activityLog: [
     {

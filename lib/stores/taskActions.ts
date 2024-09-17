@@ -32,7 +32,7 @@ export interface Task {
   status: Status;
   priority?: Priority;
   dueDate?: string; // YYYY-MM-DD format
-  assignedToTeamMemberID?: string;
+  assignedToTeamMember?: string;
 }
 
 export type KanbanState = {
@@ -50,7 +50,7 @@ export const initialTasks: Task[] = [
     status: 'IN_PROGRESS',
     priority: 'high',
     dueDate: '2024-09-20',
-    assignedToTeamMemberID: 'team_member_1'
+    assignedToTeamMember: 'team_member_1'
   },
   {
     id: 'task2',
@@ -60,7 +60,7 @@ export const initialTasks: Task[] = [
     status: 'TODO',
     priority: 'medium',
     dueDate: '2024-09-25',
-    assignedToTeamMemberID: 'team_member_2'
+    assignedToTeamMember: 'team_member_2'
   },
   {
     id: 'task3',
@@ -70,7 +70,7 @@ export const initialTasks: Task[] = [
     status: 'TODO',
     priority: 'high',
     dueDate: '2024-09-18',
-    assignedToTeamMemberID: 'team_member_3'
+    assignedToTeamMember: 'team_member_3'
   },
   {
     id: 'task4',
@@ -80,7 +80,7 @@ export const initialTasks: Task[] = [
     status: 'DONE',
     priority: 'low',
     dueDate: '2024-09-10',
-    assignedToTeamMemberID: 'team_member_4'
+    assignedToTeamMember: 'team_member_4'
   },
   {
     id: 'task5',
@@ -90,7 +90,7 @@ export const initialTasks: Task[] = [
     status: 'IN_PROGRESS',
     priority: 'medium',
     dueDate: '2024-09-30',
-    assignedToTeamMemberID: 'team_member_5'
+    assignedToTeamMember: 'team_member_5'
   }
 ];
 
