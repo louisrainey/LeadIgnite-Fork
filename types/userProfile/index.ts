@@ -76,6 +76,8 @@ export interface TeamMember {
   email: string;
   role: 'admin' | 'member'; // Roles for team members, can be extended with more roles
   permissions: Permissions; // Permissions granted to the team member
+  NotificationPreferences?: NotificationPreferences;
+  twoFactorAuth?: TwoFactorAuth;
 }
 
 // Campaigns for Company

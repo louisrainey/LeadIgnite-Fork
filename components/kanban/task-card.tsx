@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Task } from '@/lib/stores/taskActions';
@@ -6,6 +7,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
 import { GripVertical } from 'lucide-react';
 import { Badge } from '../ui/badge';
+import { mockTeamMembers } from '@/types/_faker/profile/team/members';
 
 // Priority-to-Badge variant mapping
 const priorityBadgeVariant = {
@@ -27,6 +29,10 @@ export interface TaskDragData {
 }
 
 export function TaskCard({ task, isOverlay }: TaskCardProps) {
+  const [assignedTeamMember, setAssignedTeamMember] = useState(
+    task.assignedToTeamMember || ''
+  );
+
   const {
     setNodeRef,
     attributes,
@@ -58,6 +64,13 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
       }
     }
   });
+
+  // Handle the team member selection
+  const handleAssign = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedTeamMemberId = e.target.value;
+    setAssignedTeamMember(selectedTeamMemberId); // Update state
+    task.assignedToTeamMember = selectedTeamMemberId; // Update the task's assigned team member
+  };
 
   return (
     <Card
@@ -116,6 +129,25 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
             <span className="text-muted-foreground">{task.dueDate}</span>
           </div>
         )}
+
+        {/* Assigned To */}
+        <div className="mt-2 text-sm">
+          <span className="font-semibold">Assigned To: </span>
+          <select
+            value={assignedTeamMember || ''}
+            onChange={handleAssign}
+            className="ml-2 rounded border border-gray-300 p-1"
+          >
+            <option value="" disabled>
+              Select team member
+            </option>
+            {mockTeamMembers.map((member) => (
+              <option key={member.id} value={member.id}>
+                {`${member.firstName} ${member.lastName}`}
+              </option>
+            ))}
+          </select>
+        </div>
       </CardContent>
     </Card>
   );
