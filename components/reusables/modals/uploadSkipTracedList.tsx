@@ -55,6 +55,7 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
     register,
     watch,
     handleSubmit,
+    setValue,
     formState: { errors }
   } = useForm<FormValues>({
     resolver: zodResolver(leadSchema),
@@ -67,10 +68,12 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
     uploadedFile &&
     Object.values(selectedHeaders).every(Boolean);
 
+  // Handling file drop
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length) {
       const file = acceptedFiles[0];
       setUploadedFile(file);
+      setValue('skipTracedFile', file); // Set the uploaded file in the form
 
       try {
         const extractedHeaders: string[] = await handleListUpload(file);
@@ -83,6 +86,7 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
     }
   };
 
+  // Setup dropzone
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
@@ -94,12 +98,30 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
     maxSize: 2 * 1024 * 1024 * 1024 // 2 GB
   });
 
+  // Submission handler with enhanced debugging and error catching
   const onSubmit = (data: FormValues) => {
-    console.log('Form Data:', data);
-    toast('submitted');
+    console.log('Submitting form with data:', data); // Debugging
+
+    if (!uploadedFile) {
+      alert('Please upload a file');
+      console.log('No file uploaded'); // Debugging
+      return;
+    }
+
+    try {
+      // Validate the form data against the Zod schema
+      leadSchema.parse(data);
+      toast.success('Form submitted successfully!');
+      console.log('Form validation passed:', data); // Debugging success
+    } catch (validationError: any) {
+      console.error('Validation error caught:', validationError); // Debugging validation error
+      toast.error(
+        'Validation failed: ' + validationError.message || validationError
+      ); // Optional: display toast error
+    }
   };
 
-  // Function to handle when a header is selected for a field
+  // Handle header selection
   const handleHeaderSelect = (fieldName: string, value: string) => {
     setSelectedHeaders((prev) => ({
       ...prev,
@@ -107,14 +129,13 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
     }));
   };
 
-  // Get available headers by excluding already selected ones
+  // Exclude already selected headers from available options
   const getAvailableHeaders = (currentField: string) => {
-    return headers.filter((header) => {
-      return (
+    return headers.filter(
+      (header) =>
         !Object.values(selectedHeaders).includes(header) ||
         selectedHeaders[currentField] === header
-      );
-    });
+    );
   };
 
   if (!isOpen) return null;
