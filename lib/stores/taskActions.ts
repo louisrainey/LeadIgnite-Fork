@@ -1,43 +1,113 @@
 import { create } from 'zustand';
 import { v4 as uuid } from 'uuid';
 import { persist } from 'zustand/middleware';
-import { Column } from '@/components/kanban/board-column';
+import { KanbanColumn } from '@/components/kanban/board-column';
 import { UniqueIdentifier } from '@dnd-kit/core';
 
 export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE';
 
 const defaultCols = [
   {
-    id: 'TODO' as const,
-    title: 'Todo'
+    id: 'TODO',
+    title: 'To Do'
+  },
+  {
+    id: 'IN_PROGRESS',
+    title: 'In Progress'
+  },
+  {
+    id: 'DONE',
+    title: 'Done'
   }
-] satisfies Column[];
+] satisfies KanbanColumn[];
 
 export type ColumnId = (typeof defaultCols)[number]['id'];
+export type Priority = 'low' | 'medium' | 'high';
 
-export type Task = {
+export interface Task {
   id: string;
   title: string;
   description?: string;
   status: Status;
-};
+  priority?: Priority;
+  dueDate?: string; // YYYY-MM-DD format
+}
 
 export type KanbanState = {
   tasks: Task[];
-  columns: Column[];
+  columns: KanbanColumn[];
   draggedTask: string | null;
 };
 
 const initialTasks: Task[] = [
+  // Backlog
   {
     id: 'task1',
     status: 'TODO',
-    title: 'Project initiation and planning'
+    title: 'Identify Target Audience',
+    description:
+      'Research and identify the target audience for lead generation.'
   },
+  // In Progress
   {
     id: 'task2',
+    status: 'IN_PROGRESS',
+    title: 'Create Lead Magnet',
+    description:
+      'Design and create a lead magnet (e.g., eBook or checklist) to attract potential leads.'
+  },
+  {
+    id: 'task3',
+    status: 'IN_PROGRESS',
+    title: 'Optimize Landing Page',
+    description: 'Ensure the landing page is optimized for lead capture.'
+  },
+  {
+    id: 'task4',
     status: 'TODO',
-    title: 'Gather requirements from stakeholders'
+    title: 'Setup Google Ads Campaign',
+    description: 'Configure Google Ads targeting the identified audience.'
+  },
+  // Follow Up
+  {
+    id: 'task5',
+    status: 'TODO',
+    title: 'Launch Facebook Ad Campaign',
+    description: 'Launch a Facebook Ads campaign for lead generation.'
+  },
+  {
+    id: 'task6',
+    status: 'IN_PROGRESS',
+    title: 'Review and Qualify Leads',
+    description:
+      'Review incoming leads and qualify them based on engagement and relevance.'
+  },
+  {
+    id: 'task7',
+    status: 'TODO',
+    title: 'Develop Lead Nurturing Strategy',
+    description: 'Create a follow-up strategy to nurture the leads.'
+  },
+  // Follow Up
+  {
+    id: 'task8',
+    status: 'IN_PROGRESS',
+    title: 'Handoff Leads to Sales Team',
+    description: 'Send qualified leads to the sales team for further follow-up.'
+  },
+  // Done
+  {
+    id: 'task9',
+    status: 'DONE',
+    title: 'Follow Up with Key Client (ABC Corp)',
+    description:
+      'Contact key clients for feedback and potential upsell opportunities.'
+  },
+  {
+    id: 'task10',
+    status: 'DONE',
+    title: 'Create Initial Sales Pitch',
+    description: 'Draft and finalize the initial sales pitch for new leads.'
   }
 ];
 
@@ -48,7 +118,7 @@ export type Actions = {
   removeTask: (title: string) => void;
   removeCol: (id: UniqueIdentifier) => void;
   setTasks: (updatedTask: Task[]) => void;
-  setCols: (cols: Column[]) => void;
+  setCols: (cols: KanbanColumn[]) => void;
   updateCol: (id: UniqueIdentifier, newName: string) => void;
 };
 
@@ -88,7 +158,7 @@ export const useTaskStore = create<KanbanState & Actions>()(
           columns: state.columns.filter((col) => col.id !== id)
         })),
       setTasks: (newTasks: Task[]) => set({ tasks: newTasks }),
-      setCols: (newCols: Column[]) => set({ columns: newCols })
+      setCols: (newCols: KanbanColumn[]) => set({ columns: newCols })
     }),
     { name: 'task-store', skipHydration: true }
   )

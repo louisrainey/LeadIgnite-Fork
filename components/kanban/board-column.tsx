@@ -11,7 +11,7 @@ import { ColumnActions } from './column-action';
 import { TaskCard } from './task-card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
-export interface Column {
+export interface KanbanColumn {
   id: UniqueIdentifier;
   title: string;
 }
@@ -20,11 +20,11 @@ export type ColumnType = 'Column';
 
 export interface ColumnDragData {
   type: ColumnType;
-  column: Column;
+  column: KanbanColumn;
 }
 
 interface BoardColumnProps {
-  column: Column;
+  column: KanbanColumn;
   tasks: Task[];
   isOverlay?: boolean;
 }
