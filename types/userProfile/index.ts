@@ -56,8 +56,8 @@ export interface TwoFactorAuth {
   lastEnabledAt: Date | null; // Date when 2FA was last enabled, can be null if never enabled
 }
 
-// Permissions for team members
-export interface Permissions {
+// UserPermissions for team members
+export interface UserPermissions {
   canGenerateLeads: boolean; // Whether the team member can generate leads
   canStartCampaigns: boolean; // Whether the team member can start campaigns
   canViewReports: boolean; // Whether the team member can view reports
@@ -81,9 +81,10 @@ export interface TeamMember {
   lastName: string;
   email: string;
   role: 'admin' | 'member'; // Roles for team members, can be extended with more roles
-  permissions: Permissions; // Permissions granted to the team member
+  permissions: UserPermissions; // UserPermissions granted to the team member
   NotificationPreferences?: NotificationPreferences;
   twoFactorAuth?: TwoFactorAuth;
+  activityLog?: ActivityLog;
 }
 
 // Campaigns for Company

@@ -1,10 +1,12 @@
 'use client';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Employee } from '@/constants/data';
-import { ColumnDef } from '@tanstack/react-table';
-import { CellAction } from './cell-action';
 
-export const columns: ColumnDef<Employee>[] = [
+import { Checkbox } from '@/components/ui/checkbox';
+import { ColumnDef } from '@tanstack/react-table';
+import { TeamMember } from '@/types/userProfile';
+import { CellAction } from './cell-action'; // Assuming you have a cell-action component
+
+// Columns definition for TeamMember
+export const columns: ColumnDef<TeamMember>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -25,27 +27,60 @@ export const columns: ColumnDef<Employee>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'first_name',
-    header: 'NAME'
+    accessorKey: 'firstName',
+    header: 'First Name'
   },
   {
-    accessorKey: 'country',
-    header: 'COUNTRY'
+    accessorKey: 'lastName',
+    header: 'Last Name'
   },
   {
     accessorKey: 'email',
-    header: 'EMAIL'
+    header: 'Email'
   },
   {
-    accessorKey: 'job',
-    header: 'COMPANY'
+    accessorKey: 'role',
+    header: 'Role'
   },
   {
-    accessorKey: 'gender',
-    header: 'GENDER'
+    accessorKey: 'permissions.canGenerateLeads',
+    header: 'Can Generate Leads',
+    cell: ({ row }) => (
+      <span>{row.original.permissions.canGenerateLeads ? 'Yes' : 'No'}</span>
+    )
+  },
+  {
+    accessorKey: 'permissions.canManageTeam',
+    header: 'Can Manage Team',
+    cell: ({ row }) => (
+      <span>{row.original.permissions.canManageTeam ? 'Yes' : 'No'}</span>
+    )
+  },
+  {
+    accessorKey: 'permissions.canViewReports',
+    header: 'Can View Reports',
+    cell: ({ row }) => (
+      <span>{row.original.permissions.canViewReports ? 'Yes' : 'No'}</span>
+    )
+  },
+  {
+    accessorKey: 'permissions.canMoveCompanyTasks',
+    header: 'Can Move Tasks',
+    cell: ({ row }) => (
+      <span>{row.original.permissions.canMoveCompanyTasks ? 'Yes' : 'No'}</span>
+    )
+  },
+  {
+    accessorKey: 'permissions.canAccessAI',
+    header: 'Can Access AI',
+    cell: ({ row }) => (
+      <span>{row.original.permissions.canAccessAI ? 'Yes' : 'No'}</span>
+    )
   },
   {
     id: 'actions',
-    cell: ({ row }) => <CellAction data={row.original} />
+    cell: ({ row }) => (
+      <CellAction currentUserRole={'admin'} data={row.original} />
+    )
   }
 ];
