@@ -1,10 +1,10 @@
-import { Column } from '@/components/kanban/board-column';
+import { KanbanColumn } from '@/components/kanban/board-column';
 import { KanbanState, Status, Task } from '@/lib/stores/taskActions';
 import { faker } from '@faker-js/faker';
 import { APP_TESTING_MODE } from '../../../constants/data';
 
 // Default column structure with status-based `id`
-const defaultCols: Column[] = [
+const defaultCols: KanbanColumn[] = [
   {
     id: 'TODO',
     title: 'To Do'

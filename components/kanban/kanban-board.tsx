@@ -18,7 +18,7 @@ import {
   type DragStartEvent
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
-import type { Column } from './board-column';
+import type { KanbanColumn } from './board-column';
 import { BoardColumn, BoardContainer } from './board-column';
 import NewSectionDialog from './new-section-dialog';
 import { TaskCard } from './task-card';
@@ -37,7 +37,7 @@ const defaultCols = [
     id: 'DONE' as const,
     title: 'Done'
   }
-] satisfies Column[];
+] satisfies KanbanColumn[];
 
 export type ColumnId = (typeof defaultCols)[number]['id'];
 
@@ -51,7 +51,7 @@ export function KanbanBoard() {
   // const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const tasks = useTaskStore((state) => state.tasks);
   const setTasks = useTaskStore((state) => state.setTasks);
-  const [activeColumn, setActiveColumn] = useState<Column | null>(null);
+  const [activeColumn, setActiveColumn] = useState<KanbanColumn | null>(null);
   const [isMounted, setIsMounted] = useState<Boolean>(false);
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
