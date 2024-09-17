@@ -22,7 +22,7 @@ export type Task = {
   status: Status;
 };
 
-export type State = {
+export type KanbanState = {
   tasks: Task[];
   columns: Column[];
   draggedTask: string | null;
@@ -52,7 +52,7 @@ export type Actions = {
   updateCol: (id: UniqueIdentifier, newName: string) => void;
 };
 
-export const useTaskStore = create<State & Actions>()(
+export const useTaskStore = create<KanbanState & Actions>()(
   persist(
     (set) => ({
       tasks: initialTasks,

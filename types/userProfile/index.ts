@@ -18,6 +18,7 @@ import {
   TextMessageCampaignAnalytics
 } from '../goHighLevel/text';
 import { CallCampaignAnalytics } from '../vapiAi/api/calls/get';
+import { KanbanState } from '@/lib/stores/taskActions';
 
 export interface LeadPreferences {
   preferredLocation: string[]; // Array of preferred locations
@@ -110,6 +111,7 @@ export interface CompanyInfo {
   forwardingNumber: string;
   campaignAnalytics: CampaignAnalytics[]; // Array of analytics for user's campaigns
   leadLists: LeadList[]; // Array of lead lists
+  tasks: KanbanState;
 }
 
 // AI Knowledgebase Type
