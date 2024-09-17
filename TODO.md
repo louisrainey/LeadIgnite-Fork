@@ -23,11 +23,11 @@ index.mjs:247 -->
 
 # 💪 Kanban add state
 
-# 💪 Don’t redo skip traces on data you’ve already purchased (List Creation)
-
 # 💪 Add up sale after sigining up for trial that promprs immediate upgrade
 
 # 💪 Add Check for multiple emails / ips to prevent trial misuse
+
+<!-- # 💪 ✅ Don’t redo skip traces on data you’ve already purchased (List Creation) -->
 
 <!-- # ✅ Add Skip tracing capability -->
 
