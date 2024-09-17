@@ -39,12 +39,16 @@ interface UploadListModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
 const UploadListModal: React.FC<UploadListModalProps> = ({
   isOpen,
   onClose
 }) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [headers, setHeaders] = useState<string[]>([]);
+  const [selectedHeaders, setSelectedHeaders] = useState<
+    Record<string, string | undefined>
+  >({});
   const [error, setError] = useState<string | null>(null);
 
   const {
@@ -58,27 +62,11 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
   });
 
   const listName = watch('listName');
-  const firstNameField = watch('firstNameField');
-  const lastNameField = watch('lastNameField');
-  const streetAddressField = watch('streetAddressField');
-  const cityField = watch('cityField');
-  const stateField = watch('stateField');
-  const zipCodeField = watch('zipCodeField');
-  const phone1Field = watch('phone1Field');
-
-  // Determine if all required fields are filled and a file is uploaded
   const areRequiredFieldsFilled =
     listName?.trim() &&
     uploadedFile &&
-    firstNameField &&
-    lastNameField &&
-    streetAddressField &&
-    cityField &&
-    stateField &&
-    zipCodeField &&
-    phone1Field;
+    Object.values(selectedHeaders).every(Boolean);
 
-  // Handle file drop
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length) {
       const file = acceptedFiles[0];
@@ -106,13 +94,29 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
     maxSize: 2 * 1024 * 1024 * 1024 // 2 GB
   });
 
-  // Form submission handler
   const onSubmit = (data: FormValues) => {
     console.log('Form Data:', data);
     toast('submitted');
   };
 
-  // If the modal is not open, don't render it
+  // Function to handle when a header is selected for a field
+  const handleHeaderSelect = (fieldName: string, value: string) => {
+    setSelectedHeaders((prev) => ({
+      ...prev,
+      [fieldName]: value
+    }));
+  };
+
+  // Get available headers by excluding already selected ones
+  const getAvailableHeaders = (currentField: string) => {
+    return headers.filter((header) => {
+      return (
+        !Object.values(selectedHeaders).includes(header) ||
+        selectedHeaders[currentField] === header
+      );
+    });
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -165,11 +169,7 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
               {uploadedFile ? (
                 <p>{uploadedFile.name}</p>
               ) : (
-                <p>
-                  {listName?.trim()
-                    ? 'Click to upload or drag and drop (CSV or XLSX)'
-                    : 'Provide a valid List Name to enable uploading'}
-                </p>
+                <p>Provide a valid List Name to enable uploading</p>
               )}
             </div>
             {errors.skipTracedFile && (
@@ -184,93 +184,107 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
             <FieldMappingSelect
               label="First Name"
               placeholder="Match first name"
-              headers={headers}
-              register={register('firstNameField')}
+              headers={getAvailableHeaders('firstNameField')}
+              onChange={(value) => handleHeaderSelect('firstNameField', value)}
+              value={selectedHeaders.firstNameField}
               error={errors.firstNameField}
             />
             <FieldMappingSelect
               label="Last Name"
               placeholder="Match last name"
-              headers={headers}
-              register={register('lastNameField')}
+              headers={getAvailableHeaders('lastNameField')}
+              onChange={(value) => handleHeaderSelect('lastNameField', value)}
+              value={selectedHeaders.lastNameField}
               error={errors.lastNameField}
             />
             <FieldMappingSelect
               label="Street Address"
               placeholder="Match street address"
-              headers={headers}
-              register={register('streetAddressField')}
+              headers={getAvailableHeaders('streetAddressField')}
+              onChange={(value) =>
+                handleHeaderSelect('streetAddressField', value)
+              }
+              value={selectedHeaders.streetAddressField}
               error={errors.streetAddressField}
             />
             <FieldMappingSelect
               label="City"
               placeholder="Match city"
-              headers={headers}
-              register={register('cityField')}
+              headers={getAvailableHeaders('cityField')}
+              onChange={(value) => handleHeaderSelect('cityField', value)}
+              value={selectedHeaders.cityField}
               error={errors.cityField}
             />
             <FieldMappingSelect
               label="State"
               placeholder="Match state"
-              headers={headers}
-              register={register('stateField')}
+              headers={getAvailableHeaders('stateField')}
+              onChange={(value) => handleHeaderSelect('stateField', value)}
+              value={selectedHeaders.stateField}
               error={errors.stateField}
             />
             <FieldMappingSelect
               label="Zip Code"
               placeholder="Match ZIP code"
-              headers={headers}
-              register={register('zipCodeField')}
+              headers={getAvailableHeaders('zipCodeField')}
+              onChange={(value) => handleHeaderSelect('zipCodeField', value)}
+              value={selectedHeaders.zipCodeField}
               error={errors.zipCodeField}
             />
             <FieldMappingSelect
               label="Phone 1"
               placeholder="Match phone 1"
-              headers={headers}
-              register={register('phone1Field')}
+              headers={getAvailableHeaders('phone1Field')}
+              onChange={(value) => handleHeaderSelect('phone1Field', value)}
+              value={selectedHeaders.phone1Field}
               error={errors.phone1Field}
             />
             <FieldMappingSelect
               label="Phone 2"
               placeholder="Match phone 2"
-              headers={headers}
-              register={register('phone2Field')}
+              headers={getAvailableHeaders('phone2Field')}
+              onChange={(value) => handleHeaderSelect('phone2Field', value)}
+              value={selectedHeaders.phone2Field}
             />
             <FieldMappingSelect
               label="Email"
               placeholder="Match email"
-              headers={headers}
-              register={register('emailField')}
+              headers={getAvailableHeaders('emailField')}
+              onChange={(value) => handleHeaderSelect('emailField', value)}
+              value={selectedHeaders.emailField}
             />
 
             {/* Social Media Fields */}
             <FieldMappingSelect
               label="Facebook (Optional)"
               placeholder="Match Facebook profile"
-              headers={headers}
-              register={register('facebookField')}
+              headers={getAvailableHeaders('facebookField')}
+              onChange={(value) => handleHeaderSelect('facebookField', value)}
+              value={selectedHeaders.facebookField}
             />
             <FieldMappingSelect
               label="LinkedIn (Optional)"
               placeholder="Match LinkedIn profile"
-              headers={headers}
-              register={register('linkedinField')}
+              headers={getAvailableHeaders('linkedinField')}
+              onChange={(value) => handleHeaderSelect('linkedinField', value)}
+              value={selectedHeaders.linkedinField}
             />
             <FieldMappingSelect
               label="Instagram (Optional)"
               placeholder="Match Instagram profile"
-              headers={headers}
-              register={register('instagramField')}
+              headers={getAvailableHeaders('instagramField')}
+              onChange={(value) => handleHeaderSelect('instagramField', value)}
+              value={selectedHeaders.instagramField}
             />
             <FieldMappingSelect
               label="Twitter (Optional)"
               placeholder="Match Twitter profile"
-              headers={headers}
-              register={register('twitterField')}
+              headers={getAvailableHeaders('twitterField')}
+              onChange={(value) => handleHeaderSelect('twitterField', value)}
+              value={selectedHeaders.twitterField}
             />
           </div>
 
-          {/* Upload Button is now conditionally enabled based on required fields */}
           <Button
             disabled={!areRequiredFieldsFilled}
             type="submit"
@@ -293,15 +307,16 @@ const FieldMappingSelect: React.FC<{
   label: string;
   placeholder: string;
   headers: string[];
-  register: any;
+  onChange: (value: string) => void;
+  value?: string;
   error?: any;
-}> = ({ label, placeholder, headers, register, error }) => {
+}> = ({ label, placeholder, headers, onChange, value, error }) => {
   return (
     <div>
       <label className="block text-sm font-medium dark:text-gray-300">
         {label}*
       </label>
-      <Select disabled={!headers.length} {...register}>
+      <Select value={value} onValueChange={onChange} disabled={!headers.length}>
         <SelectTrigger className="w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
