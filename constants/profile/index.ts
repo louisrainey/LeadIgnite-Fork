@@ -5,8 +5,22 @@ import {
   mockPaymentDetails
 } from '@/types/_faker/profile/userData';
 import { mockKanbanState } from '@/types/_faker/kanban';
+import { TaskTracking } from '@/lib/stores/taskActions';
 
 // Mocking a user profile with Faker.js
+const taskTracking: TaskTracking = {
+  totalTasks: 0,
+  tasksByStatus: {
+    TODO: 0,
+    IN_PROGRESS: 0,
+    DONE: 0
+  },
+  tasksAssigned: 0,
+  tasksCompleted: 0,
+  tasksInProgress: 0,
+  assignedTasks: {},
+  taskHistory: [] // Add this to track task activities like created, updated, deleted
+};
 
 // Static mock user profile
 export const mockUserProfileStatic: UserProfile = {
@@ -111,7 +125,12 @@ export const mockUserProfileStatic: UserProfile = {
   ],
 
   activityLog: [
-    { action: 'created', timestamp: new Date(), performedBy: 'John Doe' }
+    {
+      action: 'created',
+      timestamp: new Date(),
+      performedBy: 'John Doe',
+      taskTracking
+    }
   ],
 
   securitySettings: {

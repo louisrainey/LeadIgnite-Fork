@@ -25,6 +25,25 @@ const defaultCols = [
 export type ColumnId = (typeof defaultCols)[number]['id'];
 export type Priority = 'low' | 'medium' | 'high';
 
+export interface TaskActivity {
+  action: 'created' | 'updated' | 'deleted';
+  timestamp: Date;
+  performedBy: string; // Name of the person who performed the action
+}
+
+export interface TaskTracking {
+  totalTasks: number;
+  tasksByStatus: {
+    TODO: number;
+    IN_PROGRESS: number;
+    DONE: number;
+  };
+  tasksAssigned: number;
+  tasksCompleted: number;
+  tasksInProgress: number;
+  assignedTasks: Record<string, Task[]>; // Tracks tasks by team member
+  taskHistory: TaskActivity[]; // History of all task actions
+}
 export interface Task {
   id: string;
   title: string;
@@ -33,6 +52,7 @@ export interface Task {
   priority?: Priority;
   dueDate?: string; // YYYY-MM-DD format
   assignedToTeamMember?: string;
+  activityLog?: TaskActivity[]; // Log of task activities
 }
 
 export type KanbanState = {
