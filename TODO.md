@@ -1,7 +1,5 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# Add Skip tracing capability
-
 # 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
 
 # 🪳 Fix add lead list modal to remove row once slecte4d and also only show continue button once all rows except socials are matched
@@ -30,6 +28,8 @@ index.mjs:247 -->
 # 💪 Add up sale after sigining up for trial that promprs immediate upgrade
 
 # 💪 Add Check for multiple emails / ips to prevent trial misuse
+
+<!-- # ✅ Add Skip tracing capability -->
 
 <!-- #✅ Create user profile -->
 
