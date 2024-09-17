@@ -1,16 +1,9 @@
 import { create } from 'zustand';
-import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
-import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
-import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
-import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
-import {
-  CallCampaign,
-  SocialMediaCampaign,
-  CampaignBase
-} from '@/types/_dashboard/campaign';
+
+import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import { EmailCampaign } from '@/types/goHighLevel/email';
 import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
-
+import { MockUserProfile } from '@/types/_faker/profile/userProfile';
 // Define the campaign state and actions for Zustand
 interface CampaignState {
   currentCampaignType: 'email' | 'call' | 'text' | 'social'; // Track the current campaign type
@@ -36,8 +29,8 @@ interface CampaignState {
 // Create Zustand store
 export const useCampaignStore = create<CampaignState>((set, get) => ({
   currentCampaignType: 'call', // Default to 'call'
-  currentCampaign: mockCallCampaignData, // Default campaign data (calls)
-  filteredCampaigns: mockCallCampaignData, // Start with no filter applied, showing all campaigns
+  currentCampaign: MockUserProfile.companyInfo.campaigns.callCampaigns, // Default campaign data (calls)
+  filteredCampaigns: MockUserProfile.companyInfo.campaigns.callCampaigns, // Start with no filter applied, showing all campaigns
 
   // Action to set the current campaign type and update the campaign data accordingly
   setCampaignType: (type) => {
@@ -51,16 +44,16 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
     // Update `currentCampaign` and `filteredCampaigns` based on selected type
     switch (type) {
       case 'email':
-        campaignData = mockGeneratedSampleEmailCampaigns; // Email campaign data
+        campaignData = MockUserProfile.companyInfo.campaigns.emailCampaigns; // Email campaign data
         break;
       case 'call':
-        campaignData = mockCallCampaignData; // Call campaign data
+        campaignData = MockUserProfile.companyInfo.campaigns.callCampaigns; // Call campaign data
         break;
       case 'text':
-        campaignData = mockTextCampaigns; // Text message campaign data
+        campaignData = MockUserProfile.companyInfo.campaigns.textCampaigns; // Text message campaign data
         break;
       case 'social':
-        campaignData = mockSocialMediaCampaigns; // Social media campaign data
+        campaignData = MockUserProfile.companyInfo.campaigns.socialCampaigns; // Social media campaign data
         break;
       default:
         campaignData = [];
