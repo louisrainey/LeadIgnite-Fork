@@ -1,10 +1,21 @@
 import { UserProfile } from '@/types/userProfile';
-import { mockLeadListData } from '../dashboard/leadList';
+import { generateMockLeadLists, mockLeadListData } from '../dashboard/leadList';
 import {
   mockBillingHistory,
   mockPaymentDetails
 } from '@/types/_faker/profile/userData';
 import { faker } from '@faker-js/faker'; // Import Faker.js for random data generation
+import { APP_TESTING_MODE } from '../data';
+import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
+import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
+import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
+import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
+import { mockEmailCampaignAnalytics } from '@/types/_faker/analytics/email';
+import { mockCallCampaignAnalytics } from '@/types/_faker/analytics/call';
+import { mockTextMessageCampaignAnalytics } from '@/types/_faker/analytics/text';
+import { EmailCampaignAnalytics } from '@/types/goHighLevel/email';
+import { TextMessageCampaignAnalytics } from '@/types/goHighLevel/text';
+import { CallCampaignAnalytics } from '@/types/vapiAi/api/calls/get';
 
 // Mocking a user profile with Faker.js
 export const mockUserProfile: UserProfile = {
@@ -22,14 +33,14 @@ export const mockUserProfile: UserProfile = {
     createdAt: faker.date.past().toISOString(), // Generate past creation date
     planDetails: 'Includes AI and skip tracing services' // Static, but can be randomized
   },
-  firstName: faker.name.firstName(),
-  lastName: faker.name.lastName(),
+  firstName: faker.person.firstName(),
+  lastName: faker.person.lastName(),
   email: faker.internet.email(),
-  country: faker.address.country(),
-  city: faker.address.city(),
+  country: faker.location.country(),
+  city: faker.location.city(),
 
   leadPreferences: {
-    preferredLocation: [faker.address.city(), faker.address.city()],
+    preferredLocation: [faker.location.city(), faker.address.city()],
     industry: 'Real Estate', // Static or use faker.commerce.department()
     minLeadQuality: faker.number.int({ min: 60, max: 100 }),
     maxBudget: faker.number.int({ min: 1000, max: 10000 })
@@ -40,7 +51,7 @@ export const mockUserProfile: UserProfile = {
       name: 'High-Quality Leads', // Static or faker.commerce.productName()
       searchCriteria: {
         quality: 'high',
-        location: faker.address.city()
+        location: faker.location.city()
       },
       createdAt: faker.date.recent()
     }
@@ -64,15 +75,22 @@ export const mockUserProfile: UserProfile = {
     companyLogo: 'logo.png', // Static, can be a URL or file path
     GHLID: { locationId: faker.string.uuid() }, // Random location ID
     campaigns: {
-      textCampaigns: [], // Assuming these arrays are populated elsewhere
-      emailCampaigns: [],
-      socialCampaigns: [],
-      callCampaigns: []
+      textCampaigns: mockTextCampaigns, // Assuming these arrays are populated elsewhere
+      emailCampaigns: mockGeneratedSampleEmailCampaigns,
+      socialCampaigns: mockSocialMediaCampaigns,
+      callCampaigns: mockCallCampaignData
     },
     forwardingNumber: faker.phone.number(),
-    leadList: [], // Assuming lead list is generated or static
-    campaignAnalytics: [], // Assuming campaign analytics is generated or static
-    leadLists: [] // Assuming lead lists are generated or static
+    campaignAnalytics: [
+      mockCallCampaignAnalytics,
+      mockTextMessageCampaignAnalytics,
+      mockEmailCampaignAnalytics
+    ] as (
+      | EmailCampaignAnalytics
+      | CallCampaignAnalytics
+      | TextMessageCampaignAnalytics
+    )[],
+    leadLists: mockLeadListData // Assuming lead lists are generated or static
   },
 
   aIKnowledgebase: {
@@ -111,8 +129,8 @@ export const mockUserProfile: UserProfile = {
   teamMembers: [
     {
       id: faker.string.uuid(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
       email: faker.internet.email(),
       role: faker.helpers.arrayElement(['admin', 'member']),
       permissions: {
@@ -141,6 +159,7 @@ export const mockUserProfile: UserProfile = {
   }
 };
 
+export const MockUserProfile = APP_TESTING_MODE && mockUserProfile;
 // Static mock user profile
 export const mockUserProfileStatic: UserProfile = {
   UniqueIdentifier: 'user-unique-id-123',
@@ -199,9 +218,8 @@ export const mockUserProfileStatic: UserProfile = {
       callCampaigns: []
     },
     forwardingNumber: '+1234567890',
-    leadList: mockLeadListData,
-    campaignAnalytics: [],
-    leadLists: []
+    leadLists: mockLeadListData,
+    campaignAnalytics: []
   },
 
   aIKnowledgebase: {

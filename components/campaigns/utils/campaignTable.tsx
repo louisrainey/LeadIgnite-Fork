@@ -15,7 +15,7 @@ import { EmailCampaignTable } from '@/components/tables/emails-table/email-campa
 import { emailCampaignColumns } from '@/components/tables/emails-table/columns';
 import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import { EmailCampaign } from '@/types/goHighLevel/email';
-import { TextMessageCampaign } from '@/types/goHighLevel/text';
+import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
 import { exportMultipleCampaignsToZip } from '@/lib/utils/files/arrayTableData';
 
 const CampaignsMainContent: React.FC = () => {
@@ -130,7 +130,7 @@ const CampaignsMainContent: React.FC = () => {
         return (
           <TextMessageCampaignTable
             columns={textMessageCampaignColumns}
-            data={filteredCampaigns as TextMessageCampaign[]} // Type assertion for TextMessageCampaign data
+            data={filteredCampaigns as GHLTextMessageCampaign[]} // Type assertion for TextMessageCampaign data
             searchKey="name"
             pageCount={Math.ceil(filteredCampaigns.length / 10)}
           />
@@ -226,7 +226,7 @@ function exportSingleCampaignTypeToZip(
   filteredCampaigns: (
     | CallCampaign
     | EmailCampaign
-    | TextMessageCampaign
+    | GHLTextMessageCampaign
     | SocialMediaCampaign
   )[],
   filename: string

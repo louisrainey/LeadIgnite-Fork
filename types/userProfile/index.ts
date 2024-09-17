@@ -13,7 +13,10 @@ import { BillingHistoryItem, PaymentDetails } from '../_faker/profile/userData';
 import { UserProfileSubscription } from '../_faker/profile/userSubscription';
 import { EmailCampaign, EmailCampaignAnalytics } from '../goHighLevel/email';
 import { GetSquadResponse } from '../vapiAi/api/squad/get';
-import { TextMessageCampaignAnalytics } from '../goHighLevel/text';
+import {
+  GHLTextMessageCampaign,
+  TextMessageCampaignAnalytics
+} from '../goHighLevel/text';
 import { CallCampaignAnalytics } from '../vapiAi/api/calls/get';
 
 export interface LeadPreferences {
@@ -76,7 +79,7 @@ export interface TeamMember {
 
 // Campaigns for Company
 export interface CompanyCampaignsUserProfile {
-  textCampaigns: TextCampaign[];
+  textCampaigns: GHLTextMessageCampaign[];
   emailCampaigns: EmailCampaign[];
   socialCampaigns: SocialMediaCampaign[];
   callCampaigns: CallCampaign[];
@@ -105,7 +108,6 @@ export interface CompanyInfo {
   GHLID: GetSubAccountPathParams;
   campaigns: CompanyCampaignsUserProfile;
   forwardingNumber: string;
-  leadList: LeadList[]; // Array of lead IDs
   campaignAnalytics: CampaignAnalytics[]; // Array of analytics for user's campaigns
   leadLists: LeadList[]; // Array of lead lists
 }

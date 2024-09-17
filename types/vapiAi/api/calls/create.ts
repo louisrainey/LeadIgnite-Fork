@@ -86,6 +86,7 @@ export interface ServerDetails {
 
 // Assistant model
 export interface AssistantModel {
+  assistantID?: string;
   messages: ConversationMessage[]; // Messages exchanged by the assistant
   tools: ModelTool[]; // Tools that the assistant can use
   toolIds: string[]; // List of tool IDs
