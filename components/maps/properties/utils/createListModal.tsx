@@ -12,6 +12,7 @@ import {
   DialogClose
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { skipTraceSchema } from '@/types/zod/createListSkip';
 
 type SkipTraceFormProps = {
   properties: PropertyDetails[];
@@ -37,14 +38,31 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
     return (recordsToSkip * costPerRecord).toFixed(2);
   };
 
-  // Handle form submission
   const handleSubmit = () => {
     const listToUse = useExistingList ? targetList : newListName;
-    if (!listToUse) {
-      toast('Please provide a list name or select an existing list.');
+
+    // Construct the data object for validation
+    const formData = {
+      newListName: listToUse,
+      recordsToSkip: recordsToSkip,
+      redoSkipTrace: redoSkipTrace,
+      totalLeads: properties.length
+    };
+
+    // Validate the form data against the Zod schema
+    const validationResult = skipTraceSchema.safeParse(formData);
+
+    if (!validationResult.success) {
+      // Handle validation errors
+      validationResult.error.errors.forEach((error) => {
+        toast.error(error.message); // Display each error message using toast notifications
+      });
       return;
     }
+
+    // If validation passes, proceed with the submission
     console.log('Submitting skip trace with list:', listToUse);
+    console.log('Valid data:', formData);
 
     // Close the dialog after validation succeeds
     onClose();
