@@ -7,11 +7,12 @@ import { cva } from 'class-variance-authority';
 import { GripVertical } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
-// export interface Task {
-//   id: UniqueIdentifier;
-//   columnId: ColumnId;
-//   content: string;
-// }
+// Priority-to-Badge variant mapping
+const priorityBadgeVariant = {
+  low: 'outline', // Map 'low' to 'outline'
+  medium: 'default', // Map 'medium' to 'default'
+  high: 'destructive' // Map 'high' to 'destructive'
+} as const;
 
 interface TaskCardProps {
   task: Task;
@@ -67,6 +68,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
       })}
     >
       <CardHeader className="space-between relative flex flex-row border-b-2 border-secondary px-3 py-3">
+        {/* Drag handle button */}
         <Button
           variant={'ghost'}
           {...attributes}
@@ -76,12 +78,44 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
           <span className="sr-only">Move task</span>
           <GripVertical />
         </Button>
+        {/* Badge for Task */}
         <Badge variant={'outline'} className="ml-auto font-semibold">
           Task
         </Badge>
       </CardHeader>
+
+      {/* Task Content */}
       <CardContent className="whitespace-pre-wrap px-3 pb-6 pt-3 text-left">
-        {task.title}
+        {/* Task Title */}
+        <div className="text-lg font-semibold">{task.title}</div>
+
+        {/* Task Description */}
+        {task.description && (
+          <div className="mt-2 text-sm text-muted-foreground">
+            {task.description}
+          </div>
+        )}
+
+        {/* Priority */}
+        {task.priority && (
+          <div className="mt-2 text-sm">
+            <span className="font-semibold">Priority: </span>
+            <Badge
+              variant={priorityBadgeVariant[task.priority] || 'outline'} // Map priority to Badge variant
+              className="ml-2"
+            >
+              {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+            </Badge>
+          </div>
+        )}
+
+        {/* Due Date */}
+        {task.dueDate && (
+          <div className="mt-2 text-sm">
+            <span className="font-semibold">Due Date: </span>
+            <span className="text-muted-foreground">{task.dueDate}</span>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

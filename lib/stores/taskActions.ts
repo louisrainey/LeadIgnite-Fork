@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { persist } from 'zustand/middleware';
 import { KanbanColumn } from '@/components/kanban/board-column';
 import { UniqueIdentifier } from '@dnd-kit/core';
+import { TeamMember } from '@/types/userProfile';
 
 export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE';
 
@@ -31,6 +32,7 @@ export interface Task {
   status: Status;
   priority?: Priority;
   dueDate?: string; // YYYY-MM-DD format
+  assignedToTeamMemberID?: string;
 }
 
 export type KanbanState = {
@@ -39,75 +41,56 @@ export type KanbanState = {
   draggedTask: string | null;
 };
 
-const initialTasks: Task[] = [
-  // Backlog
+export const initialTasks: Task[] = [
   {
     id: 'task1',
-    status: 'TODO',
-    title: 'Identify Target Audience',
+    title: 'Design New Landing Page',
     description:
-      'Research and identify the target audience for lead generation.'
+      'Create a responsive design for the new product launch landing page.',
+    status: 'IN_PROGRESS',
+    priority: 'high',
+    dueDate: '2024-09-20',
+    assignedToTeamMemberID: 'team_member_1'
   },
-  // In Progress
   {
     id: 'task2',
-    status: 'IN_PROGRESS',
-    title: 'Create Lead Magnet',
+    title: 'Optimize SEO Strategy',
     description:
-      'Design and create a lead magnet (e.g., eBook or checklist) to attract potential leads.'
+      'Revise the SEO plan for improved search rankings in the next quarter.',
+    status: 'TODO',
+    priority: 'medium',
+    dueDate: '2024-09-25',
+    assignedToTeamMemberID: 'team_member_2'
   },
   {
     id: 'task3',
-    status: 'IN_PROGRESS',
-    title: 'Optimize Landing Page',
-    description: 'Ensure the landing page is optimized for lead capture.'
+    title: 'Client Onboarding',
+    description:
+      'Guide the new client through the onboarding process and answer any questions.',
+    status: 'TODO',
+    priority: 'high',
+    dueDate: '2024-09-18',
+    assignedToTeamMemberID: 'team_member_3'
   },
   {
     id: 'task4',
-    status: 'TODO',
-    title: 'Setup Google Ads Campaign',
-    description: 'Configure Google Ads targeting the identified audience.'
+    title: 'Monthly Performance Report',
+    description:
+      'Compile and present the monthly performance report to the management team.',
+    status: 'DONE',
+    priority: 'low',
+    dueDate: '2024-09-10',
+    assignedToTeamMemberID: 'team_member_4'
   },
-  // Follow Up
   {
     id: 'task5',
-    status: 'TODO',
-    title: 'Launch Facebook Ad Campaign',
-    description: 'Launch a Facebook Ads campaign for lead generation.'
-  },
-  {
-    id: 'task6',
-    status: 'IN_PROGRESS',
-    title: 'Review and Qualify Leads',
+    title: 'Content Plan for Social Media',
     description:
-      'Review incoming leads and qualify them based on engagement and relevance.'
-  },
-  {
-    id: 'task7',
-    status: 'TODO',
-    title: 'Develop Lead Nurturing Strategy',
-    description: 'Create a follow-up strategy to nurture the leads.'
-  },
-  // Follow Up
-  {
-    id: 'task8',
+      'Develop a content calendar for the upcoming quarter’s social media posts.',
     status: 'IN_PROGRESS',
-    title: 'Handoff Leads to Sales Team',
-    description: 'Send qualified leads to the sales team for further follow-up.'
-  },
-  // Done
-  {
-    id: 'task9',
-    status: 'DONE',
-    title: 'Follow Up with Key Client (ABC Corp)',
-    description:
-      'Contact key clients for feedback and potential upsell opportunities.'
-  },
-  {
-    id: 'task10',
-    status: 'DONE',
-    title: 'Create Initial Sales Pitch',
-    description: 'Draft and finalize the initial sales pitch for new leads.'
+    priority: 'medium',
+    dueDate: '2024-09-30',
+    assignedToTeamMemberID: 'team_member_5'
   }
 ];
 
