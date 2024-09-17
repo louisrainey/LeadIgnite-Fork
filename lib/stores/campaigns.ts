@@ -9,7 +9,7 @@ import {
   CampaignBase
 } from '@/types/_dashboard/campaign';
 import { EmailCampaign } from '@/types/goHighLevel/email';
-import { TextMessageCampaign } from '@/types/goHighLevel/text';
+import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
 
 // Define the campaign state and actions for Zustand
 interface CampaignState {
@@ -17,13 +17,13 @@ interface CampaignState {
   currentCampaign: (
     | EmailCampaign
     | CallCampaign
-    | TextMessageCampaign
+    | GHLTextMessageCampaign
     | SocialMediaCampaign
   )[]; // Holds the currently active campaign data
   filteredCampaigns: (
     | EmailCampaign
     | CallCampaign
-    | TextMessageCampaign
+    | GHLTextMessageCampaign
     | SocialMediaCampaign
   )[]; // Holds the filtered campaigns
   setCampaignType: (type: 'email' | 'call' | 'text' | 'social') => void;
@@ -44,7 +44,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
     let campaignData: (
       | EmailCampaign
       | CallCampaign
-      | TextMessageCampaign
+      | GHLTextMessageCampaign
       | SocialMediaCampaign
     )[] = [];
 

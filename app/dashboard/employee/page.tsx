@@ -6,7 +6,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Employee } from '@/constants/data';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/kanban/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 

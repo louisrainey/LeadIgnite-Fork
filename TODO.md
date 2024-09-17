@@ -1,12 +1,12 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
-
 # 🪳 Fix add lead list modal to remove row once slecte4d and also only show continue button once all rows except socials are matched
 
 # 🪳 Fix Leads Drawer Not laoding when i get to bottom
 
 # 🪳 Fix Multiple toasts showing when drawer is opened (Maybe multi renders)
+
+# 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
 
 <!-- Uncaught InternalError: too much recursion
     $d3863c46a17e8a28$var$focus index.mjs:247

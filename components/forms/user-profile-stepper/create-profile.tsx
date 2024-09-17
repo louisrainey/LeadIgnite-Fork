@@ -24,8 +24,11 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { profileSchema, type ProfileFormValues } from '@/lib/form-schema';
-import { cn } from '@/lib/utils';
+import {
+  profileSchema,
+  type ProfileFormValues
+} from '@/types/zod/profile-form-schema';
+import { cn } from '@/lib/utils/kanban/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertTriangleIcon, Trash, Trash2Icon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
