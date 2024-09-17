@@ -18,6 +18,7 @@ import { mockLeadListData } from '@/constants/dashboard/leadList';
 import { APP_TESTING_MODE } from '@/constants/data';
 import { mockKanbanState } from '../kanban';
 import { mockTeamMembers } from './team/members';
+import { mockTrackingData } from './team/tasks';
 
 // Mocking a user profile with Faker.js
 export const mockUserProfile: UserProfile = {
@@ -135,7 +136,8 @@ export const mockUserProfile: UserProfile = {
     {
       action: faker.helpers.arrayElement(['created', 'updated', 'deleted']),
       timestamp: faker.date.recent(),
-      performedBy: faker.name.firstName()
+      performedBy: faker.person.firstName(),
+      taskTracking: mockTrackingData
     }
   ],
 

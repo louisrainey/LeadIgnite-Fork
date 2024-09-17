@@ -18,7 +18,12 @@ import {
   TextMessageCampaignAnalytics
 } from '../goHighLevel/text';
 import { CallCampaignAnalytics } from '../vapiAi/api/calls/get';
-import { KanbanState } from '@/lib/stores/taskActions';
+import {
+  KanbanState,
+  Task,
+  TaskActivity,
+  TaskTracking
+} from '@/lib/stores/taskActions';
 
 export interface LeadPreferences {
   preferredLocation: string[]; // Array of preferred locations
@@ -92,6 +97,7 @@ export interface ActivityLog {
   action: string; // Action performed, e.g., 'created', 'updated'
   timestamp: Date; // When the action was performed
   performedBy: string; // Who performed the action
+  taskTracking: TaskTracking;
 }
 
 export interface SecuritySettings {
