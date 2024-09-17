@@ -35,9 +35,12 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 
   // Calculate total cost based on records to skip and cost per record
   const calculateCost = () => {
-    return (recordsToSkip * costPerRecord).toFixed(2);
+    const totalCost = (recordsToSkip * costPerRecord).toFixed(2);
+    return Number(totalCost).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   };
-
   const handleSubmit = () => {
     const listToUse = useExistingList ? targetList : newListName;
 
