@@ -15,8 +15,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import GithubSignInButton from '../github-auth-button';
-
+import { LinkedInLoginButton } from 'react-social-login-buttons';
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' })
 });
@@ -83,7 +82,15 @@ export default function UserAuthForm() {
           </span>
         </div>
       </div>
-      <GithubSignInButton />
+      <LinkedInLoginButton
+        onClick={() => alert('Hello')}
+        style={{
+          backgroundColor: '#0077B5',
+          borderRadius: '8px',
+          fontSize: '16px'
+        }} // Add inline styles for button
+        className="transform font-semibold text-white shadow-lg transition duration-300 ease-in-out hover:scale-105 hover:bg-blue-800"
+      />
     </>
   );
 }
