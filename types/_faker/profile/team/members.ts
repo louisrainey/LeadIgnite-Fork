@@ -16,7 +16,8 @@ const generateMockTeamMember = (): TeamMember => ({
     canManageTeam: faker.datatype.boolean(),
     canManageSubscription: faker.datatype.boolean(),
     canAccessAI: faker.datatype.boolean(),
-    canEditCompanyProfile: faker.datatype.boolean()
+    canEditCompanyProfile: faker.datatype.boolean(),
+    canMoveCompanyTasks: faker.datatype.boolean()
   },
   NotificationPreferences: {
     emailNotifications: faker.datatype.boolean(),

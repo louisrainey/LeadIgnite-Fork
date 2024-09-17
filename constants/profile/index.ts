@@ -119,7 +119,8 @@ export const mockUserProfileStatic: UserProfile = {
         canManageTeam: true,
         canManageSubscription: true,
         canAccessAI: true,
-        canEditCompanyProfile: true
+        canEditCompanyProfile: true,
+        canMoveCompanyTasks: false
       }
     }
   ],

@@ -64,6 +64,7 @@ export interface Permissions {
   canManageTeam: boolean; // Whether the team member can manage other team members
   canManageSubscription: boolean; // Whether the team member can manage the subscription or billing
   canAccessAI: boolean; // Whether the team member can access AI-based tools
+  canMoveCompanyTasks: boolean;
   canEditCompanyProfile: boolean; // Whether the team member can edit company profile information
 }
 
