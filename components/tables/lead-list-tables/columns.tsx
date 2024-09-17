@@ -1,10 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Download } from 'lucide-react';
 import { LeadList } from '@/constants/dashboard/leadList'; // Assuming this is the correct path
 import { exportLeadListsToExcel } from '@/lib/utils/files/loopDownloadTableData';
+import { Button } from '@/components/ui/button';
+import SkipTraceDialog from './utils/skipLeadsList'; // Assuming SkipTraceDialog component is in utils
 
 // Columns configuration for LeadList
 export const columns: ColumnDef<LeadList>[] = [
@@ -94,5 +97,20 @@ export const columns: ColumnDef<LeadList>[] = [
         <Download className="h-5 w-5 text-gray-600 dark:text-gray-400" />
       </button>
     )
+  },
+  {
+    id: 'createLead',
+    header: 'Create Lead',
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <SkipTraceDialog
+          leads={row.original.leads} // Pass properties to the modal (replace with the correct prop)
+          costPerRecord={0.1} // Example cost per record, you can change as needed
+        />{' '}
+        {/* Render the modal trigger here */}
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false
   }
 ];
