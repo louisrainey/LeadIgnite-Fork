@@ -3,7 +3,6 @@ import { v4 as uuid } from 'uuid';
 import { persist } from 'zustand/middleware';
 import { KanbanColumn } from '@/components/kanban/board-column';
 import { UniqueIdentifier } from '@dnd-kit/core';
-import { TeamMember } from '@/types/userProfile';
 
 export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE';
 

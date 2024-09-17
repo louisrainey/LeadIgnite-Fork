@@ -8,13 +8,11 @@ import {
   CallCampaign,
   Stat
 } from '@/types/_dashboard/campaign'; // Types for campaigns
-import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
-import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
-import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
-import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
+
 import { EmailCampaign } from '@/types/goHighLevel/email';
 import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
 
+import { MockUserProfile } from '@/types/_faker/profile/userProfile';
 const creditsRemaining = 500;
 
 const CampaignHeader: React.FC = () => {
@@ -69,10 +67,14 @@ const CampaignHeader: React.FC = () => {
   };
 
   // Assume you have these arrays from your campaign data
-  const socialCampaigns: SocialMediaCampaign[] = mockSocialMediaCampaigns; // Replace with actual data
-  const textCampaigns: GHLTextMessageCampaign[] = mockTextCampaigns; // Replace with actual data
-  const emailCampaigns: EmailCampaign[] = mockGeneratedSampleEmailCampaigns; // Replace with actual data
-  const callCampaigns: CallCampaign[] = mockCallCampaignData; // Replace with actual data
+  const socialCampaigns: SocialMediaCampaign[] =
+    MockUserProfile.companyInfo.campaigns.socialCampaigns; // Replace with actual data
+  const textCampaigns: GHLTextMessageCampaign[] =
+    MockUserProfile.companyInfo.campaigns.textCampaigns; // Replace with actual data
+  const emailCampaigns: EmailCampaign[] =
+    MockUserProfile.companyInfo.campaigns.emailCampaigns; // Replace with actual data
+  const callCampaigns: CallCampaign[] =
+    MockUserProfile.companyInfo.campaigns.callCampaigns; // Replace with actual data
 
   // Calculate total campaigns, conversations, and actions
   const totalSocialCampaigns = socialCampaigns.length;
