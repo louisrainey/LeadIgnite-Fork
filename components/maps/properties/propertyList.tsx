@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect, MouseEvent } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -10,6 +10,8 @@ import { PropertyDetails } from '@/types/_dashboard/maps';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { usePropertyStore } from '@/lib/stores/leadSearch/drawer'; // Zustand store import
 import { toast } from 'sonner';
+import SkipTraceDialog from './utils/createListModal';
+import { mockLeadListData } from '@/constants/dashboard/leadList';
 
 interface PropertyListProps {
   properties: PropertyDetails[];
@@ -60,7 +62,6 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
   }, [hasMore, loadMoreProperties, isLoading]);
 
   // Start resizing the drawer
-  // Remove the unnecessary generic arguments for React's MouseEvent
   const startResizing = (event: React.MouseEvent) => {
     event.preventDefault();
     window.addEventListener('mousemove', resizeDrawer);
@@ -132,8 +133,16 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
                     Your list is too broad.
                   </p>
                 )}
+
+                {/* Replace "Create List" button with the SkipTraceDialog */}
                 <div className="flex justify-center">
-                  <Button type="button">Create List</Button>
+                  <SkipTraceDialog
+                    properties={properties}
+                    availableListNames={mockLeadListData.map(
+                      (list) => list.listName
+                    )} // Extract and pass available list names
+                    costPerRecord={0.1} // Example cost per record, you can change as needed
+                  />
                 </div>
               </div>
 

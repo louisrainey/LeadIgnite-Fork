@@ -1,7 +1,5 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# Create user profile
-
 # Add Skip tracing capability
 
 # 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
@@ -26,6 +24,14 @@ index.mjs:247 -->
 # 💪 Add New team modal , and employee permissions , invite by email with permissions
 
 # 💪 Kanban add state
+
+# 💪 Don’t redo skip traces on data you’ve already purchased (List Creation)
+
+# 💪 Add up sale after sigining up for trial that promprs immediate upgrade
+
+# 💪 Add Check for multiple emails / ips to prevent trial misuse
+
+<!-- #✅ Create user profile -->
 
 <!-- #✅ Add redirects to page if subscription is over , or user not correctly signed in -->
 
