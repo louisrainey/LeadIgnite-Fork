@@ -24,92 +24,117 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import FileUpload from '../file-upload';
-import { useToast } from '../ui/use-toast';
-const ImgSchema = z.object({
-  fileName: z.string(),
-  name: z.string(),
-  fileSize: z.number(),
-  size: z.number(),
-  fileKey: z.string(),
-  key: z.string(),
-  fileUrl: z.string(),
-  url: z.string()
-});
-export const IMG_MAX_LIMIT = 3;
+import { TeamMember } from '@/types/userProfile';
+import { toast } from 'sonner';
+
+// Zod schema for the form
 const formSchema = z.object({
-  name: z
+  firstName: z
     .string()
-    .min(3, { message: 'Product Name must be at least 3 characters' }),
-  imgUrl: z
-    .array(ImgSchema)
-    .max(IMG_MAX_LIMIT, { message: 'You can only add up to 3 images' })
-    .min(1, { message: 'At least one image must be added.' }),
-  description: z
+    .min(2, { message: 'First name must be at least 2 characters' }),
+  lastName: z
     .string()
-    .min(3, { message: 'Product description must be at least 3 characters' }),
-  price: z.coerce.number(),
-  category: z.string().min(1, { message: 'Please select a category' })
+    .min(2, { message: 'Last name must be at least 2 characters' }),
+  email: z.string().email({ message: 'Please enter a valid email address' }),
+  role: z.enum(['admin', 'member'], {
+    errorMap: () => ({ message: 'Role is required' })
+  }),
+  permissions: z
+    .object({
+      canGenerateLeads: z.boolean(),
+      canStartCampaigns: z.boolean(),
+      canViewReports: z.boolean(),
+      canManageTeam: z.boolean(),
+      canManageSubscription: z.boolean(),
+      canAccessAI: z.boolean(),
+      canMoveCompanyTasks: z.boolean(),
+      canEditCompanyProfile: z.boolean()
+    })
+    .refine((permissions) => Object.values(permissions).some(Boolean), {
+      message: 'At least one permission must be enabled'
+    }),
+  twoFactorAuth: z.object({
+    isEnabled: z.boolean(),
+    methods: z
+      .object({
+        sms: z.boolean(),
+        email: z.boolean(),
+        authenticatorApp: z.boolean()
+      })
+      .refine((methods) => Object.values(methods).some(Boolean), {
+        message: 'At least one 2FA method must be enabled'
+      })
+  })
 });
 
-type ProductFormValues = z.infer<typeof formSchema>;
+type TeamMemberFormValues = z.infer<typeof formSchema>;
 
-interface ProductFormProps {
-  initialData: any | null;
-  categories: any;
+interface TeamMemberFormProps {
+  initialData?: TeamMember | null;
 }
 
-export const EmployeeForm: React.FC<ProductFormProps> = ({
-  initialData,
-  categories
+export const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
+  initialData
 }) => {
   const params = useParams();
   const router = useRouter();
-  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const title = initialData ? 'Edit product' : 'Create product';
-  const description = initialData ? 'Edit a product.' : 'Add a new product';
-  const toastMessage = initialData ? 'Product updated.' : 'Product created.';
-  const action = initialData ? 'Save changes' : 'Create';
 
+  const title = initialData ? 'Edit Team Member' : 'Invite Team Member';
+  const description = initialData
+    ? 'Edit team member details.'
+    : 'Invite a new team member via email.';
+  const action = initialData ? 'Save changes' : 'Invite';
   const defaultValues = initialData
-    ? initialData
+    ? {
+        firstName: initialData.firstName,
+        lastName: initialData.lastName,
+        email: initialData.email,
+        role: initialData.role as 'admin' | 'member',
+        permissions: initialData.permissions,
+        twoFactorAuth: initialData.twoFactorAuth || {
+          isEnabled: false,
+          methods: { sms: false, email: false, authenticatorApp: false }
+        }
+      }
     : {
-        name: '',
-        description: '',
-        price: 0,
-        imgUrl: [],
-        category: ''
+        firstName: '',
+        lastName: '',
+        email: '',
+        role: 'member' as 'admin' | 'member',
+        permissions: {
+          canGenerateLeads: false,
+          canStartCampaigns: false,
+          canViewReports: false,
+          canManageTeam: false,
+          canManageSubscription: false,
+          canAccessAI: false,
+          canMoveCompanyTasks: false,
+          canEditCompanyProfile: false
+        },
+        twoFactorAuth: {
+          isEnabled: false,
+          methods: { sms: false, email: false, authenticatorApp: false }
+        }
       };
 
-  const form = useForm<ProductFormValues>({
+  const form = useForm<TeamMemberFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues
   });
 
-  const onSubmit = async (data: ProductFormValues) => {
+  const onSubmit = async (data: TeamMemberFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
-        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
+        toast('Team member updated successfully');
       } else {
-        // const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
+        toast('Team member invited successfully');
       }
-      router.refresh();
-      router.push(`/dashboard/products`);
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: 'There was a problem with your request.'
-      });
+      router.push('/dashboard/team');
     } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: 'There was a problem with your request.'
-      });
+      toast('Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -118,9 +143,9 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      //   await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
+      // Simulate API call to delete a team member
       router.refresh();
-      router.push(`/${params.storeId}/products`);
+      router.push(`/dashboard/team`);
     } catch (error: any) {
     } finally {
       setLoading(false);
@@ -128,16 +153,8 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
     }
   };
 
-  const triggerImgUrlValidation = () => form.trigger('imgUrl');
-
   return (
     <>
-      {/* <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      /> */}
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
@@ -157,34 +174,17 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-8"
         >
-          <FormField
-            control={form.control}
-            name="imgUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Images</FormLabel>
-                <FormControl>
-                  <FileUpload
-                    onChange={field.onChange}
-                    value={field.value}
-                    onRemove={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="gap-8 md:grid md:grid-cols-3">
+          <div className="gap-8 md:grid md:grid-cols-2">
             <FormField
               control={form.control}
-              name="name"
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>First Name</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Product name"
+                      placeholder="First name"
                       {...field}
                     />
                   </FormControl>
@@ -194,14 +194,14 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="description"
+              name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Last Name</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Product description"
+                      placeholder="Last name"
                       {...field}
                     />
                   </FormControl>
@@ -211,54 +211,186 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="price"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>Invite by Email</FormLabel>
                   <FormControl>
-                    <Input type="number" disabled={loading} {...field} />
+                    <Input
+                      disabled={loading}
+                      placeholder="Team member's email"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a category"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {/* @ts-ignore  */}
-                      {categories.map((category) => (
-                        <SelectItem key={category._id} value={category._id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button>
+
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Role</FormLabel>
+                <Select
+                  disabled={loading}
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="member">Member</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Separator />
+          <Heading
+            title="Permissions"
+            description="Assign specific permissions"
+          />
+
+          <div className="grid grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {(
+              Object.keys(defaultValues.permissions) as Array<
+                keyof typeof defaultValues.permissions
+              >
+            ).map((permKey) => (
+              <FormField
+                key={permKey}
+                control={form.control}
+                name={`permissions.${permKey}`}
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-4">
+                    <FormLabel className="text-left font-medium">
+                      {permKey
+                        .replace(/can/, 'Can ')
+                        .replace(/([A-Z])/g, ' $1')}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="checkbox"
+                        disabled={loading}
+                        checked={Boolean(field.value)}
+                        onChange={field.onChange}
+                        className="h-5 w-5"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+          </div>
+
+          <Separator />
+          <Heading
+            title="Two-Factor Authentication"
+            description="Enable 2FA for this user"
+          />
+
+          <div className="grid grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Enable 2FA */}
+            <FormField
+              control={form.control}
+              name="twoFactorAuth.isEnabled"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-4">
+                  <FormLabel className="font-medium">Enable 2FA</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="checkbox"
+                      disabled={loading}
+                      checked={Boolean(field.value)}
+                      onChange={field.onChange}
+                      className="h-5 w-5"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 2FA Methods */}
+            <FormField
+              control={form.control}
+              name="twoFactorAuth.methods.sms"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-4">
+                  <FormLabel className="font-medium">SMS</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="checkbox"
+                      disabled={loading}
+                      checked={Boolean(field.value)}
+                      onChange={field.onChange}
+                      className="h-5 w-5"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="twoFactorAuth.methods.email"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-4">
+                  <FormLabel className="font-medium">Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="checkbox"
+                      disabled={loading}
+                      checked={Boolean(field.value)}
+                      onChange={field.onChange}
+                      className="h-5 w-5"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="twoFactorAuth.methods.authenticatorApp"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-4">
+                  <FormLabel className="font-medium">
+                    Authenticator App
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="checkbox"
+                      disabled={loading}
+                      checked={Boolean(field.value)}
+                      onChange={field.onChange}
+                      className="h-5 w-5"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="mt-6 flex justify-end">
+            <Button disabled={loading} className="ml-auto" type="submit">
+              {action}
+            </Button>
+          </div>
         </form>
       </Form>
     </>

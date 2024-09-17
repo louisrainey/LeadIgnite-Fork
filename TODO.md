@@ -19,13 +19,15 @@ index.mjs:247 -->
 
 # ⁉️ optimize load speeds
 
-# 💪 Add New team modal , and employee permissions , invite by email with permissions
-
-# 💪 Kanban add state
-
 # 💪 Add up sale after sigining up for trial that promprs immediate upgrade
 
-# 💪 Add Check for multiple emails / ips to prevent trial misuse
+# 💾 Add Check for multiple emails / ips to prevent trial misuse
+
+# 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # 💪 ✅ Kanban add state -->
+
+<!-- # 💪 ✅ Add New team modal , and employee permissions , invite by email with permissions -->
 
 <!-- # 💪 ✅ Don’t redo skip traces on data you’ve already purchased (List Creation) -->
 
