@@ -1,10 +1,6 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# 🪳 Fix add lead list modal to remove row once slecte4d and also only show continue button once all rows except socials are matched
-
 # 🪳 Fix Leads Drawer Not laoding when i get to bottom
-
-# 🪳 Fix Multiple toasts showing when drawer is opened (Maybe multi renders)
 
 # 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
 
@@ -17,6 +13,8 @@
     handleFocusOut index.mjs:62
 index.mjs:247 -->
 
+# 🪳 Fix add lead list modal not showing errors or submitting
+
 # ⁉️ optimize load speeds
 
 # 💪 Add up sale after sigining up for trial that promprs immediate upgrade
@@ -24,6 +22,8 @@ index.mjs:247 -->
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # 🪳 ✅ Fix Multiple toasts showing when drawer is opened (Maybe multi renders) -->
 
 <!-- # 💪 ✅ Kanban add state -->
 
