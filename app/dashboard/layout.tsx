@@ -5,15 +5,11 @@ import { SecurityModal } from '@/components/reusables/modals/user/security';
 import { UpgradeModal } from '@/components/reusables/modals/user/upgrade';
 import AiUsageModal from '@/components/reusables/modals/user/usage';
 import { WebhookModal } from '@/components/reusables/modals/user/webhook';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  mockBillingHistory,
-  mockPaymentDetails
-} from '@/types/_faker/profile/userData';
-import { mockSubscriptions } from '@/types/_faker/profile/userSubscription';
+
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/sonner';
 import { InviteEmployeeModal } from '@/components/tables/employee-tables/utils/addEmployee';
+import { mockUserProfile } from '@/types/_faker/profile/userProfile';
 export const metadata: Metadata = {
   title:
     'Lead Ignite Dashboard | Real Estate Property Search & Market Analysis',
@@ -35,9 +31,9 @@ export default function DashboardLayout({
       </main>
       <AiUsageModal />
       <BillingModal
-        billingHistory={mockBillingHistory}
-        paymentDetails={mockPaymentDetails}
-        subscription={mockSubscriptions[0]}
+        billingHistory={mockUserProfile.billingHistory}
+        paymentDetails={mockUserProfile.paymentDetails}
+        subscription={mockUserProfile.subscription}
       />
       <InviteEmployeeModal />
       <SecurityModal />

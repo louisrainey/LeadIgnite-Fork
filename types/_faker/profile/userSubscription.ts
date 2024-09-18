@@ -6,7 +6,11 @@ export interface UserProfileSubscription {
   type: 'monthly' | 'yearly';
   status: 'active' | 'inactive';
   price: string; // Subscription price
-  aiCredits: number; // AI credits based on the plan
+  aiCredits: {
+    allotted: number; // Total AI credits allotted
+    used: number; // AI credits used
+    resetInDays: number; // Countdown for next credit reset in days
+  };
   leads: number; // Number of leads included in the plan
   skipTraces: number; // Number of skip traces included in the plan
   renewalDate: string; // Date of renewal
@@ -18,21 +22,33 @@ const planDetails = {
   earlyAdopter: {
     name: 'Early Adopter',
     price: '1200',
-    aiCredits: 1200,
+    aiCredits: {
+      allotted: 1200,
+      used: 200, // Example usage
+      resetInDays: 15 // Example reset countdown
+    },
     leads: 200,
     skipTraces: 50
   },
   basic: {
     name: 'Basic',
     price: '2400',
-    aiCredits: 2400,
+    aiCredits: {
+      allotted: 2400,
+      used: 500, // Example usage
+      resetInDays: 30 // Example reset countdown
+    },
     leads: 500,
     skipTraces: 100
   },
   enterprise: {
     name: 'Enterprise',
     price: '5000',
-    aiCredits: 5000,
+    aiCredits: {
+      allotted: 5000,
+      used: 1000, // Example usage
+      resetInDays: 7 // Example reset countdown
+    },
     leads: 1000,
     skipTraces: 300
   }

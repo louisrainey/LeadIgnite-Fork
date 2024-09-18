@@ -32,14 +32,17 @@ export const mockUserProfileStatic: UserProfile = {
     type: 'monthly',
     status: 'active',
     price: '$299',
-    aiCredits: 1000,
+    aiCredits: {
+      allotted: 1000, // Total AI credits allotted
+      used: 300, // AI credits used so far
+      resetInDays: 30 // Days until next credit reset
+    },
     leads: 500,
     skipTraces: 200,
     renewalDate: '2024-01-01',
     createdAt: '2023-01-01',
     planDetails: 'Includes AI and skip tracing services'
   },
-
   firstName: 'John',
   lastName: 'Doe',
   email: 'johndoe@example.com',
@@ -72,6 +75,7 @@ export const mockUserProfileStatic: UserProfile = {
 
   companyInfo: {
     companyName: 'Doe Real Estate',
+    webhook: 'https://mywebsite.com/webhook',
     companyLogo: 'logo.png', // Replace with appropriate image type or file
     GHLID: { locationId: 'business-123' }, // Mocked ID for sub-account
     campaigns: {

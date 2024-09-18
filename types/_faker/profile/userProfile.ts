@@ -19,23 +19,12 @@ import { APP_TESTING_MODE, mockGeneratedLeads } from '@/constants/data';
 import { mockKanbanState } from '../kanban';
 import { mockTeamMembers } from './team/members';
 import { mockTrackingData } from './team/tasks';
+import { mockSubscriptions } from './userSubscription';
 
 // Mocking a user profile with Faker.js
 export const mockUserProfile: UserProfile = {
   UniqueIdentifier: faker.string.uuid(), // Generates a UUID, // Generate unique ID
-  subscription: {
-    id: faker.string.uuid(),
-    name: 'Enterprise Plan', // Static, or you can randomize it
-    type: 'monthly', // Random between 'monthly' or 'yearly'
-    status: 'active', // Static or random between 'active'/'inactive'
-    price: `$${faker.number.float({ min: 100, max: 500 })}`, // Generate random price between $100 and $500 with 2 decimal places
-    aiCredits: faker.number.int({ min: 100, max: 1000 }), // Random AI credits
-    leads: faker.number.int({ min: 100, max: 1000 }), // Random number of leads
-    skipTraces: faker.number.int({ min: 0, max: 500 }), // Random skip traces
-    renewalDate: faker.date.future().toISOString(), // Generate future renewal date
-    createdAt: faker.date.past().toISOString(), // Generate past creation date
-    planDetails: 'Includes AI and skip tracing services' // Static, but can be randomized
-  },
+  subscription: mockSubscriptions[0],
   firstName: faker.person.firstName(),
   lastName: faker.person.lastName(),
   email: faker.internet.email(),
@@ -75,6 +64,7 @@ export const mockUserProfile: UserProfile = {
 
   companyInfo: {
     companyName: faker.company.name(),
+    webhook: faker.internet.url(),
     companyLogo: 'logo.png', // Static, can be a URL or file path
     GHLID: { locationId: faker.string.uuid() }, // Random location ID
     campaigns: {

@@ -116,6 +116,7 @@ export type CampaignAnalytics =
 // Company Info Type
 export interface CompanyInfo {
   companyName: string;
+  webhook?: string;
   companyLogo: File | String;
   GHLID: GetSubAccountPathParams;
   campaigns: CompanyCampaignsUserProfile;

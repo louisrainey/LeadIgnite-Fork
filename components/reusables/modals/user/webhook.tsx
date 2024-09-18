@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { ClipboardCopy, FileSearch } from 'lucide-react';
 import { useModalStore } from '@/lib/stores/dashboard';
 import { toast } from 'sonner';
+import { mockUserProfile } from '@/types/_faker/profile/userProfile';
 
 // Webhook entry interface
 interface WebhookEntry {
@@ -98,7 +99,9 @@ const Modal: React.FC<{
 
 export const WebhookModal: React.FC = () => {
   const { isWebhookModalOpen, closeWebhookModal } = useModalStore();
-  const [webhookUrl, setWebhookUrl] = useState('https://mywebsite.com/webhook');
+  const [webhookUrl, setWebhookUrl] = useState(
+    mockUserProfile.companyInfo.webhook
+  );
   const [webhookPayload] = useState(`{
   "phone": "0000000000",
   "email": "test@example.com",  
@@ -155,7 +158,7 @@ export const WebhookModal: React.FC = () => {
           <label className="block text-sm font-medium">Webhook URL</label>
           <Input
             type="url"
-            placeholder="https://mywebsite.com/webhook"
+            placeholder={mockUserProfile.companyInfo.webhook}
             value={webhookUrl}
             onChange={(e) => setWebhookUrl(e.target.value)}
             className="dark:bg-gray-800 dark:text-gray-200" // Dark mode styling

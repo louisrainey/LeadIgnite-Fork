@@ -1,40 +1,33 @@
 'use client';
 
 import { useModalStore } from '@/lib/stores/dashboard';
+import { mockUserProfile } from '@/types/_faker/profile/userProfile';
+import { UserProfileSubscription } from '@/types/_faker/profile/userSubscription';
 import React, { useState, useEffect } from 'react';
 
 interface UsageData {
-  subscriptionStatus: string;
-  creditsUsed: number;
-  totalCredits: number;
-  subscriptionPlan: string;
-  nextCreditReset: number; // in days
+  subscription: UserProfileSubscription;
 }
 
-// Mocked function to simulate fetching data from an API
-const fetchUsageData = async (): Promise<UsageData> => {
+// Simulate fetching real subscription data (replace with actual API call)
+const fetchSubscriptionData = async (): Promise<UserProfileSubscription> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({
-        subscriptionStatus: 'No Active Subscription',
-        creditsUsed: 0,
-        totalCredits: 1000,
-        subscriptionPlan: '-',
-        nextCreditReset: 0
-      });
+      resolve(mockUserProfile.subscription);
     }, 1000);
   });
 };
 
 const AiUsageModal: React.FC = () => {
   const { isUsageModalOpen, closeUsageModal } = useModalStore();
-  const [usageData, setUsageData] = useState<UsageData | null>(null);
+  const [subscriptionData, setSubscriptionData] =
+    useState<UserProfileSubscription | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getData = async () => {
-      const data = await fetchUsageData();
-      setUsageData(data);
+      const data = await fetchSubscriptionData(); // Replace with real API call
+      setSubscriptionData(data);
       setLoading(false);
     };
 
@@ -47,18 +40,23 @@ const AiUsageModal: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  if (!usageData) {
+  if (!subscriptionData) {
     return <div>Error loading data</div>;
   }
 
   const {
-    subscriptionStatus,
-    creditsUsed,
-    totalCredits,
-    subscriptionPlan,
-    nextCreditReset
-  } = usageData;
-  const usagePercentage = (creditsUsed / totalCredits) * 100 || 0;
+    name,
+    status,
+    aiCredits,
+    leads,
+    skipTraces,
+    price,
+    renewalDate,
+    planDetails
+  } = subscriptionData;
+
+  const { allotted, used, resetInDays } = aiCredits;
+  const usagePercentage = (used / allotted) * 100 || 0;
 
   return (
     <div
@@ -71,7 +69,7 @@ const AiUsageModal: React.FC = () => {
       >
         {/* Close Button */}
         <button
-          onClick={closeUsageModal} // Close the modal using Zustand store
+          onClick={closeUsageModal}
           className="absolute right-2 top-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <svg
@@ -90,16 +88,34 @@ const AiUsageModal: React.FC = () => {
           </svg>
         </button>
 
-        <div className="text-lg font-medium">
-          AI Calling Subscription
-          <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
-            {subscriptionStatus}
+        {/* Modal Content */}
+        <div className="text-center text-lg font-medium">
+          AI Subscription - {name} Plan
+          <span
+            className={`ml-2 text-sm ${
+              status === 'active' ? 'text-green-500' : 'text-red-500'
+            }`}
+          >
+            {status}
           </span>
         </div>
-        <button className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
-          Buy Now
-        </button>
 
+        {/* Center the price and renewal date */}
+        <div className="mt-4 text-center">
+          <div className="text-sm text-gray-500">Price: {price}</div>
+          <div className="text-sm text-gray-500">
+            Renewal Date: {new Date(renewalDate).toLocaleDateString()}
+          </div>
+        </div>
+
+        {/* Center the Buy Now button */}
+        <div className="mt-4 flex justify-center">
+          <button className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
+            Buy Now
+          </button>
+        </div>
+
+        {/* Usage Info */}
         <div className="mt-6 flex flex-col items-center rounded-lg border p-4 dark:border-gray-600">
           {/* Usage Circle */}
           <div className="relative h-32 w-32">
@@ -135,22 +151,31 @@ const AiUsageModal: React.FC = () => {
           {/* Usage Details */}
           <div className="mt-4 text-center">
             <div className="text-sm text-gray-500 dark:text-gray-400">
-              Subscribed to:
+              AI Credits Used:
             </div>
             <div className="text-lg font-medium text-gray-800 dark:text-gray-200">
-              {subscriptionPlan || '-'}
+              {used} / {allotted}
             </div>
+
             <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              Credits used:
+              Leads Included:
             </div>
             <div className="text-lg font-medium text-gray-800 dark:text-gray-200">
-              {creditsUsed} / {totalCredits}
+              {leads}
             </div>
+
             <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              Next credit reset in:
+              Skip Traces Included:
             </div>
             <div className="text-lg font-medium text-gray-800 dark:text-gray-200">
-              {nextCreditReset} day{nextCreditReset !== 1 ? 's' : ''}
+              {skipTraces}
+            </div>
+
+            <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              Next Credit Reset In:
+            </div>
+            <div className="text-lg font-medium text-gray-800 dark:text-gray-200">
+              {resetInDays} day{resetInDays !== 1 ? 's' : ''}
             </div>
           </div>
         </div>
