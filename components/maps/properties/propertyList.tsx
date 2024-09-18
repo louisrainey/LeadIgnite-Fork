@@ -17,7 +17,7 @@ interface PropertyListProps {
 }
 
 const MIN_DRAWER_HEIGHT = 100; // Set a minimum height for the drawer to prevent it from being closed completely.
-
+const cardLoadOptions = [12, 24, 48, 96]; // You can add more options if needed
 const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
   const {
     isDrawerOpen,
@@ -157,10 +157,11 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
                   onChange={handleMaxCardsChange}
                   className="rounded border px-2 py-1"
                 >
-                  <option value={3}>3</option>
-                  <option value={6}>6</option>
-                  <option value={9}>9</option>
-                  <option value={12}>12</option>
+                  {cardLoadOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
