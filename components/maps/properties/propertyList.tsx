@@ -1,15 +1,14 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { X, Loader2 } from 'lucide-react';
+import { X } from 'lucide-react';
 import PropertyCard from './propertyCard';
 import { PropertyDetails } from '@/types/_dashboard/maps';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { usePropertyStore } from '@/lib/stores/leadSearch/drawer'; // Zustand store import
-import { toast } from 'sonner';
 import SkipTraceDialog from './utils/createListModal';
 import { mockLeadListData } from '@/constants/dashboard/leadList';
 
@@ -20,7 +19,6 @@ interface PropertyListProps {
 const MIN_DRAWER_HEIGHT = 100; // Set a minimum height for the drawer to prevent it from being closed completely.
 
 const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
-  // Destructure Zustand store state and actions
   const {
     isDrawerOpen,
     setIsDrawerOpen,
@@ -34,45 +32,9 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
     loadMoreProperties
   } = usePropertyStore();
 
-  const loadMoreRef = useRef<HTMLDivElement | null>(null);
-  const hasShownToast = useRef(false); // Initialize the ref at the component level
-  // Handle infinite scrolling and loading more properties when the user reaches the bottom
-  useEffect(() => {
-    if (!hasMore) return;
+  // State to manage the max cards per load
+  const [maxCardsPerLoad, setMaxCardsPerLoad] = useState(6); // Default to 6 cards per load
 
-    const loadMoreObserver = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoading) {
-          loadMoreProperties(); // Trigger loading more properties from Zustand store
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (loadMoreRef.current) {
-      loadMoreObserver.observe(loadMoreRef.current);
-    }
-
-    return () => {
-      if (loadMoreRef.current) {
-        loadMoreObserver.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [hasMore, loadMoreProperties, isLoading]);
-  // Only show the toast when the drawer is opened
-
-  // useEffect(() => {
-  //   // Only show the toast when the drawer is opened and it hasn't been shown yet
-  //   if (isDrawerOpen && !hasShownToast.current) {
-  //     toast('Drawer Opened');
-  //     hasShownToast.current = true; // Mark that the toast has been shown
-  //   }
-
-  //   // Reset the flag when the drawer is closed
-  //   if (!isDrawerOpen) {
-  //     hasShownToast.current = false;
-  //   }
-  // }, [isDrawerOpen]);
   // Start resizing the drawer
   const startResizing = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -94,6 +56,13 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
     window.removeEventListener('mouseup', stopResizing);
   };
 
+  // Handle dropdown change for max cards per load
+  const handleMaxCardsChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setMaxCardsPerLoad(parseInt(event.target.value));
+  };
+
   // Don't render anything if there are not enough properties
   if (properties.length <= 1) {
     return null;
@@ -108,7 +77,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
           {/* Drawer header and resize bar */}
           <div
             className="flex cursor-ns-resize items-center justify-between bg-secondary p-4"
-            onMouseDown={startResizing} // Corrected event handler
+            onMouseDown={startResizing}
           >
             <h2 className="text-lg font-semibold">
               {properties.length} Properties Fetched
@@ -158,17 +127,41 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
                 </div>
               </div>
 
+              {/* Property List */}
               <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                 {visibleProperties.map((property, index) => (
                   <div key={index} className="p-4">
                     <PropertyCard property={property} />
                   </div>
                 ))}
-                {hasMore && (
-                  <div ref={loadMoreRef} className="flex justify-center p-4">
-                    <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-                  </div>
-                )}
+              </div>
+
+              {/* Load More Button */}
+              <div className="flex justify-center py-4">
+                <Button
+                  onClick={() => loadMoreProperties(maxCardsPerLoad)} // Pass the selected maxCardsPerLoad value
+                  disabled={!hasMore || isLoading} // Disable when loading or no more properties
+                >
+                  {isLoading ? 'Loading...' : 'Load More Properties'}
+                </Button>
+              </div>
+
+              {/* Dropdown for Max Cards per Load */}
+              <div className="flex justify-center py-4">
+                <label htmlFor="maxCardsDropdown" className="mr-2">
+                  Max Cards per Load:
+                </label>
+                <select
+                  id="maxCardsDropdown"
+                  value={maxCardsPerLoad}
+                  onChange={handleMaxCardsChange}
+                  className="rounded border px-2 py-1"
+                >
+                  <option value={3}>3</option>
+                  <option value={6}>6</option>
+                  <option value={9}>9</option>
+                  <option value={12}>12</option>
+                </select>
               </div>
             </div>
           </CardContent>
