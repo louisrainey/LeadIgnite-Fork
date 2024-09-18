@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { Task, useTaskStore } from '@/lib/stores/taskActions';
+import { KanbanTask, useTaskStore } from '@/lib/stores/taskActions';
 import { hasDraggableData } from '@/lib/utils/kanban/utils';
 import {
   Announcements,
@@ -37,7 +37,7 @@ const defaultCols = [
     id: 'DONE' as const,
     title: 'Done'
   }
-] satisfies KanbanColumn[];
+] satisfies (KanbanColumn | null)[];
 
 export type ColumnId = (typeof defaultCols)[number]['id'];
 
@@ -51,7 +51,7 @@ export function KanbanBoard() {
 
   const [activeColumn, setActiveColumn] = useState<KanbanColumn | null>(null);
   const [isMounted, setIsMounted] = useState<boolean>(false);
-  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [activeTask, setActiveTask] = useState<KanbanTask | null>(null);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
@@ -75,6 +75,7 @@ export function KanbanBoard() {
   const announcements: Announcements = {
     onDragStart({ active }) {
       if (!hasDraggableData(active)) return;
+
       if (active.data.current?.type === 'Column') {
         const startColumnIdx = columnsId.findIndex((id) => id === active.id);
         const startColumn = columns[startColumnIdx];
@@ -83,10 +84,15 @@ export function KanbanBoard() {
         } of ${columnsId.length}`;
       } else if (active.data.current?.type === 'Task') {
         pickedUpTaskColumn.current = active.data.current.task.status;
+
+        // Check if pickedUpTaskColumn.current is null and provide a fallback value
+        const currentColumnId = pickedUpTaskColumn.current ?? 'TODO'; // Fallback to "TODO" if null
+
         const { tasksInColumn, taskPosition, column } = getDraggingTaskData(
           active.id,
-          pickedUpTaskColumn.current
+          currentColumnId
         );
+
         return `Picked up Task ${active.data.current.task.title} at position: ${
           taskPosition + 1
         } of ${tasksInColumn.length} in column ${column?.title}`;
