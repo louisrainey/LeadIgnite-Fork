@@ -1,7 +1,5 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# 🪳 Fix Leads Drawer Not laoding when i get to bottom
-
 # 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
 
 <!-- Uncaught InternalError: too much recursion
@@ -17,11 +15,13 @@ index.mjs:247 -->
 
 # ⁉️ optimize load speeds
 
-# 💪 Add up sale after sigining up for trial that promprs immediate upgrade
+# 💪 Add up sale after sigining up for trial that promprs immediate upgrade | Fix Upgrade modal
 
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # 🪳 ✅  Fix Leads Drawer Not laoding when i get to bottom -->
 
 <!-- # 🪳 ✅ Fix Multiple toasts showing when drawer is opened (Maybe multi renders) -->
 
