@@ -2,6 +2,8 @@
 
 # 🪳 Fix add lead list modal not showing errors or submitting
 
+# Update variables to be pulled from user profile [Credits remaing, Modals (Usage , Billing, Security,Webhooks, Team Members, Kanban,Mock Leads,Mock Lead List)]
+
 # ⁉️ optimize load speeds
 
 # 💪 Add up sale after sigining up for trial that promprs immediate upgrade | Fix Upgrade modal

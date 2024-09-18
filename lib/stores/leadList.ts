@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { LeadList, mockLeadListData } from '@/constants/dashboard/leadList'; // Assuming you have mock lead lists data
+import { LeadList } from '@/constants/dashboard/leadList'; // Assuming you have mock lead lists data
 import { exportLeadListsToZip } from '../utils/files/loopDownloadTableData';
 import { toast } from 'sonner';
-
+import { MockUserProfile } from '@/types/_faker/profile/userProfile';
 // Define the state and actions for managing lead lists
 interface LeadListState {
   leadLists: LeadList[]; // Holds the lead list data
@@ -17,8 +17,8 @@ interface LeadListState {
 
 // Create Zustand store for lead list management
 export const useLeadListStore = create<LeadListState>((set, get) => ({
-  leadLists: mockLeadListData, // Initialize with an empty array of lead lists
-  filteredLeadLists: mockLeadListData, // Start with no filter applied, showing all lead lists
+  leadLists: MockUserProfile.companyInfo.leadLists, // Initialize with an empty array of lead lists
+  filteredLeadLists: MockUserProfile.companyInfo.leadLists, // Start with no filter applied, showing all lead lists
 
   // Filter lead lists by records range
   filterByRecordsRange: (range) => {

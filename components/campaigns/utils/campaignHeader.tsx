@@ -12,8 +12,11 @@ import {
 import { EmailCampaign } from '@/types/goHighLevel/email';
 import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
 
-import { MockUserProfile } from '@/types/_faker/profile/userProfile';
-const creditsRemaining = 500;
+import {
+  mockUserProfile,
+  MockUserProfile
+} from '@/types/_faker/profile/userProfile';
+const creditsRemaining = mockUserProfile.subscription.aiCredits;
 
 const CampaignHeader: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0); // Track the currently animated card

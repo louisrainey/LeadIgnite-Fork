@@ -3,7 +3,6 @@ import React, { useState, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { LeadStatus } from '@/constants/data';
 import { Plus, Filter, Calendar, ChevronDown, Download } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { leadListColumns } from './columns';
@@ -15,6 +14,7 @@ import FilterDropdown from './utils/filterLeads';
 import { LeadDataTable } from './lead-data-table';
 import { useLeadStore } from '@/lib/stores/lead';
 import { formatISO, startOfToday, endOfToday } from 'date-fns'; // Ensure you import these utilities
+import { LeadStatus } from '@/types/_dashboard/leads';
 
 export const LeadClient: React.FC = () => {
   const router = useRouter();

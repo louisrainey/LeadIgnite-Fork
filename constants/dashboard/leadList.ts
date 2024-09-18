@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
 import {
   APP_TESTING_MODE,
-  LeadTypeGlobal,
   generateMockLeads,
   staticMockLeadData
 } from '../data';
+import { LeadTypeGlobal } from '@/types/_dashboard/leads';
 
 export type LeadList = {
   id: number; // Unique identifier for the lead list

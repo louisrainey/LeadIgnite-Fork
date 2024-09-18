@@ -6,6 +6,7 @@ import {
 } from '@/types/_faker/profile/userData';
 import { mockKanbanState } from '@/types/_faker/kanban';
 import { TaskTracking } from '@/lib/stores/taskActions';
+import { mockGeneratedLeads } from '../data';
 
 // Mocking a user profile with Faker.js
 const taskTracking: TaskTracking = {
@@ -81,6 +82,7 @@ export const mockUserProfileStatic: UserProfile = {
     },
     tasks: mockKanbanState,
     forwardingNumber: '+1234567890',
+    leads: mockGeneratedLeads,
     leadLists: mockLeadListData,
     campaignAnalytics: []
   },

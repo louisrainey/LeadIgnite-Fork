@@ -2,11 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { LeadTypeGlobal } from '@/constants/data'; // Assuming 'Lead' contains contact details
-import { CellAction } from './cell-action'; // Assuming CellAction is used for row actions
 import { Calendar, MessageCircle } from 'lucide-react';
-import { useState } from 'react';
 import { exportLeadsTableDataToExcel } from '@/lib/utils/files/downloadTableData';
+import { LeadTypeGlobal } from '@/types/_dashboard/leads';
 
 // Assuming the Lead type matches the lead/contact structure
 
