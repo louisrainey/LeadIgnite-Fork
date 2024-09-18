@@ -1,4 +1,4 @@
-import { Task } from '@/lib/stores/taskActions';
+import { KanbanTask } from '@/lib/stores/taskActions';
 import { useDndContext, type UniqueIdentifier } from '@dnd-kit/core';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -25,7 +25,7 @@ export interface ColumnDragData {
 
 interface BoardColumnProps {
   column: KanbanColumn;
-  tasks: Task[];
+  tasks: KanbanTask[];
   isOverlay?: boolean;
 }
 
