@@ -5,7 +5,7 @@ import { KanbanColumn } from '@/components/kanban/board-column';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { mockUserProfile } from '@/types/_faker/profile/userProfile';
 
-export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE';
+export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE' | null;
 
 const defaultCols = [
   {
