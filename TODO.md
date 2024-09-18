@@ -1,16 +1,5 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# 🪳 Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine
-
-<!-- Uncaught InternalError: too much recursion
-    $d3863c46a17e8a28$var$focus index.mjs:247
-    handleFocusOut index.mjs:62
-    $d3863c46a17e8a28$var$focus index.mjs:250
-    handleFocusIn index.mjs:44
-    $d3863c46a17e8a28$var$focus index.mjs:247
-    handleFocusOut index.mjs:62
-index.mjs:247 -->
-
 # 🪳 Fix add lead list modal not showing errors or submitting
 
 # ⁉️ optimize load speeds
@@ -20,6 +9,17 @@ index.mjs:247 -->
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # 🪳 ✅ Need to fix modals opening and autofocusing, unable to click app behind once closed, Usage one is working fine | Caused  sahd ui dialog
+
+<!-- Uncaught InternalError: too much recursion
+    $d3863c46a17e8a28$var$focus index.mjs:247
+    handleFocusOut index.mjs:62
+    $d3863c46a17e8a28$var$focus index.mjs:250
+    handleFocusIn index.mjs:44
+    $d3863c46a17e8a28$var$focus index.mjs:247
+    handleFocusOut index.mjs:62
+index.mjs:247 --> -->
 
 <!-- # 🪳 ✅  Fix Leads Drawer Not laoding when i get to bottom -->
 
