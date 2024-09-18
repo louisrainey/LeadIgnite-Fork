@@ -10,9 +10,10 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { useModalStore } from '@/lib/stores/dashboard';
 import { UserProfileSubscription } from '@/types/_faker/profile/userSubscription';
-import { PhoneCall, UserCheck, TrendingUp } from 'lucide-react';
+import { PhoneCall, UserCheck, TrendingUp, ArrowUpCircle } from 'lucide-react';
 
 // 1. UpgradeButton Component (handles the button logic)
+
 interface UpgradeButtonProps {
   currentMembership: UserProfileSubscription;
 }
@@ -26,23 +27,13 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
     return (
       <Button
         onClick={openUpgradeModal}
-        className="inline-flex items-center rounded-full border bg-white text-gray-700 hover:bg-gray-100"
+        className="inline-flex items-center rounded-full border 
+                bg-white text-gray-700 transition-colors 
+                duration-300 hover:bg-gray-100 dark:bg-gray-800 
+                dark:text-gray-200 dark:hover:bg-gray-700"
       >
-        <span className="pr-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="h-5 w-5 text-yellow-500"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M13 16h-1v-4h-1m1-4h.01M12 18.5a5.5 5.5 0 100-11 5.5 5.5 0 000 11z"
-            />
-          </svg>
+        <span className="animate-jump pr-2">
+          <ArrowUpCircle className="h-5 w-5 text-yellow-500 dark:text-yellow-300" />
         </span>
         Upgrade now
       </Button>
