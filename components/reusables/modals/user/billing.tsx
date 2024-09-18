@@ -122,7 +122,7 @@ const ManageSubscriptionModal: React.FC<ManageSubscriptionModalProps> = ({
                 Price: ${subscription.price} / {subscriptionType}
               </p>
               <p className="text-sm text-muted-foreground dark:text-gray-400">
-                AI Credits: {subscription.aiCredits}
+                AI Credits: {subscription.aiCredits.allotted}
               </p>
               <p className="text-sm text-muted-foreground dark:text-gray-400">
                 Leads: {subscription.leads}

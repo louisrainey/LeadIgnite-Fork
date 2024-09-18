@@ -16,7 +16,9 @@ import {
   mockUserProfile,
   MockUserProfile
 } from '@/types/_faker/profile/userProfile';
-const creditsRemaining = mockUserProfile.subscription.aiCredits;
+const creditsRemaining =
+  mockUserProfile.subscription.aiCredits.allotted -
+  mockUserProfile.subscription.aiCredits.used;
 
 const CampaignHeader: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0); // Track the currently animated card

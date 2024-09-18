@@ -2,7 +2,7 @@
 
 # 🪳 Fix add lead list modal not showing errors or submitting
 
-# Update variables to be pulled from user profile [Credits remaing, Modals (Usage , Billing, Security,Webhooks, Team Members, Kanban,Mock Leads,Mock Lead List)]
+# Update variables to be pulled from user profile [✅Credits remaing, Modals (Usage , Billing, Security,Webhooks, Team Members, Kanban,Mock Leads,Mock Lead List)]
 
 # ⁉️ optimize load speeds
 
