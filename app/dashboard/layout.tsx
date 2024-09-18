@@ -37,7 +37,7 @@ export default function DashboardLayout({
       />
       <InviteEmployeeModal />
       <SecurityModal />
-      <UpgradeModal />
+      <UpgradeModal trial={true} />
       <WebhookModal />
       <Toaster />
     </div>

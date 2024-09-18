@@ -8,11 +8,32 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { SubscriptionFeatures } from '@/constants/dashboard/featureList';
 import { useModalStore } from '@/lib/stores/dashboard';
 import { UserProfileSubscription } from '@/types/_faker/profile/userSubscription';
 import { PhoneCall, UserCheck, TrendingUp, ArrowUpCircle } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 // 1. UpgradeButton Component (handles the button logic)
+
+const FeatureList = () => {
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {SubscriptionFeatures.map((feature, index) => (
+        <div key={index}>
+          <div className="mb-2 flex items-center">
+            <span className="mr-2 text-blue-500">
+              <feature.icon className="h-5 w-5" />
+            </span>
+            <h4 className="font-medium">{feature.title}</h4>
+          </div>
+          <p className="text-sm text-muted-foreground">{feature.subtitle}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 interface UpgradeButtonProps {
   currentMembership: UserProfileSubscription;
@@ -41,9 +62,12 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
   }
   return null;
 };
+interface UpgradeModalProps {
+  trial: boolean; // Add trial as a prop
+}
 
 // 2. UpgradeModal Component (handles the modal logic)
-export const UpgradeModal: React.FC = () => {
+export const UpgradeModal: React.FC<UpgradeModalProps> = ({ trial }) => {
   const { isUpgradeModalOpen, closeUpgradeModal } = useModalStore();
 
   // Array of features for dynamic listing
@@ -58,6 +82,8 @@ export const UpgradeModal: React.FC = () => {
 
   // Stripe Payment link
   const stripePaymentLink = 'https://buy.stripe.com/test_123456789';
+
+  // Function to navigate to dashboard
 
   return (
     <Dialog open={isUpgradeModalOpen} onOpenChange={closeUpgradeModal}>
@@ -76,56 +102,8 @@ export const UpgradeModal: React.FC = () => {
             Welcome to the future. Let’s upgrade your business.
           </p>
           <Separator className="my-4" />
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <div className="mb-2 flex items-center">
-                <span className="mr-2 text-blue-500">
-                  <PhoneCall className="h-5 w-5" />
-                </span>
-                <h4 className="font-medium">
-                  Calling powered by artificial intelligence.
-                </h4>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Our AI technology allows for natural phrasing and dynamic
-                engagements using human-like voice models. Advanced calling
-                algorithms ensure optimal results and quality leads.
-              </p>
-            </div>
-
-            <div>
-              <div className="mb-2 flex items-center">
-                <span className="mr-2 text-blue-500">
-                  <UserCheck className="h-5 w-5" />
-                </span>
-                <h4 className="font-medium">Human vs OttoLeads.</h4>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                It takes a human on a dialer 3 years to do what OttoLeads can do
-                in one day. Let us do the heavy lifting while you focus on
-                closing deals.
-              </p>
-            </div>
-          </div>
-
-          <div>
-            <div className="mb-2 flex items-center">
-              <span className="mr-2 text-blue-500">
-                <TrendingUp className="h-5 w-5" />
-              </span>
-              <h4 className="font-medium">
-                Scale rapidly and dominate your market.
-              </h4>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Scaling your business used to take years; with OttoLeads, you can
-              scale in months.
-            </p>
-          </div>
-
+          <FeatureList />
           <Separator className="my-4" />
-
           {/* Pricing Details */}
           <div className="flex items-center justify-between">
             <div>
@@ -153,6 +131,19 @@ export const UpgradeModal: React.FC = () => {
               </Button>
             </div>
           </div>
+          {/* Optional Continue to Dashboard if trial is true */}
+          import Link from 'next/link';
+          {trial && (
+            <div className="mt-6 flex justify-center">
+              <Link
+                href="/dashboard"
+                passHref
+                className="text-blue-600 transition-colors duration-300 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              >
+                Continue to Dashboard
+              </Link>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
