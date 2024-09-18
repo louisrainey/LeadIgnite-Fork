@@ -15,7 +15,7 @@ import { EmailCampaignAnalytics } from '@/types/goHighLevel/email';
 import { TextMessageCampaignAnalytics } from '@/types/goHighLevel/text';
 import { CallCampaignAnalytics } from '@/types/vapiAi/api/calls/get';
 import { mockLeadListData } from '@/constants/dashboard/leadList';
-import { APP_TESTING_MODE } from '@/constants/data';
+import { APP_TESTING_MODE, mockGeneratedLeads } from '@/constants/data';
 import { mockKanbanState } from '../kanban';
 import { mockTeamMembers } from './team/members';
 import { mockTrackingData } from './team/tasks';
@@ -94,6 +94,7 @@ export const mockUserProfile: UserProfile = {
       | CallCampaignAnalytics
       | TextMessageCampaignAnalytics
     )[],
+    leads: mockGeneratedLeads,
     leadLists: mockLeadListData // Assuming lead lists are generated or static
   },
 

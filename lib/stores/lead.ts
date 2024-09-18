@@ -1,7 +1,8 @@
 import { create } from 'zustand';
-import { LeadTypeGlobal, mockGeneratedLeads } from '@/constants/data'; // Assuming you have mock leads data
 import { exportLeadsToExcel } from '../utils/files/loopDownloadTableData';
 import { toast } from 'sonner';
+import { LeadTypeGlobal } from '@/types/_dashboard/leads';
+import { MockUserProfile } from '@/types/_faker/profile/userProfile';
 
 // Define the state and actions for managing leads
 interface LeadState {
@@ -19,8 +20,8 @@ interface LeadState {
 
 // Create Zustand store for lead management
 export const useLeadStore = create<LeadState>((set, get) => ({
-  leads: mockGeneratedLeads, // Initial leads data
-  filteredLeads: mockGeneratedLeads, // Start with no filter applied, showing all leads
+  leads: MockUserProfile.companyInfo.leads, // Initial leads data
+  filteredLeads: MockUserProfile.companyInfo.leads, // Start with no filter applied, showing all leads
 
   // Filter leads by status (New Lead, Contacted, Closed, Lost)
   filterByStatus: (status) => {

@@ -1,7 +1,6 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import PageContainer from '@/components/layout/page-container';
 import { LeadClient } from '@/components/tables/lead-tables/client';
-import { mockGeneratedLeads } from '@/constants/data';
 
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },

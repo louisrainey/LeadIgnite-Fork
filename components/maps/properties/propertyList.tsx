@@ -10,8 +10,7 @@ import { PropertyDetails } from '@/types/_dashboard/maps';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { usePropertyStore } from '@/lib/stores/leadSearch/drawer'; // Zustand store import
 import SkipTraceDialog from './utils/createListModal';
-import { mockLeadListData } from '@/constants/dashboard/leadList';
-
+import { MockUserProfile } from '@/types/_faker/profile/userProfile';
 interface PropertyListProps {
   properties: PropertyDetails[];
 }
@@ -119,7 +118,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
                 <div className="flex justify-center">
                   <SkipTraceDialog
                     properties={properties}
-                    availableListNames={mockLeadListData.map(
+                    availableListNames={MockUserProfile.companyInfo.leadLists.map(
                       (list) => list.listName
                     )} // Extract and pass available list names
                     costPerRecord={0.1} // Example cost per record, you can change as needed

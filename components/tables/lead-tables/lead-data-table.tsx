@@ -27,7 +27,8 @@ import {
   ChevronRightIcon
 } from 'lucide-react';
 import ActivitySidebar from '../../reusables/sidebars/activity';
-import { LeadTypeGlobal, mockGeneratedLeads } from '@/constants/data'; // Make sure Lead is the correct type
+import { mockGeneratedLeads } from '@/constants/data'; // Make sure Lead is the correct type
+import { LeadTypeGlobal } from '@/types/_dashboard/leads';
 
 // Status options for the dropdown
 const statusOptions = [

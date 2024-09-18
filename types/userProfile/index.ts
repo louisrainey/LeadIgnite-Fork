@@ -24,6 +24,7 @@ import {
   TaskActivity,
   TaskTracking
 } from '@/lib/stores/taskActions';
+import { LeadTypeGlobal } from '../_dashboard/leads';
 
 export interface LeadPreferences {
   preferredLocation: string[]; // Array of preferred locations
@@ -120,6 +121,7 @@ export interface CompanyInfo {
   campaigns: CompanyCampaignsUserProfile;
   forwardingNumber: string;
   campaignAnalytics: CampaignAnalytics[]; // Array of analytics for user's campaigns
+  leads: LeadTypeGlobal[];
   leadLists: LeadList[]; // Array of lead lists
   tasks: KanbanState;
 }
