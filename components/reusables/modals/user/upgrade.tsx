@@ -10,6 +10,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { useModalStore } from '@/lib/stores/dashboard';
 import { UserProfileSubscription } from '@/types/_faker/profile/userSubscription';
+import { PhoneCall, UserCheck, TrendingUp } from 'lucide-react';
 
 // 1. UpgradeButton Component (handles the button logic)
 interface UpgradeButtonProps {
@@ -21,7 +22,6 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
 }) => {
   const { openUpgradeModal } = useModalStore();
 
-  // Render "Upgrade now" button if currentMembership is 'basic'
   if (currentMembership.name === 'Basic') {
     return (
       <Button
@@ -48,14 +48,25 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
       </Button>
     );
   }
-
-  // If the user is already upgraded, return null (no button is displayed)
   return null;
 };
 
 // 2. UpgradeModal Component (handles the modal logic)
 export const UpgradeModal: React.FC = () => {
   const { isUpgradeModalOpen, closeUpgradeModal } = useModalStore();
+
+  // Array of features for dynamic listing
+  const features = [
+    '✔ 3 call attempts per number',
+    '✔ 2,400 calls per minute',
+    '✔ Intelligent conversations',
+    '✔ Smart lead summary',
+    '✔ Detailed KPIs & stats',
+    '✔ Rapid campaign delivery'
+  ];
+
+  // Stripe Payment link
+  const stripePaymentLink = 'https://buy.stripe.com/test_123456789';
 
   return (
     <Dialog open={isUpgradeModalOpen} onOpenChange={closeUpgradeModal}>
@@ -79,14 +90,7 @@ export const UpgradeModal: React.FC = () => {
             <div>
               <div className="mb-2 flex items-center">
                 <span className="mr-2 text-blue-500">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-5 w-5"
-                  >
-                    <path d="M12 0c-.737 0-1.474.139-2.178.414-3.114 1.22-5.304 4.408-5.938 7.533-.252 1.186-.263 2.388-.052 3.574l.002.009c.03.152.072.299.113.449l.019.063c.141.489.26.933.406 1.374 1.403 4.125 5.447 6.615 9.682 6.615h.002c1.764 0 3.492-.428 5.016-1.242 1.488-.788 2.758-1.975 3.692-3.397 2.151-3.237 2.151-7.785 0-11.023C18.486 1.815 15.325-.005 12 .005z" />
-                  </svg>
+                  <PhoneCall className="h-5 w-5" />
                 </span>
                 <h4 className="font-medium">
                   Calling powered by artificial intelligence.
@@ -102,35 +106,61 @@ export const UpgradeModal: React.FC = () => {
             <div>
               <div className="mb-2 flex items-center">
                 <span className="mr-2 text-blue-500">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-5 w-5"
-                  >
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v10c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-10c0-2.761-2.239-5-5-5z" />
-                  </svg>
+                  <UserCheck className="h-5 w-5" />
                 </span>
-                <h4 className="font-medium">Human vs AI Leads.</h4>
+                <h4 className="font-medium">Human vs OttoLeads.</h4>
               </div>
               <p className="text-sm text-muted-foreground">
-                OttoLeads AI can do in one day what takes humans 3 years of
-                dialing. Focus on closing deals and let us handle the heavy
-                lifting.
+                It takes a human on a dialer 3 years to do what OttoLeads can do
+                in one day. Let us do the heavy lifting while you focus on
+                closing deals.
               </p>
             </div>
+          </div>
+
+          <div>
+            <div className="mb-2 flex items-center">
+              <span className="mr-2 text-blue-500">
+                <TrendingUp className="h-5 w-5" />
+              </span>
+              <h4 className="font-medium">
+                Scale rapidly and dominate your market.
+              </h4>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Scaling your business used to take years; with OttoLeads, you can
+              scale in months.
+            </p>
           </div>
 
           <Separator className="my-4" />
 
           {/* Pricing Details */}
           <div className="flex items-center justify-between">
-            <h4 className="text-xl font-semibold">
-              AI Calling - $2595 / month
-            </h4>
-            <Button className="bg-blue-600 text-white">
-              Confirm subscription and pay now
-            </Button>
+            <div>
+              <p className="text-sm">CREDITS / month</p>
+              <p className="text-sm text-muted-foreground">
+                1 credit = 1 property record
+              </p>
+              {/* Dynamic list rendering */}
+              <ul className="mt-2 space-y-1 text-sm">
+                {features.map((feature, index) => (
+                  <li key={index}>{feature}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-xl font-semibold">$1795 / month</h4>
+              <p className="text-sm text-muted-foreground">
+                $1,795.00 / month after
+              </p>
+              <Button
+                className="mt-4 bg-blue-600 text-white"
+                onClick={() => window.open(stripePaymentLink, '_blank')}
+              >
+                Confirm subscription and pay now
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
