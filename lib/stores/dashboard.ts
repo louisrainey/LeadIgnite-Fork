@@ -26,6 +26,10 @@ interface ModalState {
   isUpgradeModalOpen: boolean;
   openUpgradeModal: () => void;
   closeUpgradeModal: () => void;
+
+  isEmployeeModalOpen: boolean;
+  openEmployeeModal: () => void;
+  closeEmployeeModal: () => void;
 }
 
 export const useModalStore = create<ModalState>((set) => ({
@@ -53,7 +57,11 @@ export const useModalStore = create<ModalState>((set) => ({
 
   isUpgradeModalOpen: false,
   openUpgradeModal: () => set({ isUpgradeModalOpen: true }),
-  closeUpgradeModal: () => set({ isUpgradeModalOpen: false })
+  closeUpgradeModal: () => set({ isUpgradeModalOpen: false }),
+
+  isEmployeeModalOpen: false,
+  openEmployeeModal: () => set({ isEmployeeModalOpen: true }),
+  closeEmployeeModal: () => set({ isEmployeeModalOpen: false })
 }));
 
 // stores/useSecurityStore.ts

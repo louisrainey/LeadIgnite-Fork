@@ -21,7 +21,8 @@ export function UserNav() {
     openUsageModal,
     openBillingModal,
     openSecurityModal,
-    openWebhookModal
+    openWebhookModal,
+    openEmployeeModal
   } = useModalStore(); // Zustand hook to open the modal
 
   if (session) {
@@ -87,8 +88,11 @@ export function UserNav() {
               Webhooks
               <DropdownMenuShortcut>⌘W</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              New Team
+            <DropdownMenuItem
+              onClick={openEmployeeModal}
+              className="cursor-pointer"
+            >
+              Add Team Member
               <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
