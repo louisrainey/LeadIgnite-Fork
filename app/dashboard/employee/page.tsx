@@ -7,7 +7,7 @@ import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Employee } from '@/constants/data';
 import { cn } from '@/lib/utils/kanban/utils';
-import { mockTeamMembers } from '@/types/_faker/profile/team/members';
+import { mockUserProfile } from '@/types/_faker/profile/userProfile';
 import { TeamMember } from '@/types/userProfile';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -36,7 +36,7 @@ export default async function page({ searchParams }: paramsProps) {
   const employeeRes = await res.json();
   const totalUsers = employeeRes.total_users; //1000
   const pageCount = Math.ceil(totalUsers / pageLimit);
-  const employee: TeamMember[] = mockTeamMembers;
+  const employee: TeamMember[] = mockUserProfile.teamMembers;
   return (
     <PageContainer>
       <div className="space-y-4">
