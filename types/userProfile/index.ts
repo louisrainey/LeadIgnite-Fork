@@ -1,29 +1,16 @@
 import { LeadList } from '@/constants/dashboard/leadList';
-import {
-  Business,
-  GetSubAccountPathParams
-} from '@/types/goHighLevel/subAccounts';
+import { GetSubAccountPathParams } from '@/types/goHighLevel/subAccounts';
 import { UniqueIdentifier } from '@dnd-kit/core';
-import {
-  TextCampaign,
-  SocialMediaCampaign,
-  CallCampaign
-} from '../_dashboard/campaign';
+import { SocialMediaCampaign, CallCampaign } from '../_dashboard/campaign';
 import { BillingHistoryItem, PaymentDetails } from '../_faker/profile/userData';
 import { UserProfileSubscription } from '../_faker/profile/userSubscription';
 import { EmailCampaign, EmailCampaignAnalytics } from '../goHighLevel/email';
-import { GetSquadResponse } from '../vapiAi/api/squad/get';
 import {
   GHLTextMessageCampaign,
   TextMessageCampaignAnalytics
 } from '../goHighLevel/text';
 import { CallCampaignAnalytics } from '../vapiAi/api/calls/get';
-import {
-  KanbanState,
-  Task,
-  TaskActivity,
-  TaskTracking
-} from '@/lib/stores/taskActions';
+import { KanbanState, TaskTracking } from '@/lib/stores/taskActions';
 import { LeadTypeGlobal } from '../_dashboard/leads';
 
 export interface LeadPreferences {
@@ -124,7 +111,7 @@ export interface CompanyInfo {
   campaignAnalytics: CampaignAnalytics[]; // Array of analytics for user's campaigns
   leads: LeadTypeGlobal[];
   leadLists: LeadList[]; // Array of lead lists
-  tasks: KanbanState;
+  KanbanTasks: KanbanState;
 }
 
 // AI Knowledgebase Type

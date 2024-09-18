@@ -1,5 +1,11 @@
 import { KanbanColumn } from '@/components/kanban/board-column';
-import { KanbanState, Status, Task } from '@/lib/stores/taskActions';
+import {
+  KanbanState,
+  Status,
+  KanbanTask,
+  Priority,
+  TaskActivity
+} from '@/lib/stores/taskActions';
 import { faker } from '@faker-js/faker';
 import { APP_TESTING_MODE } from '../../../constants/data';
 
@@ -19,21 +25,78 @@ const defaultCols: KanbanColumn[] = [
   }
 ];
 
+// Generate random task activities
+const generateTaskActivity = (): TaskActivity => {
+  const actions: TaskActivity['action'][] = ['created', 'updated', 'deleted'];
+  const action = faker.helpers.arrayElement(actions); // Random action (created, updated, or deleted)
+  const timestamp = faker.date.recent(); // Random recent timestamp
+  const performedBy = faker.name.fullName(); // Random person performing the action
+
+  return {
+    action,
+    timestamp,
+    performedBy
+  };
+};
+
+const generateMockTasksWithTracking = (
+  count: number
+): { tasks: KanbanTask[]; taskActivities: TaskActivity[] } => {
+  const statuses: KanbanTask['status'][] = ['TODO', 'IN_PROGRESS', 'DONE'];
+  const teamMembers = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Lee'];
+  const tasks: KanbanTask[] = [];
+  const taskActivities: TaskActivity[] = [];
+
+  // Create tasks and log activities
+  for (let i = 0; i < count; i++) {
+    const status = faker.helpers.arrayElement(statuses); // Random status
+    const assignedToTeamMember = faker.helpers.arrayElement(teamMembers); // Random team member
+
+    const task: KanbanTask = {
+      id: faker.string.uuid(),
+      title: faker.company.catchPhrase(),
+      description: faker.lorem.sentences(2),
+      status,
+      priority: faker.helpers.arrayElement(['low', 'medium', 'high', 'urgent']), // Random priority
+      dueDate: faker.date.future().toISOString().split('T')[0], // Due date in YYYY-MM-DD format
+      assignedToTeamMember,
+      activityLog: [] // Ensure this is always initialized
+    };
+
+    // Track the creation of the task in the activity log
+    const activity = generateTaskActivity();
+    task.activityLog && task.activityLog.push(activity); // Safely push to activityLog
+
+    tasks.push(task);
+    taskActivities.push(activity);
+  }
+
+  return { tasks, taskActivities };
+};
+
 // Faker utility to generate mock tasks
-export const generateMockTasks = (count: number): Task[] => {
+
+export const generateMockTasks = (count: number): KanbanTask[] => {
   const statuses: Status[] = ['TODO', 'IN_PROGRESS', 'DONE'];
+  const priorities: Priority[] = ['low', 'medium', 'high', 'urgent'];
 
   return Array.from({ length: count }, () => {
     const status = faker.helpers.arrayElement(statuses); // Random status for the task
+    const priority = faker.helpers.arrayElement(priorities); // Random priority
+    const dueDate = faker.date.future().toISOString().split('T')[0]; // Future date in YYYY-MM-DD format
+    const assignedToTeamMember = faker.name.fullName(); // Random team member name
+
     return {
       id: faker.string.uuid(),
       title: faker.company.catchPhrase(),
       description: faker.lorem.sentences(2),
-      status
+      status,
+      priority,
+      dueDate,
+      assignedToTeamMember
     };
   });
 };
-
 // Function to generate the initial Kanban state with Faker data
 export const generateKanbanState = (taskCount: number): KanbanState => {
   const tasks = generateMockTasks(taskCount);

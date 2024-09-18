@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { persist } from 'zustand/middleware';
 import { KanbanColumn } from '@/components/kanban/board-column';
 import { UniqueIdentifier } from '@dnd-kit/core';
+import { mockUserProfile } from '@/types/_faker/profile/userProfile';
 
 export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE';
 
@@ -22,7 +23,7 @@ const defaultCols = [
 ] satisfies KanbanColumn[];
 
 export type ColumnId = (typeof defaultCols)[number]['id'];
-export type Priority = 'low' | 'medium' | 'high';
+export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 
 export interface TaskActivity {
   action: 'created' | 'updated' | 'deleted';
@@ -40,10 +41,10 @@ export interface TaskTracking {
   tasksAssigned: number;
   tasksCompleted: number;
   tasksInProgress: number;
-  assignedTasks: Record<string, Task[]>; // Tracks tasks by team member
+  assignedTasks: Record<string, KanbanTask[]>; // Tracks tasks by team member
   taskHistory: TaskActivity[]; // History of all task actions
 }
-export interface Task {
+export interface KanbanTask {
   id: string;
   title: string;
   description?: string;
@@ -55,12 +56,12 @@ export interface Task {
 }
 
 export type KanbanState = {
-  tasks: Task[];
+  tasks: KanbanTask[];
   columns: KanbanColumn[];
   draggedTask: string | null;
 };
 
-export const initialTasks: Task[] = [
+export const initialTasks: KanbanTask[] = [
   {
     id: 'task1',
     title: 'Design New Landing Page',
@@ -119,7 +120,7 @@ export type Actions = {
   dragTask: (id: string | null) => void;
   removeTask: (title: string) => void;
   removeCol: (id: UniqueIdentifier) => void;
-  setTasks: (updatedTask: Task[]) => void;
+  setTasks: (updatedTask: KanbanTask[]) => void;
   setCols: (cols: KanbanColumn[]) => void;
   updateCol: (id: UniqueIdentifier, newName: string) => void;
 };
@@ -127,8 +128,8 @@ export type Actions = {
 export const useTaskStore = create<KanbanState & Actions>()(
   persist(
     (set) => ({
-      tasks: initialTasks,
-      columns: defaultCols,
+      tasks: mockUserProfile.companyInfo.KanbanTasks.tasks,
+      columns: mockUserProfile.companyInfo.KanbanTasks.columns,
       draggedTask: null,
       addTask: (title: string, description?: string) =>
         set((state) => ({
@@ -159,7 +160,7 @@ export const useTaskStore = create<KanbanState & Actions>()(
         set((state) => ({
           columns: state.columns.filter((col) => col.id !== id)
         })),
-      setTasks: (newTasks: Task[]) => set({ tasks: newTasks }),
+      setTasks: (newTasks: KanbanTask[]) => set({ tasks: newTasks }),
       setCols: (newCols: KanbanColumn[]) => set({ columns: newCols })
     }),
     { name: 'task-store', skipHydration: true }

@@ -73,7 +73,7 @@ export const mockUserProfile: UserProfile = {
       socialCampaigns: mockSocialMediaCampaigns,
       callCampaigns: mockCallCampaignData
     },
-    tasks: mockKanbanState,
+    KanbanTasks: mockKanbanState,
     forwardingNumber: faker.phone.number(),
     campaignAnalytics: [
       mockCallCampaignAnalytics,

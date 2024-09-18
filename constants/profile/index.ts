@@ -84,7 +84,7 @@ export const mockUserProfileStatic: UserProfile = {
       socialCampaigns: [],
       callCampaigns: []
     },
-    tasks: mockKanbanState,
+    KanbanTasks: mockKanbanState,
     forwardingNumber: '+1234567890',
     leads: mockGeneratedLeads,
     leadLists: mockLeadListData,
