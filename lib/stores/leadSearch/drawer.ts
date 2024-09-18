@@ -14,13 +14,12 @@ interface PropertyStoreState {
 
   setIsDrawerOpen: (open: boolean) => void;
   setDrawerHeight: (height: number) => void;
-  loadMoreProperties: () => void;
+  loadMoreProperties: (maxCardsPerLoad: number) => void;
   setProperties: (properties: PropertyDetails[]) => void;
 }
 
-const MAX_CARDS_PER_LOAD = 6;
+const MAX_CARDS_PER_LOAD = 12;
 const MIN_DRAWER_HEIGHT = 100;
-
 export const usePropertyStore = create<PropertyStoreState>((set, get) => ({
   // Initial states
   isDrawerOpen: false,
@@ -66,7 +65,7 @@ export const usePropertyStore = create<PropertyStoreState>((set, get) => ({
     });
   },
 
-  loadMoreProperties: () => {
+  loadMoreProperties: (maxCardsPerLoad: number) => {
     const { properties, visibleProperties, isLoading } = get();
     if (isLoading) return;
 
@@ -75,13 +74,15 @@ export const usePropertyStore = create<PropertyStoreState>((set, get) => ({
     setTimeout(() => {
       const nextProperties = properties.slice(
         visibleProperties.length,
-        visibleProperties.length + MAX_CARDS_PER_LOAD
+        visibleProperties.length + maxCardsPerLoad // Use dynamic maxCardsPerLoad
       );
+
       set({
         visibleProperties: [...visibleProperties, ...nextProperties],
-        hasMore: nextProperties.length === MAX_CARDS_PER_LOAD,
+        hasMore:
+          visibleProperties.length + nextProperties.length < properties.length, // Update hasMore based on total length
         isLoading: false
       });
-    }, 1000); // Simulate network delay
+    }, 1000); // Simulated delay
   }
 }));

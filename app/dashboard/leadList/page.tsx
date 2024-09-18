@@ -12,7 +12,7 @@ export default function page() {
     <PageContainer>
       <div className="space-y-2">
         <Breadcrumbs items={breadcrumbItems} />
-        <LeadListClient data={mockLeadListData} />
+        <LeadListClient />
       </div>
     </PageContainer>
   );
