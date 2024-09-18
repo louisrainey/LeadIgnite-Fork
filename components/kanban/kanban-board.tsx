@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { KanbanTask, useTaskStore } from '@/lib/stores/taskActions';
+import { KanbanTask, Status, useTaskStore } from '@/lib/stores/taskActions';
 import { hasDraggableData } from '@/lib/utils/kanban/utils';
 import {
   Announcements,
@@ -23,21 +23,10 @@ import { BoardColumn, BoardContainer } from './board-column';
 import NewSectionDialog from './new-section-dialog';
 import { TaskCard } from './task-card';
 import { mockTeamMembers } from '@/types/_faker/profile/team/members';
+import { mockUserProfile } from '@/types/_faker/profile/userProfile';
 
-const defaultCols = [
-  {
-    id: 'TODO' as const,
-    title: 'Todo'
-  },
-  {
-    id: 'IN_PROGRESS' as const,
-    title: 'In Progress'
-  },
-  {
-    id: 'DONE' as const,
-    title: 'Done'
-  }
-] satisfies (KanbanColumn | null)[];
+const defaultCols = mockUserProfile.companyInfo.KanbanTasks
+  .columns satisfies (KanbanColumn | null)[];
 
 export type ColumnId = (typeof defaultCols)[number]['id'];
 
@@ -289,8 +278,10 @@ export function KanbanBoard() {
     if (isActiveATask && isOverAColumn) {
       const activeIndex = tasks.findIndex((t) => t.id === activeId);
       const activeTask = tasks[activeIndex];
-      if (activeTask) {
-        activeTask.status = overId as ColumnId;
+
+      // Add a type guard to check if overId is a valid ColumnId/Status
+      if (activeTask && columnsId.includes(overId as ColumnId)) {
+        activeTask.status = overId as Status; // Now safe to cast
         setTasks(arrayMove(tasks, activeIndex, activeIndex));
       }
     }
