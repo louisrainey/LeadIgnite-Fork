@@ -1,87 +1,30 @@
 import { z } from 'zod';
+
+// Define the Zod schema for form validation
 export const leadSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, 'First Name is required')
-    .max(50, 'First Name cannot exceed 50 characters'),
+  // Required fields
+  listName: z.string().min(1, 'List Name is required'),
+  skipTracedFile: z.instanceof(File).refine(
+    (file) => file.size > 0, // Ensure file is not empty
+    { message: 'Skip-traced list is required' }
+  ),
 
-  lastName: z
-    .string()
-    .min(1, 'Last Name is required')
-    .max(50, 'Last Name cannot exceed 50 characters'),
+  // Mapping fields (required to map to a header)
+  firstNameField: z.string().min(1, 'First Name is required'),
+  lastNameField: z.string().min(1, 'Last Name is required'),
+  streetAddressField: z.string().min(1, 'Street Address is required'),
+  cityField: z.string().min(1, 'City is required'),
+  stateField: z.string().min(1, 'State is required'),
+  zipCodeField: z.string().min(1, 'ZIP Code is required'),
+  phone1Field: z.string().min(1, 'Phone 1 is required'),
 
-  address: z
-    .string()
-    .min(1, 'Address is required')
-    .max(100, 'Address cannot exceed 100 characters'),
+  // Optional fields (can be empty or mapped)
+  phone2Field: z.string().optional(),
+  emailField: z.string().optional(),
 
-  city: z
-    .string()
-    .min(1, 'City is required')
-    .max(50, 'City cannot exceed 50 characters'),
-
-  state: z
-    .string()
-    .min(1, 'State is required')
-    .max(50, 'State cannot exceed 50 characters'),
-
-  zipCode: z
-    .string()
-    .min(5, 'Zip Code must be at least 5 digits')
-    .max(10, 'Zip Code cannot exceed 10 digits')
-    .regex(/^\d+$/, 'Zip Code must contain only numbers'),
-
-  phoneNumber: z
-    .string()
-    .min(1, 'Phone Number is required')
-    .max(15, 'Phone Number cannot exceed 15 characters')
-    .regex(
-      /^[0-9\-+()\s]*$/,
-      'Phone Number can only contain numbers and special characters like - + ( )'
-    ),
-
-  phoneNumber2: z
-    .string()
-    .max(15, 'Phone Number 2 cannot exceed 15 characters')
-    .regex(
-      /^[0-9\-+()\s]*$/,
-      'Phone Number 2 can only contain numbers and special characters like - + ( )'
-    )
-    .optional(),
-
-  email: z.string().email('Please enter a valid email address').optional(),
-
-  // Social media fields (optional, validate only if not empty or undefined)
-  facebook: z
-    .string()
-    .optional()
-    .refine(
-      (value) => !value || /^https?:\/\/(www\.)?facebook\.com\/.+$/.test(value),
-      { message: 'Please enter a valid Facebook URL' }
-    ),
-
-  linkedin: z
-    .string()
-    .optional()
-    .refine(
-      (value) => !value || /^https?:\/\/(www\.)?linkedin\.com\/.+$/.test(value),
-      { message: 'Please enter a valid LinkedIn URL' }
-    ),
-
-  instagram: z
-    .string()
-    .optional()
-    .refine(
-      (value) =>
-        !value || /^https?:\/\/(www\.)?instagram\.com\/.+$/.test(value),
-      { message: 'Please enter a valid Instagram URL' }
-    ),
-
-  twitter: z
-    .string()
-    .optional()
-    .refine(
-      (value) => !value || /^https?:\/\/(www\.)?twitter\.com\/.+$/.test(value),
-      { message: 'Please enter a valid Twitter URL' }
-    )
+  // Social media fields are optional
+  facebookField: z.string().optional(),
+  linkedinField: z.string().optional(),
+  instagramField: z.string().optional(),
+  twitterField: z.string().optional()
 });

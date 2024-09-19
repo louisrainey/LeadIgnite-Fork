@@ -55,7 +55,7 @@ export const LeadListClient: React.FC = () => {
       <div className="flex items-start justify-between">
         {/* Heading Component */}
         <Heading
-          title={`Lead Manager (${filteredLeadLists.length})`}
+          title={`Lead List Manager (${filteredLeadLists.length})`}
           description="See a list of existing lead lists or upload a new list."
         />
 

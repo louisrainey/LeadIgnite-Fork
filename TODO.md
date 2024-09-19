@@ -1,14 +1,16 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# 🪳 Fix add lead list modal not showing errors or submitting
+# Add video modal explaining each section
 
 # ⁉️ optimize load speeds
-
-# 💪 Add up sale after sigining up for trial that promprs immediate upgrade | Fix Upgrade modal
 
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # 🪳 ✅ Fix add lead list modal not showing errors or submitting -->
+
+<!-- # 💪✅ Add up sale after sigining up for trial that promprs immediate upgrade | Fix Upgrade modal -->
 
 <!-- # Update variables to be pulled from user profile [✅Credits remaing, ✅Modals (✅Usage , ✅Billing,✅ Security,✅Webhooks, ✅Team Members, ✅Kanban,✅Mock ✅Leads,✅Mock Lead List)] -->
 
