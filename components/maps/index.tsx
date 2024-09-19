@@ -249,7 +249,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 <PropertyListView properties={visibleProperties} />
                 {hasMore && !isLoading && (
                   <div className="flex justify-center p-4">
-                    <button onClick={loadMoreProperties}>
+                    <button onClick={() => loadMoreProperties}>
                       Load More Properties
                     </button>
                   </div>

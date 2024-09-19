@@ -20,6 +20,16 @@
 
 # 💾 Enable inviting employees
 
+# ‼ 💾 Enable employee access based on permissions
+
+# 🏔️ Setup Go high level workflows with vapi
+
+# 🏔️ Setup Go high level workflows with phantombuster
+
+# 🧪 Create E2E tests for platform
+
+# 🧪 Create onboarding test for GHL
+
 # Add usage to leads skip traces
 
 # optimize mobile display [Lead Search,Campaign Page,Lead Manager,Lead List Manager| Billing Modal]
