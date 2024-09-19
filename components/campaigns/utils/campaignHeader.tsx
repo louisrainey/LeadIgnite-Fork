@@ -1,5 +1,5 @@
 'use client';
-import { Search } from 'lucide-react';
+import { FileQuestion, Search } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import StatCard from './statCard';
 import { useCampaignStore } from '@/lib/stores/campaigns'; // Import the Zustand store
@@ -16,6 +16,10 @@ import {
   mockUserProfile,
   MockUserProfile
 } from '@/types/_faker/profile/userProfile';
+import { Modal } from '@/components/ui/modal';
+
+import { HelpCircle } from 'lucide-react';
+import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
 const creditsRemaining =
   mockUserProfile.subscription.aiCredits.allotted -
   mockUserProfile.subscription.aiCredits.used;
@@ -24,8 +28,16 @@ const CampaignHeader: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0); // Track the currently animated card
   const [animationComplete, setAnimationComplete] = useState(false); // Track if the animation is completed
   const [activeFilter, setActiveFilter] = useState('all'); // Track the active filter
-
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   // Zustand's setCampaignType and filterCampaignsByStatus functions
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleStartTour = () => setIsTourOpen(true);
+  const handleCloseTour = () => setIsTourOpen(false);
+
   const setCampaignType = useCampaignStore((state) => state.setCampaignType);
   const filterCampaignsByStatus = useCampaignStore(
     (state) => state.filterCampaignsByStatus
@@ -215,8 +227,20 @@ const CampaignHeader: React.FC = () => {
   return (
     <div className="p-4 dark:bg-gray-900">
       {/* Credits Remaining Text */}
-      <div className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-        Credits Remaining: {creditsRemaining}
+      <div className="mb-2 flex items-center justify-center space-x-4">
+        {/* Credits Remaining */}
+        <div className="text-lg font-semibold text-gray-900 dark:text-white">
+          Credits Remaining: {creditsRemaining}
+        </div>
+
+        {/* Help Button */}
+        <button
+          onClick={handleOpenModal}
+          title="Get More help"
+          className="rounded-full bg-blue-500 p-2 text-white dark:bg-green-700 dark:text-gray-300"
+        >
+          <HelpCircle size={20} />
+        </button>
       </div>
 
       {/* Search Bar */}
@@ -269,6 +293,14 @@ const CampaignHeader: React.FC = () => {
           </div>
         ))}
       </div>
+      <PropertySearchModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL
+        title="Welcome To Your Campaigns"
+        subtitle="Get help viewing and sort through your campigns."
+        termsUrl="/terms-of-use" // Example URL for terms of use
+      />
     </div>
   );
 };
