@@ -59,7 +59,7 @@ const LeadListFilterDropdown: React.FC<LeadListFilterDropdownProps> = ({
           className="border-blue-600 text-blue-600"
           onClick={togglePopover}
         >
-          <Filter className="mr-2" />
+          <Filter className="mr-2 " />
           Filter Lead Lists
           <ChevronDown className="ml-2" />
         </Button>

@@ -98,16 +98,16 @@ const ManageSubscriptionModal: React.FC<ManageSubscriptionModalProps> = ({
     <>
       <Button
         onClick={openSubscriptionModal}
-        className="bg-blue-600 text-white"
+        className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 sm:w-auto"
       >
         Manage Subscription
       </Button>
 
       <Modal isOpen={isSubscriptionModalOpen} onClose={closeSubscriptionModal}>
-        <div className="space-y-4 dark:text-gray-300">
-          <div className="flex items-center justify-between">
+        <div className="space-y-4 p-4 sm:p-6 dark:text-gray-300">
+          <div className="flex flex-col items-start justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0">
             <div>
-              <h4 className="font-medium dark:text-gray-200">
+              <h4 className="text-lg font-medium dark:text-gray-200">
                 {subscription.name} Subscription
               </h4>
               <p className="text-sm text-muted-foreground dark:text-gray-400">
@@ -132,19 +132,24 @@ const ManageSubscriptionModal: React.FC<ManageSubscriptionModalProps> = ({
               </p>
             </div>
 
+            {/* Conditional Rendering of Buy or Cancel Button */}
             {!isSubscriptionActive ? (
-              <Button className="bg-blue-600 text-white">
+              <Button className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 sm:w-auto">
                 Buy Subscription
               </Button>
             ) : (
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={cancelSubscription}>
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                <Button
+                  variant="outline"
+                  onClick={cancelSubscription}
+                  className="w-full px-4 py-2 sm:w-auto"
+                >
                   Cancel
                 </Button>
                 {subscriptionType === 'monthly' && (
                   <Button
                     onClick={switchToYearly}
-                    className="whitespace-nowrap bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
+                    className="w-full whitespace-nowrap rounded-md bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 sm:w-auto"
                   >
                     Switch to Yearly and Save
                   </Button>
@@ -186,7 +191,9 @@ export const BillingModal: React.FC<BillingModalProps> = ({
             Payment Methods
           </h3>
           <Separator className="my-2 dark:border-gray-600" />
-          <div className="flex items-center justify-between">
+
+          {/* Flexbox layout for mobile optimization */}
+          <div className="flex flex-col items-start justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0">
             <div>
               <p className="text-sm font-medium dark:text-gray-300">
                 {paymentDetails.cardType} ending in{' '}
@@ -196,7 +203,11 @@ export const BillingModal: React.FC<BillingModalProps> = ({
                 Expiry {paymentDetails.expiry}
               </p>
             </div>
-            <ManageSubscriptionModal subscription={subscription} />
+
+            {/* Manage Subscription button to be full-width on mobile and auto on larger screens */}
+            <div className="w-full sm:w-auto">
+              <ManageSubscriptionModal subscription={subscription} />
+            </div>
           </div>
 
           <Button
@@ -225,7 +236,9 @@ export const BillingModal: React.FC<BillingModalProps> = ({
               key={index}
               className="mt-2 grid grid-cols-4 items-center gap-2 border-b py-2 text-sm dark:border-gray-700"
             >
-              <div>{entry.invoice}</div>
+              <div className="overflow-auto whitespace-nowrap">
+                {entry.invoice}
+              </div>
               <div>{entry.amount}</div>
               <div>{entry.date.toLocaleDateString()}</div>
               <div className="flex items-center">

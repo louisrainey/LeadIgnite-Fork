@@ -64,49 +64,59 @@ export const LeadListClient: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-start justify-between">
+      <div className="flex w-full flex-col space-y-4 lg:items-center lg:space-y-0">
         {/* Heading Component */}
-        <Heading
-          title={`Lead List Manager (${filteredLeadLists.length})`}
-          description="See a list of existing lead lists or upload a new list."
-        />
-        <button
-          onClick={handleHelpOpenModal}
-          title="Get More help"
-          className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
-        >
-          <HelpCircle size={20} />
-        </button>
-        {/* Right-aligned buttons */}
-        <div className="flex flex-col items-center space-y-2">
-          <div className="flex space-x-4">
-            {/* Import List Button */}
+        <div className="my-5 flex w-full flex-col items-center text-center">
+          <Heading
+            title={`Lead List Manager (${filteredLeadLists.length})`}
+            description="See a list of existing lead lists or upload a new list."
+          />
+        </div>
+
+        {/* Help Button */}
+        <div className="flex justify-center">
+          <button
+            onClick={handleHelpOpenModal}
+            title="Get More help"
+            className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+          >
+            <HelpCircle size={20} />
+          </button>
+        </div>
+
+        {/* Action Buttons (Import List, Export, Filter Dropdown) */}
+        <div className="flex w-full flex-col space-y-4 lg:flex-row lg:justify-center lg:space-x-4 lg:space-y-0">
+          {/* Import List and Export Filtered Lead Lists Buttons */}
+          <div className="flex w-full flex-col space-y-4 lg:w-auto lg:flex-row lg:space-x-4 lg:space-y-0">
             <Button
               onClick={openModal}
-              className="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+              className="flex w-full items-center justify-center space-x-2 rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 lg:w-auto"
             >
-              <Menu className="mr-2" /> Import List
+              <Menu className="mr-2 h-5 w-5" />
+              <span>Import List</span>
             </Button>
 
-            {/* Export Filtered Lead Lists Button */}
             <Button
               onClick={exportFilteredLeadListsToZip}
-              className="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+              className="flex w-full items-center justify-center space-x-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 lg:w-auto"
             >
-              <Plus className="mr-2" /> Export Filtered Lead Lists
+              <Plus className="mr-2 h-5 w-5" />
+              <span>Export Filtered Lead Lists</span>
             </Button>
           </div>
 
-          <div className="flex space-x-2">
-            {/* Filter Dropdown */}
-            <LeadListFilterDropdown
-              selectedRecordsRange={selectedRecordRange}
-              setSelectedRecordsRange={setSelectedRecordRange}
-              selectedUploadDate={selectedUploadDate}
-              setSelectedUploadDate={setSelectedUploadDate}
-              resetFilter={resetFilter}
-              applyFilter={applyFilter}
-            />
+          {/* Filter Dropdown */}
+          <div className="flex w-full justify-center lg:w-auto">
+            <div className="flex w-full justify-center sm:w-auto">
+              <LeadListFilterDropdown
+                selectedRecordsRange={selectedRecordRange}
+                setSelectedRecordsRange={setSelectedRecordRange}
+                selectedUploadDate={selectedUploadDate}
+                setSelectedUploadDate={setSelectedUploadDate}
+                resetFilter={resetFilter}
+                applyFilter={applyFilter}
+              />
+            </div>
           </div>
         </div>
       </div>

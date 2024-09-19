@@ -124,20 +124,22 @@ export default function LeadsComponent() {
       onSubmit={() => handleSubmit(onSubmit)}
       className="flex h-screen w-full flex-col"
     >
-      <Heading
-        title="Lead Search"
-        description="See a list of existing leads and follow ups, or create new leads."
-      />
+      <div className="flex w-full flex-col items-center text-center">
+        <Heading
+          title="Lead Search"
+          description="See a list of existing leads and follow ups, or create new leads."
+        />
 
-      <div className="mb-4 flex w-full justify-center">
-        <button
-          onClick={handleOpenModal}
-          type="button"
-          title="Get Help Navigating Lead Generation"
-          className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
-        >
-          <HelpCircle size={20} />
-        </button>
+        <div className="mb-4 flex w-full justify-center sm:mt-4">
+          <button
+            onClick={handleOpenModal}
+            type="button"
+            title="Get Help Navigating Lead Generation"
+            className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none sm:mt-5 dark:bg-green-700 dark:text-gray-300"
+          >
+            <HelpCircle size={20} />
+          </button>
+        </div>
       </div>
 
       {/* Input fields container */}
