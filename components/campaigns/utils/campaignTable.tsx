@@ -152,21 +152,22 @@ const CampaignsMainContent: React.FC = () => {
   return (
     <div className="h-full w-full rounded-md bg-white dark:bg-gray-900 ">
       {/* Header with Create Campaign button, Last updated, and Export to CSV */}
-      <div className="flex items-center justify-between p-4">
+      <div className="flex flex-col space-y-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <button
           onClick={openModal}
-          className="rounded-md bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="w-full rounded-md bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 sm:w-auto"
         >
           <i className="fas fa-rocket mr-2"></i>
           Create Campaign
         </button>
 
-        <div className="flex items-center space-x-4 text-gray-500 dark:text-gray-400">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-col text-gray-500 sm:flex-row sm:items-center sm:space-x-4 dark:text-gray-400">
+          <div className="flex items-center justify-between space-x-2">
             <span>
               Updated {minutesAgo} {minutesAgo === 1 ? 'minute' : 'minutes'} ago
             </span>
             <button
+              title="Fetch Updated Campaigns"
               className="rounded-md p-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-700"
               onClick={handleRefresh} // Trigger manual refresh
             >
@@ -179,7 +180,12 @@ const CampaignsMainContent: React.FC = () => {
 
           <button
             onClick={handleExport} // Attach the export handler to the button
-            className="flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            className="
+    mt-4 flex w-full items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-indigo-500 px-6 py-3 font-semibold
+    text-white transition-all duration-300 ease-in-out hover:from-purple-600
+    hover:to-indigo-600 focus:outline-none focus:ring-4 focus:ring-purple-300 sm:mt-0
+    dark:from-purple-700 dark:to-indigo-700 dark:hover:from-purple-800 dark:hover:to-indigo-800 dark:focus:ring-indigo-600
+  "
           >
             <i className="fas fa-file-export mr-2"></i>
             Export Excel
