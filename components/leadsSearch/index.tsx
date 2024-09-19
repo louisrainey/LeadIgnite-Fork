@@ -142,8 +142,8 @@ export default function LeadsComponent() {
 
       {/* Input fields container */}
       <div className="border-b p-2">
-        <div className="mb-4 flex flex-wrap items-center space-x-2 space-y-2 overflow-x-auto whitespace-nowrap sm:space-y-0">
-          <div className="relative w-full flex-grow sm:w-auto">
+        <div className="mb-4 flex flex-wrap items-center space-x-2 space-y-2 overflow-x-auto whitespace-nowrap sm:space-y-0 ">
+          <div className="relative w-full flex-grow sm:w-auto ">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
             <Controller
               name="location"
@@ -448,8 +448,37 @@ export default function LeadsComponent() {
             </Dialog>
           </div>
         </div>
+        {properties.length > 0 && !isDrawerOpen && (
+          <div className="relative flex w-full justify-center">
+            {' '}
+            {/* Container div to control the button's positioning */}
+            <Button
+              type="button"
+              className="
+        relative w-40 overflow-hidden rounded-md bg-purple-600 px-4 py-2 text-white
+      "
+              onClick={() => setIsDrawerOpen(true)}
+            >
+              Open Properties
+              {/* The span for the animation, scoped to the button */}
+              <span className="animate-light-sweep absolute inset-0 h-full w-full -translate-x-full transform bg-gradient-to-r from-transparent via-white to-transparent opacity-75"></span>
+            </Button>
+          </div>
+        )}
       </div>
-
+      <PropertySearchModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL
+        title="Welcome To Your Lead Search"
+        subtitle="Get help searching and segmenting your leads"
+        termsUrl="/terms-of-use" // Example URL for terms of use
+        // Add the following props to enable the tour
+        steps={campaignSteps} // Tour steps (array of objects with content and selectors)
+        isTourOpen={isTourOpen} // Boolean to track if the tour is currently open
+        onStartTour={handleStartTour} // Function to start the tour (triggered by button)
+        onCloseTour={handleCloseTour} // Function to close the tour
+      />
       {/* Map and other content */}
       <div className="relative h-[400px] flex-grow sm:h-[500px]">
         <MapComponent
@@ -458,19 +487,6 @@ export default function LeadsComponent() {
           markers={markers}
           zoom={10}
         />
-        {properties.length > 0 && !isDrawerOpen && (
-          <Button
-            type="button"
-            className="
-            {/* Default for    large screens */} {/* Overrides for
-            small screens */} absolute right-4    top-4 sm:bottom-4 sm:left-1/2 sm:right-auto sm:top-auto sm:-translate-x-1/2
-          "
-            onClick={() => setIsDrawerOpen(true)}
-          >
-            Open Properties
-            <span className="animate-light-sweep absolute inset-0 h-full w-full -translate-x-full transform bg-gradient-to-r from-transparent via-white to-transparent opacity-75"></span>{' '}
-          </Button>
-        )}
       </div>
     </form>
   );
