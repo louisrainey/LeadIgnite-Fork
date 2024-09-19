@@ -20,6 +20,7 @@ import { Modal } from '@/components/ui/modal';
 
 import { HelpCircle } from 'lucide-react';
 import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
+import { campaignSteps } from '@/_tests/tours/campaignTour';
 const creditsRemaining =
   mockUserProfile.subscription.aiCredits.allotted -
   mockUserProfile.subscription.aiCredits.used;
@@ -298,8 +299,13 @@ const CampaignHeader: React.FC = () => {
         onClose={handleCloseModal}
         videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL
         title="Welcome To Your Campaigns"
-        subtitle="Get help viewing and sort through your campigns."
+        subtitle="Get help viewing and sorting through your campaigns."
         termsUrl="/terms-of-use" // Example URL for terms of use
+        // Add the following props to enable the tour
+        steps={campaignSteps} // Tour steps (array of objects with content and selectors)
+        isTourOpen={isTourOpen} // Boolean to track if the tour is currently open
+        onStartTour={handleStartTour} // Function to start the tour (triggered by button)
+        onCloseTour={handleCloseTour} // Function to close the tour
       />
     </div>
   );
