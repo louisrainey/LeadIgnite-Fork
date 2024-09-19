@@ -230,7 +230,7 @@ const CampaignHeader: React.FC = () => {
     <div className="p-4 dark:bg-gray-900">
       <Heading
         title={`Campaigns `}
-        description="View and segmentn your campaigns."
+        description="View and segment your campaigns."
       />
       {/* Credits Remaining Text */}
       <div className="mb-2 flex items-center justify-center space-x-4">
@@ -260,45 +260,53 @@ const CampaignHeader: React.FC = () => {
       </div>
 
       {/* Campaign Filter Buttons */}
-      <div className="mb-4 flex w-full gap-4">
+      <div className="mb-4 flex w-full flex-wrap gap-2 sm:gap-4">
+        {' '}
+        {/* Use flex-wrap to allow wrapping */}
         {campaignFilters.map((filter) => {
           const isActive = activeFilter === filter.value;
           return (
             <button
               key={filter.label}
               onClick={() => handleFilterClick(filter.value)} // filter.value now exists
-              className={`flex w-1/4 items-center justify-center rounded-md px-4 py-2 ${
+              className={`flex w-full items-center justify-center rounded-md px-4 py-2 sm:w-1/4 ${
                 isActive
                   ? 'bg-gray-200 dark:bg-gray-700'
                   : 'bg-gray-100 dark:bg-gray-800'
               } dark:text-white`}
             >
               <span className={`h-2 w-2 rounded-full ${filter.color}`}></span>
-              <span className="ml-2">{filter.label}</span>
+              <span className="ml-2 text-xs sm:text-sm">
+                {filter.label}
+              </span>{' '}
+              {/* Adjust text size for mobile */}
             </button>
           );
         })}
       </div>
 
       {/* Statistics Grid */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+      <div className="flex gap-4 overflow-x-auto md:grid md:grid-cols-4">
         {stats.map((stat, index) => (
           <div
             key={stat.title}
-            className={index < 2 ? 'md:col-span-2' : ''} // Make the first two cards wide (indexes 0 and 1)
+            className={`min-w-[250px] md:min-w-0 ${
+              index < 2 ? 'md:col-span-2' : ''
+            }`} // Ensure minimum width for mobile/tablet
           >
             <StatCard
               title={stat.title}
               addedToday={stat.past24hours}
               value={stat.value}
-              onClick={() => handleCardClick(stat.statType)} // Update this to handle clicks and set campaign type
-              isActive={index === activeIndex} // Active if index matches activeIndex
-              click={stat.click} // Control whether the card is clickable
-              animationComplete={animationComplete} // Control whether the animation is complete
+              onClick={() => handleCardClick(stat.statType)} // Handle card clicks
+              isActive={index === activeIndex} // Highlight active card
+              click={stat.click} // Control card clickability
+              animationComplete={animationComplete} // Handle animation completion
             />
           </div>
         ))}
       </div>
+
       <PropertySearchModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
