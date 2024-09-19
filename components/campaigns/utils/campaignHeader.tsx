@@ -21,6 +21,7 @@ import { Modal } from '@/components/ui/modal';
 import { HelpCircle } from 'lucide-react';
 import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
 import { campaignSteps } from '@/_tests/tours/campaignTour';
+import { Heading } from '@/components/ui/heading';
 const creditsRemaining =
   mockUserProfile.subscription.aiCredits.allotted -
   mockUserProfile.subscription.aiCredits.used;
@@ -227,6 +228,10 @@ const CampaignHeader: React.FC = () => {
 
   return (
     <div className="p-4 dark:bg-gray-900">
+      <Heading
+        title={`Campaigns `}
+        description="View and segmentn your campaigns."
+      />
       {/* Credits Remaining Text */}
       <div className="mb-2 flex items-center justify-center space-x-4">
         {/* Credits Remaining */}
@@ -238,7 +243,7 @@ const CampaignHeader: React.FC = () => {
         <button
           onClick={handleOpenModal}
           title="Get More help"
-          className="rounded-full bg-blue-500 p-2 text-white dark:bg-green-700 dark:text-gray-300"
+          className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
         >
           <HelpCircle size={20} />
         </button>

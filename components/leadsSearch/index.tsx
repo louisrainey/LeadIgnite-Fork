@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Sliders } from 'lucide-react';
+import { HelpCircle, Search, Sliders } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -37,6 +37,9 @@ import { detailed_properties_saved } from '@/constants/dashboard/properties';
 import { checkForSQLInjection } from '@/constants/utility/sqlCheck';
 import { toast } from 'sonner';
 import { usePropertyStore } from '@/lib/stores/leadSearch/drawer';
+import { campaignSteps } from '@/_tests/tours/campaignTour';
+import PropertySearchModal from '../reusables/tutorials/walkthroughModal';
+import { Heading } from '../ui/heading';
 
 export default function LeadsComponent() {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -48,6 +51,16 @@ export default function LeadsComponent() {
     lat: 39.7392,
     lng: -104.9903
   });
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  // Zustand's setCampaignType and filterCampaignsByStatus functions
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleStartTour = () => setIsTourOpen(true);
+  const handleCloseTour = () => setIsTourOpen(false);
+
   const {
     properties,
     visibleProperties, // Zustand-managed properties list
@@ -111,6 +124,21 @@ export default function LeadsComponent() {
       onSubmit={() => handleSubmit(onSubmit)}
       className="flex h-screen w-full flex-col"
     >
+      <Heading
+        title={`Lead Search `}
+        description="See a list of existing leads and follow ups, or create new leads."
+      />
+      <div className="mb-4 flex w-full justify-center">
+        <button
+          onClick={handleOpenModal}
+          type="button"
+          title="Get Help Navigating Lead Generation"
+          className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+        >
+          <HelpCircle size={20} />
+        </button>
+      </div>
+
       <div className="border-b p-2">
         <div className="mb-4 flex items-center space-x-2 overflow-x-auto whitespace-nowrap">
           <div className="relative flex-grow">
@@ -477,6 +505,19 @@ export default function LeadsComponent() {
       </div>
 
       <div className="relative flex-grow">
+        <PropertySearchModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL
+          title="Welcome To Your Lead Search"
+          subtitle="Get help searching and segmenting your leads"
+          termsUrl="/terms-of-use" // Example URL for terms of use
+          // Add the following props to enable the tour
+          steps={campaignSteps} // Tour steps (array of objects with content and selectors)
+          isTourOpen={isTourOpen} // Boolean to track if the tour is currently open
+          onStartTour={handleStartTour} // Function to start the tour (triggered by button)
+          onCloseTour={handleCloseTour} // Function to close the tour
+        />
         <MapComponent
           apiKey={process.env.NEXT_PUBLIC_GMAPS_KEY || ''}
           center={center}

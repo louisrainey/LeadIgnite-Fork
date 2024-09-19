@@ -30,7 +30,7 @@ import {
 } from '@/types/zod/profile-form-schema';
 import { cn } from '@/lib/utils/kanban/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertTriangleIcon, Trash, Trash2Icon } from 'lucide-react';
+import { AlertTriangleIcon, HelpCircle, Trash, Trash2Icon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
@@ -38,6 +38,8 @@ import VoiceSelector from './utils/voice/selector';
 import { mockVoices } from '@/types/_faker/_api/vapi/assistant';
 import { UploadEmailBody } from './utils/voice/uploadEmailBody';
 import UploadSalesScript from './utils/voice/uploadScript';
+import { campaignSteps } from '@/_tests/tours/campaignTour';
+import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
 
 interface ProfileFormType {
   initialData: any | null;
@@ -489,16 +491,23 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false); // State for help modal visibility
+  const [isTourOpen, setIsTourOpen] = useState(false); // State for the tour
+
+  const handleHelpOpenModal = () => setIsHelpModalOpen(true);
+  const handleHelpCloseModal = () => setIsHelpModalOpen(false);
+  const handleHelpStartTour = () => setIsTourOpen(true);
+  const handleHelpCloseTour = () => setIsTourOpen(false);
   const [selectedScriptFileName, setSelectedScriptFileName] =
     useState<string>(''); // Track uploaded file name
   const [selectedEmailFileName, setSelectedEmailFileName] =
     useState<string>(''); // Track uploaded file name
 
   const [selectedVoice, setSelectedVoice] = useState<string | null>(null); // Track selected voice
-  const title = initialData ? 'Edit product' : 'Create Your Profile';
+  const title = initialData ? 'Create Profile' : 'Edit Your Profile';
   const description = initialData
-    ? 'Edit a product.'
-    : 'To create your resume, we first need some basic information about you.';
+    ? 'Create your profile to optimize, your lead generation'
+    : 'Edit your profile, change callback number script etc.';
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setData] = useState({});
 
@@ -613,6 +622,15 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         onDelete={() => setOpen(true)}
         showDeleteButton={!!initialData}
       />
+      <div className="flex items-center justify-center">
+        <button
+          onClick={() => setIsHelpModalOpen(true)}
+          className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+        >
+          <HelpCircle size={20} />
+        </button>
+      </div>
+
       <Separator />
       <div>
         <ul className="flex gap-4">
@@ -641,6 +659,19 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         </ul>
       </div>
       <Separator />
+
+      <PropertySearchModal
+        isOpen={isHelpModalOpen}
+        onClose={handleHelpCloseModal}
+        videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL
+        title="Welcome to Your Profile Setup"
+        subtitle="Learn how to create or edit your profile, optimize your settings, and improve lead generation."
+        steps={campaignSteps} // Steps for the tour
+        isTourOpen={isTourOpen}
+        onStartTour={handleHelpStartTour}
+        onCloseTour={handleHelpCloseTour}
+      />
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(() => {})}
