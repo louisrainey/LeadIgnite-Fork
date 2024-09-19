@@ -305,7 +305,6 @@ const CampaignHeader: React.FC = () => {
         videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL
         title="Welcome To Your Campaigns"
         subtitle="Get help viewing and sorting through your campaigns."
-        termsUrl="/terms-of-use" // Example URL for terms of use
         // Add the following props to enable the tour
         steps={campaignSteps} // Tour steps (array of objects with content and selectors)
         isTourOpen={isTourOpen} // Boolean to track if the tour is currently open
