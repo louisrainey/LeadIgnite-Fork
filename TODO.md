@@ -1,8 +1,34 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# optimize mobile display
+# 💾 Set Up Database for nested users, connected with ai usage and skip trace usage, stripe subscriptions
+
+# 💾 Connect Lead search to api
+
+# 💾 Add activity logging hook/ middleware
+
+# 💾 Enable importing user data, into leads , lead data
+
+# 💾 Connect Skip trace to API , Save skip traced data
+
+# 💾 add CRUD functionality Leade Generation | Campaigns | Leads | Lead List Managment | Kanban | Employees
+
+# 💾 Add webhook for updating kanban state
+
+# 💾 Add upgrade functionality
+
+# 💾 Security add update password, enable 2fa
+
+# 💾 Enable inviting employees
+
+# Add usage to leads skip traces
+
+# optimize mobile display [Lead Search,Campaign Page,Lead Manager,Lead List Manager| Billing Modal]
+
+# Set up user onbaording with https://www.npmjs.com/package/@frigade/react
 
 # ⁉️ optimize load speeds
+
+# Add layout to speific [] page
 
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
