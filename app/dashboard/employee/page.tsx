@@ -75,25 +75,40 @@ export default function EmployeePage({
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
 
-        <div className="flex items-start justify-between">
-          <Heading
-            title={`Employee (${totalUsers})`}
-            description="Manage employees (Server side table functionalities.)"
-          />
-          <button
-            onClick={handleHelpOpenModal}
-            title="Get More help"
-            className="animate-bounce animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none hover:animate-none dark:bg-green-700 dark:text-gray-300"
-          >
-            <HelpCircle size={20} />
-          </button>
-          <Link
-            href={'/dashboard/employee/new'}
-            className={cn(buttonVariants({ variant: 'default' }))}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add New
-          </Link>
+        <div className="flex w-full flex-col items-center justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0">
+          {/* Heading Component */}
+          <div className="w-full text-center sm:w-auto sm:text-left">
+            <Heading
+              title={`Employee (${totalUsers})`}
+              description="Manage employees (Server side table functionalities.)"
+            />
+          </div>
+
+          {/* Help Button */}
+          <div className="flex w-full justify-center sm:w-auto">
+            <button
+              onClick={handleHelpOpenModal}
+              title="Get More help"
+              className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+            >
+              <HelpCircle size={20} />
+            </button>
+          </div>
+
+          {/* Add New Button */}
+          <div className="flex w-full justify-center sm:w-auto">
+            <Link
+              href={'/dashboard/employee/new'}
+              className={cn(
+                buttonVariants({ variant: 'default' }),
+                'flex w-full items-center justify-center sm:w-auto'
+              )}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Add New
+            </Link>
+          </div>
         </div>
+
         <Separator />
 
         {/* Help Modal */}

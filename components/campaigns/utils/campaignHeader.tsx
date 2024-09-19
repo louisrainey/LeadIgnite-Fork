@@ -228,25 +228,28 @@ const CampaignHeader: React.FC = () => {
 
   return (
     <div className="p-4 dark:bg-gray-900">
-      <Heading
-        title={`Campaigns `}
-        description="View and segment your campaigns."
-      />
-      {/* Credits Remaining Text */}
-      <div className="mb-2 flex items-center justify-center space-x-4">
-        {/* Credits Remaining */}
-        <div className="text-lg font-semibold text-gray-900 dark:text-white">
-          Credits Remaining: {creditsRemaining}
-        </div>
+      <div className="text-center">
+        <Heading
+          title={`Campaigns `}
+          description="View and segment your campaigns."
+        />
 
-        {/* Help Button */}
-        <button
-          onClick={handleOpenModal}
-          title="Get More help"
-          className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
-        >
-          <HelpCircle size={20} />
-        </button>
+        {/* Credits Remaining Text and Help Button */}
+        <div className="my-4 flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0 ">
+          {/* Credits Remaining */}
+          <div className="text-lg font-semibold text-gray-900 dark:text-white ">
+            Credits Remaining: {creditsRemaining}
+          </div>
+
+          {/* Help Button (moves to new line on mobile) */}
+          <button
+            onClick={handleOpenModal}
+            title="Get More help"
+            className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+          >
+            <HelpCircle size={20} />
+          </button>
+        </div>
       </div>
 
       {/* Search Bar */}

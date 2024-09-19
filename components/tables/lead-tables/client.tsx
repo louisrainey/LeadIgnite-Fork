@@ -103,29 +103,33 @@ export const LeadClient: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0">
-        {/* Heading Component and Help Button */}
-        <div className="flex items-center space-x-4">
+      <div className="flex w-full flex-col space-y-4 lg:items-center lg:space-y-0">
+        {/* Heading Component */}
+        <div className="my-5 flex flex-col items-start text-center lg:w-full lg:items-center">
           <Heading
             title={`Lead Manager (${leads.length})`}
             description="See a list of existing leads and follow ups, or create new leads."
           />
+        </div>
+
+        {/* Help Button */}
+        <div className="flex justify-center lg:justify-center">
           <button
             onClick={handleHelpOpenModal}
             title="Get More help"
-            className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+            className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none lg:ml-4 lg:mr-4 dark:bg-green-700 dark:text-gray-300"
           >
             <HelpCircle size={20} />
           </button>
         </div>
 
-        {/* Right-aligned buttons */}
-        <div className="mt-4 flex flex-col items-center space-y-4 sm:mt-0 sm:flex-row sm:space-x-4 sm:space-y-0">
-          {/* Create Lead and Export Leads Buttons Side by Side */}
-          <div className="flex w-full space-x-4 sm:w-auto">
+        {/* Action Buttons (Create Lead, Export, Today's Follow Ups, Filter) */}
+        <div className="flex w-full flex-col items-center space-y-4 lg:flex-row lg:justify-center lg:space-x-4 lg:space-y-0">
+          {/* Create Lead and Export Leads Buttons */}
+          <div className="flex w-full justify-center space-x-4 lg:w-auto">
             <Button
               onClick={openModal}
-              className="flex w-full items-center space-x-2 rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 sm:w-auto"
+              className="flex w-full items-center justify-center space-x-2 whitespace-nowrap rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 lg:w-auto"
             >
               <Plus className="h-5 w-5" />
               <span>Create Lead</span>
@@ -133,26 +137,25 @@ export const LeadClient: React.FC = () => {
 
             <Button
               onClick={exportFilteredLeads}
-              className="flex w-full items-center space-x-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 sm:w-auto"
+              className="flex w-full items-center justify-center space-x-2 whitespace-nowrap rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 lg:w-auto"
             >
               <Download className="h-5 w-5" />
               <span>Export Leads</span>
             </Button>
           </div>
 
-          {/* Today's Follow Ups and Filter Dropdown Buttons */}
-          <div className="flex w-full space-x-2 sm:w-auto">
+          {/* Today's Follow Ups and Filter Dropdown */}
+          <div className="flex w-full justify-center space-x-4 lg:w-auto">
             <Button
               variant="outline"
-              className="flex w-full items-center overflow-hidden truncate whitespace-nowrap border-blue-600 text-blue-600 sm:w-auto"
+              className="flex w-full items-center justify-center overflow-hidden truncate whitespace-nowrap border-blue-600 text-blue-600 lg:w-auto"
               onClick={filterByTodayFollowUps}
             >
-              <Calendar className="mr-2 h-5 w-5" />{' '}
-              {/* Explicit size for the Calendar icon */}
+              <Calendar className="mr-2 h-5 w-5" />
               Today&apos;s Follow Ups
             </Button>
 
-            <div className="relative w-full sm:w-auto" ref={filterDropdownRef}>
+            <div className="relative w-full lg:w-auto" ref={filterDropdownRef}>
               <FilterDropdown
                 selectedCampaign={selectedCampaign}
                 setSelectedCampaign={setSelectedCampaign}
