@@ -125,9 +125,10 @@ export default function LeadsComponent() {
       className="flex h-screen w-full flex-col"
     >
       <Heading
-        title={`Lead Search `}
+        title="Lead Search"
         description="See a list of existing leads and follow ups, or create new leads."
       />
+
       <div className="mb-4 flex w-full justify-center">
         <button
           onClick={handleOpenModal}
@@ -139,9 +140,10 @@ export default function LeadsComponent() {
         </button>
       </div>
 
+      {/* Input fields container */}
       <div className="border-b p-2">
-        <div className="mb-4 flex items-center space-x-2 overflow-x-auto whitespace-nowrap">
-          <div className="relative flex-grow">
+        <div className="mb-4 flex flex-wrap items-center space-x-2 space-y-2 overflow-x-auto whitespace-nowrap sm:space-y-0">
+          <div className="relative w-full flex-grow sm:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
             <Controller
               name="location"
@@ -155,369 +157,301 @@ export default function LeadsComponent() {
                     onChange={(e) => {
                       const value = e.target.value;
                       if (checkForSQLInjection(value)) {
-                        field.onChange(''); // Clear the field if it contains SQL injection patterns
+                        field.onChange('');
                       } else {
-                        field.onChange(value); // Keep the value if it's safe
+                        field.onChange(value);
                       }
                     }}
                     onBlur={() => {
                       field.onBlur();
                     }}
                   />
-                  {/* {error && <p className="text-red-500">{error.message}</p>} */}
                 </div>
               )}
             />
           </div>
 
-          <Controller
-            name="marketStatus"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value || ''} onValueChange={field.onChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue>{field.value || 'Market Status'}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="For Rent">For Rent</SelectItem>
-                  <SelectItem value="For Sale">For Sale</SelectItem>
-                  <SelectItem value="Sold">Sold</SelectItem>
-                  <SelectItem value="Pending">Pending</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          />
+          {/* Dropdown fields */}
+          <div className="w-full sm:w-[180px]">
+            <Controller
+              name="marketStatus"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value || ''}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue>{field.value || 'Market Status'}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="For Rent">For Rent</SelectItem>
+                    <SelectItem value="For Sale">For Sale</SelectItem>
+                    <SelectItem value="Sold">Sold</SelectItem>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
 
-          <Controller
-            name="beds"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value || ''} onValueChange={field.onChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue>{field.value || 'Beds'}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 Bed</SelectItem>
-                  <SelectItem value="2">2 Beds</SelectItem>
-                  <SelectItem value="3">3 Beds</SelectItem>
-                  <SelectItem value="4">4 Beds</SelectItem>
-                  <SelectItem value="5+">5+ Beds</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          />
+          <div className="w-full sm:w-[180px]">
+            <Controller
+              name="beds"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value || ''}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue>{field.value || 'Beds'}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 Bed</SelectItem>
+                    <SelectItem value="2">2 Beds</SelectItem>
+                    <SelectItem value="3">3 Beds</SelectItem>
+                    <SelectItem value="4">4 Beds</SelectItem>
+                    <SelectItem value="5+">5+ Beds</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
 
-          <Controller
-            name="baths"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value || ''} onValueChange={field.onChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue>{field.value || 'Baths'}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 Bath</SelectItem>
-                  <SelectItem value="2">2 Baths</SelectItem>
-                  <SelectItem value="3">3 Baths</SelectItem>
-                  <SelectItem value="4">4 Baths</SelectItem>
-                  <SelectItem value="5+">5+ Baths</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          />
+          <div className="w-full sm:w-[180px]">
+            <Controller
+              name="baths"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value || ''}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue>{field.value || 'Baths'}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 Bath</SelectItem>
+                    <SelectItem value="2">2 Baths</SelectItem>
+                    <SelectItem value="3">3 Baths</SelectItem>
+                    <SelectItem value="4">4 Baths</SelectItem>
+                    <SelectItem value="5+">5+ Baths</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
 
-          <Controller
-            name="propertyType"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value || ''} onValueChange={field.onChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue>{field.value || 'Property Type'}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="single_family">
-                    Single Family Home
-                  </SelectItem>
-                  <SelectItem value="Condo">Condo</SelectItem>
-                  <SelectItem value="Townhouse">Townhouse</SelectItem>
-                  <SelectItem value="Multi-Family">
-                    Multi-Family Home
-                  </SelectItem>
-                  <SelectItem value="Apartment">Apartment</SelectItem>
-                  <SelectItem value="Commercial">Commercial</SelectItem>
-                  <SelectItem value="Land">Land</SelectItem>
-                  <SelectItem value="New Construction">
-                    New Construction
-                  </SelectItem>
-                  <SelectItem value="Mobile Home">Mobile Home</SelectItem>
-                  <SelectItem value="Farm/Ranch">Farm/Ranch</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          />
+          <div className="w-full sm:w-[180px]">
+            <Controller
+              name="propertyType"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value || ''}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue>{field.value || 'Property Type'}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="single_family">
+                      Single Family Home
+                    </SelectItem>
+                    <SelectItem value="Condo">Condo</SelectItem>
+                    <SelectItem value="Townhouse">Townhouse</SelectItem>
+                    <SelectItem value="Multi-Family">
+                      Multi-Family Home
+                    </SelectItem>
+                    <SelectItem value="Apartment">Apartment</SelectItem>
+                    <SelectItem value="Commercial">Commercial</SelectItem>
+                    <SelectItem value="Land">Land</SelectItem>
+                    <SelectItem value="New Construction">
+                      New Construction
+                    </SelectItem>
+                    <SelectItem value="Mobile Home">Mobile Home</SelectItem>
+                    <SelectItem value="Farm/Ranch">Farm/Ranch</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
 
-          <Dialog open={showAdvanced} onOpenChange={setShowAdvanced}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="flex items-center">
-                Advanced
-                <Sliders className="ml-2 h-4 w-4" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Advanced Filters</DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <Controller
-                  name="advanced.radius"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <div className="grid grid-cols-2 items-center gap-4">
-                      <Label htmlFor="radius">Radius</Label>
-                      <Input
-                        id="radius"
-                        type="text"
-                        inputMode="decimal"
-                        placeholder="Enter radius"
-                        {...field}
-                        value={field.value} // Ensure the controlled value is used
-                        onChange={(e) => {
-                          // Optionally, you can sanitize the input or allow the Zod validation to handle it
-                          const value = e.target.value;
+          {/* Centered Advanced Button */}
+          <div className="flex w-full justify-center sm:w-auto sm:justify-start">
+            <Dialog open={showAdvanced} onOpenChange={setShowAdvanced}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="flex items-center">
+                  Advanced
+                  <Sliders className="ml-2 h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Advanced Filters</DialogTitle>
+                </DialogHeader>
 
-                          // Allow only valid numeric input up to 6 characters
-                          if (
-                            /^\d{0,6}(\.\d{0,5})?$/.test(value) &&
-                            !checkForSQLInjection(value)
-                          ) {
-                            field.onChange(value);
-                          }
-                        }}
-                        onBlur={(e) => {
-                          const value = e.target.value;
+                <div className="grid gap-4 py-4">
+                  {/* Restored Advanced Filter Fields */}
+                  <Controller
+                    name="advanced.radius"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <div className="grid grid-cols-2 items-center gap-4">
+                        <Label htmlFor="radius">Radius</Label>
+                        <Input
+                          id="radius"
+                          type="text"
+                          inputMode="decimal"
+                          placeholder="Enter radius"
+                          {...field}
+                          value={field.value}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (
+                              /^\d{0,6}(\.\d{0,5})?$/.test(value) &&
+                              !checkForSQLInjection(value)
+                            ) {
+                              field.onChange(value);
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (!/^\d{1,6}(\.\d{1,5})?$/.test(e.target.value)) {
+                              field.onChange('');
+                            }
+                          }}
+                        />
+                        {error && (
+                          <p className="text-red-500">{error.message}</p>
+                        )}
+                      </div>
+                    )}
+                  />
 
-                          // Optionally, clear invalid input when the field loses focus
-                          if (
-                            !/^\d{1,6}(\.\d{1,5})?$/.test(e.target.value) &&
-                            checkForSQLInjection(value)
-                          ) {
-                            field.onChange(''); // Clear the field if the input is invalid
-                          }
-                        }}
-                      />
-                      {error && <p className="text-red-500">{error.message}</p>}
-                    </div>
-                  )}
-                />
+                  <Controller
+                    name="advanced.pastDays"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <div className="grid grid-cols-2 items-center gap-4">
+                        <Label htmlFor="past_days">Past Days</Label>
+                        <Input
+                          id="past_days"
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="Enter days"
+                          {...field}
+                          value={field.value}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (
+                              /^\d{0,5}$/.test(value) &&
+                              !checkForSQLInjection(value)
+                            ) {
+                              field.onChange(value);
+                            }
+                          }}
+                          onBlur={field.onBlur}
+                        />
+                        {error && (
+                          <p className="text-red-500">{error.message}</p>
+                        )}
+                      </div>
+                    )}
+                  />
 
-                <Controller
-                  name="advanced.pastDays"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <div className="grid grid-cols-2 items-center gap-4">
-                      <Label htmlFor="past_days">Past Days</Label>
-                      <Input
-                        id="past_days"
-                        type="text" // Changed to text to match better control over the input
-                        inputMode="numeric" // Helps mobile browsers show numeric keyboards
-                        placeholder="Enter days"
-                        {...field}
-                        value={field.value} // Ensure the controlled value is used
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          // Optional: Allow only up to 5 digits
-                          if (
-                            /^\d{0,5}$/.test(value) &&
-                            !checkForSQLInjection(value)
-                          ) {
-                            field.onChange(value);
-                          }
-                        }}
-                        onBlur={() => {
-                          field.onBlur(); // Trigger any additional validation onBlur
-                        }}
-                      />
-                      {error && <p className="text-red-500">{error.message}</p>}
-                    </div>
-                  )}
-                />
+                  <Controller
+                    name="advanced.dateFrom"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="grid grid-cols-2 items-center gap-4">
+                        <Label htmlFor="date_from">Date From</Label>
+                        <Input id="date_from" type="date" {...field} />
+                      </div>
+                    )}
+                  />
 
-                <Controller
-                  name="advanced.dateFrom"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="grid grid-cols-2 items-center gap-4">
-                      <Label htmlFor="date_from">Date From</Label>
-                      <Input id="date_from" type="date" {...field} />
-                    </div>
-                  )}
-                />
+                  <Controller
+                    name="advanced.dateTo"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="grid grid-cols-2 items-center gap-4">
+                        <Label htmlFor="date_to">Date To</Label>
+                        <Input id="date_to" type="date" {...field} />
+                      </div>
+                    )}
+                  />
 
-                <Controller
-                  name="advanced.dateTo"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="grid grid-cols-2 items-center gap-4">
-                      <Label htmlFor="date_to">Date To</Label>
-                      <Input id="date_to" type="date" {...field} />
-                    </div>
-                  )}
-                />
+                  <Controller
+                    name="advanced.mlsOnly"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="mls_only"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <Label htmlFor="mls_only">MLS Only</Label>
+                      </div>
+                    )}
+                  />
 
-                <Controller
-                  name="advanced.mlsOnly"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="mls_only"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        onBlur={field.onBlur}
-                      />
-                      <Label htmlFor="mls_only">MLS Only</Label>
-                    </div>
-                  )}
-                />
+                  <Controller
+                    name="advanced.foreclosure"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="foreclosure"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <Label htmlFor="foreclosure">Foreclosure</Label>
+                      </div>
+                    )}
+                  />
 
-                <Controller
-                  name="advanced.foreclosure"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="foreclosure"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        onBlur={field.onBlur}
-                      />
-                      <Label htmlFor="foreclosure">Foreclosure</Label>
-                    </div>
-                  )}
-                />
-
-                <Controller
-                  name="advanced.proxy"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <div className="grid grid-cols-2 items-center gap-4">
-                      <Label htmlFor="proxy">Proxy</Label>
-                      <Input
-                        id="proxy"
-                        type="text"
-                        placeholder="Ex: http://user:pass@host:port"
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e.target.value); // Allow user to type freely
-                        }}
-                        onBlur={(e) => {
-                          const value = e.target.value;
-                          // Validate the input on blur to ensure it starts with http or https
-                          if (
-                            /^https?:\/\/.*/.test(value) ||
-                            (value === '' && !checkForSQLInjection(value))
-                          ) {
-                            field.onChange(value);
-                          } else {
-                            field.onChange(''); // Clear the field if it doesn't start with http or https
-                          }
-                          field.onBlur();
-                        }}
-                      />
-                      {error && <p className="text-red-500">{error.message}</p>}
-                    </div>
-                  )}
-                />
-
-                <Controller
-                  name="advanced.extraPropertyData"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="extra_property_data"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        onBlur={field.onBlur}
-                      />
-                      <Label htmlFor="extra_property_data">
-                        Extra Property Data
-                      </Label>
-                    </div>
-                  )}
-                />
-
-                <Controller
-                  name="advanced.excludePending"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="exclude_pending"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        onBlur={field.onBlur}
-                      />
-                      <Label htmlFor="exclude_pending">Exclude Pending</Label>
-                    </div>
-                  )}
-                />
-
-                <Controller
-                  name="advanced.limit"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <div className="grid grid-cols-2 items-center gap-4">
-                      <Label htmlFor="limit">Limit</Label>
-                      <Input
-                        id="limit"
-                        type="text" // Restrict input to numeric values
-                        placeholder="Enter a number between 1 and 10,000"
-                        {...field}
-                        value={field.value || ''} // Ensure value is a string or empty string
-                        min={1}
-                        max={10000}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          const numericValue = parseInt(value, 10);
-
-                          // Ensure the input is a number between 1 and 10,000
-                          if (
-                            !isNaN(numericValue) &&
-                            numericValue >= 1 &&
-                            numericValue <= 10000 &&
-                            !checkForSQLInjection(value)
-                          ) {
-                            field.onChange(value);
-                          } else if (value === '') {
-                            field.onChange(''); // Allow clearing the input
-                          }
-                        }}
-                      />
-                      {error && <p className="text-red-500">{error.message}</p>}
-                    </div>
-                  )}
-                />
-              </div>
-            </DialogContent>
-          </Dialog>
+                  <Controller
+                    name="advanced.proxy"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <div className="grid grid-cols-2 items-center gap-4">
+                        <Label htmlFor="proxy">Proxy</Label>
+                        <Input
+                          id="proxy"
+                          type="text"
+                          placeholder="Ex: http://user:pass@host:port"
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.value)}
+                          onBlur={(e) => {
+                            const value = e.target.value;
+                            if (
+                              /^https?:\/\/.*/.test(value) ||
+                              (value === '' && !checkForSQLInjection(value))
+                            ) {
+                              field.onChange(value);
+                            } else {
+                              field.onChange('');
+                            }
+                            field.onBlur();
+                          }}
+                        />
+                        {error && (
+                          <p className="text-red-500">{error.message}</p>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </div>
 
-      <div className="relative flex-grow">
-        <PropertySearchModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL
-          title="Welcome To Your Lead Search"
-          subtitle="Get help searching and segmenting your leads"
-          termsUrl="/terms-of-use" // Example URL for terms of use
-          // Add the following props to enable the tour
-          steps={campaignSteps} // Tour steps (array of objects with content and selectors)
-          isTourOpen={isTourOpen} // Boolean to track if the tour is currently open
-          onStartTour={handleStartTour} // Function to start the tour (triggered by button)
-          onCloseTour={handleCloseTour} // Function to close the tour
-        />
+      {/* Map and other content */}
+      <div className="relative h-[400px] flex-grow sm:h-[500px]">
         <MapComponent
           apiKey={process.env.NEXT_PUBLIC_GMAPS_KEY || ''}
           center={center}
@@ -527,7 +461,10 @@ export default function LeadsComponent() {
         {properties.length > 0 && !isDrawerOpen && (
           <Button
             type="button"
-            className="absolute right-20 top-5 overflow-hidden"
+            className="
+            {/* Default for    large screens */} {/* Overrides for
+            small screens */} absolute right-4    top-4 sm:bottom-4 sm:left-1/2 sm:right-auto sm:top-auto sm:-translate-x-1/2
+          "
             onClick={() => setIsDrawerOpen(true)}
           >
             Open Properties
