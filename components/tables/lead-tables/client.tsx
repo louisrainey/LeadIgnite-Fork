@@ -103,36 +103,37 @@ export const LeadClient: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-start justify-between">
-        {/* Heading Component */}
-        <Heading
-          title={`Lead Manager (${leads.length})`}
-          description="See a list of existing leads and follow ups, or create new leads."
-        />
-        <button
-          onClick={handleHelpOpenModal}
-          title="Get More help"
-          className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
-        >
-          <HelpCircle size={20} />
-        </button>
+      <div className="flex flex-col justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0">
+        {/* Heading Component and Help Button */}
+        <div className="flex items-center space-x-4">
+          <Heading
+            title={`Lead Manager (${leads.length})`}
+            description="See a list of existing leads and follow ups, or create new leads."
+          />
+          <button
+            onClick={handleHelpOpenModal}
+            title="Get More help"
+            className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+          >
+            <HelpCircle size={20} />
+          </button>
+        </div>
+
         {/* Right-aligned buttons */}
-        <div className="flex flex-col items-center space-y-2">
+        <div className="mt-4 flex flex-col items-center space-y-4 sm:mt-0 sm:flex-row sm:space-x-4 sm:space-y-0">
           {/* Create Lead and Export Leads Buttons Side by Side */}
-          <div className="flex space-x-4">
-            {/* Create Lead Button */}
+          <div className="flex w-full space-x-4 sm:w-auto">
             <Button
               onClick={openModal}
-              className="flex items-center space-x-2 rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+              className="flex w-full items-center space-x-2 rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 sm:w-auto"
             >
               <Plus className="h-5 w-5" />
               <span>Create Lead</span>
             </Button>
 
-            {/* Export Filtered Leads Button */}
             <Button
-              onClick={exportFilteredLeads} // Trigger the download on click
-              className="flex items-center space-x-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+              onClick={exportFilteredLeads}
+              className="flex w-full items-center space-x-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 sm:w-auto"
             >
               <Download className="h-5 w-5" />
               <span>Export Leads</span>
@@ -140,19 +141,18 @@ export const LeadClient: React.FC = () => {
           </div>
 
           {/* Today's Follow Ups and Filter Dropdown Buttons */}
-          <div className="mt-4 flex space-x-2">
-            {/* Today's Follow Ups Button */}
+          <div className="flex w-full space-x-2 sm:w-auto">
             <Button
               variant="outline"
-              className="overflow-hidden truncate whitespace-nowrap border-blue-600 text-blue-600"
-              onClick={filterByTodayFollowUps} // Trigger the filter for today's follow-ups
+              className="flex w-full items-center overflow-hidden truncate whitespace-nowrap border-blue-600 text-blue-600 sm:w-auto"
+              onClick={filterByTodayFollowUps}
             >
-              <Calendar className="mr-2" />
+              <Calendar className="mr-2 h-5 w-5" />{' '}
+              {/* Explicit size for the Calendar icon */}
               Today&apos;s Follow Ups
             </Button>
 
-            {/* Filter Button with Dropdown */}
-            <div className="relative" ref={filterDropdownRef}>
+            <div className="relative w-full sm:w-auto" ref={filterDropdownRef}>
               <FilterDropdown
                 selectedCampaign={selectedCampaign}
                 setSelectedCampaign={setSelectedCampaign}
@@ -160,7 +160,7 @@ export const LeadClient: React.FC = () => {
                 setSelectedStatus={setSelectedStatus}
                 resetFilter={resetFilter}
                 applyFilter={applyFilter}
-                availableCampaigns={availableCampaigns} // Pass available campaign IDs to the dropdown
+                availableCampaigns={availableCampaigns}
               />
             </div>
           </div>
