@@ -123,7 +123,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
             {/* Drawing Mode */}
             {!boundaryApplied && (
-              <div className="absolute left-1/2 top-4 z-10 -translate-x-1/2 transform rounded-lg bg-white p-2 text-center opacity-50 shadow-lg transition-opacity duration-300 hover:opacity-100">
+              <div
+                className="
+      absolute left-1/2 top-16 z-10 -translate-x-1/2 transform rounded-lg 
+      bg-white p-2 text-center opacity-50 shadow-lg transition-opacity 
+      duration-300 hover:opacity-100 lg:top-2
+    "
+              >
                 {!drawingMode ? (
                   <p className="mb-2 text-sm font-semibold text-gray-800">
                     Draw a shape around the properties you’d like to search for
