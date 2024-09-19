@@ -1,12 +1,14 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
-# Add video modal explaining each section
+# optimize mobile display
 
 # ⁉️ optimize load speeds
 
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # ✅ Add video modal explaining each section -->
 
 <!-- # 🪳 ✅ Fix add lead list modal not showing errors or submitting -->
 

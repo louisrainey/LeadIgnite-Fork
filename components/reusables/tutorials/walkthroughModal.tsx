@@ -7,7 +7,7 @@ interface PropertySearchModalProps {
   videoUrl: string; // URL for the embedded video
   title: string; // Title of the modal
   subtitle: string; // Subtitle for additional context
-  termsUrl: string; // Link to the Terms of Use
+  termsUrl?: string; // Optional link to the Terms of Use
   steps: Step[]; // Steps for the tour (Joyride uses Step[] type)
   isTourOpen: boolean; // Control if the tour is open or not
   onStartTour: () => void; // Function to start the tour
@@ -20,7 +20,7 @@ const PropertySearchModal: FC<PropertySearchModalProps> = ({
   videoUrl,
   title,
   subtitle,
-  termsUrl,
+  termsUrl, // Optional terms URL
   steps, // Tour steps array passed as prop
   isTourOpen, // Tour visibility state
   onStartTour, // Function to start the tour
@@ -79,17 +79,19 @@ const PropertySearchModal: FC<PropertySearchModalProps> = ({
             Got it
           </button>
 
-          {/* Clause */}
-          <p className="mt-4 text-sm text-gray-400 dark:text-gray-400">
-            The use of the OttoLeads Property Search is subject to our{' '}
-            <a
-              href={termsUrl}
-              className="text-blue-500 underline dark:text-blue-400"
-            >
-              Terms of Use
-            </a>
-            .
-          </p>
+          {/* Conditionally render the Terms of Use clause */}
+          {termsUrl && (
+            <p className="mt-4 text-sm text-gray-400 dark:text-gray-400">
+              The use of the OttoLeads Property Search is subject to our{' '}
+              <a
+                href={termsUrl}
+                className="text-blue-500 underline dark:text-blue-400"
+              >
+                Terms of Use
+              </a>
+              .
+            </p>
+          )}
 
           {/* Help Button for starting the tour */}
           <button

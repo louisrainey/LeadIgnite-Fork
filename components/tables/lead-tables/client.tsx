@@ -3,7 +3,14 @@ import React, { useState, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { Plus, Filter, Calendar, ChevronDown, Download } from 'lucide-react';
+import {
+  Plus,
+  Filter,
+  Calendar,
+  ChevronDown,
+  Download,
+  HelpCircle
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { leadListColumns } from './columns';
 import { Input } from '@/components/ui/input';
@@ -15,6 +22,8 @@ import { LeadDataTable } from './lead-data-table';
 import { useLeadStore } from '@/lib/stores/lead';
 import { formatISO, startOfToday, endOfToday } from 'date-fns'; // Ensure you import these utilities
 import { LeadStatus } from '@/types/_dashboard/leads';
+import { campaignSteps } from '@/_tests/tours/campaignTour';
+import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
 
 export const LeadClient: React.FC = () => {
   const router = useRouter();
@@ -23,7 +32,15 @@ export const LeadClient: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false); // State for filter dropdown visibility
   const [searchKey, setSearchKey] = useState(''); // Local state to manage search key
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false); // State for modal visibility
+  // Zustand's setCampaignType and filterCampaignsByStatus functions
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
+  const handleHelpOpenModal = () => setIsHelpModalOpen(true);
+  const handleHelpCloseModal = () => setIsHelpModalOpen(false);
+
+  const handleHelpStartTour = () => setIsTourOpen(true);
+  const handleHelpCloseTour = () => setIsTourOpen(false);
   // Zustand store states and actions
   const allLeads = useLeadStore((state) => state.leads);
   const leads = useLeadStore((state) => state.filteredLeads);
@@ -92,7 +109,13 @@ export const LeadClient: React.FC = () => {
           title={`Lead Manager (${leads.length})`}
           description="See a list of existing leads and follow ups, or create new leads."
         />
-
+        <button
+          onClick={handleHelpOpenModal}
+          title="Get More help"
+          className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+        >
+          <HelpCircle size={20} />
+        </button>
         {/* Right-aligned buttons */}
         <div className="flex flex-col items-center space-y-2">
           {/* Create Lead and Export Leads Buttons Side by Side */}
@@ -169,7 +192,18 @@ export const LeadClient: React.FC = () => {
           </Button>
         </div>
       )}
-
+      <PropertySearchModal
+        isOpen={isHelpModalOpen}
+        onClose={handleHelpCloseModal}
+        videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL
+        title="Welcome To Your Lead Manager"
+        subtitle="Get help managing and understanding your leads."
+        // Add the following props to enable the tour
+        steps={campaignSteps} // Tour steps (array of objects with content and selectors)
+        isTourOpen={isTourOpen} // Boolean to track if the tour is currently open
+        onStartTour={handleHelpStartTour} // Function to start the tour (triggered by button)
+        onCloseTour={handleHelpCloseTour} // Function to close the tour
+      />
       {/* Add Lead Modal */}
       <AddLeadModal isOpen={isModalOpen} onClose={closeModal} />
     </>
