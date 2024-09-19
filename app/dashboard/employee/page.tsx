@@ -111,7 +111,7 @@ export default function EmployeePage({
 
         {/* Employee Table */}
         <EmployeeTable
-          searchKey="country"
+          searchKey="employees"
           pageNo={page}
           columns={columns}
           totalUsers={totalUsers}
