@@ -5,8 +5,8 @@ import { APP_TESTING_MODE } from '../../../../constants/data';
 // Helper function to generate a mock team member
 const generateMockTeamMember = (): TeamMember => ({
   id: faker.string.uuid(),
-  firstName: faker.name.firstName(),
-  lastName: faker.name.lastName(),
+  firstName: faker.person.firstName(),
+  lastName: faker.person.lastName(),
   email: faker.internet.email(),
   role: faker.helpers.arrayElement(['admin', 'member']),
   permissions: {

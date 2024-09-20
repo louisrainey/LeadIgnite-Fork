@@ -30,7 +30,7 @@ const generateTaskActivity = (): TaskActivity => {
   const actions: TaskActivity['action'][] = ['created', 'updated', 'deleted'];
   const action = faker.helpers.arrayElement(actions); // Random action (created, updated, or deleted)
   const timestamp = faker.date.recent(); // Random recent timestamp
-  const performedBy = faker.name.fullName(); // Random person performing the action
+  const performedBy = faker.person.fullName(); // Random person performing the action
 
   return {
     action,
@@ -84,7 +84,7 @@ export const generateMockTasks = (count: number): KanbanTask[] => {
     const status = faker.helpers.arrayElement(statuses); // Random status for the task
     const priority = faker.helpers.arrayElement(priorities); // Random priority
     const dueDate = faker.date.future().toISOString().split('T')[0]; // Future date in YYYY-MM-DD format
-    const assignedToTeamMember = faker.name.fullName(); // Random team member name
+    const assignedToTeamMember = faker.person.fullName(); // Random team member name
 
     return {
       id: faker.string.uuid(),

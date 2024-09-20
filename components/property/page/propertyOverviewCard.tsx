@@ -1,8 +1,9 @@
 'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Pencil } from 'lucide-react'; // No need to use Save button now
+import { Pencil } from 'lucide-react';
 
 interface PropertyOverviewCardProps {
   property: any; // Replace with your property type if available
@@ -11,13 +12,12 @@ interface PropertyOverviewCardProps {
 const PropertyOverviewCard: React.FC<PropertyOverviewCardProps> = ({
   property
 }) => {
-  const [isEditing, setIsEditing] = useState(false); // Manage edit mode
-  const [ownerName, setOwnerName] = useState(property.agent); // Store owner name
-  const [tempOwnerName, setTempOwnerName] = useState(property.agent); // Temporary editable value
+  const [isEditing, setIsEditing] = useState(false);
+  const [ownerName, setOwnerName] = useState(property.agent);
+  const [tempOwnerName, setTempOwnerName] = useState(property.agent);
 
-  const inputRef = useRef<HTMLInputElement>(null); // Ref for input box
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Calculate equity and percentage
   const equity =
     property.estimated_value && property.mortgage_balance
       ? property.estimated_value - property.mortgage_balance
@@ -34,13 +34,11 @@ const PropertyOverviewCard: React.FC<PropertyOverviewCardProps> = ({
     equityStatus = 'Medium';
   }
 
-  // Save changes and exit edit mode
   const handleSave = () => {
-    setOwnerName(tempOwnerName); // Save edited owner name
-    setIsEditing(false); // Exit edit mode
+    setOwnerName(tempOwnerName);
+    setIsEditing(false);
   };
 
-  // Auto-save when clicking outside the input
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -60,7 +58,6 @@ const PropertyOverviewCard: React.FC<PropertyOverviewCardProps> = ({
     };
   }, [isEditing]);
 
-  // Handle "Enter" key to save
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       handleSave();
@@ -68,29 +65,27 @@ const PropertyOverviewCard: React.FC<PropertyOverviewCardProps> = ({
   };
 
   return (
-    <Card className="dark:bg-gray-800 dark:text-white">
-      <CardContent className="p-10">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 2xl:grid-cols-8">
-          {/* Owner Name Field */}
-          <div>
+    <Card className="mt-10 dark:bg-gray-800 dark:text-white">
+      <CardContent className="p-6 sm:p-10">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {/* Owner Name */}
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">Owner Name</h2>
-            <div className="flex items-center space-x-2">
-              {/* Editable input or static text */}
+            <div className="flex items-center justify-center space-x-2 lg:justify-start">
               {isEditing ? (
                 <input
-                  ref={inputRef} // Attach ref to input
+                  ref={inputRef}
                   type="text"
                   value={tempOwnerName}
                   onChange={(e) => setTempOwnerName(e.target.value)}
                   maxLength={50}
-                  onKeyDown={handleKeyDown} // Save on pressing "Enter"
-                  className="w-48 rounded border border-gray-300 p-1 dark:bg-gray-700 dark:text-white"
+                  onKeyDown={handleKeyDown}
+                  className="w-full max-w-xs rounded border border-gray-300 p-1 dark:bg-gray-700 dark:text-white"
                 />
               ) : (
                 <span>{ownerName}</span>
               )}
 
-              {/* Pencil button */}
               {!isEditing && (
                 <Pencil
                   onClick={() => setIsEditing(true)}
@@ -101,10 +96,10 @@ const PropertyOverviewCard: React.FC<PropertyOverviewCardProps> = ({
           </div>
 
           {/* Mortgages */}
-          <div>
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">
-              Mortgages{' '}
-              <span className="rounded-full bg-gray-200 px-2 text-sm dark:bg-gray-700 dark:text-gray-300">
+              Mortgages
+              <span className="ml-2 rounded-full bg-gray-200 px-2 text-sm dark:bg-gray-700 dark:text-gray-300">
                 0
               </span>
             </h2>
@@ -112,11 +107,11 @@ const PropertyOverviewCard: React.FC<PropertyOverviewCardProps> = ({
           </div>
 
           {/* Equity */}
-          <div>
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">
               Equity <span className="text-sm text-gray-500">(est.)</span>
             </h2>
-            <div className="flex items-center">
+            <div className="flex items-center justify-center lg:justify-start">
               {property.estimated_value
                 ? `$${equity.toLocaleString()} | ${equityPercentage.toFixed(
                     2
@@ -140,13 +135,14 @@ const PropertyOverviewCard: React.FC<PropertyOverviewCardProps> = ({
             />
           </div>
 
-          {/* Other Property Details */}
-          <div>
+          {/* Occupancy */}
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">Occupancy</h2>
             <div>Owner Occupied</div>
           </div>
 
-          <div>
+          {/* Taxes */}
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">Taxes</h2>
             <div>
               $
@@ -156,7 +152,8 @@ const PropertyOverviewCard: React.FC<PropertyOverviewCardProps> = ({
             </div>
           </div>
 
-          <div>
+          {/* Est. Value */}
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">Est. Value</h2>
             <div>
               $
@@ -166,24 +163,28 @@ const PropertyOverviewCard: React.FC<PropertyOverviewCardProps> = ({
             </div>
           </div>
 
-          <div>
+          {/* Last Sale */}
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">Last Sale</h2>
             <div>{property.last_sold_date || '-'}</div>
           </div>
 
-          <div>
+          {/* MLS */}
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">MLS</h2>
             <div>{property.mls_id || 'Inactive'}</div>
           </div>
 
-          <div>
+          {/* FMR */}
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">
               FMR <span className="text-sm text-gray-500">(HUD)</span>
             </h2>
             <div>$2,750.00/mo</div>
           </div>
 
-          <div>
+          {/* Rent */}
+          <div className="text-center lg:text-left">
             <h2 className="mb-2 font-semibold">
               Rent <span className="text-sm text-gray-500">(est.)</span>
             </h2>

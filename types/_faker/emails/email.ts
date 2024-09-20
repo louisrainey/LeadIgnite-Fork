@@ -60,8 +60,6 @@ export const generateSampleEmails = (count = 10): GetEmailByIdResponse[] => {
 export const mockGeneratedSampleEmails =
   APP_TESTING_MODE && generateSampleEmails();
 
-console.warn(mockGeneratedSampleEmails, 'Generated Mock Email Campaign');
-
 export const sampleEmail: GetEmailByIdResponse = {
   id: 'email-123',
   threadId: 'thread-001',

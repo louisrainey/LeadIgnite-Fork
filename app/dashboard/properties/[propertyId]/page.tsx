@@ -224,9 +224,9 @@ export default async function PropertyPage({
   return (
     <PageContainer scrollable={true}>
       <div className="mx-auto h-auto w-full max-w-full space-y-4">
-        {' '}
         {/* Full-width container */}
         <PropertyHeader property={property} />
+
         {/* Google Maps replacing Placeholder Image */}
         <div className="relative mb-4 h-64 w-full">
           <PropertyMap
@@ -236,37 +236,65 @@ export default async function PropertyPage({
             details={`${property.beds} bed | ${property.full_baths} bath | ${property.sqft} sqft | ${property.year_built} year built`}
           />
         </div>
+
         {/* Property Details */}
         <PropertyOverviewCard property={property} />
+
         {/* Tabs */}
         <Tabs defaultValue="overview" className="mt-6">
-          <TabsList className="scrollbar-hide flex space-x-4 overflow-x-auto">
-            <TabsTrigger value="overview" className="flex-shrink-0">
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="property-details" className="flex-shrink-0">
-              Property Details
-            </TabsTrigger>
-            <TabsTrigger value="mls-details" className="flex-shrink-0">
-              MLS Details
-            </TabsTrigger>
-            <TabsTrigger value="tax-information" className="flex-shrink-0">
-              Tax Information
-            </TabsTrigger>
-            <TabsTrigger value="linked-properties" className="flex-shrink-0">
-              Linked Properties
-            </TabsTrigger>
-            <TabsTrigger value="foreclosures-liens" className="flex-shrink-0">
-              Foreclosures & Liens
-            </TabsTrigger>
-            <TabsTrigger
-              value="mortgage-transactions"
-              className="flex-shrink-0"
+          {/* Scrollable Tab List */}
+          <div className="relative">
+            <TabsList
+              className="flex scroll-p-4 space-x-4 overflow-x-auto whitespace-nowrap px-6 sm:px-8 "
+              style={{ WebkitOverflowScrolling: 'touch' }} // Smooth scrolling on iOS
             >
-              Mortgage & Transactions
-            </TabsTrigger>
-          </TabsList>
+              {/* Individual Tabs */}
+              <TabsTrigger
+                value="overview"
+                className="flex-shrink-0 snap-start"
+              >
+                Overview
+              </TabsTrigger>
+              <TabsTrigger
+                value="property-details"
+                className="flex-shrink-0 snap-start"
+              >
+                Property Details
+              </TabsTrigger>
+              <TabsTrigger
+                value="mls-details"
+                className="flex-shrink-0 snap-start"
+              >
+                MLS Details
+              </TabsTrigger>
+              <TabsTrigger
+                value="tax-information"
+                className="flex-shrink-0 snap-start"
+              >
+                Tax Information
+              </TabsTrigger>
+              <TabsTrigger
+                value="linked-properties"
+                className="flex-shrink-0 snap-start"
+              >
+                Linked Properties
+              </TabsTrigger>
+              <TabsTrigger
+                value="foreclosures-liens"
+                className="flex-shrink-0 snap-start"
+              >
+                Foreclosures & Liens
+              </TabsTrigger>
+              <TabsTrigger
+                value="mortgage-transactions"
+                className="flex-shrink-0 snap-start"
+              >
+                Mortgage & Transactions
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
+          {/* Content for each tab */}
           <TabsContent value="overview">
             <ContactInformationCard property={emptyAgentProperty} />
             <WholesaleCalculator />
@@ -308,7 +336,6 @@ export default async function PropertyPage({
             <MortgageHistoryTable mortgages={mortgageData} />
             <SaleHistoryTable sales={saleHistoryData} />
           </TabsContent>
-          {/* Add other TabsContent components for the remaining tabs */}
         </Tabs>
       </div>
     </PageContainer>
