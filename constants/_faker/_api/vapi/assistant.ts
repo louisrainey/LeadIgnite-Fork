@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { APP_TESTING_MODE } from '../../../../constants/data';
+import { APP_TESTING_MODE } from '../../../data';
 
 // Function to generate mock AssistantVoice data
 function generateMockAssistantVoice(): AssistantVoice {

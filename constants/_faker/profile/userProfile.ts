@@ -2,15 +2,15 @@ import { AIKnowledgebase, UserProfile } from '@/types/userProfile';
 import {
   mockBillingHistory,
   mockPaymentDetails
-} from '@/types/_faker/profile/userData';
+} from '@/constants/_faker/profile/userData';
 import { faker } from '@faker-js/faker'; // Import Faker.js for random data generation
-import { mockTextCampaigns } from '@/types/_faker/texts/textCampaign';
-import { mockGeneratedSampleEmailCampaigns } from '@/types/_faker/emails/emailCampaign';
-import { mockSocialMediaCampaigns } from '@/types/_faker/social/socialCampaigns';
-import { mockCallCampaignData } from '@/types/_faker/calls/callCampaign';
-import { mockEmailCampaignAnalytics } from '@/types/_faker/analytics/email';
-import { mockCallCampaignAnalytics } from '@/types/_faker/analytics/call';
-import { mockTextMessageCampaignAnalytics } from '@/types/_faker/analytics/text';
+import { mockTextCampaigns } from '@/constants/_faker/texts/textCampaign';
+import { mockGeneratedSampleEmailCampaigns } from '@/constants/_faker/emails/emailCampaign';
+import { mockSocialMediaCampaigns } from '@/constants/_faker/social/socialCampaigns';
+import { mockCallCampaignData } from '@/constants/_faker/calls/callCampaign';
+import { mockEmailCampaignAnalytics } from '@/constants/_faker/analytics/email';
+import { mockCallCampaignAnalytics } from '@/constants/_faker/analytics/call';
+import { mockTextMessageCampaignAnalytics } from '@/constants/_faker/analytics/text';
 import { EmailCampaignAnalytics } from '@/types/goHighLevel/email';
 import { TextMessageCampaignAnalytics } from '@/types/goHighLevel/text';
 import { CallCampaignAnalytics } from '@/types/vapiAi/api/calls/get';

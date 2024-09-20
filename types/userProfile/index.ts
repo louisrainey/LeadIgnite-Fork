@@ -1,8 +1,11 @@
 import { GetSubAccountPathParams } from '@/types/goHighLevel/subAccounts';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { SocialMediaCampaign, CallCampaign } from '../_dashboard/campaign';
-import { BillingHistoryItem, PaymentDetails } from '../_faker/profile/userData';
-import { UserProfileSubscription } from '../_faker/profile/userSubscription';
+import {
+  BillingHistoryItem,
+  PaymentDetails
+} from '../../constants/_faker/profile/userData';
+import { UserProfileSubscription } from '../../constants/_faker/profile/userSubscription';
 import { EmailCampaign, EmailCampaignAnalytics } from '../goHighLevel/email';
 import {
   GHLTextMessageCampaign,

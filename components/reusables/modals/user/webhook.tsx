@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { ClipboardCopy, FileSearch } from 'lucide-react';
 import { useModalStore } from '@/lib/stores/dashboard';
 import { toast } from 'sonner';
-import { mockUserProfile } from '@/types/_faker/profile/userProfile';
+import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 
 // Webhook entry interface
 interface WebhookEntry {

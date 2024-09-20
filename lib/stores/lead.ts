@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { exportLeadsToExcel } from '../utils/files/loopDownloadTableData';
 import { toast } from 'sonner';
 import { LeadTypeGlobal } from '@/types/_dashboard/leads';
-import { MockUserProfile } from '@/types/_faker/profile/userProfile';
+import { MockUserProfile } from '@/constants/_faker/profile/userProfile';
 
 // Define the state and actions for managing leads
 interface LeadState {

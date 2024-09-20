@@ -7,7 +7,7 @@ import {
   TaskActivity
 } from '@/lib/stores/taskActions';
 import { faker } from '@faker-js/faker';
-import { APP_TESTING_MODE } from '../../../constants/data';
+import { APP_TESTING_MODE } from '../../data';
 
 // Default column structure with status-based `id`
 const defaultCols: KanbanColumn[] = [

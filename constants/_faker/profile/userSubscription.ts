@@ -1,4 +1,4 @@
-import { APP_TESTING_MODE } from '../../../constants/data';
+import { APP_TESTING_MODE } from '../../data';
 
 export interface UserProfileSubscription {
   id: string;

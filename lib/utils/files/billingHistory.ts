@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import ExcelJS from 'exceljs';
-import { BillingHistoryItem } from '@/types/_faker/profile/userData';
+import { BillingHistoryItem } from '@/constants/_faker/profile/userData';
 
 // Define the BillingHistoryItem interface
 

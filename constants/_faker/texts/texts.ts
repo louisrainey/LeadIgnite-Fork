@@ -1,6 +1,6 @@
 import { TextMessage } from '@/types/goHighLevel/text';
 import { faker } from '@faker-js/faker';
-import { APP_TESTING_MODE } from '../../../constants/data';
+import { APP_TESTING_MODE } from '../../data';
 
 // Generate a single sample TextMessage
 export const generateSampleTextMessage = (): TextMessage => {

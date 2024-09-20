@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils/kanban/utils';
 import { MobileSidebar } from './mobile-sidebar';
 import { UserNav } from './user-nav';
 import { UpgradeButton } from '../reusables/modals/user/upgrade';
-import { mockSubscriptions } from '@/types/_faker/profile/userSubscription';
+import { mockSubscriptions } from '@/constants/_faker/profile/userSubscription';
 
 export default function Header() {
   return (

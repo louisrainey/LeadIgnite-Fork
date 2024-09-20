@@ -15,7 +15,7 @@ import {
   AnalysisPlan
 } from '@/types/vapiAi/api/calls/get';
 import { faker } from '@faker-js/faker';
-import { APP_TESTING_MODE } from '../../../constants/data';
+import { APP_TESTING_MODE } from '../../data';
 
 // Mock Data for CallCampaignAnalytics
 const generateMockCallCampaignAnalytics = (): CallCampaignAnalytics => {

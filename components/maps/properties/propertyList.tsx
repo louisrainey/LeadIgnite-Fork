@@ -10,7 +10,7 @@ import { PropertyDetails } from '@/types/_dashboard/maps';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { usePropertyStore } from '@/lib/stores/leadSearch/drawer'; // Zustand store import
 import SkipTraceDialog from './utils/createListModal';
-import { MockUserProfile } from '@/types/_faker/profile/userProfile';
+import { MockUserProfile } from '@/constants/_faker/profile/userProfile';
 interface PropertyListProps {
   properties: PropertyDetails[];
 }

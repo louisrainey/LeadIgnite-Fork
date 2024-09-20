@@ -7,7 +7,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
 import { GripVertical } from 'lucide-react';
 import { Badge } from '../ui/badge';
-import { mockTeamMembers } from '@/types/_faker/profile/team/members';
+import { mockTeamMembers } from '@/constants/_faker/profile/team/members';
 
 // Priority-to-Badge variant mapping
 const priorityBadgeVariant = {

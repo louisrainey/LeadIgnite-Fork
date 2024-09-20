@@ -15,7 +15,7 @@ import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
 import {
   mockUserProfile,
   MockUserProfile
-} from '@/types/_faker/profile/userProfile';
+} from '@/constants/_faker/profile/userProfile';
 import { Modal } from '@/components/ui/modal';
 
 import { HelpCircle } from 'lucide-react';

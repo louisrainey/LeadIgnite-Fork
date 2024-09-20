@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import { EmailCampaign } from '@/types/goHighLevel/email';
 import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
-import { MockUserProfile } from '@/types/_faker/profile/userProfile';
+import { MockUserProfile } from '@/constants/_faker/profile/userProfile';
 // Define the campaign state and actions for Zustand
 interface CampaignState {
   currentCampaignType: 'email' | 'call' | 'text' | 'social'; // Track the current campaign type

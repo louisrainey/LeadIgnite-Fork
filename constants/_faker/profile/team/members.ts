@@ -1,6 +1,6 @@
 import { TeamMember } from '@/types/userProfile';
 import { faker } from '@faker-js/faker';
-import { APP_TESTING_MODE } from '../../../../constants/data';
+import { APP_TESTING_MODE } from '../../../data';
 
 // Helper function to generate a mock team member
 const generateMockTeamMember = (): TeamMember => ({

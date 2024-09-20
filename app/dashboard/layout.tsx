@@ -9,7 +9,7 @@ import { WebhookModal } from '@/components/reusables/modals/user/webhook';
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/sonner';
 import { InviteEmployeeModal } from '@/components/tables/employee-tables/utils/addEmployee';
-import { mockUserProfile } from '@/types/_faker/profile/userProfile';
+import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 export const metadata: Metadata = {
   title:
     'Lead Ignite Dashboard | Real Estate Property Search & Market Analysis',
