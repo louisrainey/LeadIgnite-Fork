@@ -130,7 +130,7 @@ export default function LeadsComponent() {
           description="See a list of existing leads and follow ups, or create new leads."
         />
 
-        <div className="mb-4 flex w-full justify-center sm:mt-4">
+        <div className="mb-4 mt-2 flex w-full justify-center">
           <button
             onClick={handleOpenModal}
             type="button"
