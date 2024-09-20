@@ -1,4 +1,3 @@
-import { KanbanTask } from '@/lib/stores/taskActions';
 import { useDndContext, type UniqueIdentifier } from '@dnd-kit/core';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -10,11 +9,7 @@ import { Card, CardContent, CardHeader } from '../ui/card';
 import { ColumnActions } from './column-action';
 import { TaskCard } from './task-card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-
-export interface KanbanColumn {
-  id: UniqueIdentifier;
-  title: string;
-}
+import { KanbanColumn, KanbanTask } from '@/types/_dashboard/kanban';
 
 export type ColumnType = 'Column';
 

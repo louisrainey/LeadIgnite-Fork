@@ -1,4 +1,4 @@
-import { UserProfile } from '@/types/userProfile';
+import { AIKnowledgebase, UserProfile } from '@/types/userProfile';
 import {
   mockBillingHistory,
   mockPaymentDetails
@@ -20,6 +20,46 @@ import { mockKanbanState } from '../kanban';
 import { mockTeamMembers } from './team/members';
 import { mockTrackingData } from './team/tasks';
 import { mockSubscriptions } from './userSubscription';
+
+// Updated aIKnowledgebase object with Faker.js dynamic values
+
+// Example object adhering to AIKnowledgebase interface with Faker.js data
+const aIKnowledgebase: AIKnowledgebase = {
+  emailTemplate: faker.lorem.sentence(), // Static or faker.lorem.sentence()
+  salesScript: faker.lorem.sentence(), // Static or faker.lorem.sentence()
+  assignedAssistantID: faker.helpers.arrayElement(['ai', 'female', 'male']), // Randomly chosen from the array
+  assignedSquadID: faker.string.uuid(), // Random UUID for the assigned squad
+
+  recordings: {
+    voiceClone: {
+      audioFile: faker.system.filePath(), // Path to cloned voice audio file (generated dynamically)
+      clonedVoiceID: faker.string.uuid() // Unique ID for the cloned voice
+    },
+    voicemailFile: faker.system.filePath() // Path to voicemail audio file (generated dynamically)
+  },
+
+  aiAvatar: {
+    avatarKandidFile: faker.system.filePath(), // Path to Kandid avatar file (generated dynamically)
+    avatarMotionFile: faker.system.filePath(), // Path to avatar motion file (generated dynamically)
+    videoDetails: {
+      title: faker.lorem.words(3), // Example video title
+      description: faker.lorem.sentence(), // Example video description
+      ctaText: 'Click here', // Call-to-action text (static value)
+      ctaLink: faker.internet.url() // Example call-to-action URL link
+    }
+  },
+
+  background: {
+    // Correctly added 'background' at the root level
+    backgroundVideoFile: faker.system.filePath(), // Path to background video file
+    backgroundMusic: faker.music.songName(), // Random song name from Faker.js
+    colorScheme: {
+      primaryColor: '#FF5733', // Example hex color for primary color
+      secondaryColor: '#33FF57', // Example hex color for secondary color
+      accentColor: '#5733FF' // Optional accent color in hex format
+    }
+  }
+};
 
 // Mocking a user profile with Faker.js
 export const mockUserProfile: UserProfile = {
@@ -88,12 +128,7 @@ export const mockUserProfile: UserProfile = {
     leadLists: mockLeadListData // Assuming lead lists are generated or static
   },
 
-  aIKnowledgebase: {
-    emailTemplate: 'Welcome to our real estate service...', // Static or faker.lorem.sentence()
-    salesScript: 'Use this script when calling...', // Static or faker.lorem.sentence()
-    assignedAssistantID: faker.helpers.arrayElement(['ai', 'female', 'male']),
-    assignedSquadID: faker.string.uuid()
-  },
+  aIKnowledgebase: aIKnowledgebase,
 
   billingHistory: [
     {

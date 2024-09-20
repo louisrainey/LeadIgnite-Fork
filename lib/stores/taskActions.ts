@@ -1,65 +1,13 @@
 import { create } from 'zustand';
 import { v4 as uuid } from 'uuid';
 import { persist } from 'zustand/middleware';
-import { KanbanColumn } from '@/components/kanban/board-column';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { mockUserProfile } from '@/types/_faker/profile/userProfile';
-
-export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE' | null;
-
-const defaultCols = [
-  {
-    id: 'TODO',
-    title: 'To Do'
-  },
-  {
-    id: 'IN_PROGRESS',
-    title: 'In Progress'
-  },
-  {
-    id: 'DONE',
-    title: 'Done'
-  }
-] satisfies KanbanColumn[];
-
-export type ColumnId = (typeof defaultCols)[number]['id'];
-export type Priority = 'low' | 'medium' | 'high' | 'urgent';
-
-export interface TaskActivity {
-  action: 'created' | 'updated' | 'deleted';
-  timestamp: Date;
-  performedBy: string; // Name of the person who performed the action
-}
-
-export interface TaskTracking {
-  totalTasks: number;
-  tasksByStatus: {
-    TODO: number;
-    IN_PROGRESS: number;
-    DONE: number;
-  };
-  tasksAssigned: number;
-  tasksCompleted: number;
-  tasksInProgress: number;
-  assignedTasks: Record<string, KanbanTask[]>; // Tracks tasks by team member
-  taskHistory: TaskActivity[]; // History of all task actions
-}
-export interface KanbanTask {
-  id: string;
-  title: string;
-  description?: string;
-  status: Status;
-  priority?: Priority;
-  dueDate?: string; // YYYY-MM-DD format
-  assignedToTeamMember?: string;
-  activityLog?: TaskActivity[]; // Log of task activities
-}
-
-export type KanbanState = {
-  tasks: KanbanTask[];
-  columns: KanbanColumn[];
-  draggedTask: string | null;
-};
+import {
+  KanbanTask,
+  KanbanState,
+  KanbanColumn
+} from '@/types/_dashboard/kanban';
 
 export const initialTasks: KanbanTask[] = [
   {
