@@ -1,4 +1,3 @@
-import { LeadList } from '@/constants/dashboard/leadList';
 import { GetSubAccountPathParams } from '@/types/goHighLevel/subAccounts';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { SocialMediaCampaign, CallCampaign } from '../_dashboard/campaign';
@@ -10,9 +9,12 @@ import {
   TextMessageCampaignAnalytics
 } from '../goHighLevel/text';
 import { CallCampaignAnalytics } from '../vapiAi/api/calls/get';
-import { KanbanState, TaskTracking } from '@/lib/stores/taskActions';
 import { LeadTypeGlobal } from '../_dashboard/leads';
+import VoiceClone from '@/public/lottie/RecordingButton.json';
+import { LeadList } from '../_dashboard/leadList';
+import { TaskTracking, KanbanState } from '../_dashboard/kanban';
 
+type HexColor = `#${string}`;
 export interface LeadPreferences {
   preferredLocation: string[]; // Array of preferred locations
   industry: string; // Preferred industry for leads
@@ -115,11 +117,43 @@ export interface CompanyInfo {
 }
 
 // AI Knowledgebase Type
+
+// Correct AIKnowledgebase interface with the 'background' property
 export interface AIKnowledgebase {
-  emailTemplate?: string; // Optional email field, with potential Markdown/HTML validation
+  emailTemplate?: string; // Optional email field
   salesScript?: string; // Optional sales script field
   assignedAssistantID: string; // e.g., 'female', 'male', 'ai'
-  assignedSquadID: string;
+  assignedSquadID: string; // UUID for the assigned squad
+  recordings: {
+    voiceClone?: {
+      // Optional voice clone object
+      audioFile: string; // Path to the audio file for the voice clone
+      clonedVoiceID: string; // Unique identifier for the cloned voice
+    };
+    voicemailFile: string; // Path to the voicemail file
+  };
+  aiAvatar?: {
+    // Optional AI avatar object
+    avatarKandidFile: string; // Path to the Kandid avatar file
+    avatarMotionFile: string; // Path to the avatar motion file
+    videoDetails: {
+      // Video details for the avatar
+      title: string; // Title of the video
+      description: string; // Description of the video
+      ctaText: string; // Call-to-action text
+      ctaLink: string; // Call-to-action URL link
+    };
+  };
+  background?: {
+    // Optional background object (fix here)
+    backgroundVideoFile: string; // Path to the background video file
+    backgroundMusic: string; // Path to the background music file
+    colorScheme: {
+      primaryColor: HexColor; // Primary color as a hex code
+      secondaryColor: HexColor; // Secondary color as a hex code
+      accentColor?: HexColor; // Optional accent color as a hex code
+    };
+  };
 }
 
 export interface UserProfile {
