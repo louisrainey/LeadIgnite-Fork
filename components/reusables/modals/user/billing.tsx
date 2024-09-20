@@ -121,14 +121,32 @@ const ManageSubscriptionModal: React.FC<ManageSubscriptionModalProps> = ({
               <p className="text-sm text-muted-foreground dark:text-gray-400">
                 Price: ${subscription.price} / {subscriptionType}
               </p>
+
+              {/* AI Credits */}
               <p className="text-sm text-muted-foreground dark:text-gray-400">
-                AI Credits: {subscription.aiCredits.allotted}
+                AI Credits: {subscription.aiCredits.used} /{' '}
+                {subscription.aiCredits.allotted} used
               </p>
               <p className="text-sm text-muted-foreground dark:text-gray-400">
-                Leads: {subscription.leads}
+                Resets in: {subscription.aiCredits.resetInDays} days
+              </p>
+
+              {/* Leads */}
+              <p className="text-sm text-muted-foreground dark:text-gray-400">
+                Leads: {subscription.leads.used} / {subscription.leads.allotted}{' '}
+                used
               </p>
               <p className="text-sm text-muted-foreground dark:text-gray-400">
-                Skip Traces: {subscription.skipTraces}
+                Resets in: {subscription.leads.resetInDays} days
+              </p>
+
+              {/* Skip Traces */}
+              <p className="text-sm text-muted-foreground dark:text-gray-400">
+                Skip Traces: {subscription.skipTraces.used} /{' '}
+                {subscription.skipTraces.allotted} used
+              </p>
+              <p className="text-sm text-muted-foreground dark:text-gray-400">
+                Resets in: {subscription.skipTraces.resetInDays} days
               </p>
             </div>
 

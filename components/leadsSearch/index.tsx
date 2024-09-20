@@ -51,8 +51,7 @@ export default function LeadsComponent() {
     lat: 39.7392,
     lng: -104.9903
   });
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
-  // Zustand's setCampaignType and filterCampaignsByStatus functions
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTourOpen, setIsTourOpen] = useState(false);
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -119,9 +118,10 @@ export default function LeadsComponent() {
       console.log('New Center:', newCenter);
     }
   };
+
   return (
     <form
-      onSubmit={() => handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
       className="flex h-screen w-full flex-col"
     >
       <div className="flex w-full flex-col items-center text-center">
@@ -144,8 +144,8 @@ export default function LeadsComponent() {
 
       {/* Input fields container */}
       <div className="border-b p-2">
-        <div className="mb-4 flex flex-wrap items-center space-x-2 space-y-2 overflow-x-auto whitespace-nowrap sm:space-y-0 ">
-          <div className="relative w-full flex-grow sm:w-auto ">
+        <div className="mb-4 flex flex-wrap items-center space-x-2 space-y-2 overflow-x-auto whitespace-nowrap sm:space-y-0">
+          <div className="relative w-full flex-grow sm:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
             <Controller
               name="location"
@@ -174,6 +174,7 @@ export default function LeadsComponent() {
           </div>
 
           {/* Dropdown fields */}
+
           <div className="w-full sm:w-[180px]">
             <Controller
               name="marketStatus"
@@ -244,210 +245,215 @@ export default function LeadsComponent() {
               )}
             />
           </div>
+          <div className="flex w-full space-x-2 sm:w-auto">
+            <div className="mt-2 w-full sm:w-[180px]">
+              <Controller
+                name="propertyType"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value || ''}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue>
+                        {field.value || 'Property Type'}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="single_family">
+                        Single Family Home
+                      </SelectItem>
+                      <SelectItem value="Condo">Condo</SelectItem>
+                      <SelectItem value="Townhouse">Townhouse</SelectItem>
+                      <SelectItem value="Multi-Family">
+                        Multi-Family Home
+                      </SelectItem>
+                      <SelectItem value="Apartment">Apartment</SelectItem>
+                      <SelectItem value="Commercial">Commercial</SelectItem>
+                      <SelectItem value="Land">Land</SelectItem>
+                      <SelectItem value="New Construction">
+                        New Construction
+                      </SelectItem>
+                      <SelectItem value="Mobile Home">Mobile Home</SelectItem>
+                      <SelectItem value="Farm/Ranch">Farm/Ranch</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
 
-          <div className="w-full sm:w-[180px]">
-            <Controller
-              name="propertyType"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  value={field.value || ''}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue>{field.value || 'Property Type'}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="single_family">
-                      Single Family Home
-                    </SelectItem>
-                    <SelectItem value="Condo">Condo</SelectItem>
-                    <SelectItem value="Townhouse">Townhouse</SelectItem>
-                    <SelectItem value="Multi-Family">
-                      Multi-Family Home
-                    </SelectItem>
-                    <SelectItem value="Apartment">Apartment</SelectItem>
-                    <SelectItem value="Commercial">Commercial</SelectItem>
-                    <SelectItem value="Land">Land</SelectItem>
-                    <SelectItem value="New Construction">
-                      New Construction
-                    </SelectItem>
-                    <SelectItem value="Mobile Home">Mobile Home</SelectItem>
-                    <SelectItem value="Farm/Ranch">Farm/Ranch</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
+            {/* Centered Advanced Button */}
+            <div className="mt-2 flex w-full justify-center sm:w-auto sm:justify-start">
+              <Dialog open={showAdvanced} onOpenChange={setShowAdvanced}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="flex items-center">
+                    Advanced
+                    <Sliders className="ml-2 h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Advanced Filters</DialogTitle>
+                  </DialogHeader>
 
-          {/* Centered Advanced Button */}
-          <div className="flex w-full justify-center sm:w-auto sm:justify-start">
-            <Dialog open={showAdvanced} onOpenChange={setShowAdvanced}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="flex items-center">
-                  Advanced
-                  <Sliders className="ml-2 h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Advanced Filters</DialogTitle>
-                </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    {/* Restored Advanced Filter Fields */}
+                    <Controller
+                      name="advanced.radius"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <div className="grid grid-cols-2 items-center gap-4">
+                          <Label htmlFor="radius">Radius</Label>
+                          <Input
+                            id="radius"
+                            type="text"
+                            inputMode="decimal"
+                            placeholder="Enter radius"
+                            {...field}
+                            value={field.value}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (
+                                /^\d{0,6}(\.\d{0,5})?$/.test(value) &&
+                                !checkForSQLInjection(value)
+                              ) {
+                                field.onChange(value);
+                              }
+                            }}
+                            onBlur={(e) => {
+                              if (
+                                !/^\d{1,6}(\.\d{1,5})?$/.test(e.target.value)
+                              ) {
+                                field.onChange('');
+                              }
+                            }}
+                          />
+                          {error && (
+                            <p className="text-red-500">{error.message}</p>
+                          )}
+                        </div>
+                      )}
+                    />
 
-                <div className="grid gap-4 py-4">
-                  {/* Restored Advanced Filter Fields */}
-                  <Controller
-                    name="advanced.radius"
-                    control={control}
-                    render={({ field, fieldState: { error } }) => (
-                      <div className="grid grid-cols-2 items-center gap-4">
-                        <Label htmlFor="radius">Radius</Label>
-                        <Input
-                          id="radius"
-                          type="text"
-                          inputMode="decimal"
-                          placeholder="Enter radius"
-                          {...field}
-                          value={field.value}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (
-                              /^\d{0,6}(\.\d{0,5})?$/.test(value) &&
-                              !checkForSQLInjection(value)
-                            ) {
-                              field.onChange(value);
-                            }
-                          }}
-                          onBlur={(e) => {
-                            if (!/^\d{1,6}(\.\d{1,5})?$/.test(e.target.value)) {
-                              field.onChange('');
-                            }
-                          }}
-                        />
-                        {error && (
-                          <p className="text-red-500">{error.message}</p>
-                        )}
-                      </div>
-                    )}
-                  />
+                    <Controller
+                      name="advanced.pastDays"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <div className="grid grid-cols-2 items-center gap-4">
+                          <Label htmlFor="past_days">Past Days</Label>
+                          <Input
+                            id="past_days"
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="Enter days"
+                            {...field}
+                            value={field.value}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (
+                                /^\d{0,5}$/.test(value) &&
+                                !checkForSQLInjection(value)
+                              ) {
+                                field.onChange(value);
+                              }
+                            }}
+                            onBlur={field.onBlur}
+                          />
+                          {error && (
+                            <p className="text-red-500">{error.message}</p>
+                          )}
+                        </div>
+                      )}
+                    />
 
-                  <Controller
-                    name="advanced.pastDays"
-                    control={control}
-                    render={({ field, fieldState: { error } }) => (
-                      <div className="grid grid-cols-2 items-center gap-4">
-                        <Label htmlFor="past_days">Past Days</Label>
-                        <Input
-                          id="past_days"
-                          type="text"
-                          inputMode="numeric"
-                          placeholder="Enter days"
-                          {...field}
-                          value={field.value}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (
-                              /^\d{0,5}$/.test(value) &&
-                              !checkForSQLInjection(value)
-                            ) {
-                              field.onChange(value);
-                            }
-                          }}
-                          onBlur={field.onBlur}
-                        />
-                        {error && (
-                          <p className="text-red-500">{error.message}</p>
-                        )}
-                      </div>
-                    )}
-                  />
+                    <Controller
+                      name="advanced.dateFrom"
+                      control={control}
+                      render={({ field }) => (
+                        <div className="grid grid-cols-2 items-center gap-4">
+                          <Label htmlFor="date_from">Date From</Label>
+                          <Input id="date_from" type="date" {...field} />
+                        </div>
+                      )}
+                    />
 
-                  <Controller
-                    name="advanced.dateFrom"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="grid grid-cols-2 items-center gap-4">
-                        <Label htmlFor="date_from">Date From</Label>
-                        <Input id="date_from" type="date" {...field} />
-                      </div>
-                    )}
-                  />
+                    <Controller
+                      name="advanced.dateTo"
+                      control={control}
+                      render={({ field }) => (
+                        <div className="grid grid-cols-2 items-center gap-4">
+                          <Label htmlFor="date_to">Date To</Label>
+                          <Input id="date_to" type="date" {...field} />
+                        </div>
+                      )}
+                    />
 
-                  <Controller
-                    name="advanced.dateTo"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="grid grid-cols-2 items-center gap-4">
-                        <Label htmlFor="date_to">Date To</Label>
-                        <Input id="date_to" type="date" {...field} />
-                      </div>
-                    )}
-                  />
+                    <Controller
+                      name="advanced.mlsOnly"
+                      control={control}
+                      render={({ field }) => (
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="mls_only"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                          <Label htmlFor="mls_only">MLS Only</Label>
+                        </div>
+                      )}
+                    />
 
-                  <Controller
-                    name="advanced.mlsOnly"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="mls_only"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                        <Label htmlFor="mls_only">MLS Only</Label>
-                      </div>
-                    )}
-                  />
+                    <Controller
+                      name="advanced.foreclosure"
+                      control={control}
+                      render={({ field }) => (
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="foreclosure"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                          <Label htmlFor="foreclosure">Foreclosure</Label>
+                        </div>
+                      )}
+                    />
 
-                  <Controller
-                    name="advanced.foreclosure"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="foreclosure"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                        <Label htmlFor="foreclosure">Foreclosure</Label>
-                      </div>
-                    )}
-                  />
-
-                  <Controller
-                    name="advanced.proxy"
-                    control={control}
-                    render={({ field, fieldState: { error } }) => (
-                      <div className="grid grid-cols-2 items-center gap-4">
-                        <Label htmlFor="proxy">Proxy</Label>
-                        <Input
-                          id="proxy"
-                          type="text"
-                          placeholder="Ex: http://user:pass@host:port"
-                          {...field}
-                          onChange={(e) => field.onChange(e.target.value)}
-                          onBlur={(e) => {
-                            const value = e.target.value;
-                            if (
-                              /^https?:\/\/.*/.test(value) ||
-                              (value === '' && !checkForSQLInjection(value))
-                            ) {
-                              field.onChange(value);
-                            } else {
-                              field.onChange('');
-                            }
-                            field.onBlur();
-                          }}
-                        />
-                        {error && (
-                          <p className="text-red-500">{error.message}</p>
-                        )}
-                      </div>
-                    )}
-                  />
-                </div>
-              </DialogContent>
-            </Dialog>
+                    <Controller
+                      name="advanced.proxy"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <div className="grid grid-cols-2 items-center gap-4">
+                          <Label htmlFor="proxy">Proxy</Label>
+                          <Input
+                            id="proxy"
+                            type="text"
+                            placeholder="Ex: http://user:pass@host:port"
+                            {...field}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            onBlur={(e) => {
+                              const value = e.target.value;
+                              if (
+                                /^https?:\/\/.*/.test(value) ||
+                                (value === '' && !checkForSQLInjection(value))
+                              ) {
+                                field.onChange(value);
+                              } else {
+                                field.onChange('');
+                              }
+                              field.onBlur();
+                            }}
+                          />
+                          {error && (
+                            <p className="text-red-500">{error.message}</p>
+                          )}
+                        </div>
+                      )}
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
         {properties.length > 0 && !isDrawerOpen && (
@@ -475,7 +481,6 @@ export default function LeadsComponent() {
         title="Welcome To Your Lead Search"
         subtitle="Get help searching and segmenting your leads"
         termsUrl="/terms-of-use" // Example URL for terms of use
-        // Add the following props to enable the tour
         steps={campaignSteps} // Tour steps (array of objects with content and selectors)
         isTourOpen={isTourOpen} // Boolean to track if the tour is currently open
         onStartTour={handleStartTour} // Function to start the tour (triggered by button)
