@@ -4,9 +4,12 @@ import {
   CallType,
   EndedReason,
   GetCallResponse
-} from '../../vapiAi/api/calls/get';
-import { CallCampaign, campaignStatusesGB } from '../../_dashboard/campaign';
-import { APP_TESTING_MODE } from '../../../constants/data';
+} from '../../../types/vapiAi/api/calls/get';
+import {
+  CallCampaign,
+  campaignStatusesGB
+} from '../../../types/_dashboard/campaign';
+import { APP_TESTING_MODE } from '../../data';
 
 // Helper function to generate a phone number in the +1-XXX-XXX-XXXX format
 const generatePhoneNumber = (): string => {

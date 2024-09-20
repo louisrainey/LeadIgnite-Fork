@@ -1,8 +1,8 @@
 'use client';
 
 import { useModalStore } from '@/lib/stores/dashboard';
-import { mockUserProfile } from '@/types/_faker/profile/userProfile';
-import { UserProfileSubscription } from '@/types/_faker/profile/userSubscription';
+import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
+import { UserProfileSubscription } from '@/constants/_faker/profile/userSubscription';
 import React, { useState, useEffect } from 'react';
 
 interface UsageData {

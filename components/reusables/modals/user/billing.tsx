@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { useModalStore } from '@/lib/stores/dashboard';
-import { UserProfileSubscription } from '@/types/_faker/profile/userSubscription';
+import { UserProfileSubscription } from '@/constants/_faker/profile/userSubscription';
 import { downloadBillingHistoryAsXlsx } from '@/lib/utils/files/billingHistory';
 import { PaymentModal } from './paymentDetailts';
 import {
   BillingHistoryItem,
   PaymentDetails
-} from '@/types/_faker/profile/userData';
+} from '@/constants/_faker/profile/userData';
 
 // Modal Props
 interface BillingModalProps {

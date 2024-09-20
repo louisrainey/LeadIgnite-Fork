@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Task, TaskActivity, TaskTracking } from '@/lib/stores/taskActions';
-import { APP_TESTING_MODE } from '../../../../constants/data';
+import { APP_TESTING_MODE } from '../../../data';
 
 // Generate mock TaskActivity logs using Faker.js
 const generateMockTaskActivity = (): TaskActivity[] => {

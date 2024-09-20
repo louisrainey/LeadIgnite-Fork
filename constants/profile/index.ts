@@ -3,8 +3,8 @@ import { generateMockLeadLists, mockLeadListData } from '../dashboard/leadList';
 import {
   mockBillingHistory,
   mockPaymentDetails
-} from '@/types/_faker/profile/userData';
-import { mockKanbanState } from '@/types/_faker/kanban';
+} from '@/constants/_faker/profile/userData';
+import { mockKanbanState } from '@/constants/_faker/kanban';
 import { TaskTracking } from '@/lib/stores/taskActions';
 import { mockGeneratedLeads } from '../data';
 

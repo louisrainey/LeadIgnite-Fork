@@ -10,7 +10,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { SubscriptionFeatures } from '@/constants/dashboard/featureList';
 import { useModalStore } from '@/lib/stores/dashboard';
-import { UserProfileSubscription } from '@/types/_faker/profile/userSubscription';
+import { UserProfileSubscription } from '@/constants/_faker/profile/userSubscription';
 import { PhoneCall, UserCheck, TrendingUp, ArrowUpCircle } from 'lucide-react';
 import Link from 'next/link';
 

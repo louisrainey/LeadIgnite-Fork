@@ -22,8 +22,8 @@ import type { KanbanColumn } from './board-column';
 import { BoardColumn, BoardContainer } from './board-column';
 import NewSectionDialog from './new-section-dialog';
 import { TaskCard } from './task-card';
-import { mockTeamMembers } from '@/types/_faker/profile/team/members';
-import { mockUserProfile } from '@/types/_faker/profile/userProfile';
+import { mockTeamMembers } from '@/constants/_faker/profile/team/members';
+import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 
 const defaultCols = mockUserProfile.companyInfo.KanbanTasks
   .columns satisfies (KanbanColumn | null)[];

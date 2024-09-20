@@ -35,7 +35,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import VoiceSelector from './utils/voice/selector';
-import { mockVoices } from '@/types/_faker/_api/vapi/assistant';
+import { mockVoices } from '@/constants/_faker/_api/vapi/assistant';
 import { UploadEmailBody } from './utils/voice/uploadEmailBody';
 import UploadSalesScript from './utils/voice/uploadScript';
 import { campaignSteps } from '@/_tests/tours/campaignTour';

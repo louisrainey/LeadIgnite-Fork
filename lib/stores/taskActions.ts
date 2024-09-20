@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { v4 as uuid } from 'uuid';
 import { persist } from 'zustand/middleware';
 import { UniqueIdentifier } from '@dnd-kit/core';
-import { mockUserProfile } from '@/types/_faker/profile/userProfile';
+import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 import {
   KanbanTask,
   KanbanState,
