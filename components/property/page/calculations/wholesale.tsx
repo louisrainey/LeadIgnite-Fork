@@ -8,6 +8,7 @@ export default function WholesaleCalculator() {
   const [assignmentFee, setAssignmentFee] = useState<number | ''>(''); // Assignment Fee
   const [profitMargin, setProfitMargin] = useState<number>(0.7); // Profit Margin default to 70%
 
+  // Calculate Max Allowable Offer
   const calculateMAO = () => {
     if (arv && repairs && assignmentFee !== '') {
       return arv * profitMargin - repairs - assignmentFee;
@@ -22,15 +23,16 @@ export default function WholesaleCalculator() {
   };
 
   return (
-    <div className="my-2 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:text-gray-100">
+    <div className="my-4 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:text-gray-100">
       <h2 className="mb-4 text-xl font-bold">Wholesale Calculator</h2>
       <p className="mb-4">
         Easily make the right wholesale offer with confidence.
       </p>
 
-      <div className="mb-4 grid grid-cols-2 gap-4">
+      {/* Responsive Grid */}
+      <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col">
-          <label className="text-gray-700 dark:text-gray-300">
+          <label className="mb-2 text-gray-700 dark:text-gray-300">
             After Repair Value (ARV)*
           </label>
           <input
@@ -42,7 +44,7 @@ export default function WholesaleCalculator() {
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-gray-700 dark:text-gray-300">
+          <label className="mb-2 text-gray-700 dark:text-gray-300">
             Cost of Repairs*
           </label>
           <input
@@ -54,7 +56,7 @@ export default function WholesaleCalculator() {
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-gray-700 dark:text-gray-300">
+          <label className="mb-2 text-gray-700 dark:text-gray-300">
             Assignment Fee*
           </label>
           <input
@@ -66,7 +68,7 @@ export default function WholesaleCalculator() {
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-gray-700 dark:text-gray-300">
+          <label className="mb-2 text-gray-700 dark:text-gray-300">
             Profit Margin*
           </label>
           <select

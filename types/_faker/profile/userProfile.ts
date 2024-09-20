@@ -32,7 +32,7 @@ export const mockUserProfile: UserProfile = {
   city: faker.location.city(),
 
   leadPreferences: {
-    preferredLocation: [faker.location.city(), faker.address.city()],
+    preferredLocation: [faker.location.city(), faker.location.city()],
     industry: 'Real Estate', // Static or use faker.commerce.department()
     minLeadQuality: faker.number.int({ min: 60, max: 100 }),
     maxBudget: faker.number.int({ min: 1000, max: 10000 })

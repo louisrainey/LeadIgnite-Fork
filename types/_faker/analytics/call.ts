@@ -117,7 +117,7 @@ const generateMockCallCampaignAnalytics = (): CallCampaignAnalytics => {
         'google',
         'custom'
       ]), // LLM provider selection
-      model: faker.name.firstName(), // Placeholder model name
+      model: faker.person.firstName(), // Placeholder model name
       temperature: faker.number.float({ min: 0.1, max: 1.0 }),
       maxTokens: faker.number.int({ min: 100, max: 1000 }),
       emotionRecognitionEnabled: faker.datatype.boolean(),

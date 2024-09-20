@@ -41,11 +41,6 @@ const generateSampleEmailCampaigns = (count = 100): EmailCampaign[] => {
 export const mockGeneratedSampleEmailCampaigns =
   APP_TESTING_MODE && generateSampleEmailCampaigns();
 
-console.warn(
-  mockGeneratedSampleEmailCampaigns,
-  'Generated Mock Email Campaign'
-);
-
 export const sampleEmailCampaign: EmailCampaign = {
   id: 'campaign-001',
   name: 'Welcome Campaign',

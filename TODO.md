@@ -32,7 +32,7 @@
 
 # Add usage to leads skip traces
 
-# optimize mobile display [Lead Search,Campaign Page,Lead Manager,Lead List Manager| Billing Modal]
+# Fix horizontal scroll on property view
 
 # Set up user onbaording with https://www.npmjs.com/package/@frigade/react
 
@@ -43,6 +43,8 @@
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # ✅ optimize mobile display [Lead Search,Campaign Page,Lead Manager,Lead List Manager| Billing Modal] -->
 
 <!-- # ✅ Add video modal explaining each section -->
 
