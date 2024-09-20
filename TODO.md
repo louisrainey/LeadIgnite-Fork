@@ -30,19 +30,21 @@
 
 # 🧪 Create onboarding test for GHL
 
-# Add usage to leads skip traces
-
-# Fix horizontal scroll on property view
-
 # Set up user onbaording with https://www.npmjs.com/package/@frigade/react
+
+# 🪳 Fix horizontal scroll on property view being clipped out
 
 # ⁉️ optimize load speeds
 
-# Add layout to speific [] page
+# Add layout to speific [] pages
 
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # ✅  Add usage to leads skip traces -->
+
+<!-- #🪳   Fix horizontal scroll on property view -->
 
 <!-- # ✅ optimize mobile display [Lead Search,Campaign Page,Lead Manager,Lead List Manager| Billing Modal] -->
 

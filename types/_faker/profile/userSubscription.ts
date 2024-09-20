@@ -11,8 +11,16 @@ export interface UserProfileSubscription {
     used: number; // AI credits used
     resetInDays: number; // Countdown for next credit reset in days
   };
-  leads: number; // Number of leads included in the plan
-  skipTraces: number; // Number of skip traces included in the plan
+  leads: {
+    allotted: number; // Total leads allotted
+    used: number; // Leads used
+    resetInDays: number; // Countdown for next lead reset in days
+  };
+  skipTraces: {
+    allotted: number; // Total skip traces allotted
+    used: number; // Skip traces used
+    resetInDays: number; // Countdown for next skip trace reset in days
+  };
   renewalDate: string; // Date of renewal
   createdAt: string; // Date of creation
   planDetails: string; // Extra details about the plan
@@ -27,8 +35,16 @@ const planDetails = {
       used: 200, // Example usage
       resetInDays: 15 // Example reset countdown
     },
-    leads: 200,
-    skipTraces: 50
+    leads: {
+      allotted: 200,
+      used: 50, // Example usage
+      resetInDays: 15 // Example reset countdown for leads
+    },
+    skipTraces: {
+      allotted: 50,
+      used: 10, // Example usage
+      resetInDays: 15 // Example reset countdown for skip traces
+    }
   },
   basic: {
     name: 'Basic',
@@ -38,8 +54,16 @@ const planDetails = {
       used: 500, // Example usage
       resetInDays: 30 // Example reset countdown
     },
-    leads: 500,
-    skipTraces: 100
+    leads: {
+      allotted: 500,
+      used: 200, // Example usage
+      resetInDays: 30 // Example reset countdown for leads
+    },
+    skipTraces: {
+      allotted: 100,
+      used: 50, // Example usage
+      resetInDays: 30 // Example reset countdown for skip traces
+    }
   },
   enterprise: {
     name: 'Enterprise',
@@ -49,8 +73,16 @@ const planDetails = {
       used: 1000, // Example usage
       resetInDays: 7 // Example reset countdown
     },
-    leads: 1000,
-    skipTraces: 300
+    leads: {
+      allotted: 1000,
+      used: 300, // Example usage
+      resetInDays: 7 // Example reset countdown for leads
+    },
+    skipTraces: {
+      allotted: 300,
+      used: 100, // Example usage
+      resetInDays: 7 // Example reset countdown for skip traces
+    }
   }
 };
 
@@ -63,9 +95,21 @@ const generateMockSubscriptions = (): UserProfileSubscription[] => {
       type: 'monthly',
       status: 'active',
       price: `$${planDetails.earlyAdopter.price}`,
-      aiCredits: planDetails.earlyAdopter.aiCredits,
-      leads: planDetails.earlyAdopter.leads,
-      skipTraces: planDetails.earlyAdopter.skipTraces,
+      aiCredits: {
+        allotted: planDetails.earlyAdopter.aiCredits.allotted,
+        used: planDetails.earlyAdopter.aiCredits.used,
+        resetInDays: planDetails.earlyAdopter.aiCredits.resetInDays
+      },
+      leads: {
+        allotted: planDetails.earlyAdopter.leads.allotted,
+        used: planDetails.earlyAdopter.leads.used,
+        resetInDays: planDetails.earlyAdopter.leads.resetInDays
+      },
+      skipTraces: {
+        allotted: planDetails.earlyAdopter.skipTraces.allotted,
+        used: planDetails.earlyAdopter.skipTraces.used,
+        resetInDays: planDetails.earlyAdopter.skipTraces.resetInDays
+      },
       renewalDate: 'Sep 09, 2024', // Example renewal date
       createdAt: 'Sep 09, 2023', // Example creation date
       planDetails:
@@ -77,9 +121,21 @@ const generateMockSubscriptions = (): UserProfileSubscription[] => {
       type: 'yearly',
       status: 'inactive',
       price: `$${planDetails.basic.price}`,
-      aiCredits: planDetails.basic.aiCredits,
-      leads: planDetails.basic.leads,
-      skipTraces: planDetails.basic.skipTraces,
+      aiCredits: {
+        allotted: planDetails.basic.aiCredits.allotted,
+        used: planDetails.basic.aiCredits.used,
+        resetInDays: planDetails.basic.aiCredits.resetInDays
+      },
+      leads: {
+        allotted: planDetails.basic.leads.allotted,
+        used: planDetails.basic.leads.used,
+        resetInDays: planDetails.basic.leads.resetInDays
+      },
+      skipTraces: {
+        allotted: planDetails.basic.skipTraces.allotted,
+        used: planDetails.basic.skipTraces.used,
+        resetInDays: planDetails.basic.skipTraces.resetInDays
+      },
       renewalDate: 'Aug 12, 2024',
       createdAt: 'Aug 12, 2023',
       planDetails:
@@ -91,9 +147,21 @@ const generateMockSubscriptions = (): UserProfileSubscription[] => {
       type: 'yearly',
       status: 'active',
       price: `$${planDetails.enterprise.price}`,
-      aiCredits: planDetails.enterprise.aiCredits,
-      leads: planDetails.enterprise.leads,
-      skipTraces: planDetails.enterprise.skipTraces,
+      aiCredits: {
+        allotted: planDetails.enterprise.aiCredits.allotted,
+        used: planDetails.enterprise.aiCredits.used,
+        resetInDays: planDetails.enterprise.aiCredits.resetInDays
+      },
+      leads: {
+        allotted: planDetails.enterprise.leads.allotted,
+        used: planDetails.enterprise.leads.used,
+        resetInDays: planDetails.enterprise.leads.resetInDays
+      },
+      skipTraces: {
+        allotted: planDetails.enterprise.skipTraces.allotted,
+        used: planDetails.enterprise.skipTraces.used,
+        resetInDays: planDetails.enterprise.skipTraces.resetInDays
+      },
       renewalDate: 'Jan 01, 2025',
       createdAt: 'Jan 01, 2024',
       planDetails:

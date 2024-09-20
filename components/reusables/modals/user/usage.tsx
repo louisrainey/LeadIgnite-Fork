@@ -123,8 +123,8 @@ const AiUsageModal: React.FC = () => {
               <path
                 className="text-gray-200 dark:text-gray-700"
                 d="M18 2.0845
-                  a 15.9155 15.9155 0 0 1 0 31.831
-                  a 15.9155 15.9155 0 0 1 0 -31.831"
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="4"
@@ -133,8 +133,8 @@ const AiUsageModal: React.FC = () => {
                 className="text-blue-600"
                 strokeDasharray={`${usagePercentage}, 100`}
                 d="M18 2.0845
-                  a 15.9155 15.9155 0 0 1 0 31.831
-                  a 15.9155 15.9155 0 0 1 0 -31.831"
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="4"
@@ -150,6 +150,7 @@ const AiUsageModal: React.FC = () => {
 
           {/* Usage Details */}
           <div className="mt-4 text-center">
+            {/* AI Credits */}
             <div className="text-sm text-gray-500 dark:text-gray-400">
               AI Credits Used:
             </div>
@@ -157,20 +158,23 @@ const AiUsageModal: React.FC = () => {
               {used} / {allotted}
             </div>
 
+            {/* Leads */}
             <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               Leads Included:
             </div>
             <div className="text-lg font-medium text-gray-800 dark:text-gray-200">
-              {leads}
+              {leads.used} / {leads.allotted}
             </div>
 
+            {/* Skip Traces */}
             <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               Skip Traces Included:
             </div>
             <div className="text-lg font-medium text-gray-800 dark:text-gray-200">
-              {skipTraces}
+              {skipTraces.used} / {skipTraces.allotted}
             </div>
 
+            {/* Credit Reset */}
             <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               Next Credit Reset In:
             </div>
