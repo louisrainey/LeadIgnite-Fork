@@ -42,11 +42,15 @@ const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
 
   return (
     <div className="my-2 w-full rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
-      <div className="flex items-center justify-between">
+      {/* Title and buttons container */}
+      <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+        {/* Title */}
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           Contact Information
         </h2>
-        <div className="flex space-x-2">
+
+        {/* Buttons */}
+        <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
           {!isContactInfoAvailable && (
             <>
               <Button variant="outline" onClick={openAddContactModal}>

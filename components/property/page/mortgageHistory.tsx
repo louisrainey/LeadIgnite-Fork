@@ -23,76 +23,42 @@ export const MortgageHistoryTable: React.FC<MortgageHistoryProps> = ({
       <h3 className="mb-4 text-center text-lg font-semibold dark:text-white">
         Mortgage History
       </h3>
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border-collapse border border-gray-200 text-left dark:border-gray-700">
-          <thead>
-            <tr className="bg-gray-100 dark:bg-gray-700">
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Loan Position
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Recording Date
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Loan Amount
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Est. Rate
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Document Number
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Deed Type
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Lender Name
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Lender Type
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Grantee Names
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Loan Type
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-800">
+      <div className="mx-auto max-w-[800px] overflow-x-auto">
+        <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+          <tbody>
             {mortgages.map((mortgage, idx) => (
-              <tr key={idx}>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.loan_position}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.recording_date}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.loan_amount}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.est_rate}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.document_number}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.deed_type}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.lender_name}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.lender_type}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.grantee_names}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {mortgage.loan_type}
-                </td>
-              </tr>
+              <React.Fragment key={idx}>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <th className="px-4 py-2 font-semibold">Loan Position</th>
+                  <td className="px-4 py-2">{mortgage.loan_position}</td>
+                  <th className="px-4 py-2 font-semibold">Recording Date</th>
+                  <td className="px-4 py-2">{mortgage.recording_date}</td>
+                </tr>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <th className="px-4 py-2 font-semibold">Loan Amount</th>
+                  <td className="px-4 py-2">{mortgage.loan_amount}</td>
+                  <th className="px-4 py-2 font-semibold">Est. Rate</th>
+                  <td className="px-4 py-2">{mortgage.est_rate || '-'}</td>
+                </tr>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <th className="px-4 py-2 font-semibold">Document Number</th>
+                  <td className="px-4 py-2">{mortgage.document_number}</td>
+                  <th className="px-4 py-2 font-semibold">Deed Type</th>
+                  <td className="px-4 py-2">{mortgage.deed_type}</td>
+                </tr>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <th className="px-4 py-2 font-semibold">Lender Name</th>
+                  <td className="px-4 py-2">{mortgage.lender_name}</td>
+                  <th className="px-4 py-2 font-semibold">Lender Type</th>
+                  <td className="px-4 py-2">{mortgage.lender_type}</td>
+                </tr>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <th className="px-4 py-2 font-semibold">Grantee Name(s)</th>
+                  <td className="px-4 py-2">{mortgage.grantee_names}</td>
+                  <th className="px-4 py-2 font-semibold">Loan Type</th>
+                  <td className="px-4 py-2">{mortgage.loan_type}</td>
+                </tr>
+              </React.Fragment>
             ))}
           </tbody>
         </table>
@@ -119,56 +85,37 @@ export const SaleHistoryTable: React.FC<SaleHistoryProps> = ({ sales }) => {
       <h3 className="mb-4 text-center text-lg font-semibold dark:text-white">
         Sale History
       </h3>
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border-collapse border border-gray-200 text-left dark:border-gray-700">
-          <thead>
-            <tr className="bg-gray-100 dark:bg-gray-700">
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Date of Sale
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">Amount</th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Purchase Method
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Document Type
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Transaction Type
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Seller Names
-              </th>
-              <th className="border px-4 py-2 dark:border-gray-700">
-                Buyer Names
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-800">
+      <div className="mx-auto max-w-[800px] overflow-x-auto">
+        <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+          <tbody>
             {sales.map((sale, idx) => (
-              <tr key={idx}>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {sale.date_of_sale}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {sale.amount}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {sale.purchase_method}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {sale.document_type}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {sale.transaction_type}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {sale.seller_names}
-                </td>
-                <td className="border px-4 py-2 dark:border-gray-700">
-                  {sale.buyer_names}
-                </td>
-              </tr>
+              <React.Fragment key={idx}>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <th className="px-4 py-2 font-semibold">Date of Sale</th>
+                  <td className="px-4 py-2">{sale.date_of_sale}</td>
+                  <th className="px-4 py-2 font-semibold">Amount</th>
+                  <td className="px-4 py-2">{sale.amount}</td>
+                </tr>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <th className="px-4 py-2 font-semibold">Purchase Method</th>
+                  <td className="px-4 py-2">{sale.purchase_method}</td>
+                  <th className="px-4 py-2 font-semibold">Document Type</th>
+                  <td className="px-4 py-2">{sale.document_type}</td>
+                </tr>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <th className="px-4 py-2 font-semibold">Transaction Type</th>
+                  <td className="px-4 py-2">{sale.transaction_type}</td>
+                  <th className="px-4 py-2 font-semibold">Seller Name(s)</th>
+                  <td className="px-4 py-2">{sale.seller_names}</td>
+                </tr>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <th className="px-4 py-2 font-semibold">Buyer Name(s)</th>
+                  <td className="px-4 py-2">{sale.buyer_names}</td>
+                  {/* Empty cells for proper 4-column layout */}
+                  <th className="px-4 py-2"></th>
+                  <td className="px-4 py-2"></td>
+                </tr>
+              </React.Fragment>
             ))}
           </tbody>
         </table>
