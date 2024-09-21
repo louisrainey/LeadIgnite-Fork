@@ -30,10 +30,10 @@ import {
 } from '@/types/zod/profile-form-schema';
 import { cn } from '@/lib/utils/kanban/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertTriangleIcon, HelpCircle, Trash, Trash2Icon } from 'lucide-react';
+import { HelpCircle, Trash, Trash2Icon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import VoiceSelector from './utils/voice/selector';
 import { mockVoices } from '@/constants/_faker/_api/vapi/assistant';
 import { UploadEmailBody } from './utils/voice/uploadEmailBody';
