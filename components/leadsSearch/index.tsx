@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { HelpCircle, Search, Sliders } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,18 +22,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import {
-  Coordinate,
-  MapFormSchemaType,
-  PropertyDetails
-} from '@/types/_dashboard/maps';
+import { Coordinate, MapFormSchemaType } from '@/types/_dashboard/maps';
 import { mapFormSchema } from '@/types/zod/propertyList';
 import {
   mockFetchAddressesFromApi,
   calculateCenter
 } from '@/constants/utility/maps';
-import PropertyListView from '@/components/maps/properties/propertyList';
-import { detailed_properties_saved } from '@/constants/dashboard/properties';
 import { checkForSQLInjection } from '@/constants/utility/sqlCheck';
 import { toast } from 'sonner';
 import { usePropertyStore } from '@/lib/stores/leadSearch/drawer';

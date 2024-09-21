@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
-import { LeadTypeGlobal } from '@/constants/data';
+import { LeadTypeGlobal } from '@/types/_dashboard/leads';
 
 interface ActivitySidebarProps {
   onClose: () => void; // Prop to close the sidebar

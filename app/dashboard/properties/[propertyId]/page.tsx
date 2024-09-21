@@ -1,14 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PencilIcon, SearchIcon } from 'lucide-react';
 import { PropertyDetails } from '@/types/_dashboard/maps';
-import { Button } from '@/components/ui/button';
 import { detailed_properties_saved } from '@/constants/dashboard/properties';
 import { notFound } from 'next/navigation';
 import PropertyMap from '@/components/maps/properties/propertyMap';
-import { Progress } from '@/components/ui/progress';
 import PropertyHeader from '@/components/property/page/propertyHeader';
-import PropertyCard from '@/components/maps/properties/propertyCard';
 import PropertyCardDataComponent from '@/components/property/page/propertyDetailsCard';
 import LandLocationInformationComponent from '@/components/property/page/landLocationInformation';
 import {
@@ -20,7 +15,6 @@ import TaxInformationComponent from '@/components/property/page/taxInformation';
 import MLSTableComponent from '@/components/property/page/mlsData';
 import LinkedPropertiesComponent from '@/components/property/page/linkedProperties';
 import ForeclosuresComponent from '@/components/property/page/forclusureLiens';
-import TransactionTable from '@/components/property/page/transactionsTable';
 import {
   MortgageHistoryTable,
   SaleHistoryTable
@@ -35,6 +29,16 @@ import ContactInformationCard from '@/components/property/page/contactCard';
 import { emptyAgentProperty } from '@/constants/dashboard/testProperties';
 import PropertyOverviewCard from '@/components/property/page/propertyOverviewCard';
 import PageContainer from '@/components/layout/page-container';
+import { useState } from 'react';
+import PropertyTabsList from './utils/propertyTabs';
+import {
+  exampleLinkedPropertyData,
+  foreclosureData,
+  liensData,
+  saleData,
+  mortgageData,
+  saleHistoryData
+} from '@/constants/dashboard/profileInfo';
 // Async function to fetch property data
 async function fetchProperty(id: string): Promise<PropertyDetails | null> {
   try {
@@ -145,85 +149,79 @@ export default async function PropertyPage({
     county: property.county ?? 'N/A'
   };
 
-  const exampleLinkedPropertyData = {
-    totalProperties: 3,
-    totalOpenLoanAmount: 300000,
-    totalEstimatedValue: 1500000,
-    totalEquity: 1200000,
-    linkedProperties: [
-      {
-        id: '1',
-        address: '123 Main St',
-        estimatedValue: 500000,
-        openLoanAmount: 100000,
-        equity: 400000
-      },
-      {
-        id: '2',
-        address: '456 Elm St',
-        estimatedValue: 700000,
-        openLoanAmount: 200000,
-        equity: 500000
-      },
-      {
-        id: '3',
-        address: '789 Oak St',
-        estimatedValue: 300000,
-        openLoanAmount: 0,
-        equity: 300000
-      }
-    ]
-  };
-
-  const foreclosureData = {
-    active: null,
-    documentType: null,
-    recordingDate: null,
-    originalLoanAmount: null,
-    estimatedBankValue: null
-  };
-
-  const liensData = {
-    taxLiens: 'No' // Assume we know there are no tax liens
-  };
-
-  const mortgageData = [
+  const tabsData = [
     {
-      loan_position: 'First',
-      recording_date: '01/02/2021',
-      loan_amount: '$880,000',
-      est_rate: '-',
-      document_number: '949555205',
-      deed_type: 'Deed Of Trust',
-      lender_name: 'First Centennial Mortgage Corp',
-      lender_type: 'Mortgage Company',
-      grantee_names: 'Fredric M Winocur, Patricia S Winocur',
-      loan_type: 'Conventional'
+      value: 'overview',
+      label: 'Overview',
+      content: (
+        <>
+          <ContactInformationCard property={emptyAgentProperty} />
+          <WholesaleCalculator />
+          <AmortizationCalculator />
+        </>
+      )
+    },
+    {
+      value: 'property-details',
+      label: 'Property Details',
+      content: (
+        <>
+          <OwnershipInformationComponent ownership={ownershipData} />
+          <PropertyCardDataComponent property={property} />
+          <LandLocationInformationComponent landLocation={landLocationData} />
+        </>
+      )
+    },
+    {
+      value: 'mls-details',
+      label: 'MLS Details',
+      content: <MLSTableComponent mlsData={mlsData} />
+    },
+    {
+      value: 'tax-information',
+      label: 'Tax Information',
+      content: <TaxInformationComponent taxInfo={taxInfo} />
+    },
+    {
+      value: 'linked-properties',
+      label: 'Linked Properties',
+      content: (
+        <LinkedPropertiesComponent
+          totalProperties={exampleLinkedPropertyData.totalProperties}
+          totalOpenLoanAmount={exampleLinkedPropertyData.totalOpenLoanAmount}
+          totalEstimatedValue={exampleLinkedPropertyData.totalEstimatedValue}
+          totalEquity={exampleLinkedPropertyData.totalEquity}
+          linkedProperties={exampleLinkedPropertyData.linkedProperties}
+        />
+      )
+    },
+    {
+      value: 'foreclosures-liens',
+      label: 'Foreclosures & Liens',
+      content: (
+        <ForeclosuresComponent
+          foreclosureData={foreclosureData}
+          liensData={liensData}
+        />
+      )
+    },
+    {
+      value: 'mortgage-transactions',
+      label: 'Mortgage & Transactions',
+      content: (
+        <>
+          <LastSaleTable sale={saleData} />
+          <CurrentMortgageTable mortgage={mortgageData[0]} />
+          <MortgageHistoryTable mortgages={mortgageData} />
+          <SaleHistoryTable sales={saleHistoryData} />
+        </>
+      )
     }
   ];
-  const saleData = {
-    date_of_sale: '23/10/2012',
-    amount: 1150000, // Sale amount in dollars
-    purchase_method: 'Financed',
-    document_type: 'Warranty Deed',
-    transaction_type: 'Transfer',
-    seller_names: 'Harvey, Gary E', // Seller's name
-    buyer_names: 'Fredric M Winocur, Patricia S Winocur' // Buyer's name
-  };
-  const saleHistoryData = [
-    {
-      date_of_sale: '23/10/2012',
-      amount: '$1,150,000',
-      purchase_method: 'Financed',
-      document_type: 'Warranty Deed',
-      transaction_type: 'Transfer',
-      seller_names: 'Harvey, Gary E',
-      buyer_names: 'Fredric M Winocur, Patricia S Winocur'
-    }
-  ];
+
   return (
     <PageContainer scrollable={true}>
-      <div className="mx-auto h-auto w-full max-w-full space-y-4">
+      <div className=" h-auto w-full  space-y-4">
         {/* Full-width container */}
         <PropertyHeader property={property} />
 
@@ -240,103 +238,7 @@ export default async function PropertyPage({
         {/* Property Details */}
         <PropertyOverviewCard property={property} />
 
-        {/* Tabs */}
-        <Tabs defaultValue="overview" className="mt-6">
-          {/* Scrollable Tab List */}
-          <div className="relative">
-            <TabsList
-              className="flex scroll-p-4 space-x-4 overflow-x-auto whitespace-nowrap px-6 sm:px-8 "
-              style={{ WebkitOverflowScrolling: 'touch' }} // Smooth scrolling on iOS
-            >
-              {/* Individual Tabs */}
-              <TabsTrigger
-                value="overview"
-                className="flex-shrink-0 snap-start"
-              >
-                Overview
-              </TabsTrigger>
-              <TabsTrigger
-                value="property-details"
-                className="flex-shrink-0 snap-start"
-              >
-                Property Details
-              </TabsTrigger>
-              <TabsTrigger
-                value="mls-details"
-                className="flex-shrink-0 snap-start"
-              >
-                MLS Details
-              </TabsTrigger>
-              <TabsTrigger
-                value="tax-information"
-                className="flex-shrink-0 snap-start"
-              >
-                Tax Information
-              </TabsTrigger>
-              <TabsTrigger
-                value="linked-properties"
-                className="flex-shrink-0 snap-start"
-              >
-                Linked Properties
-              </TabsTrigger>
-              <TabsTrigger
-                value="foreclosures-liens"
-                className="flex-shrink-0 snap-start"
-              >
-                Foreclosures & Liens
-              </TabsTrigger>
-              <TabsTrigger
-                value="mortgage-transactions"
-                className="flex-shrink-0 snap-start"
-              >
-                Mortgage & Transactions
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          {/* Content for each tab */}
-          <TabsContent value="overview">
-            <ContactInformationCard property={emptyAgentProperty} />
-            <WholesaleCalculator />
-            <AmortizationCalculator />
-          </TabsContent>
-          <TabsContent value="property-details">
-            <OwnershipInformationComponent ownership={ownershipData} />
-            <PropertyCardDataComponent property={property} />
-            <LandLocationInformationComponent landLocation={landLocationData} />
-          </TabsContent>
-          <TabsContent value="mls-details">
-            <MLSTableComponent mlsData={mlsData} />
-          </TabsContent>
-          <TabsContent value="tax-information">
-            <TaxInformationComponent taxInfo={taxInfo} />
-          </TabsContent>
-          <TabsContent value="linked-properties">
-            <LinkedPropertiesComponent
-              totalProperties={exampleLinkedPropertyData.totalProperties}
-              totalOpenLoanAmount={
-                exampleLinkedPropertyData.totalOpenLoanAmount
-              }
-              totalEstimatedValue={
-                exampleLinkedPropertyData.totalEstimatedValue
-              }
-              totalEquity={exampleLinkedPropertyData.totalEquity}
-              linkedProperties={exampleLinkedPropertyData.linkedProperties}
-            />
-          </TabsContent>
-          <TabsContent value="foreclosures-liens">
-            <ForeclosuresComponent
-              foreclosureData={foreclosureData}
-              liensData={liensData}
-            />
-          </TabsContent>
-          <TabsContent value="mortgage-transactions">
-            <LastSaleTable sale={saleData} />
-            <CurrentMortgageTable mortgage={mortgageData[0]} />
-            <MortgageHistoryTable mortgages={mortgageData} />
-            <SaleHistoryTable sales={saleHistoryData} />
-          </TabsContent>
-        </Tabs>
+        <PropertyTabsList tabsData={tabsData} />
       </div>
     </PageContainer>
   );

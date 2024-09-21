@@ -16,60 +16,51 @@ interface LastSaleProps {
 
 export const LastSaleTable: React.FC<LastSaleProps> = ({ sale }) => {
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="relative mx-auto max-w-[800px] overflow-x-auto">
       <h3 className="mb-4 text-center text-lg font-semibold dark:text-white">
-        Last Sale{' '}
+        Last Sale
       </h3>
 
-      <table className="min-w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
-        <thead>
-          <tr className="bg-gray-100 dark:bg-gray-700">
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+      <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+        <tbody>
+          <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+            <th scope="row" className="px-6 py-4 font-semibold">
               Date of Sale
             </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+            <td className="px-6 py-4">{sale.date_of_sale}</td>
+            <th scope="row" className="px-6 py-4 font-semibold">
               Amount
             </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+            <td className="px-6 py-4">{sale.amount.toLocaleString()}</td>
+          </tr>
+          <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+            <th scope="row" className="px-6 py-4 font-semibold">
               Purchase Method
             </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+            <td className="px-6 py-4">{sale.purchase_method}</td>
+            <th scope="row" className="px-6 py-4 font-semibold">
               Document Type
             </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+            <td className="px-6 py-4">{sale.document_type}</td>
+          </tr>
+          <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+            <th scope="row" className="px-6 py-4 font-semibold">
               Transaction Type
             </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+            <td className="px-6 py-4">{sale.transaction_type}</td>
+            <th scope="row" className="px-6 py-4 font-semibold">
               Seller Name(s)
             </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+            <td className="px-6 py-4">{sale.seller_names}</td>
+          </tr>
+          <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+            <th scope="row" className="px-6 py-4 font-semibold">
               Buyer Name(s)
             </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="bg-white dark:bg-gray-800">
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {sale.date_of_sale}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {sale.amount.toLocaleString()}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {sale.purchase_method}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {sale.document_type}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {sale.transaction_type}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {sale.seller_names}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {sale.buyer_names}
-            </td>
+            <td className="px-6 py-4">{sale.buyer_names}</td>
+            {/* Empty cells for proper 4-column layout */}
+            <th className="px-6 py-4"></th>
+            <td className="px-6 py-4"></td>
           </tr>
         </tbody>
       </table>
@@ -98,78 +89,64 @@ export const CurrentMortgageTable: React.FC<CurrentMortgageProps> = ({
   mortgage
 }) => {
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="relative mx-auto max-w-[800px] overflow-x-auto">
       <h3 className="mb-4 text-center text-lg font-semibold dark:text-white">
-        Current Mortage{' '}
+        Current Mortgage
       </h3>
 
-      <table className="min-w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
-        <thead>
-          <tr className="bg-gray-100 dark:bg-gray-700">
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+      <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+        <tbody>
+          <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+            <th scope="row" className="px-6 py-4 font-semibold">
               Loan Position
             </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+            <td className="px-6 py-4">{mortgage.loan_position}</td>
+            <th scope="row" className="px-6 py-4 font-semibold">
               Recording Date
             </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+            <td className="px-6 py-4">{mortgage.recording_date}</td>
+          </tr>
+          <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+            <th scope="row" className="px-6 py-4 font-semibold">
               Loan Amount
             </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              Est. Rate
-            </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              Document Number
-            </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              Deed Type
-            </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              Lender Name
-            </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              Lender Type
-            </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              Grantee Name(s)
-            </th>
-            <th className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              Loan Type
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="bg-white dark:bg-gray-800">
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {mortgage.loan_position}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {mortgage.recording_date}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+            <td className="px-6 py-4">
               {mortgage.loan_amount.toLocaleString()}
             </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {mortgage.est_rate || '-'}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {mortgage.document_number}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {mortgage.deed_type}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {mortgage.lender_name}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {mortgage.lender_type}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {mortgage.grantee_names}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
-              {mortgage.loan_type}
-            </td>
+            <th scope="row" className="px-6 py-4 font-semibold">
+              Est. Rate
+            </th>
+            <td className="px-6 py-4">{mortgage.est_rate || '-'}</td>
+          </tr>
+          <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+            <th scope="row" className="px-6 py-4 font-semibold">
+              Document Number
+            </th>
+            <td className="px-6 py-4">{mortgage.document_number}</td>
+            <th scope="row" className="px-6 py-4 font-semibold">
+              Deed Type
+            </th>
+            <td className="px-6 py-4">{mortgage.deed_type}</td>
+          </tr>
+          <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+            <th scope="row" className="px-6 py-4 font-semibold">
+              Lender Name
+            </th>
+            <td className="px-6 py-4">{mortgage.lender_name}</td>
+            <th scope="row" className="px-6 py-4 font-semibold">
+              Lender Type
+            </th>
+            <td className="px-6 py-4">{mortgage.lender_type}</td>
+          </tr>
+          <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+            <th scope="row" className="px-6 py-4 font-semibold">
+              Grantee Name(s)
+            </th>
+            <td className="px-6 py-4">{mortgage.grantee_names}</td>
+            <th scope="row" className="px-6 py-4 font-semibold">
+              Loan Type
+            </th>
+            <td className="px-6 py-4">{mortgage.loan_type}</td>
           </tr>
         </tbody>
       </table>

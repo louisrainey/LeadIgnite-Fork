@@ -49,7 +49,7 @@ const PropertyCard: React.FC<{ property: PropertyDetails }> = ({
         </div>
         <div className="text-center">
           <h4 className="font-semibold">
-            <Link href={`/properties/${property.id}`}>
+            <Link href={`dashboard/properties/${property.id}`}>
               {property.street}, {property.city}, {property.state}{' '}
               {property.zip_code}
             </Link>

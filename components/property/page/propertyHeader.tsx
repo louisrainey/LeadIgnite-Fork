@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { PropertyDetails } from '@/types/_dashboard/maps'; // Ensure you import the PropertyDetails type
 import ActivitySidebar from '@/components/reusables/sidebars/activity';
+import { mockGeneratedLeads } from '@/constants/data';
 
 interface PropertyHeaderProps {
   property: PropertyDetails;
@@ -158,6 +159,7 @@ export default function PropertyHeader({
       {/* Sidebar */}
       {isSidebarOpen && (
         <ActivitySidebar
+          leadData={mockGeneratedLeads}
           onClose={() => setIsSidebarOpen(false)} // Close the sidebar when the user clicks "X"
         />
       )}
