@@ -108,6 +108,12 @@ export type CampaignAnalytics =
 // Company Info Type
 export interface CompanyInfo {
   companyName: string;
+  assets: {
+    logo: string | File;
+    favicon?: string | File;
+    banner?: string | File;
+    ghlAssets?: string;
+  };
   webhook?: string;
   companyLogo: File | String;
   GHLID: GetSubAccountPathParams;
@@ -130,6 +136,7 @@ export interface AIKnowledgebase {
   assignedAssistantID: string; // e.g., 'female', 'male', 'ai'
   assignedSquadID: string; // UUID for the assigned squad
   recordings: {
+    customVoiceID: string;
     voiceClone?: {
       // Optional voice clone object
       audioFile: string; // Path to the audio file for the voice clone

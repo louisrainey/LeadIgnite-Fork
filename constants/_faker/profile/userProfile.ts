@@ -31,6 +31,7 @@ const aIKnowledgebase: AIKnowledgebase = {
   assignedSquadID: faker.string.uuid(), // Random UUID for the assigned squad
 
   recordings: {
+    customVoiceID: faker.string.uuid(),
     voiceClone: {
       audioFile: faker.system.filePath(), // Path to cloned voice audio file (generated dynamically)
       clonedVoiceID: faker.string.uuid() // Unique ID for the cloned voice
@@ -107,6 +108,13 @@ export const mockUserProfile: UserProfile = {
     webhook: faker.internet.url(),
     companyLogo: 'logo.png', // Static, can be a URL or file path
     GHLID: { locationId: faker.string.uuid() }, // Random location ID
+    assets: {
+      logo: faker.image.avatar(), // Generates a random logo image URL (300x300 size)
+      favicon: faker.image.urlLoremFlickr(), // Generates a random favicon image URL (64x64 size)
+      banner: faker.image.urlLoremFlickr(), // Generates a random banner image URL (1200x300 size)
+      ghlAssets: faker.image.urlLoremFlickr() // Generates a random file path, simulating a GHL-related asset
+    },
+
     campaigns: {
       textCampaigns: mockTextCampaigns, // Assuming these arrays are populated elsewhere
       emailCampaigns: mockGeneratedSampleEmailCampaigns,
