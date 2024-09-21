@@ -17,7 +17,7 @@ export interface OAuthData {
 }
 
 // Define a validation schema for OAuthData using zod
-const oAuthDataSchema = z.object({
+export const oAuthDataSchema = z.object({
   accessToken: z.string().min(1, { message: 'Access token is required' }),
   refreshToken: z.string().optional(),
   expiresIn: z

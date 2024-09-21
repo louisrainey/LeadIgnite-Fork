@@ -1,10 +1,10 @@
 'use client';
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion';
+  InstagramLoginButton,
+  FacebookLoginButton,
+  TwitterLoginButton,
+  LinkedInLoginButton
+} from 'react-social-login-buttons';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -30,10 +30,10 @@ import {
 } from '@/types/zod/userSetup/profile-form-schema';
 import { cn } from '@/lib/utils/kanban/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { HelpCircle, Trash, Trash2Icon } from 'lucide-react';
+import { HelpCircle, Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import VoiceSelector from './utils/voice/selector';
 import { mockVoices } from '@/constants/_faker/_api/vapi/assistant';
 import { UploadEmailBody } from './utils/voice/uploadEmailBody';
@@ -41,6 +41,8 @@ import UploadSalesScript from './utils/voice/uploadScript';
 import { campaignSteps } from '@/_tests/tours/campaignTour';
 import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
 import { Switch } from '@/components/ui/switch';
+import { DynamicFileUpload } from './utils/files/dynamicUploadFiles';
+import DynamicCloningModal from './utils/voice/dynamicVoiceRecord';
 
 const twoFactorAuthOptions = [
   { name: 'twoFactoAuth.sms', label: 'SMS' },
@@ -113,43 +115,6 @@ const PersonalInformationForm: React.FC<{
           <FormLabel>Last Name</FormLabel>
           <FormControl>
             <Input disabled={loading} placeholder="Doe" {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="companyName"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Company name</FormLabel>
-          <FormControl>
-            <Input disabled={loading} placeholder="Apex Company" {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="companyLogo"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Company Logo</FormLabel>
-          <FormControl>
-            <input
-              type="file"
-              accept="image/*"
-              disabled={loading}
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  const file = e.target.files[0];
-                  field.onChange(file); // Handle the file input here
-                }
-              }}
-              className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-            />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -259,7 +224,9 @@ const PersonalInformationForm: React.FC<{
     {/* Two-Factor Authentication (2FA) Section */}
     <div className="space-y-4">
       <h3 className="text-lg font-medium">Two-Factor Authentication (2FA)</h3>
-      <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="space-y-4">
+        {' '}
+        {/* Changed from grid to vertical stack */}
         {twoFactorAuthOptions.map((option) => (
           <FormField
             key={option.name}
@@ -267,8 +234,10 @@ const PersonalInformationForm: React.FC<{
             name={option.name}
             render={({ field }) => (
               <FormItem>
-                <div className="flex items-center justify-between">
-                  <FormLabel className="mr-4">{option.label}</FormLabel>
+                <div className="flex items-center justify-between space-x-4">
+                  <FormLabel className="flex-shrink-0">
+                    {option.label}
+                  </FormLabel>
                   <FormControl>
                     <Switch
                       checked={field.value}
@@ -286,9 +255,11 @@ const PersonalInformationForm: React.FC<{
     </div>
 
     {/* Notifications Section */}
-    <div className="mt-6 space-y-4">
+    <div className=" space-y-4">
       <h3 className="text-lg font-medium">Notifications</h3>
-      <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="space-y-4">
+        {' '}
+        {/* Changed from grid to vertical stack */}
         {notificationOptions.map((option) => (
           <FormField
             key={option.name}
@@ -296,8 +267,10 @@ const PersonalInformationForm: React.FC<{
             name={option.name}
             render={({ field }) => (
               <FormItem>
-                <div className="flex items-center justify-between">
-                  <FormLabel className="mr-4">{option.label}</FormLabel>
+                <div className="flex items-center justify-between space-x-4">
+                  <FormLabel className="flex-shrink-0">
+                    {option.label}
+                  </FormLabel>
                   <FormControl>
                     <Switch
                       checked={field.value}
@@ -315,13 +288,154 @@ const PersonalInformationForm: React.FC<{
     </div>
   </>
 );
+// 3. BaseSetup Component
 
-// 3. Job Accordion Component
 const BaseSetup: React.FC<{
-  fields: any[];
-  remove: (index: number) => void;
   form: any;
-  index: number;
+  loading: boolean;
+
+  voices: AssistantVoice[]; // Add voices prop for VoiceSelector
+  handleVoiceSelect: (voiceId: string) => void; // Voice select handler
+  handleScriptUpload: (scriptContent: string) => void; // Script upload handler
+  selectedScriptFileName: string; // Selected script file name
+  handleEmailUpload: (emailContent: string) => void; // Email upload handler
+  selectedEmailFileName: string; // Selected email file name
+}> = ({ form, loading }) => {
+  // Handle file uploads for images
+  const handleFilesUpload = (uploadedFiles: File[]) => {
+    // Process the uploaded files and update the form field for `companyAssets`
+    console.log('Uploaded image files:', uploadedFiles);
+
+    // Use form.setValue to update the `companyAssets` field with the uploaded files
+    form.setValue('companyAssets', uploadedFiles);
+  };
+
+  // Handle company explainer video upload
+
+  return (
+    <>
+      <FormField
+        control={form.control}
+        name="companyName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Company name</FormLabel>
+            <FormControl>
+              <Input disabled={loading} placeholder="Apex Company" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="companyLogo"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Company Logo</FormLabel>
+            <FormControl>
+              <input
+                type="file"
+                accept="image/*"
+                disabled={loading}
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    field.onChange(file); // Handle the file input here
+                  }
+                }}
+                className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="outreachEmailAddress"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Outreach Email</FormLabel>
+            <FormControl>
+              <Input
+                disabled={loading}
+                placeholder="johndoe@gmail.com"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="leadForwardingNumber"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Forwarding Phone Number</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                placeholder="Enter your phone number"
+                disabled={loading}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Company Explainer Video Upload */}
+      <FormField
+        control={form.control}
+        name="companyExplainerVideoUrl"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Company Explainer Video URL</FormLabel>
+            <FormControl>
+              <Input
+                type="url" // Change input type to 'url' for URL validation
+                disabled={loading}
+                placeholder="https://example.com/video"
+                {...field} // Bind the field to the form state
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <div className="mt-4 md:text-center">
+        <FormField
+          control={form.control}
+          name="companyAssets"
+          render={({ field, fieldState: { error } }) => (
+            <FormItem>
+              <FormLabel>Upload Company Assets</FormLabel>
+              <DynamicFileUpload
+                onFilesUpload={(files) => field.onChange(files)} // Set form value when files are uploaded
+                allowedFileTypes={['jpg', 'jpeg', 'png', 'webp']} // Allow image file types only
+                minFiles={3} // Minimum of 3 files required
+                maxFiles={12} // Maximum of 12 files allowed
+                selectedFiles={field.value} // Set the initial state to selected files from form
+              />
+              <FormMessage>{error?.message}</FormMessage>{' '}
+              {/* Display error message */}
+            </FormItem>
+          )}
+        />
+      </div>
+    </>
+  );
+};
+
+const KnowledgeBaseSetup: React.FC<{
+  form: any;
   loading: boolean;
 
   voices: AssistantVoice[]; // Add voices prop for VoiceSelector
@@ -331,10 +445,7 @@ const BaseSetup: React.FC<{
   handleEmailUpload: (emailContent: string) => void; // Email upload handler
   selectedEmailFileName: string; // Selected email file name
 }> = ({
-  fields,
-  remove,
   form,
-  index,
   loading,
   voices,
   handleVoiceSelect,
@@ -342,39 +453,274 @@ const BaseSetup: React.FC<{
   selectedScriptFileName,
   handleEmailUpload,
   selectedEmailFileName
-}) => (
-  <>
-    {/* Add margin to ensure spacing between sections */}
-    <div className="mt-4">
-      {/* Adding Voice Selector */}
-      <FormLabel>(Optional) Select Voice</FormLabel>
+}) => {
+  const [showVoiceCloneModal, setShowVoiceCloneModal] = useState(false);
+  const [showVoicemailModal, setShowVoicemailModal] = useState(false);
 
-      <VoiceSelector voices={voices} onVoiceSelect={handleVoiceSelect} />
-    </div>
+  // Handle voicemail recording logic
+  const handleVoicemailRecording = (recordingId: string) => {
+    form.setValue('voicemailRecordingId', recordingId); // Store the voicemail recording ID in the form
+    setShowVoicemailModal(false); // Close the modal
+    console.log('Voicemail recorded with ID:', recordingId);
+  };
 
-    <div className="mt-4">
-      {/* File Upload Section for Sales Script */}
-      <FormLabel>(Optional) Sales Script</FormLabel>
+  // Handle voice clone recording logic
+  const handleVoiceCloneRecording = (recordingId: string) => {
+    form.setValue('clonedVoiceId', recordingId); // Store the voice clone recording ID in the form
+    setShowVoiceCloneModal(false); // Close the modal
+    console.log('Voice clone recorded with ID:', recordingId);
+  };
 
-      <UploadSalesScript
-        onFileUpload={handleScriptUpload}
-        selectedFileName={selectedScriptFileName}
+  return (
+    <>
+      {/* Voice Selection Field */}
+      <FormField
+        control={form.control}
+        name="selectedVoice"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Select Voice (Optional)</FormLabel>
+            <VoiceSelector
+              voices={voices}
+              onVoiceSelect={(voiceId: string) => {
+                field.onChange(voiceId); // Update the form state when a voice is selected
+                handleVoiceSelect(voiceId); // Call the original handler to handle side-effects
+              }}
+            />
+            <FormMessage />
+          </FormItem>
+        )}
       />
-    </div>
 
-    <div className="mt-4">
-      {/* Email Body Upload Component */}
-      <FormLabel>(Optional) Email Body</FormLabel>
-
-      <UploadEmailBody
-        onFileUpload={handleEmailUpload}
-        selectedFileName={selectedEmailFileName}
+      {/* Upload Sales Script Field */}
+      <FormField
+        control={form.control}
+        name="exampleSalesScript"
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>Upload Sales Script (Optional)</FormLabel>
+            <UploadSalesScript
+              onFileUpload={(fileContent: string) => {
+                field.onChange(fileContent); // Update form state with file content
+                handleScriptUpload(fileContent); // Handle file upload
+              }}
+              selectedFileName={selectedScriptFileName} // Show the selected file name
+            />
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
       />
-    </div>
-  </>
-);
 
-// 4. Step Navigation Component
+      {/* Upload Email Body Field */}
+      <FormField
+        control={form.control}
+        name="exampleEmailBody"
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>Upload Email Body (Optional)</FormLabel>
+            <UploadEmailBody
+              onFileUpload={(fileContent: string) => {
+                field.onChange(fileContent); // Update form state with file content
+                handleEmailUpload(fileContent); // Handle file upload
+              }}
+              selectedFileName={selectedEmailFileName} // Show the selected file name
+            />
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
+      />
+
+      {/* Voicemail Recording Field */}
+      <FormField
+        control={form.control}
+        name="voicemailRecordingId"
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>Record Voicemail (1m - 5m)</FormLabel>
+            <button
+              type="button"
+              className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              onClick={() => setShowVoicemailModal(true)}
+            >
+              Record Voicemail
+            </button>
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
+      />
+
+      {/* Voice Clone Recording Field */}
+      <FormField
+        control={form.control}
+        name="clonedVoiceId"
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>Record Voice Clone (5m - 10m)</FormLabel>
+            <button
+              type="button"
+              className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              onClick={() => setShowVoiceCloneModal(true)}
+            >
+              Record Voice Clone
+            </button>
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
+      />
+
+      {/* Voicemail Recording Modal */}
+      {showVoicemailModal && (
+        <DynamicCloningModal
+          onClose={() => setShowVoicemailModal(false)}
+          minRecordingLength={60} // 1 minute
+          maxRecordingLength={300} // 5 minutes
+          onRecordingComplete={handleVoicemailRecording} // Handle completed recording
+          scriptText={['Please record your voicemail message.']} // Script for voicemail
+        />
+      )}
+
+      {/* Voice Clone Recording Modal */}
+      {showVoiceCloneModal && (
+        <DynamicCloningModal
+          onClose={() => setShowVoiceCloneModal(false)}
+          minRecordingLength={300} // 5 minutes
+          maxRecordingLength={600} // 10 minutes
+          onRecordingComplete={handleVoiceCloneRecording} // Handle completed recording
+          scriptText={[
+            'Please read the following script to clone your voice.',
+            'Keep a consistent tone and pace throughout the recording.',
+            'The voice clone will generate from this reading.'
+          ]} // Script for voice cloning
+        />
+      )}
+    </>
+  );
+};
+
+const OAuthSetup: React.FC<{
+  form: any;
+  loading: boolean;
+}> = ({ form, loading }) => {
+  const [metaData, setMetaData] = useState<any>(null); // Meta (Facebook) OAuth data
+  const [instagramData, setInstagramData] = useState<any>(null); // Instagram OAuth data
+  const [twitterData, setTwitterData] = useState<any>(null); // Twitter OAuth data
+  const [linkedInData, setLinkedInData] = useState<any>(null); // LinkedIn OAuth data
+
+  // Simulate OAuth login flow for different services
+  const handleOAuthLogin = (service: string) => {
+    // Simulate receiving OAuth data from login
+    const simulatedOAuthData = {
+      accessToken: 'abc123',
+      refreshToken: 'def456',
+      expiresIn: 3600,
+      tokenType: 'Bearer',
+      scope: 'user_profile'
+    };
+
+    switch (service) {
+      case 'meta':
+        setMetaData(simulatedOAuthData);
+        form.setValue('meta', simulatedOAuthData); // Set the form value for Meta (Facebook) OAuth
+        break;
+      case 'instagram':
+        setInstagramData(simulatedOAuthData);
+        form.setValue('instagram', simulatedOAuthData); // Set the form value for Instagram OAuth
+        break;
+      case 'twitter':
+        setTwitterData(simulatedOAuthData);
+        form.setValue('twitter', simulatedOAuthData); // Set the form value for Twitter OAuth
+        break;
+      case 'linkedIn':
+        setLinkedInData(simulatedOAuthData);
+        form.setValue('linkedIn', simulatedOAuthData); // Set the form value for LinkedIn OAuth
+        break;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <>
+      {/* Meta (Facebook) OAuth */}
+      <FormField
+        control={form.control}
+        name="meta"
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>Meta (Facebook) Login</FormLabel>
+            <FacebookLoginButton onClick={() => handleOAuthLogin('meta')} />
+            {metaData && (
+              <p className="text-sm text-gray-600">
+                Access Token: {metaData.accessToken}
+              </p>
+            )}
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
+      />
+
+      {/* Instagram OAuth */}
+      <FormField
+        control={form.control}
+        name="instagram"
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>Instagram Login</FormLabel>
+            <InstagramLoginButton
+              onClick={() => handleOAuthLogin('instagram')}
+            />
+
+            {/* Display access token if available */}
+            {instagramData && (
+              <p className="text-sm text-gray-600">
+                Access Token: {instagramData.accessToken}
+              </p>
+            )}
+
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
+      />
+
+      {/* Twitter OAuth */}
+      <FormField
+        control={form.control}
+        name="twitter"
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>Twitter Login</FormLabel>
+            <TwitterLoginButton onClick={() => handleOAuthLogin('twitter')} />
+            {twitterData && (
+              <p className="text-sm text-gray-600">
+                Access Token: {twitterData.accessToken}
+              </p>
+            )}
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
+      />
+
+      {/* LinkedIn OAuth */}
+      <FormField
+        control={form.control}
+        name="linkedIn"
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>LinkedIn Login</FormLabel>
+            <LinkedInLoginButton onClick={() => handleOAuthLogin('linkedIn')} />
+            {linkedInData && (
+              <p className="text-sm text-gray-600">
+                Access Token: {linkedInData.accessToken}
+              </p>
+            )}
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
+      />
+    </>
+  );
+};
+
 // 4. Step Navigation Component
 const StepNavigation: React.FC<{
   currentStep: number;
@@ -466,7 +812,6 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
     setValue, // Used to set values programmatically for form fields
     formState: { isValid, isSubmitting }
   } = form;
-  const { append, remove, fields } = useFieldArray({ control, name: 'jobs' });
 
   const steps = [
     {
@@ -489,10 +834,10 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
       fields: [
         'companyName',
         'companyLogo',
-        'explainerVideoUrl',
-        'assets',
-        'outreachEmail',
-        'forwardingNumber'
+        'companyExplainerVideoUrl',
+        'companyAssets',
+        'outreachEmailAddress',
+        'leadForwardingNumber'
       ]
     },
     {
@@ -503,9 +848,17 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         'clonedVoiceId',
         'exampleSalesScript',
         'exampleEmailBody',
-        'outreachEmailAddress',
-        'leadForwardingNumber',
         'voicemailRecordingId'
+      ]
+    },
+    {
+      id: 'Connect Social Accounts',
+      name: 'Setup Tags & Accounts',
+      fields: [
+        'socialMediaCampaignAccounts.facebook', // Meta (Facebook)
+        'socialMediaCampaignAccounts.twitter', // Twitter
+        'socialMediaCampaignAccounts.instagram', // Instagram
+        'socialMediaCampaignAccounts.linkedIn' // LinkedIn
       ]
     }
   ];
@@ -513,14 +866,20 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   const next = async () => {
     const stepFields = steps[currentStep].fields as (keyof ProfileFormValues)[];
 
-    const isStepValid = await form.trigger(stepFields);
+    const isStepValid = await form.trigger(stepFields); // Validate current step fields
+
+    console.log('Current Step:', currentStep); // Debugging
+    console.log('Step Fields:', stepFields); // Debugging
 
     if (isStepValid) {
-      if (currentStep < steps.length - 1) {
-        if (currentStep === steps.length - 2) {
-          await form.handleSubmit((data) => setData(data))();
-        }
+      // Check if we are on the last step
+      if (currentStep === steps.length - 1) {
+        // Submit the form when we reach the last step
+        await form.handleSubmit((data) => setData(data))();
+      } else {
+        // Otherwise, go to the next step
         setCurrentStep((step) => step + 1);
+        console.log('Moved to Step:', currentStep + 1); // Debugging next step
       }
     }
   };
@@ -534,21 +893,24 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
 
   const voices: AssistantVoice[] = mockVoices; // Generate 5 mock voices
 
-  // Handle voice selection (use useState for tracking selected voice)
+  // Handle voice selection (use form.setValue to track selected voice)
   const handleVoiceSelect = (voiceId: string) => {
-    setSelectedVoice(voiceId); // Set voice state when selected
+    form.setValue('selectedVoice', voiceId); // Update form state with selected voice
     console.log('Selected voice:', voiceId);
   };
 
-  // Function to handle file uploads
+  // Function to handle file uploads for sales script
   const handleScriptUpload = (fileContent: string) => {
-    setValue('leadForwardingNumber', fileContent); // Store the email body content
-    console.log('Uploaded Email Body Content:', fileContent);
+    form.setValue('exampleSalesScript', fileContent); // Update form state with sales script content
+    console.log('Uploaded Sales Script Content:', fileContent);
   };
+
+  // Function to handle file uploads for email body
   const handleEmailUpload = (fileContent: string) => {
-    setValue('outreachEmailAddress', fileContent); // Store the email body content
+    form.setValue('exampleEmailBody', fileContent); // Update form state with email body content
     console.log('Uploaded Email Body Content:', fileContent);
   };
+
   return (
     <>
       <ProfileHeading
@@ -575,25 +937,21 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
               <div
                 className={cn(
                   'group flex w-full flex-col py-2 pl-4',
-                  currentStep > index
-                    ? 'border-l-4 border-sky-600'
-                    : 'border-l-4 border-gray-200'
+                  currentStep === index
+                    ? 'border-l-4 border-blue-600 text-blue-600' // Current step (active)
+                    : currentStep > index
+                    ? 'border-l-4 border-green-600 text-green-600' // Completed steps
+                    : 'border-l-4 border-gray-200 text-gray-500' // Inactive steps (future)
                 )}
               >
-                <span
-                  className={cn(
-                    'text-sm font-medium',
-                    currentStep > index ? 'text-sky-600' : 'text-gray-500'
-                  )}
-                >
-                  {step.id}
-                </span>
+                <span className="text-sm font-medium">{step.id}</span>
                 <span className="text-sm font-medium">{step.name}</span>
               </div>
             </li>
           ))}
         </ul>
       </div>
+
       <Separator />
 
       <PropertySearchModal
@@ -629,30 +987,36 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
               />
             )}
 
-            {currentStep === 1 &&
-              fields.map((field, index) => (
-                <BaseSetup
-                  key={index}
-                  fields={fields}
-                  remove={remove}
-                  form={form}
-                  index={index}
-                  loading={loading}
-                  voices={voices} // Pass the voices prop for VoiceSelector
-                  handleVoiceSelect={handleVoiceSelect} // Pass the handler for voice selection
-                  handleScriptUpload={handleScriptUpload} // Pass the handler for script upload
-                  selectedScriptFileName={selectedScriptFileName} // Pass the selected script file name
-                  handleEmailUpload={handleEmailUpload} // Pass the handler for email upload
-                  selectedEmailFileName={selectedEmailFileName} // Pass the selected email file name
-                />
-              ))}
+            {currentStep === 1 && (
+              <BaseSetup
+                form={form}
+                loading={loading}
+                voices={voices} // Pass the voices prop for VoiceSelector
+                handleVoiceSelect={handleVoiceSelect} // Pass the handler for voice selection
+                handleScriptUpload={handleScriptUpload} // Pass the handler for script upload
+                selectedScriptFileName={selectedScriptFileName} // Pass the selected script file name
+                handleEmailUpload={handleEmailUpload} // Pass the handler for email upload
+                selectedEmailFileName={selectedEmailFileName} // Pass the selected email file name
+              />
+            )}
             {currentStep === 2 && (
-              <div>
-                <h1>Completed</h1>
-                <pre className="whitespace-pre-wrap">
-                  {JSON.stringify(data)}
-                </pre>
-              </div>
+              <KnowledgeBaseSetup
+                form={form}
+                loading={loading}
+                voices={voices} // Pass the voices prop for VoiceSelector
+                handleVoiceSelect={handleVoiceSelect} // Pass the handler for voice selection
+                handleScriptUpload={handleScriptUpload} // Pass the handler for script upload
+                selectedScriptFileName={selectedScriptFileName} // Pass the selected script file name
+                handleEmailUpload={handleEmailUpload} // Pass the handler for email upload
+                selectedEmailFileName={selectedEmailFileName} // Pass the selected email file name
+              />
+            )}
+
+            {currentStep === 3 && (
+              <OAuthSetup
+                form={form}
+                loading={loading} // Pass loading state if needed
+              />
             )}
           </div>
         </form>
