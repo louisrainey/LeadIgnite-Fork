@@ -32,13 +32,13 @@
 
 # Set up user onbaording with https://www.npmjs.com/package/@frigade/react
 
-# 🪳 Fix horizontal scroll on property view being clipped out
-
 # ⁉️ optimize load speeds
 
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # 🪳✅ Fix horizontal scroll on property view being clipped out -->
 
 <!-- #✅ Add layout to speific [] pages -->
 
