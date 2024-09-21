@@ -3,7 +3,12 @@
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion';
 // Define the type for each tab
 type TabData = {
   value: string;
@@ -16,10 +21,10 @@ interface PropertyTabsListProps {
   tabsData: TabData[]; // Array of TabData
 }
 
-// Client component
-const PropertyTabsList: React.FC<PropertyTabsListProps> = ({ tabsData }) => {
+// DesktopTabs component
+const DesktopTabs: React.FC<PropertyTabsListProps> = ({ tabsData }) => {
   const [visibleIndex, setVisibleIndex] = useState(0); // Manage the starting index of visible tabs
-  const itemsPerPage = 3; // Number of tabs visible at a time
+  const itemsPerPage = 3; // Number of tabs visible at a time on desktop
 
   const tabsRef = useRef<HTMLDivElement | null>(null); // Ref to the tab container
 
@@ -63,7 +68,7 @@ const PropertyTabsList: React.FC<PropertyTabsListProps> = ({ tabsData }) => {
         <button
           onClick={handlePrev}
           disabled={visibleIndex === 0} // Disable if we're at the start
-          className="hidden rounded bg-gray-200 p-2 hover:bg-gray-300 disabled:opacity-50 sm:block dark:bg-gray-700 dark:hover:bg-gray-600" // Hide on mobile (sm:hidden)
+          className="rounded bg-gray-200 p-2 hover:bg-gray-300 disabled:opacity-50 dark:bg-gray-700 dark:hover:bg-gray-600"
         >
           ←
         </button>
@@ -92,7 +97,7 @@ const PropertyTabsList: React.FC<PropertyTabsListProps> = ({ tabsData }) => {
         <button
           onClick={handleNext}
           disabled={visibleIndex >= tabsData.length - itemsPerPage} // Disable if we're at the end
-          className="hidden rounded bg-gray-200 p-2 hover:bg-gray-300 disabled:opacity-50 sm:block dark:bg-gray-700 dark:hover:bg-gray-600" // Hide on mobile (sm:hidden)
+          className="rounded bg-gray-200 p-2 hover:bg-gray-300 disabled:opacity-50 dark:bg-gray-700 dark:hover:bg-gray-600"
         >
           →
         </button>
@@ -105,6 +110,40 @@ const PropertyTabsList: React.FC<PropertyTabsListProps> = ({ tabsData }) => {
         </TabsContent>
       ))}
     </Tabs>
+  );
+};
+
+// MobileTabs component
+
+const MobileAccordion: React.FC<PropertyTabsListProps> = ({ tabsData }) => {
+  return (
+    <Accordion type="single" collapsible className="mt-6 w-full">
+      {tabsData.map((tab, index) => (
+        <AccordionItem key={index} value={tab.value}>
+          <AccordionTrigger>{tab.label}</AccordionTrigger>
+          <AccordionContent>
+            <div className="p-4">{tab.content}</div>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  );
+};
+
+// Main component to conditionally render Mobile or Desktop tabs
+const PropertyTabsList: React.FC<PropertyTabsListProps> = ({ tabsData }) => {
+  return (
+    <>
+      {/* Render the DesktopTabs component on larger screens */}
+      <div className="hidden sm:block">
+        <DesktopTabs tabsData={tabsData} />
+      </div>
+
+      {/* Render the MobileTabs component on smaller screens */}
+      <div className="block sm:hidden">
+        <MobileAccordion tabsData={tabsData} />
+      </div>
+    </>
   );
 };
 
