@@ -40,7 +40,20 @@ import { UploadEmailBody } from './utils/voice/uploadEmailBody';
 import UploadSalesScript from './utils/voice/uploadScript';
 import { campaignSteps } from '@/_tests/tours/campaignTour';
 import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
+import { Switch } from '@/components/ui/switch';
 
+const twoFactorAuthOptions = [
+  { name: 'twoFactoAuth.sms', label: 'SMS' },
+  { name: 'twoFactoAuth.email', label: 'Email ' },
+  { name: 'twoFactoAuth.authenticatorApp', label: 'Authenticator App' }
+];
+
+const notificationOptions = [
+  { name: 'notifications.emailNotifications', label: 'Email ' },
+  { name: 'notifications.smsNotifications', label: 'SMS' },
+  { name: 'notifications.notifyForNewLeads', label: 'New Leads' },
+  { name: 'notifications.notifyForCampaignUpdates', label: 'Campaign Updates' }
+];
 interface ProfileFormType {
   initialData: any | null;
   categories: any;
@@ -242,6 +255,64 @@ const PersonalInformationForm: React.FC<{
         </FormItem>
       )}
     />
+
+    {/* Two-Factor Authentication (2FA) Section */}
+    <div className="space-y-4">
+      <h3 className="text-lg font-medium">Two-Factor Authentication (2FA)</h3>
+      <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {twoFactorAuthOptions.map((option) => (
+          <FormField
+            key={option.name}
+            control={form.control}
+            name={option.name}
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center justify-between">
+                  <FormLabel className="mr-4">{option.label}</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={loading}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
+      </div>
+    </div>
+
+    {/* Notifications Section */}
+    <div className="mt-6 space-y-4">
+      <h3 className="text-lg font-medium">Notifications</h3>
+      <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {notificationOptions.map((option) => (
+          <FormField
+            key={option.name}
+            control={form.control}
+            name={option.name}
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center justify-between">
+                  <FormLabel className="mr-4">{option.label}</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={loading}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
+      </div>
+    </div>
   </>
 );
 
@@ -399,8 +470,8 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
 
   const steps = [
     {
-      id: 'My Details',
-      name: 'Base Setup',
+      id: 'Personal Information',
+      name: 'Setup Profile',
       fields: [
         'firstName',
         'lastName',
@@ -408,28 +479,35 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         'personalNum',
         'country',
         'city',
-        'companyName',
-        'companyLogo',
-        'voiceID',
-        'emailBody',
-        'salesScript'
+        'twoFactoAuth',
+        'notifications'
       ]
     },
     {
-      id: 'Step 2',
-      name: 'Professional Information',
-      fields: fields
-        .map((_, index) => [
-          `jobs.${index}.jobtitle`,
-          `jobs.${index}.employer`,
-          `jobs.${index}.startdate`,
-          `jobs.${index}.enddate`,
-          `jobs.${index}.jobcountry`,
-          `jobs.${index}.jobcity`
-        ])
-        .flat()
+      id: 'Upload Company Assets',
+      name: 'Setup Your Base',
+      fields: [
+        'companyName',
+        'companyLogo',
+        'explainerVideoUrl',
+        'assets',
+        'outreachEmail',
+        'forwardingNumber'
+      ]
     },
-    { id: 'Step 3', name: 'Complete' }
+    {
+      id: 'Optimize Your Outreach',
+      name: 'Setup Ai Knowledgebase',
+      fields: [
+        'selectedVoice',
+        'clonedVoiceId',
+        'exampleSalesScript',
+        'exampleEmailBody',
+        'outreachEmailAddress',
+        'leadForwardingNumber',
+        'voicemailRecordingId'
+      ]
+    }
   ];
 
   const next = async () => {
@@ -464,11 +542,11 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
 
   // Function to handle file uploads
   const handleScriptUpload = (fileContent: string) => {
-    setValue('salesScript', fileContent); // Store the email body content
+    setValue('leadForwardingNumber', fileContent); // Store the email body content
     console.log('Uploaded Email Body Content:', fileContent);
   };
   const handleEmailUpload = (fileContent: string) => {
-    setValue('emailBody', fileContent); // Store the email body content
+    setValue('outreachEmailAddress', fileContent); // Store the email body content
     console.log('Uploaded Email Body Content:', fileContent);
   };
   return (

@@ -90,7 +90,19 @@ export const profileSchema = z.object({
     .refine((value) => /^[0-9]+$/.test(value), {
       message: 'Contact number can only contain numbers.'
     }),
+  twoFactoAuth: z.object({
+    sms: z.boolean().optional(), // SMS-based 2FA
+    email: z.boolean().optional(), // Email-based 2FA
+    authenticatorApp: z.boolean().optional() // Authenticator app like Google Authenticator
+  }),
 
+  // Notifications Schema (Optional Fields)
+  notifications: z.object({
+    emailNotifications: z.boolean().optional(), // Whether the user wants to receive email notifications
+    smsNotifications: z.boolean().optional(), // Whether the user wants SMS notifications
+    notifyForNewLeads: z.boolean().optional(), // Notify when new leads are available
+    notifyForCampaignUpdates: z.boolean().optional() // Notify when campaigns are updated
+  }),
   country: z
     .string()
     .min(1, { message: 'Please select a country.' })
@@ -158,23 +170,40 @@ export const profileSchema = z.object({
         })
     )
     .max(12, { message: 'You can upload up to 12 assets.' }),
-  voice: z
+  outreachEmailAddress: z
+    .string()
+    .email({ message: 'Please enter a valid email address.' })
+    .max(100, { message: 'Email cannot exceed 100 characters.' }),
+
+  leadForwardingNumber: z
+    .string()
+    .min(10, { message: 'Contact number must be at least 10 digits.' })
+    .max(15, { message: 'Contact number cannot exceed 15 digits.' })
+    .refine((value) => /^[0-9]+$/.test(value), {
+      message: 'Contact number can only contain numbers.'
+    }),
+  selectedVoice: z
     .string()
     .max(100, { message: 'Voice selection cannot exceed 100 characters.' })
     .optional()
     .nullable(), // Allows the field to be null or not provided
-  voiceId: z
+  clonedVoiceId: z
     .string()
     .min(1, { message: 'Voice ID is required if provided.' })
     .max(100, { message: 'Voice ID cannot exceed 100 characters.' })
     .optional(),
+  voicemailRecordingId: z
+    .string()
+    .min(1, { message: 'VoiceMail ID is required if provided.' })
+    .max(100, { message: 'Voice ID cannot exceed 100 characters.' })
+    .optional(),
   // Required sales script field
-  salesScript: z
+  exampleSalesScript: z
     .string()
     .min(10, { message: 'Sales script must be at least 10 characters long.' })
     .max(1000, { message: 'Sales script cannot exceed 1000 characters.' })
     .optional(),
-  emailBody: z
+  exampleEmailBody: z
     .string()
     .min(10, { message: 'Email body must be at least 10 characters long.' })
     .max(5000, { message: 'Email body cannot exceed 5000 characters.' }) // Optional, adjust as needed
