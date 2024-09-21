@@ -43,6 +43,7 @@ import PropertySearchModal from '@/components/reusables/tutorials/walkthroughMod
 import { Switch } from '@/components/ui/switch';
 import { DynamicFileUpload } from './utils/files/dynamicUploadFiles';
 import DynamicCloningModal from './utils/voice/dynamicVoiceRecord';
+import HashtagInput from './utils/socials/hashtags';
 
 const twoFactorAuthOptions = [
   { name: 'twoFactoAuth.sms', label: 'SMS' },
@@ -608,7 +609,6 @@ const OAuthSetup: React.FC<{
 
   // Simulate OAuth login flow for different services
   const handleOAuthLogin = (service: string) => {
-    // Simulate receiving OAuth data from login
     const simulatedOAuthData = {
       accessToken: 'abc123',
       refreshToken: 'def456',
@@ -669,14 +669,11 @@ const OAuthSetup: React.FC<{
             <InstagramLoginButton
               onClick={() => handleOAuthLogin('instagram')}
             />
-
-            {/* Display access token if available */}
             {instagramData && (
               <p className="text-sm text-gray-600">
                 Access Token: {instagramData.accessToken}
               </p>
             )}
-
             <FormMessage>{error?.message}</FormMessage>
           </FormItem>
         )}
@@ -717,17 +714,36 @@ const OAuthSetup: React.FC<{
           </FormItem>
         )}
       />
+
+      {/* Hashtag Input */}
+      <FormField
+        control={form.control}
+        name="socialMediatags"
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>Social Media Tags</FormLabel>
+            {/* Hashtag Input Component */}
+            <HashtagInput
+              form={form}
+              loading={loading}
+              minHashtags={5} // Minimum number of hashtags required
+              maxHashtags={10} // Maximum number of hashtags allowed
+              required={true} // Whether this field is required
+            />
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
+      />
     </>
   );
 };
-
 // 4. Step Navigation Component
 const StepNavigation: React.FC<{
   currentStep: number;
   stepsLength: number;
   next: () => void;
   prev: () => void;
-  nextDisabled?: boolean; // Added nextDisabled prop (optional)
+  nextDisabled?: boolean;
 }> = ({ currentStep, stepsLength, next, prev, nextDisabled = false }) => (
   <div className="mt-8 flex justify-between pt-5">
     {/* Previous Button */}
@@ -740,14 +756,19 @@ const StepNavigation: React.FC<{
       Previous
     </button>
 
-    {/* Next Button */}
+    {/* Next / Finish & Save Button */}
     <button
       type="button"
       onClick={next}
-      disabled={currentStep === stepsLength - 1 || nextDisabled}
-      className="rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-sm ring-1 ring-inset ring-sky-300 hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
+      disabled={nextDisabled}
+      className={`rounded px-4 py-2 text-sm font-semibold shadow-sm transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50 
+        ${
+          currentStep === stepsLength - 1
+            ? 'bg-blue-600 text-white'
+            : 'bg-white text-sky-900 ring-1 ring-inset ring-sky-300'
+        }`}
     >
-      Next
+      {currentStep === stepsLength - 1 ? 'Finish & Save' : 'Next'}
     </button>
   </div>
 );
@@ -778,7 +799,6 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   const [selectedEmailFileName, setSelectedEmailFileName] =
     useState<string>(''); // Track uploaded file name
 
-  const [selectedVoice, setSelectedVoice] = useState<string | null>(null); // Track selected voice
   const title = initialData ? 'Create Profile' : 'Edit Your Profile';
   const description = initialData
     ? 'Create your profile to optimize, your lead generation'
@@ -806,7 +826,6 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
     mode: 'onChange',
     reValidateMode: 'onChange'
   });
-
   const {
     control,
     setValue, // Used to set values programmatically for form fields
@@ -858,11 +877,11 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         'socialMediaCampaignAccounts.facebook', // Meta (Facebook)
         'socialMediaCampaignAccounts.twitter', // Twitter
         'socialMediaCampaignAccounts.instagram', // Instagram
-        'socialMediaCampaignAccounts.linkedIn' // LinkedIn
+        'socialMediaCampaignAccounts.linkedIn', // LinkedIn
+        'socialMediatags'
       ]
     }
   ];
-
   const next = async () => {
     const stepFields = steps[currentStep].fields as (keyof ProfileFormValues)[];
 
@@ -874,8 +893,25 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
     if (isStepValid) {
       // Check if we are on the last step
       if (currentStep === steps.length - 1) {
-        // Submit the form when we reach the last step
-        await form.handleSubmit((data) => setData(data))();
+        // Try to submit the form
+        try {
+          await form.handleSubmit((data) => {
+            setData(data);
+            console.log('Form Data Submitted:', data); // Debugging form submission
+
+            // Show alert for form submission
+            window.alert('Form saved successfully!');
+
+            // Redirect to dashboard after submission
+            router.push('/dashboard');
+          })();
+        } catch (error) {
+          // Handle and log any errors that occur during form submission
+          console.error('Error during form submission:', error);
+          window.alert(
+            'An error occurred during form submission. Please try again.'
+          );
+        }
       } else {
         // Otherwise, go to the next step
         setCurrentStep((step) => step + 1);
