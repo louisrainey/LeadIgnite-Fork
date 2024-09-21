@@ -113,6 +113,8 @@ export interface CompanyInfo {
   GHLID: GetSubAccountPathParams;
   campaigns: CompanyCampaignsUserProfile;
   forwardingNumber: string;
+  outreachEmail: string;
+  explainerVideo?: string;
   campaignAnalytics: CampaignAnalytics[]; // Array of analytics for user's campaigns
   leads: LeadTypeGlobal[];
   leadLists: LeadList[]; // Array of lead lists

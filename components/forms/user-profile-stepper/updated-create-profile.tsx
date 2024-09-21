@@ -27,7 +27,7 @@ import { Separator } from '@/components/ui/separator';
 import {
   profileSchema,
   type ProfileFormValues
-} from '@/types/zod/profile-form-schema';
+} from '@/types/zod/userSetup/profile-form-schema';
 import { cn } from '@/lib/utils/kanban/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HelpCircle, Trash, Trash2Icon } from 'lucide-react';
@@ -77,24 +77,7 @@ const PersonalInformationForm: React.FC<{
   loading: boolean;
   countries: { id: string; name: string }[];
   cities: { id: string; name: string }[];
-  voices: AssistantVoice[]; // Add voices prop for VoiceSelector
-  handleVoiceSelect: (voiceId: string) => void; // Voice select handler
-  handleScriptUpload: (scriptContent: string) => void; // Script upload handler
-  selectedScriptFileName: string; // Selected script file name
-  handleEmailUpload: (emailContent: string) => void; // Email upload handler
-  selectedEmailFileName: string; // Selected email file name
-}> = ({
-  form,
-  loading,
-  countries,
-  cities,
-  voices,
-  handleVoiceSelect,
-  handleScriptUpload,
-  selectedScriptFileName,
-  handleEmailUpload,
-  selectedEmailFileName
-}) => (
+}> = ({ form, loading, countries, cities }) => (
   <>
     <FormField
       control={form.control}
@@ -179,50 +162,18 @@ const PersonalInformationForm: React.FC<{
     />
     <FormField
       control={form.control}
-      name="contactNum"
+      name="personalNum"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Contact Number</FormLabel>
+          <FormLabel>Personal Phone Number</FormLabel>
           <FormControl>
             <Input
               type="number"
-              placeholder="Enter your contact number"
+              placeholder="Enter your phone number"
               disabled={loading}
               {...field}
             />
           </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="country"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Country</FormLabel>
-          <Select
-            disabled={loading}
-            onValueChange={field.onChange}
-            value={field.value}
-            defaultValue={field.value}
-          >
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue
-                  defaultValue={field.value}
-                  placeholder="Select a country"
-                />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.id} value={country.id}>
-                  {country.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
           <FormMessage />
         </FormItem>
       )}
@@ -259,7 +210,69 @@ const PersonalInformationForm: React.FC<{
         </FormItem>
       )}
     />
+    <FormField
+      control={form.control}
+      name="country"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Country</FormLabel>
+          <Select
+            disabled={loading}
+            onValueChange={field.onChange}
+            value={field.value}
+            defaultValue={field.value}
+          >
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue
+                  defaultValue={field.value}
+                  placeholder="Select a country"
+                />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {countries.map((country) => (
+                <SelectItem key={country.id} value={country.id}>
+                  {country.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  </>
+);
 
+// 3. Job Accordion Component
+const BaseSetup: React.FC<{
+  fields: any[];
+  remove: (index: number) => void;
+  form: any;
+  index: number;
+  loading: boolean;
+
+  voices: AssistantVoice[]; // Add voices prop for VoiceSelector
+  handleVoiceSelect: (voiceId: string) => void; // Voice select handler
+  handleScriptUpload: (scriptContent: string) => void; // Script upload handler
+  selectedScriptFileName: string; // Selected script file name
+  handleEmailUpload: (emailContent: string) => void; // Email upload handler
+  selectedEmailFileName: string; // Selected email file name
+}> = ({
+  fields,
+  remove,
+  form,
+  index,
+  loading,
+  voices,
+  handleVoiceSelect,
+  handleScriptUpload,
+  selectedScriptFileName,
+  handleEmailUpload,
+  selectedEmailFileName
+}) => (
+  <>
     {/* Add margin to ensure spacing between sections */}
     <div className="mt-4">
       {/* Adding Voice Selector */}
@@ -288,162 +301,6 @@ const PersonalInformationForm: React.FC<{
       />
     </div>
   </>
-);
-
-// 3. Job Accordion Component
-const JobAccordion: React.FC<{
-  fields: any[];
-  remove: (index: number) => void;
-  form: any;
-  index: number;
-  loading: boolean;
-  countries: { id: string; name: string }[];
-  cities: { id: string; name: string }[];
-}> = ({ fields, remove, form, index, loading, countries, cities }) => (
-  <Accordion
-    type="single"
-    collapsible
-    defaultValue="item-1"
-    key={fields[index].id}
-  >
-    <AccordionItem value="item-1">
-      <AccordionTrigger>
-        {`Work Experience ${index + 1}`}
-        <Button
-          variant="outline"
-          size="icon"
-          className="absolute right-8"
-          onClick={() => remove(index)}
-        >
-          <Trash2Icon className="h-4 w-4 " />
-        </Button>
-      </AccordionTrigger>
-      <AccordionContent>
-        <div
-          className={cn(
-            'relative mb-4 gap-8 rounded-md border p-4 md:grid md:grid-cols-3'
-          )}
-        >
-          <FormField
-            control={form.control}
-            name={`jobs.${index}.jobtitle`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Job title</FormLabel>
-                <FormControl>
-                  <Input type="text" disabled={loading} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name={`jobs.${index}.employer`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Employer</FormLabel>
-                <FormControl>
-                  <Input type="text" disabled={loading} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name={`jobs.${index}.startdate`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Start date</FormLabel>
-                <FormControl>
-                  <Input type="date" disabled={loading} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name={`jobs.${index}.enddate`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>End date</FormLabel>
-                <FormControl>
-                  <Input type="date" disabled={loading} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name={`jobs.${index}.jobcountry`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Job country</FormLabel>
-                <Select
-                  disabled={loading}
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        defaultValue={field.value}
-                        placeholder="Select your job country"
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {countries.map((country) => (
-                      <SelectItem key={country.id} value={country.id}>
-                        {country.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name={`jobs.${index}.jobcity`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Job city</FormLabel>
-                <Select
-                  disabled={loading}
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        defaultValue={field.value}
-                        placeholder="Select your job city"
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {cities.map((city) => (
-                      <SelectItem key={city.id} value={city.id}>
-                        {city.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      </AccordionContent>
-    </AccordionItem>
-  </Accordion>
 );
 
 // 4. Step Navigation Component
@@ -512,23 +369,23 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setData] = useState({});
 
-  const defaultValues = {
-    jobs: [
-      {
-        jobtitle: '',
-        employer: '',
-        startdate: '',
-        enddate: '',
-        jobcountry: '',
-        jobcity: ''
-      }
-    ]
-  };
+  // const defaultValues = {
+  //   jobs: [
+  //     {
+  //       jobtitle: '',
+  //       employer: '',
+  //       startdate: '',
+  //       enddate: '',
+  //       jobcountry: '',
+  //       jobcity: ''
+  //     }
+  //   ]
+  // };
 
   // useForm setup with Zod validation
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues,
+    // defaultValues,
     mode: 'onChange',
     reValidateMode: 'onChange'
   });
@@ -548,7 +405,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         'firstName',
         'lastName',
         'email',
-        'contactNum',
+        'personalNum',
         'country',
         'city',
         'companyName',
@@ -691,26 +548,24 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
                 loading={loading}
                 countries={countries}
                 cities={cities}
-                voices={voices} // Pass the voices prop for VoiceSelector
-                handleVoiceSelect={handleVoiceSelect} // Pass the handler for voice selection
-                handleScriptUpload={handleScriptUpload} // Pass the handler for script upload
-                selectedScriptFileName={selectedScriptFileName} // Pass the selected script file name
-                handleEmailUpload={handleEmailUpload} // Pass the handler for email upload
-                selectedEmailFileName={selectedEmailFileName} // Pass the selected email file name
               />
             )}
 
             {currentStep === 1 &&
               fields.map((field, index) => (
-                <JobAccordion
+                <BaseSetup
                   key={index}
                   fields={fields}
                   remove={remove}
                   form={form}
                   index={index}
                   loading={loading}
-                  countries={countries}
-                  cities={cities}
+                  voices={voices} // Pass the voices prop for VoiceSelector
+                  handleVoiceSelect={handleVoiceSelect} // Pass the handler for voice selection
+                  handleScriptUpload={handleScriptUpload} // Pass the handler for script upload
+                  selectedScriptFileName={selectedScriptFileName} // Pass the selected script file name
+                  handleEmailUpload={handleEmailUpload} // Pass the handler for email upload
+                  selectedEmailFileName={selectedEmailFileName} // Pass the selected email file name
                 />
               ))}
             {currentStep === 2 && (
