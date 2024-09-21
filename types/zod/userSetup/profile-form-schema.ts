@@ -219,7 +219,14 @@ export const profileSchema = z.object({
     twitter: oAuthDataSchema.optional(),
     instagram: oAuthDataSchema.optional(),
     linkedIn: oAuthDataSchema.optional()
-  })
+  }),
+  socialMediatags: z
+    .array(
+      z.string().refine((tag) => /^#/.test(tag), {
+        message: "Each hashtag must start with a '#' symbol."
+      })
+    )
+    .optional()
 });
 
 // Export the inferred form values type for use in React Hook Form
