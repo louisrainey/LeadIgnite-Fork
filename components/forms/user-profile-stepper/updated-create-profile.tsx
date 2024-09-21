@@ -31,7 +31,7 @@ import {
 import { cn } from '@/lib/utils/kanban/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HelpCircle, Trash } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import VoiceSelector from './utils/voice/selector';
@@ -44,6 +44,7 @@ import { Switch } from '@/components/ui/switch';
 import { DynamicFileUpload } from './utils/files/dynamicUploadFiles';
 import DynamicCloningModal from './utils/voice/dynamicVoiceRecord';
 import HashtagInput from './utils/socials/hashtags';
+import { UserProfile } from '@/types/userProfile';
 
 const twoFactorAuthOptions = [
   { name: 'twoFactoAuth.sms', label: 'SMS' },
@@ -58,8 +59,7 @@ const notificationOptions = [
   { name: 'notifications.notifyForCampaignUpdates', label: 'Campaign Updates' }
 ];
 interface ProfileFormType {
-  initialData: any | null;
-  categories: any;
+  initialData: UserProfile | null;
 }
 
 // 1. Profile Heading Component
@@ -303,13 +303,6 @@ const BaseSetup: React.FC<{
   selectedEmailFileName: string; // Selected email file name
 }> = ({ form, loading }) => {
   // Handle file uploads for images
-  const handleFilesUpload = (uploadedFiles: File[]) => {
-    // Process the uploaded files and update the form field for `companyAssets`
-    console.log('Uploaded image files:', uploadedFiles);
-
-    // Use form.setValue to update the `companyAssets` field with the uploaded files
-    form.setValue('companyAssets', uploadedFiles);
-  };
 
   // Handle company explainer video upload
 
@@ -779,17 +772,14 @@ const StepNavigation: React.FC<{
 // Main Component
 // Main Component
 export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
-  initialData,
-  categories
+  initialData
 }) => {
-  const params = useParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false); // State for help modal visibility
   const [isTourOpen, setIsTourOpen] = useState(false); // State for the tour
 
-  const handleHelpOpenModal = () => setIsHelpModalOpen(true);
   const handleHelpCloseModal = () => setIsHelpModalOpen(false);
   const handleHelpStartTour = () => setIsTourOpen(true);
   const handleHelpCloseTour = () => setIsTourOpen(false);
@@ -798,12 +788,11 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   const [selectedEmailFileName, setSelectedEmailFileName] =
     useState<string>(''); // Track uploaded file name
 
-  const title = initialData ? 'Create Profile' : 'Edit Your Profile';
+  const title = initialData ? 'Edit Your Profile' : 'Create Profile';
   const description = initialData
-    ? 'Create your profile to optimize, your lead generation'
-    : 'Edit your profile, change callback number script etc.';
+    ? 'Edit your profile, change callback number script etc.'
+    : 'Create your profile to optimize, your lead generation';
   const [currentStep, setCurrentStep] = useState(0);
-  const [data, setData] = useState({});
 
   // const defaultValues = {
   //   jobs: [
@@ -825,11 +814,6 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
     mode: 'onChange',
     reValidateMode: 'onChange'
   });
-  const {
-    control,
-    setValue, // Used to set values programmatically for form fields
-    formState: { isValid, isSubmitting }
-  } = form;
 
   const steps = [
     {

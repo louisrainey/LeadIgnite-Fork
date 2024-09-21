@@ -104,7 +104,7 @@ export type SocialAction = TwitterAction | LinkedInAction | InstagramAction;
 
 export interface SocialMediaCampaign extends CampaignBase {
   id: string; // Campaign ID
-  platform: 'Twitter' | 'Instagram' | 'LinkedIn'; // Platform for the campaign
+  platform: 'Facebook' | 'Twitter' | 'Instagram' | 'LinkedIn'; // Platform for the campaign
   name: string; // Campaign name
   createdAt: string; // Date when the campaign was created
   startDate: string; // Start date of the campaign
