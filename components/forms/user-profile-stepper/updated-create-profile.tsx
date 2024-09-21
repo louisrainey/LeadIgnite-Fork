@@ -721,14 +721,13 @@ const OAuthSetup: React.FC<{
         name="socialMediatags"
         render={({ field, fieldState: { error } }) => (
           <FormItem>
-            <FormLabel>Social Media Tags</FormLabel>
             {/* Hashtag Input Component */}
             <HashtagInput
               form={form}
               loading={loading}
               minHashtags={5} // Minimum number of hashtags required
               maxHashtags={10} // Maximum number of hashtags allowed
-              required={true} // Whether this field is required
+              required={false} // Whether this field is required
             />
             <FormMessage>{error?.message}</FormMessage>
           </FormItem>

@@ -25,6 +25,12 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
 
+  // Update form state when hashtags change
+  const updateFormHashtags = (updatedHashtags: string[]) => {
+    setHashtags(updatedHashtags);
+    form.setValue('socialMediatags', updatedHashtags); // Set the form state
+  };
+
   // Handle adding a hashtag
   const handleAddHashtag = () => {
     const trimmedValue = inputValue.trim();
@@ -40,14 +46,16 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
 
     // Add hashtag only if limit is not reached
     if (hashtags.length < maxHashtags) {
-      setHashtags((prev) => [...prev, trimmedValue]);
+      const updatedHashtags = [...hashtags, trimmedValue];
+      updateFormHashtags(updatedHashtags);
       setInputValue(''); // Reset input after adding
     }
   };
 
   // Handle removing a hashtag
   const handleRemoveHashtag = (hashtagToRemove: string) => {
-    setHashtags((prev) => prev.filter((tag) => tag !== hashtagToRemove));
+    const updatedHashtags = hashtags.filter((tag) => tag !== hashtagToRemove);
+    updateFormHashtags(updatedHashtags);
   };
 
   // Handle Enter key press for adding hashtags
@@ -61,7 +69,7 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
   return (
     <FormField
       control={form.control}
-      name="hashtags"
+      name="socialMediatags" // The name should match the field in your form state
       render={({ field, fieldState: { error } }) => (
         <FormItem>
           <FormLabel>
@@ -113,6 +121,12 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
             ))}
           </div>
 
+          {/* Validation & Error Messages */}
+          {hashtags.length < minHashtags && required && (
+            <p className="text-sm text-red-500">
+              Please add at least {minHashtags} hashtags.
+            </p>
+          )}
           {error && <FormMessage>{error.message}</FormMessage>}
         </FormItem>
       )}
