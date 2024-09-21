@@ -882,40 +882,32 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
     }
   ];
   const next = async () => {
+    console.log('Next button clicked, current step:', currentStep); // Debug log
     const stepFields = steps[currentStep].fields as (keyof ProfileFormValues)[];
 
-    const isStepValid = await form.trigger(stepFields); // Validate current step fields
-
-    console.log('Current Step:', currentStep); // Debugging
-    console.log('Step Fields:', stepFields); // Debugging
+    const isStepValid = await form.trigger(stepFields); // Validate current step
+    console.log('Step Valid:', isStepValid); // Debug validation
 
     if (isStepValid) {
-      // Check if we are on the last step
       if (currentStep === steps.length - 1) {
-        // Try to submit the form
+        console.log('Submitting form...');
         try {
-          await form.handleSubmit((data) => {
-            setData(data);
-            console.log('Form Data Submitted:', data); // Debugging form submission
+          // Show alert for successful "form submission"
+          window.alert('Form saved successfully!');
 
-            // Show alert for form submission
-            window.alert('Form saved successfully!');
-
-            // Redirect to dashboard after submission
-            router.push('/dashboard');
-          })();
+          // Redirect to dashboard after "submission"
+          router.push('/dashboard');
         } catch (error) {
-          // Handle and log any errors that occur during form submission
+          // Catch and log any unexpected errors
           console.error('Error during form submission:', error);
-          window.alert(
-            'An error occurred during form submission. Please try again.'
-          );
+          window.alert('An error occurred during form submission.');
         }
       } else {
-        // Otherwise, go to the next step
-        setCurrentStep((step) => step + 1);
-        console.log('Moved to Step:', currentStep + 1); // Debugging next step
+        console.log('Going to the next step...');
+        setCurrentStep((prevStep) => prevStep + 1);
       }
+    } else {
+      console.log('Step validation failed.');
     }
   };
 
