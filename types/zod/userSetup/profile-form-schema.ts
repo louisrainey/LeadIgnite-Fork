@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { oAuthDataSchema } from './connect-needed-accounts';
 
 export const htmlRegex = /<\/?[a-z][\s\S]*>/i; // Matches basic HTML tags
 export const markdownRegex = /(\#|\*|_|`|\[|\]|!|\(|\))/; // Matches basic Markdown symbols
@@ -145,12 +146,11 @@ export const profileSchema = z.object({
       }
     ),
 
-  explainerVideoUrl: z
+  companyExplainerVideoUrl: z
     .string()
-    .url({ message: 'Please enter a valid URL for the explainer video.' })
-    .optional(), // Optional field for video URL
+    .url({ message: 'Please enter a valid URL for the explainer video.' }),
 
-  assets: z
+  companyAssets: z
     .array(
       z
         .any()
@@ -169,7 +169,8 @@ export const profileSchema = z.object({
           message: 'Asset must be less than 5MB in size.'
         })
     )
-    .max(12, { message: 'You can upload up to 12 assets.' }),
+    .min(3, { message: 'You must upload at least 3 assets.' }) // Minimum of 3 files required
+    .max(15, { message: 'You can upload up to 15 assets.' }), // Maximum of 15 files allowed
   outreachEmailAddress: z
     .string()
     .email({ message: 'Please enter a valid email address.' })
@@ -210,7 +211,15 @@ export const profileSchema = z.object({
     .refine((value) => htmlRegex.test(value) || markdownRegex.test(value), {
       message: 'Email body must be valid Markdown or HTML.'
     })
-    .optional()
+    .optional(),
+
+  socialMediaCampaignAccounts: z.object({
+    oauthData: z.record(oAuthDataSchema),
+    facebook: oAuthDataSchema.optional(),
+    twitter: oAuthDataSchema.optional(),
+    instagram: oAuthDataSchema.optional(),
+    linkedIn: oAuthDataSchema.optional()
+  })
 });
 
 // Export the inferred form values type for use in React Hook Form
