@@ -54,7 +54,7 @@ const ProfileHeading: React.FC<{
   onDelete: () => void;
   showDeleteButton: boolean;
 }> = ({ title, description, loading, onDelete, showDeleteButton }) => (
-  <div className="flex items-center justify-between">
+  <div className="flex flex-col items-center justify-between text-center sm:flex-row sm:text-left">
     <Heading title={title} description={description} />
     {showDeleteButton && (
       <Button
@@ -62,6 +62,7 @@ const ProfileHeading: React.FC<{
         variant="destructive"
         size="sm"
         onClick={onDelete}
+        className="mt-2 sm:mt-0"
       >
         <Trash className="h-4 w-4" />
       </Button>
