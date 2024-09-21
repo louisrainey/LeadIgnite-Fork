@@ -1,8 +1,8 @@
 import * as z from 'zod';
 
-const htmlRegex = /<\/?[a-z][\s\S]*>/i; // Matches basic HTML tags
-const markdownRegex = /(\#|\*|_|`|\[|\]|!|\(|\))/; // Matches basic Markdown symbols
-const validateImageDimensions = (
+export const htmlRegex = /<\/?[a-z][\s\S]*>/i; // Matches basic HTML tags
+export const markdownRegex = /(\#|\*|_|`|\[|\]|!|\(|\))/; // Matches basic Markdown symbols
+export const validateImageDimensions = (
   file: File,
   minWidth: number,
   minHeight: number,
@@ -83,7 +83,7 @@ export const profileSchema = z.object({
     .email({ message: 'Please enter a valid email address.' })
     .max(100, { message: 'Email cannot exceed 100 characters.' }),
 
-  contactNum: z
+  personalNum: z
     .string()
     .min(10, { message: 'Contact number must be at least 10 digits.' })
     .max(15, { message: 'Contact number cannot exceed 15 digits.' })
@@ -101,7 +101,63 @@ export const profileSchema = z.object({
     .min(1, { message: 'Please select a city.' })
     .max(100, { message: 'City name cannot exceed 100 characters.' }),
 
-  // Optional voice field with max validation
+  companyBanner: z
+    .any()
+    .refine((file) => file instanceof File, {
+      message: 'You must upload a file.'
+    })
+    .refine(
+      (file) =>
+        file && ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
+      {
+        message: 'Banner must be a JPEG, PNG, or WebP image.'
+      }
+    )
+    .refine((file) => file && file.size <= 5 * 1024 * 1024, {
+      message: 'Banner must be less than 5MB in size.'
+    })
+    .refine(
+      async (file) => {
+        if (!file) return false;
+        const isValidDimensions = await validateImageDimensions(
+          file,
+          1200,
+          400,
+          1200,
+          400
+        ); // Banner dimensions fixed to 1200x400 pixels
+        return isValidDimensions;
+      },
+      {
+        message: 'Banner dimensions must be 1200x400 pixels.'
+      }
+    ),
+
+  explainerVideoUrl: z
+    .string()
+    .url({ message: 'Please enter a valid URL for the explainer video.' })
+    .optional(), // Optional field for video URL
+
+  assets: z
+    .array(
+      z
+        .any()
+        .refine((file) => file instanceof File, {
+          message: 'You must upload a file.'
+        })
+        .refine(
+          (file) =>
+            file &&
+            ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
+          {
+            message: 'Asset must be a JPEG, PNG, or WebP image.'
+          }
+        )
+        .refine((file) => file && file.size <= 5 * 1024 * 1024, {
+          message: 'Asset must be less than 5MB in size.'
+        })
+    )
+    .max(12, { message: 'You can upload up to 12 assets.' }),
   voice: z
     .string()
     .max(100, { message: 'Voice selection cannot exceed 100 characters.' })
@@ -125,38 +181,7 @@ export const profileSchema = z.object({
     .refine((value) => htmlRegex.test(value) || markdownRegex.test(value), {
       message: 'Email body must be valid Markdown or HTML.'
     })
-    .optional(),
-  // Jobs array for dynamic job fields
-  jobs: z.array(
-    z.object({
-      jobcountry: z
-        .string()
-        .min(1, { message: 'Please select a country for the job.' })
-        .max(100, { message: 'Country name cannot exceed 100 characters.' }),
-      jobcity: z
-        .string()
-        .min(1, { message: 'Please select a city for the job.' })
-        .max(100, { message: 'City name cannot exceed 100 characters.' }),
-      jobtitle: z
-        .string()
-        .min(3, { message: 'Job title must be at least 3 characters long.' })
-        .max(100, { message: 'Job title cannot exceed 100 characters.' }),
-      employer: z
-        .string()
-        .min(3, {
-          message: 'Employer name must be at least 3 characters long.'
-        })
-        .max(100, { message: 'Employer name cannot exceed 100 characters.' }),
-      startdate: z
-        .string()
-        .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
-          message: 'Start date must be in the format YYYY-MM-DD.'
-        }),
-      enddate: z.string().refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
-        message: 'End date must be in the format YYYY-MM-DD.'
-      })
-    })
-  )
+    .optional()
 });
 
 // Export the inferred form values type for use in React Hook Form

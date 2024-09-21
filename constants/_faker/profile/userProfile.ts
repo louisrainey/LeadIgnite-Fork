@@ -115,6 +115,8 @@ export const mockUserProfile: UserProfile = {
     },
     KanbanTasks: mockKanbanState,
     forwardingNumber: faker.phone.number(),
+    outreachEmail: faker.internet.email(),
+    explainerVideo: faker.internet.url(),
     campaignAnalytics: [
       mockCallCampaignAnalytics,
       mockTextMessageCampaignAnalytics,
