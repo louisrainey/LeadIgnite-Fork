@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import { TextMessageCampaign, TextMessage } from '@/types/goHighLevel/text';
+import { TextMessage } from '@/types/goHighLevel/text';
 import { saveAs } from 'file-saver'; // Import the saveAs function
 import { GetEmailByIdResponse } from '@/types/goHighLevel/email';
 // Function to export campaign data to Excel

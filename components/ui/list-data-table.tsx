@@ -15,10 +15,9 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { Input } from './input';
 import { Button } from './button';
 import { ScrollArea, ScrollBar } from './scroll-area';
-import { Download, Calendar } from 'lucide-react'; // Import icons like Download
+import { Download } from 'lucide-react'; // Import icons like Download
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,9 +39,9 @@ export function LeadListDataTable<TData, TValue>({
 
   const [statuses, setStatuses] = useState<Record<string, string>>({});
 
-  const handleStatusChange = (id: string, newValue: string) => {
-    setStatuses((prev) => ({ ...prev, [id]: newValue }));
-  };
+  // const handleStatusChange = (id: string, newValue: string) => {
+  //   setStatuses((prev) => ({ ...prev, [id]: newValue }));
+  // };
 
   // Download function for individual row
   const handleDownload = (rowId: string) => {

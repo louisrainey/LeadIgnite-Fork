@@ -21,7 +21,6 @@ import {
 } from '@/components/ui/table';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

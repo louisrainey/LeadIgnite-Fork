@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { TextMessageCampaign, TextMessage } from '@/types/goHighLevel/text';
+import { GHLTextMessageCampaign, TextMessage } from '@/types/goHighLevel/text';
 import { EyeIcon } from 'lucide-react';
 import { exportCampaignMessagesToExcel } from '@/lib/utils/files/downloadTableData';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -30,7 +30,7 @@ const statusColor: Record<TextMessageCampaignStatus, string> = {
 };
 
 // Functional component for viewing an individual message
-const ViewMessageButton = ({ messageId }: { messageId: string }) => {
+export const ViewMessageButton = ({ messageId }: { messageId: string }) => {
   const messageUrl = `https://textprovider.com/view/${messageId}`;
 
   return (
@@ -46,15 +46,15 @@ const ViewMessageButton = ({ messageId }: { messageId: string }) => {
 };
 
 // Handle message selection to view the message
-const handleMessageSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  const messageUrl = event.target.value;
-  if (messageUrl) {
-    window.open(messageUrl, '_blank', 'noopener,noreferrer'); // Open the message in a new tab
-  }
-};
+// const handleMessageSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+//   const messageUrl = event.target.value;
+//   if (messageUrl) {
+//     window.open(messageUrl, '_blank', 'noopener,noreferrer'); // Open the message in a new tab
+//   }
+// };
 
 // Columns for the text message campaign table
-export const textMessageCampaignColumns: ColumnDef<TextMessageCampaign>[] = [
+export const textMessageCampaignColumns: ColumnDef<GHLTextMessageCampaign>[] = [
   {
     id: 'select',
     header: ({ table }) => (

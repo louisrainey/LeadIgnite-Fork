@@ -3,17 +3,9 @@ import React, { useState, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import {
-  Plus,
-  Filter,
-  Calendar,
-  ChevronDown,
-  Download,
-  HelpCircle
-} from 'lucide-react';
+import { Plus, Calendar, Download, HelpCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { leadListColumns } from './columns';
-import { Input } from '@/components/ui/input';
 import AddLeadModal from '@/components/reusables/modals/leadModal';
 import Lottie from 'lottie-react';
 import searchAnimation from '@/public/lottie/SearchPing.json'; // Lottie JSON file path
@@ -26,8 +18,6 @@ import { campaignSteps } from '@/_tests/tours/campaignTour';
 import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
 
 export const LeadClient: React.FC = () => {
-  const router = useRouter();
-
   // State for modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false); // State for filter dropdown visibility

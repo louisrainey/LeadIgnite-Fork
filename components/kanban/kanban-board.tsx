@@ -2,7 +2,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { KanbanTask, Status, useTaskStore } from '@/lib/stores/taskActions';
 import { hasDraggableData } from '@/lib/utils/kanban/utils';
 import {
   Announcements,
@@ -18,12 +17,12 @@ import {
   type DragStartEvent
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
-import type { KanbanColumn } from './board-column';
 import { BoardColumn, BoardContainer } from './board-column';
 import NewSectionDialog from './new-section-dialog';
 import { TaskCard } from './task-card';
-import { mockTeamMembers } from '@/constants/_faker/profile/team/members';
 import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
+import { useTaskStore } from '@/lib/stores/taskActions';
+import { KanbanColumn, KanbanTask, Status } from '@/types/_dashboard/kanban';
 
 const defaultCols = mockUserProfile.companyInfo.KanbanTasks
   .columns satisfies (KanbanColumn | null)[];

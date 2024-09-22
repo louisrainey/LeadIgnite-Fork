@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/table';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { TextMessageCampaign } from '@/types/goHighLevel/text'; // Assuming the correct import path
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

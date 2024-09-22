@@ -56,13 +56,9 @@ export default function LeadsComponent() {
 
   const {
     properties,
-    visibleProperties, // Zustand-managed properties list
-    setProperties, // Action to set properties in the store
+
     isDrawerOpen, // Drawer visibility state
-    setIsDrawerOpen, // Action to control drawer state
-    loadMoreProperties, // Action to load more properties (pagination)
-    hasMore, // Whether there are more properties to load
-    isLoading // Loading state
+    setIsDrawerOpen // Action to control drawer state
   } = usePropertyStore();
 
   const { control, handleSubmit } = useForm({
@@ -89,7 +85,7 @@ export default function LeadsComponent() {
   });
 
   const onSubmit = async (data: MapFormSchemaType) => {
-    const apiKey = process.env.NEXT_PUBLIC_GMAPS_KEY || '';
+    // const apiKey = process.env.NEXT_PUBLIC_GMAPS_KEY || '';
     toast('Submitted');
     // Use the location from form data to fetch addresses from the mock API
     const fetchedCoordinates = await mockFetchAddressesFromApi([data.location]);

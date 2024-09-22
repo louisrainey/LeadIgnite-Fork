@@ -20,21 +20,21 @@ const statusColor: Record<EmailCampaign['status'], string> = {
 };
 
 // Functional component for viewing an individual email via an external link
-const ViewEmailButton = ({ emailId }: { emailId: string }) => {
-  // Assuming that you construct the external email URL using the email ID
-  const externalEmailUrl = `https://emailprovider.com/view/${emailId}`;
+// const ViewEmailButton = ({ emailId }: { emailId: string }) => {
+//   // Assuming that you construct the external email URL using the email ID
+//   const externalEmailUrl = `https://emailprovider.com/view/${emailId}`;
 
-  return (
-    <a
-      href={externalEmailUrl}
-      target="_blank"
-      rel="noreferrer"
-      className="p-2 text-blue-500"
-    >
-      <EyeIcon className="h-5 w-5" />
-    </a>
-  );
-};
+//   return (
+//     <a
+//       href={externalEmailUrl}
+//       target="_blank"
+//       rel="noreferrer"
+//       className="p-2 text-blue-500"
+//     >
+//       <EyeIcon className="h-5 w-5" />
+//     </a>
+//   );
+// };
 
 const handleEmailSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
   const emailUrl = event.target.value;

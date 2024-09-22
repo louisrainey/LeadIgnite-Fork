@@ -11,8 +11,8 @@ import {
   DialogClose
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { LeadTypeGlobal } from '@/constants/data';
 import { skipTraceNestedSchema } from '@/types/zod/createLeadListSkip';
+import { LeadTypeGlobal } from '@/types/_dashboard/leads';
 
 type SkipTraceFormProps = {
   leads: LeadTypeGlobal[]; // Simplified lead type

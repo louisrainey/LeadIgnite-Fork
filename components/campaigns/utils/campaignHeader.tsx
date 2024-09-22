@@ -1,5 +1,5 @@
 'use client';
-import { FileQuestion, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import StatCard from './statCard';
 import { useCampaignStore } from '@/lib/stores/campaigns'; // Import the Zustand store
@@ -16,7 +16,6 @@ import {
   mockUserProfile,
   MockUserProfile
 } from '@/constants/_faker/profile/userProfile';
-import { Modal } from '@/components/ui/modal';
 
 import { HelpCircle } from 'lucide-react';
 import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
