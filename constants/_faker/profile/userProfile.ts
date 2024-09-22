@@ -107,13 +107,13 @@ export const mockUserProfile: UserProfile = {
   companyInfo: {
     companyName: faker.company.name(),
     webhook: faker.internet.url(),
-    companyLogo: 'logo.png', // Static, can be a URL or file path
+    companyLogo: faker.image.avatarGitHub(), // Static, can be a URL or file path
     GHLID: { locationId: faker.string.uuid() }, // Random location ID
     assets: {
       logo: faker.image.avatar(), // Generates a random logo image URL (300x300 size)
       favicon: faker.image.urlLoremFlickr(), // Generates a random favicon image URL (64x64 size)
       banner: faker.image.urlLoremFlickr(), // Generates a random banner image URL (1200x300 size)
-      ghlAssets: faker.image.urlLoremFlickr() // Generates a random file path, simulating a GHL-related asset
+      ghlAssets: Array.from({ length: 5 }, () => faker.image.urlLoremFlickr()) // Generates an array of 5 random image URLs
     },
 
     campaigns: {
@@ -123,7 +123,7 @@ export const mockUserProfile: UserProfile = {
       callCampaigns: mockCallCampaignData
     },
     KanbanTasks: mockKanbanState,
-    forwardingNumber: faker.phone.number(),
+    forwardingNumber: '3325436201',
     outreachEmail: faker.internet.email(),
     explainerVideo: faker.internet.url(),
     campaignAnalytics: [

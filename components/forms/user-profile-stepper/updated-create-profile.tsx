@@ -49,7 +49,11 @@ import {
   InitialProfileData,
   extractInitialDataFromUserProfile
 } from './utils/const/getProfileInfo';
-
+import {
+  InitialBaseSetupData,
+  extractInitialBaseDataFromUserProfile
+} from './utils/const/getBasetProfile';
+import Image from 'next/image';
 const twoFactorAuthOptions = [
   { name: 'twoFactoAuth.sms', label: 'SMS' },
   { name: 'twoFactoAuth.email', label: 'Email ' },
@@ -350,22 +354,60 @@ const PersonalInformationForm: React.FC<{
     </>
   );
 };
-
 const BaseSetup: React.FC<{
   form: any;
   loading: boolean;
-
+  initialData?: InitialBaseSetupData; // Add the optional initialData prop
   voices: AssistantVoice[]; // Add voices prop for VoiceSelector
   handleVoiceSelect: (voiceId: string) => void; // Voice select handler
   handleScriptUpload: (scriptContent: string) => void; // Script upload handler
   selectedScriptFileName: string; // Selected script file name
   handleEmailUpload: (emailContent: string) => void; // Email upload handler
   selectedEmailFileName: string; // Selected email file name
-}> = ({ form, loading }) => {
-  // Handle file uploads for images
+}> = ({ form, loading, initialData }) => {
+  // Populate form fields with initial data if it exists
+  useEffect(() => {
+    if (initialData) {
+      form.setValue('companyName', initialData.companyName || '');
+      form.setValue('companyLogo', initialData.companyLogo || '');
+      form.setValue(
+        'outreachEmailAddress',
+        initialData.outreachEmailAddress || ''
+      );
+      form.setValue(
+        'leadForwardingNumber',
+        initialData.leadForwardingNumber || ''
+      );
+      form.setValue(
+        'companyExplainerVideoUrl',
+        initialData.companyExplainerVideoUrl || ''
+      );
+      form.setValue('companyAssets', initialData.companyAssets || []);
+    }
 
-  // Handle company explainer video upload
+    console.log('First Name:', form.getValues('companyName')); // Logs First Name
+    console.log('Last Name:', form.getValues('companyLogo')); // Logs Last Name
+    console.log('Email:', form.getValues('companyAssets')); // Logs Email
+    console.log('Personal Num:', form.getValues('personalNum')); // Logs Personal Phone Number
+    console.log('City:', form.getValues('city')); // Logs City
+    console.log('Country:', form.getValues('country')); // Logs Country
 
+    // Log all form values after setting all fields
+  }, [initialData, form]);
+
+  const [isReplacingLogo, setIsReplacingLogo] = useState(false); // Track if the user wants to replace the logo
+  const [isEditingAssets, setIsEditingAssets] = useState(false); // State to toggle editing assets
+  // Extract the initial logo URL or file from form state
+  const logoFromForm = form.watch('companyLogo');
+  const assetsFromForm = form.watch('companyAssets') || [];
+
+  // Handle deleting an asset
+  const handleDeleteAsset = (index: number) => {
+    const updatedAssets = assetsFromForm.filter(
+      (_: any, i: number) => i !== index
+    );
+    form.setValue('companyAssets', updatedAssets); // Update form state
+  };
   return (
     <>
       <FormField
@@ -389,18 +431,47 @@ const BaseSetup: React.FC<{
           <FormItem>
             <FormLabel>Company Logo</FormLabel>
             <FormControl>
-              <input
-                type="file"
-                accept="image/*"
-                disabled={loading}
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    const file = e.target.files[0];
-                    field.onChange(file); // Handle the file input here
-                  }
-                }}
-                className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-              />
+              {/* Check if logo is a string (URL) */}
+              {logoFromForm && !isReplacingLogo ? (
+                <div className="relative flex flex-col items-center justify-center">
+                  {' '}
+                  {/* Display the existing logo from URL */}
+                  {typeof logoFromForm === 'string' ? (
+                    <img
+                      src={logoFromForm}
+                      alt="Company Logo"
+                      className="mb-4 h-32 w-32 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <p>No logo available</p>
+                  )}
+                  {/* Replace Button */}
+                  <button
+                    type="button"
+                    onClick={() => setIsReplacingLogo(true)} // Enable replacing the logo
+                    className="rounded bg-blue-600 px-3 py-1 text-white hover:bg-blue-700"
+                  >
+                    Replace Logo
+                  </button>
+                </div>
+              ) : (
+                // Show file input to replace logo
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={loading}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        const file = e.target.files[0];
+                        field.onChange(file); // Update form state with new file
+                        setIsReplacingLogo(false); // Hide input after selecting a file
+                      }
+                    }}
+                    className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
+                  />
+                </div>
+              )}
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -453,7 +524,7 @@ const BaseSetup: React.FC<{
             <FormLabel>Company Explainer Video URL</FormLabel>
             <FormControl>
               <Input
-                type="url" // Change input type to 'url' for URL validation
+                type="url"
                 disabled={loading}
                 placeholder="https://example.com/video"
                 {...field} // Bind the field to the form state
@@ -470,16 +541,105 @@ const BaseSetup: React.FC<{
           name="companyAssets"
           render={({ field, fieldState: { error } }) => (
             <FormItem>
-              <FormLabel>Upload Company Assets</FormLabel>
-              <DynamicFileUpload
-                onFilesUpload={(files) => field.onChange(files)} // Set form value when files are uploaded
-                allowedFileTypes={['jpg', 'jpeg', 'png', 'webp']} // Allow image file types only
-                minFiles={3} // Minimum of 3 files required
-                maxFiles={12} // Maximum of 12 files allowed
-                selectedFiles={field.value} // Set the initial state to selected files from form
-              />
-              <FormMessage>{error?.message}</FormMessage>{' '}
-              {/* Display error message */}
+              <FormLabel>Company Assets</FormLabel>
+
+              {!isEditingAssets && assetsFromForm.length > 0 ? (
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                  {/* Display preview of assets */}
+                  {assetsFromForm.map((asset: File | string, index: number) => (
+                    <div key={index} className="relative inline-block">
+                      {/* Differentiate between File objects and URLs */}
+                      {asset instanceof File ? (
+                        // If it's a File object, use URL.createObjectURL to preview it
+                        <Image
+                          src={URL.createObjectURL(asset)}
+                          alt={`Asset ${index + 1}`}
+                          className="mb-4 rounded-lg object-cover"
+                          width={100}
+                          height={100}
+                          onLoadingComplete={() => {
+                            // Ensure proper layout after the image has loaded
+                            const button = document.getElementById(
+                              `delete-btn-${index}`
+                            );
+                            if (button) {
+                              button.style.visibility = 'visible'; // Make the delete button visible
+                            }
+                          }}
+                        />
+                      ) : (
+                        // If it's a URL (string), render it directly
+                        <Image
+                          src={asset as string}
+                          alt={`Asset ${index + 1}`}
+                          className="mb-4 rounded-lg object-cover"
+                          width={100}
+                          height={100}
+                          onLoadingComplete={() => {
+                            const button = document.getElementById(
+                              `delete-btn-${index}`
+                            );
+                            if (button) {
+                              button.style.visibility = 'visible'; // Make the delete button visible
+                            }
+                          }}
+                        />
+                      )}
+
+                      {/* X Icon for Deleting */}
+                      <button
+                        id={`delete-btn-${index}`}
+                        type="button"
+                        onClick={() => handleDeleteAsset(index)} // Delete asset
+                        className="absolute right-2 top-2 rounded-full bg-red-600 p-1 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600"
+                        style={{ visibility: 'hidden' }} // Initially hide the button until the image is loaded
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* Add Images Button */}
+                  <div className="col-span-2 md:col-span-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingAssets(true)} // Enable adding more assets
+                      className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                    >
+                      Add More Images
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // If no assets or in edit mode, show the DynamicFileUpload component
+                <div>
+                  <DynamicFileUpload
+                    onFilesUpload={(files) => {
+                      field.onChange([...assetsFromForm, ...files]); // Append new files to existing assets
+                      setIsEditingAssets(false); // Hide input after uploading
+                    }}
+                    allowedFileTypes={['jpg', 'jpeg', 'png', 'webp']}
+                    minFiles={3}
+                    maxFiles={12}
+                    selectedFiles={assetsFromForm}
+                  />
+                </div>
+              )}
+
+              <FormMessage>{error?.message}</FormMessage>
             </FormItem>
           )}
         />
@@ -1056,7 +1216,6 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
                 loading={loading}
                 countries={countries}
                 cities={cities}
-                initialData={extractInitialDataFromUserProfile(initialData)}
               />
             )}
 
@@ -1064,6 +1223,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
               <BaseSetup
                 form={form}
                 loading={loading}
+                initialData={extractInitialBaseDataFromUserProfile(initialData)}
                 voices={voices} // Pass the voices prop for VoiceSelector
                 handleVoiceSelect={handleVoiceSelect} // Pass the handler for voice selection
                 handleScriptUpload={handleScriptUpload} // Pass the handler for script upload

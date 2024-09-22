@@ -112,7 +112,7 @@ export interface CompanyInfo {
     logo: string | File;
     favicon?: string | File;
     banner?: string | File;
-    ghlAssets?: string;
+    ghlAssets?: string[];
   };
   webhook?: string;
   companyLogo: File | String;
