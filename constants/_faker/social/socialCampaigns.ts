@@ -21,7 +21,11 @@ export const generateSampleSocialMediaCampaign = (
     endDate: faker.date.future().toISOString(),
     senderHandle: faker.internet.userName(),
     receiverHandle: faker.internet.userName(),
-    hashtags: faker.lorem.words(3).split(' '),
+    hashtags: faker.lorem
+      .words(3)
+      .split(' ')
+      .map((word) => `#${word}`),
+
     actions: Array.from({ length: actionsCount }, () => generateRandomAction())
   };
 };

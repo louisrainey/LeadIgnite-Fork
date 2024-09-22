@@ -1,5 +1,11 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
+# 🪳 Fix saving profile when editing
+
+# 🪳 Fix multiple file uploads being able to be deleted
+
+# 🪳 Fix Selects not able to be updated hydration error
+
 # 💾 Set Up Database for nested users, connected with ai usage and skip trace usage, stripe subscriptions
 
 # 💾 Connect Lead search to api

@@ -42,13 +42,9 @@ import { campaignSteps } from '@/_tests/tours/campaignTour';
 import PropertySearchModal from '@/components/reusables/tutorials/walkthroughModal';
 import { Switch } from '@/components/ui/switch';
 import { DynamicFileUpload } from './utils/files/dynamicUploadFiles';
-import DynamicCloningModal from './utils/voice/dynamicVoiceRecord';
 import HashtagInput from './utils/socials/hashtags';
 import { UserProfile } from '@/types/userProfile';
-import {
-  InitialProfileData,
-  extractInitialDataFromUserProfile
-} from './utils/const/getProfileInfo';
+import { InitialProfileData } from './utils/const/getProfileInfo';
 import {
   InitialBaseSetupData,
   extractInitialBaseDataFromUserProfile
@@ -59,6 +55,10 @@ import {
   extractInitialKnowledgeBaseDataFromUserProfile
 } from './utils/const/getKnowledgeBase';
 import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
+import {
+  InitialOauthSetupData,
+  extractOAuthDataFromUserProfile
+} from './utils/const/connectedAccounts';
 const twoFactorAuthOptions = [
   { name: 'twoFactoAuth.sms', label: 'SMS' },
   { name: 'twoFactoAuth.email', label: 'Email ' },
@@ -876,11 +876,35 @@ const KnowledgeBaseSetup: React.FC<KnowledgeBaseSetupProps> = ({
 const OAuthSetup: React.FC<{
   form: any;
   loading: boolean;
-}> = ({ form, loading }) => {
+  initialData?: InitialOauthSetupData; // Optional initial data for OAuth and social media tags
+}> = ({ form, loading, initialData }) => {
   const [metaData, setMetaData] = useState<any>(null); // Meta (Facebook) OAuth data
   const [instagramData, setInstagramData] = useState<any>(null); // Instagram OAuth data
   const [twitterData, setTwitterData] = useState<any>(null); // Twitter OAuth data
   const [linkedInData, setLinkedInData] = useState<any>(null); // LinkedIn OAuth data
+
+  // Extract initial OAuth and social media tag data from the profile
+  useEffect(() => {
+    if (initialData) {
+      // Set the initial OAuth data
+      setMetaData(initialData.connectedAccounts.facebook);
+      setInstagramData(initialData.connectedAccounts.instagram);
+      setTwitterData(initialData.connectedAccounts.twitter);
+      setLinkedInData(initialData.connectedAccounts.linkedIn);
+
+      // Set the form values for connected accounts and social media tags
+      form.setValue('meta', initialData.connectedAccounts.facebook);
+      form.setValue('instagram', initialData.connectedAccounts.instagram);
+      form.setValue('twitter', initialData.connectedAccounts.twitter);
+      form.setValue('linkedIn', initialData.connectedAccounts.linkedIn);
+      form.setValue('socialMediatags', initialData.socialMediaTags || []);
+
+      console.log(
+        'Current form state after setting initial data:',
+        form.getValues()
+      );
+    }
+  }, [initialData, form]);
 
   // Simulate OAuth login flow for different services
   const handleOAuthLogin = (service: string) => {
@@ -914,81 +938,74 @@ const OAuthSetup: React.FC<{
     }
   };
 
+  // Render OAuth buttons with "Refresh Login" if logged in
+  const renderOAuthButton = (
+    serviceData: any,
+    serviceName: string,
+    buttonComponent: JSX.Element
+  ) => {
+    return (
+      <FormField
+        control={form.control}
+        name={serviceName}
+        render={({ field, fieldState: { error } }) => (
+          <FormItem>
+            <FormLabel>{`${
+              serviceName.charAt(0).toUpperCase() + serviceName.slice(1)
+            } Login`}</FormLabel>
+            {serviceData ? (
+              // If user is already logged in, show Refresh Login button
+              <>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  You are logged in.
+                </p>
+                <button
+                  onClick={() => handleOAuthLogin(serviceName)}
+                  className="mt-2 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow-md transition-colors duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 dark:bg-blue-400 dark:hover:bg-blue-500 dark:focus:ring-blue-300"
+                >
+                  Refresh Login
+                </button>
+              </>
+            ) : (
+              // Otherwise, show the regular login button
+              buttonComponent
+            )}
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        )}
+      />
+    );
+  };
+
   return (
     <>
       {/* Meta (Facebook) OAuth */}
-      <FormField
-        control={form.control}
-        name="meta"
-        render={({ field, fieldState: { error } }) => (
-          <FormItem>
-            <FormLabel>Meta (Facebook) Login</FormLabel>
-            <FacebookLoginButton onClick={() => handleOAuthLogin('meta')} />
-            {metaData && (
-              <p className="text-sm text-gray-600">
-                Access Token: {metaData.accessToken}
-              </p>
-            )}
-            <FormMessage>{error?.message}</FormMessage>
-          </FormItem>
-        )}
-      />
+      {renderOAuthButton(
+        metaData,
+        'meta',
+        <FacebookLoginButton onClick={() => handleOAuthLogin('meta')} />
+      )}
 
       {/* Instagram OAuth */}
-      <FormField
-        control={form.control}
-        name="instagram"
-        render={({ field, fieldState: { error } }) => (
-          <FormItem>
-            <FormLabel>Instagram Login</FormLabel>
-            <InstagramLoginButton
-              onClick={() => handleOAuthLogin('instagram')}
-            />
-            {instagramData && (
-              <p className="text-sm text-gray-600">
-                Access Token: {instagramData.accessToken}
-              </p>
-            )}
-            <FormMessage>{error?.message}</FormMessage>
-          </FormItem>
-        )}
-      />
+      {renderOAuthButton(
+        instagramData,
+        'instagram',
+        <InstagramLoginButton onClick={() => handleOAuthLogin('instagram')} />
+      )}
 
       {/* Twitter OAuth */}
-      <FormField
-        control={form.control}
-        name="twitter"
-        render={({ field, fieldState: { error } }) => (
-          <FormItem>
-            <FormLabel>Twitter Login</FormLabel>
-            <TwitterLoginButton onClick={() => handleOAuthLogin('twitter')} />
-            {twitterData && (
-              <p className="text-sm text-gray-600">
-                Access Token: {twitterData.accessToken}
-              </p>
-            )}
-            <FormMessage>{error?.message}</FormMessage>
-          </FormItem>
-        )}
-      />
+      {renderOAuthButton(
+        twitterData,
+        'twitter',
+        <TwitterLoginButton onClick={() => handleOAuthLogin('twitter')} />
+      )}
 
       {/* LinkedIn OAuth */}
-      <FormField
-        control={form.control}
-        name="linkedIn"
-        render={({ field, fieldState: { error } }) => (
-          <FormItem>
-            <FormLabel>LinkedIn Login</FormLabel>
-            <LinkedInLoginButton onClick={() => handleOAuthLogin('linkedIn')} />
-            {linkedInData && (
-              <p className="text-sm text-gray-600">
-                Access Token: {linkedInData.accessToken}
-              </p>
-            )}
-            <FormMessage>{error?.message}</FormMessage>
-          </FormItem>
-        )}
-      />
+      {renderOAuthButton(
+        linkedInData,
+        'linkedIn',
+        <LinkedInLoginButton onClick={() => handleOAuthLogin('linkedIn')} />
+      )}
 
       {/* Hashtag Input */}
       <FormField
@@ -996,7 +1013,6 @@ const OAuthSetup: React.FC<{
         name="socialMediatags"
         render={({ field, fieldState: { error } }) => (
           <FormItem>
-            {/* Hashtag Input Component */}
             <HashtagInput
               form={form}
               loading={loading}
@@ -1011,6 +1027,7 @@ const OAuthSetup: React.FC<{
     </>
   );
 };
+
 // 4. Step Navigation Component
 const StepNavigation: React.FC<{
   currentStep: number;
@@ -1314,6 +1331,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
               <OAuthSetup
                 form={form}
                 loading={loading} // Pass loading state if needed
+                initialData={extractOAuthDataFromUserProfile(initialData)}
               />
             )}
           </div>

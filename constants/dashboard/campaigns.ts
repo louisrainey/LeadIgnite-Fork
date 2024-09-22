@@ -1,16 +1,15 @@
 import {
   TextCampaign,
   CallCampaign,
-  EmailCampaign,
   SocialMediaCampaign,
-  Action
+  SocialAction
 } from '@/types/_dashboard/campaign';
 
 // Social media actions dataset
 export const exampleSocialMediaActions: {
-  instagram: Action[];
-  linkedin: Action[];
-  twitter: Action[];
+  instagram: SocialAction[];
+  linkedin: SocialAction[];
+  twitter: SocialAction[];
 } = {
   instagram: [
     {
