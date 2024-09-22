@@ -32,7 +32,7 @@ import { cn } from '@/lib/utils/kanban/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HelpCircle, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import VoiceSelector from './utils/voice/selector';
 import { mockVoices } from '@/constants/_faker/_api/vapi/assistant';
@@ -45,6 +45,10 @@ import { DynamicFileUpload } from './utils/files/dynamicUploadFiles';
 import DynamicCloningModal from './utils/voice/dynamicVoiceRecord';
 import HashtagInput from './utils/socials/hashtags';
 import { UserProfile } from '@/types/userProfile';
+import {
+  InitialProfileData,
+  extractInitialDataFromUserProfile
+} from './utils/const/getProfileInfo';
 
 const twoFactorAuthOptions = [
   { name: 'twoFactoAuth.sms', label: 'SMS' },
@@ -59,7 +63,7 @@ const notificationOptions = [
   { name: 'notifications.notifyForCampaignUpdates', label: 'Campaign Updates' }
 ];
 interface ProfileFormType {
-  initialData: UserProfile | null;
+  initialData?: UserProfile;
 }
 
 // 1. Profile Heading Component
@@ -87,209 +91,265 @@ const ProfileHeading: React.FC<{
 );
 
 // 2. Personal Information Form Component
-// 2. Personal Information Form Component
+
 const PersonalInformationForm: React.FC<{
   form: any;
   loading: boolean;
   countries: { id: string; name: string }[];
   cities: { id: string; name: string }[];
-}> = ({ form, loading, countries, cities }) => (
-  <>
-    <FormField
-      control={form.control}
-      name="firstName"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>First Name</FormLabel>
-          <FormControl>
-            <Input disabled={loading} placeholder="John" {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="lastName"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Last Name</FormLabel>
-          <FormControl>
-            <Input disabled={loading} placeholder="Doe" {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+  initialData?: InitialProfileData; // Optional prop for pre-filling data
+}> = ({ form, loading, countries, cities, initialData }) => {
+  // Populate form fields with initial data if it exists
+  useEffect(() => {
+    if (initialData) {
+      form.setValue('firstName', initialData.firstName);
+      form.setValue('lastName', initialData.lastName);
+      form.setValue('email', initialData.email);
+      form.setValue('personalNum', initialData.personalNum || '324234234');
+      form.setValue('city', 'Kerala');
+      form.setValue('country', initialData.country);
 
-    <FormField
-      control={form.control}
-      name="email"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Email</FormLabel>
-          <FormControl>
-            <Input
-              disabled={loading}
-              placeholder="johndoe@gmail.com"
-              {...field}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="personalNum"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Personal Phone Number</FormLabel>
-          <FormControl>
-            <Input
-              type="number"
-              placeholder="Enter your phone number"
-              disabled={loading}
-              {...field}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="city"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>City</FormLabel>
-          <Select
-            disabled={loading}
-            onValueChange={field.onChange}
-            value={field.value}
-            defaultValue={field.value}
-          >
+      // Two-factor authentication
+      form.setValue(
+        'twoFactoAuth.sms',
+        initialData.twoFactorAuth?.methods?.sms || false
+      );
+      form.setValue(
+        'twoFactoAuth.email',
+        initialData.twoFactorAuth?.methods?.email || false
+      );
+      form.setValue(
+        'twoFactoAuth.authenticatorApp',
+        initialData.twoFactorAuth?.methods?.authenticatorApp || false
+      );
+
+      // Notifications
+      form.setValue(
+        'notifications.smsNotifications',
+        initialData.notifications?.smsNotifications || false
+      );
+      form.setValue(
+        'notifications.emailNotifications',
+        initialData.notifications?.emailNotifications || false
+      );
+      form.setValue(
+        'notifications.notifyForNewLeads',
+        initialData.notifications?.notifyForNewLeads || false
+      );
+      form.setValue(
+        'notifications.notifyForCampaignUpdates',
+        initialData.notifications?.notifyForCampaignUpdates || false
+      );
+      // Log each individual field after setting
+      console.log('First Name:', form.getValues('firstName')); // Logs First Name
+      console.log('Last Name:', form.getValues('lastName')); // Logs Last Name
+      console.log('Email:', form.getValues('email')); // Logs Email
+      console.log('Personal Num:', form.getValues('personalNum')); // Logs Personal Phone Number
+      console.log('City:', form.getValues('city')); // Logs City
+      console.log('Country:', form.getValues('country')); // Logs Country
+
+      // Log all form values after setting all fields
+      console.log('All form values after setting:', form.getValues());
+    }
+  }, [initialData, form]);
+
+  return (
+    <>
+      <FormField
+        control={form.control}
+        name="firstName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>First Name</FormLabel>
             <FormControl>
-              <SelectTrigger>
-                <SelectValue
-                  defaultValue={field.value}
-                  placeholder="Select a city"
-                />
-              </SelectTrigger>
+              <Input disabled={loading} placeholder="John" {...field} />
             </FormControl>
-            <SelectContent>
-              {cities.map((city) => (
-                <SelectItem key={city.id} value={city.id}>
-                  {city.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <FormField
-      control={form.control}
-      name="country"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Country</FormLabel>
-          <Select
-            disabled={loading}
-            onValueChange={field.onChange}
-            value={field.value}
-            defaultValue={field.value}
-          >
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="lastName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Last Name</FormLabel>
             <FormControl>
-              <SelectTrigger>
-                <SelectValue
-                  defaultValue={field.value}
-                  placeholder="Select a country"
-                />
-              </SelectTrigger>
+              <Input disabled={loading} placeholder="Doe" {...field} />
             </FormControl>
-            <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.id} value={country.id}>
-                  {country.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-    {/* Two-Factor Authentication (2FA) Section */}
-    <div className="space-y-4">
-      <h3 className="text-lg font-medium">Two-Factor Authentication (2FA)</h3>
-      <div className="space-y-4">
-        {' '}
-        {/* Changed from grid to vertical stack */}
-        {twoFactorAuthOptions.map((option) => (
-          <FormField
-            key={option.name}
-            control={form.control}
-            name={option.name}
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center justify-between space-x-4">
-                  <FormLabel className="flex-shrink-0">
-                    {option.label}
-                  </FormLabel>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={loading}
-                    />
-                  </FormControl>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
-      </div>
-    </div>
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input
+                disabled={loading}
+                placeholder="johndoe@gmail.com"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-    {/* Notifications Section */}
-    <div className=" space-y-4">
-      <h3 className="text-lg font-medium">Notifications</h3>
+      <FormField
+        control={form.control}
+        name="personalNum"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Personal Phone Number</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                placeholder="Enter your phone number"
+                disabled={loading}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="city"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>City</FormLabel>
+            <Select
+              disabled={loading}
+              onValueChange={field.onChange}
+              value={field.value}
+              defaultValue={field.value}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue
+                    defaultValue={field.value}
+                    placeholder="Select a city"
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {cities.map((city) => (
+                  <SelectItem key={city.id} value={city.id}>
+                    {city.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="country"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Country</FormLabel>
+            <Select
+              disabled={loading}
+              onValueChange={field.onChange}
+              value={field.value}
+              defaultValue={field.value}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue
+                    defaultValue={field.value}
+                    placeholder="Select a country"
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {countries.map((country) => (
+                  <SelectItem key={country.id} value={country.id}>
+                    {country.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Two-Factor Authentication (2FA) Section */}
       <div className="space-y-4">
-        {' '}
-        {/* Changed from grid to vertical stack */}
-        {notificationOptions.map((option) => (
-          <FormField
-            key={option.name}
-            control={form.control}
-            name={option.name}
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center justify-between space-x-4">
-                  <FormLabel className="flex-shrink-0">
-                    {option.label}
-                  </FormLabel>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={loading}
-                    />
-                  </FormControl>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
+        <h3 className="text-lg font-medium">Two-Factor Authentication (2FA)</h3>
+        <div className="space-y-4">
+          {twoFactorAuthOptions.map((option) => (
+            <FormField
+              key={option.name}
+              control={form.control}
+              name={option.name}
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between space-x-4">
+                    <FormLabel className="flex-shrink-0">
+                      {option.label}
+                    </FormLabel>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  </>
-);
-// 3. BaseSetup Component
+
+      {/* Notifications Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Notifications</h3>
+        <div className="space-y-4">
+          {notificationOptions.map((option) => (
+            <FormField
+              key={option.name}
+              control={form.control}
+              name={option.name}
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between space-x-4">
+                    <FormLabel className="flex-shrink-0">
+                      {option.label}
+                    </FormLabel>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
 
 const BaseSetup: React.FC<{
   form: any;
@@ -929,7 +989,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         description={description}
         loading={loading}
         onDelete={() => setOpen(true)}
-        showDeleteButton={!!initialData}
+        showDeleteButton={false}
       />
       <div className="flex items-center justify-center">
         <button
@@ -946,8 +1006,9 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
           {steps.map((step, index) => (
             <li key={step.name} className="md:flex-1">
               <div
+                onClick={() => initialData && setCurrentStep(index)} // Allow click if initialData is true
                 className={cn(
-                  'group flex w-full flex-col py-2 pl-4',
+                  'group flex w-full cursor-pointer flex-col py-2 pl-4',
                   currentStep === index
                     ? 'border-l-4 border-blue-600 text-blue-600' // Current step (active)
                     : currentStep > index
@@ -995,6 +1056,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
                 loading={loading}
                 countries={countries}
                 cities={cities}
+                initialData={extractInitialDataFromUserProfile(initialData)}
               />
             )}
 

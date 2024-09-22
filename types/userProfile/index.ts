@@ -177,7 +177,7 @@ export interface UserProfile {
   email: string;
   country: string;
   city: string;
-
+  personalNum: string;
   // New fields
   leadPreferences: LeadPreferences; // Preferences for lead generation
   savedSearches: SavedSearch[]; // Array of saved searches
