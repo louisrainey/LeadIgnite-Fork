@@ -71,6 +71,7 @@ export const mockUserProfile: UserProfile = {
   email: faker.internet.email(),
   country: faker.location.country(),
   city: faker.location.city(),
+  personalNum: '3325436201',
 
   leadPreferences: {
     preferredLocation: [faker.location.city(), faker.location.city()],

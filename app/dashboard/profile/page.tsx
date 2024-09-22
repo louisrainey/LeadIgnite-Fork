@@ -1,6 +1,7 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { CreateProfileUpdated } from '@/components/forms/user-profile-stepper/updated-create-profile';
 import PageContainer from '@/components/layout/page-container';
+import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
@@ -11,7 +12,7 @@ export default function page() {
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
-        <CreateProfileUpdated initialData={null} />
+        <CreateProfileUpdated initialData={mockUserProfile} />
       </div>
     </PageContainer>
   );
