@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Lottie from 'lottie-react';
 import searchAnimation from '@/public/lottie/SearchPing.json'; // Lottie JSON file path

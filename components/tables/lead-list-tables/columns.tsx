@@ -1,13 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Download } from 'lucide-react';
-import { LeadList } from '@/constants/dashboard/leadList'; // Assuming this is the correct path
 import { exportLeadListsToExcel } from '@/lib/utils/files/loopDownloadTableData';
-import { Button } from '@/components/ui/button';
 import SkipTraceDialog from './utils/skipLeadsList'; // Assuming SkipTraceDialog component is in utils
+import { LeadList } from '@/types/_dashboard/leadList';
 
 // Columns configuration for LeadList
 export const columns: ColumnDef<LeadList>[] = [

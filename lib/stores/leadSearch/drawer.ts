@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { PropertyDetails } from '@/types/_dashboard/maps';
-import { MockInHouseLeadAgrigator } from '@/constants/dashboard/properties';
 
 interface PropertyStoreState {
   isDrawerOpen: boolean;

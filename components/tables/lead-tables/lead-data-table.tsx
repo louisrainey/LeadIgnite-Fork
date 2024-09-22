@@ -20,12 +20,7 @@ import {
 import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
 import { ScrollArea, ScrollBar } from '../../ui/scroll-area';
-import {
-  Calendar,
-  MessageCircle,
-  ChevronLeftIcon,
-  ChevronRightIcon
-} from 'lucide-react';
+import { MessageCircle, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import ActivitySidebar from '../../reusables/sidebars/activity';
 import { mockGeneratedLeads } from '@/constants/data'; // Make sure Lead is the correct type
 import { LeadTypeGlobal } from '@/types/_dashboard/leads';
@@ -59,14 +54,14 @@ const statusOptions = [
 ];
 
 // Function to get the status color for the dropdown
-const getStatusColor = (status: string) => {
-  const selectedStatus = statusOptions.find(
-    (option) => option.value === status
-  );
-  return selectedStatus
-    ? `${selectedStatus.bgColor} ${selectedStatus.textColor}`
-    : '';
-};
+// const getStatusColor = (status: string) => {
+//   const selectedStatus = statusOptions.find(
+//     (option) => option.value === status
+//   );
+//   return selectedStatus
+//     ? `${selectedStatus.bgColor} ${selectedStatus.textColor}`
+//     : '';
+// };
 
 interface DataTableProps {
   columns: ColumnDef<LeadTypeGlobal>[]; // Ensure the columns expect Lead data

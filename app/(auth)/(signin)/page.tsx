@@ -8,6 +8,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils/kanban/utils';
 import { FlameIcon } from 'lucide-react';
 import { useKanbanStore } from '@/lib/stores/user/login';
+import Image from 'next/image';
 
 export default function AuthenticationPage() {
   // State to toggle between Sign In and Sign Up views
@@ -82,10 +83,12 @@ export default function AuthenticationPage() {
               {/* Carousel */}
               <div className="relative h-64 w-full overflow-hidden rounded-lg shadow-lg">
                 {images.map((image, index) => (
-                  <img
+                  <Image
                     key={index}
                     src={image}
                     alt={`Carousel ${index}`}
+                    width={500}
+                    height={300}
                     className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
                       index === currentImageIndex ? 'opacity-100' : 'opacity-0'
                     }`}

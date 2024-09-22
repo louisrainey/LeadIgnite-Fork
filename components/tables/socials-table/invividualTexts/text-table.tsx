@@ -21,7 +21,6 @@ import {
 } from '@/components/ui/table';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { TextMessage } from '@/types/goHighLevel/text';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,16 +31,16 @@ interface DataTableProps<TData, TValue> {
 }
 
 // Helper function to download message content
-const downloadMessageContent = (message: TextMessage) => {
-  const messageContent = message.body || 'No content available';
-  const blob = new Blob([messageContent], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `message-${message.id}.txt`; // Naming the file with message id
-  a.click();
-  URL.revokeObjectURL(url); // Clean up the URL
-};
+// const downloadMessageContent = (message: TextMessage) => {
+//   const messageContent = message.body || 'No content available';
+//   const blob = new Blob([messageContent], { type: 'text/plain' });
+//   const url = URL.createObjectURL(blob);
+//   const a = document.createElement('a');
+//   a.href = url;
+//   a.download = `message-${message.id}.txt`; // Naming the file with message id
+//   a.click();
+//   URL.revokeObjectURL(url); // Clean up the URL
+// };
 
 export function IndividualMessageTable<TData, TValue>({
   columns,

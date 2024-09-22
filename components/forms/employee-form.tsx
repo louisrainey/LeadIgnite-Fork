@@ -76,7 +76,6 @@ interface TeamMemberFormProps {
 export const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
   initialData
 }) => {
-  const params = useParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -140,18 +139,18 @@ export const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
     }
   };
 
-  const onDelete = async () => {
-    try {
-      setLoading(true);
-      // Simulate API call to delete a team member
-      router.refresh();
-      router.push(`/dashboard/team`);
-    } catch (error: any) {
-    } finally {
-      setLoading(false);
-      setOpen(false);
-    }
-  };
+  // const onDelete = async () => {
+  //   try {
+  //     setLoading(true);
+  //     // Simulate API call to delete a team member
+  //     router.refresh();
+  //     router.push(`/dashboard/team`);
+  //   } catch (error: any) {
+  //   } finally {
+  //     setLoading(false);
+  //     setOpen(false);
+  //   }
+  // };
 
   return (
     <>

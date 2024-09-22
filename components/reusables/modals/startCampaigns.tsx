@@ -18,9 +18,7 @@ import { DateRange } from 'react-day-picker';
 import { Calendar } from '@/components/ui/calendar';
 import { X } from 'lucide-react'; // Close Icon
 import { format } from 'date-fns';
-import { DatePickerWithRange } from './dateRangePicker';
 import { Textarea } from '@/components/ui/textarea';
-import router from 'next/router';
 import { toast } from 'sonner';
 const socialMediaPlatforms = ['twitter', 'instagram', 'linkedin'];
 const allChannels = ['phone', 'email', 'twitter', 'instagram', 'linkedin'];
@@ -39,8 +37,8 @@ const ChannelSelectionModal: React.FC<ChannelSelectionModalProps> = ({
   primaryChannel,
   setPrimaryChannel
 }) => {
-  const isSocialMedia = (channel: string) =>
-    socialMediaPlatforms.includes(channel);
+  // const isSocialMedia = (channel: string) =>
+  //   socialMediaPlatforms.includes(channel);
 
   // Validate that a primary channel is selected
   const validateChannel = () => {

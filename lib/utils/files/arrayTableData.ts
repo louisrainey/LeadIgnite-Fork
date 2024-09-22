@@ -2,7 +2,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
 import { EmailCampaign, GetEmailByIdResponse } from '@/types/goHighLevel/email';
-import { TextMessage, TextMessageCampaign } from '@/types/goHighLevel/text';
+import { GHLTextMessageCampaign, TextMessage } from '@/types/goHighLevel/text';
 import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import {
   exportEmailCampaignBulkToExcel,
@@ -79,7 +79,7 @@ export async function exportMultipleCampaignsToZip(
   campaigns: (
     | CallCampaign
     | EmailCampaign
-    | TextMessageCampaign
+    | GHLTextMessageCampaign
     | SocialMediaCampaign
   )[], // An array of mixed campaigns
   filename: string
@@ -91,7 +91,7 @@ export async function exportMultipleCampaignsToZip(
     campaign:
       | CallCampaign
       | EmailCampaign
-      | TextMessageCampaign
+      | GHLTextMessageCampaign
       | SocialMediaCampaign,
     index: number
   ) => {
@@ -112,7 +112,7 @@ export async function exportMultipleCampaignsToZip(
 
       case 'text':
         columns = textMessageColumns;
-        const textMessages = (campaign as TextMessageCampaign).messages; // Extract messages for TextMessageCampaign
+        const textMessages = (campaign as GHLTextMessageCampaign).messages; // Extract messages for GHLTextMessageCampaign
         buffer = await exportCampaignMessagesBulkToExcel(
           'Text Campaign',
           columns,

@@ -41,7 +41,7 @@ interface RowOriginal {
 }
 
 // Ensure the type string is cast properly for SocialAction
-function assertActionType(actionType: string): SocialAction['type'] {
+export function assertActionType(actionType: string): SocialAction['type'] {
   // A map to check valid action types for SocialAction
   const actionTypeMap: { [key: string]: SocialAction['type'] } = {
     Like: 'Like',
@@ -66,7 +66,7 @@ function assertActionType(actionType: string): SocialAction['type'] {
   throw new Error(`Invalid action type: ${actionType}`);
 }
 // Component for rendering actions in a dropdown per platform
-const PlatformActionsDropdown = ({
+export const PlatformActionsDropdown = ({
   actions
 }: {
   actions: SocialMediaCampaign['actions'];

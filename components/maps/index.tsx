@@ -33,7 +33,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     visibleProperties, // Zustand-managed properties list
     setProperties, // Action to set properties in the store
     isDrawerOpen, // Drawer visibility state
-    setIsDrawerOpen, // Action to control drawer state
     loadMoreProperties, // Action to load more properties (pagination)
     hasMore, // Whether there are more properties to load
     isLoading // Loading state

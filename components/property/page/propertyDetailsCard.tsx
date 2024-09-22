@@ -14,11 +14,11 @@ const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
   property
 }) => {
   // Helper function to format keys for better readability
-  const formatKey = (key: string) => {
-    return key
-      .replace(/_/g, ' ') // Replace underscores with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
-  };
+  // const formatKey = (key: string) => {
+  //   return key
+  //     .replace(/_/g, ' ') // Replace underscores with spaces
+  //     .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
+  // };
 
   // Function to render the property details with labels and values
   const renderPropertyDetails = (label: string, value: any) => {
