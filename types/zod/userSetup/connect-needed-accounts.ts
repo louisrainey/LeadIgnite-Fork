@@ -1,20 +1,5 @@
+import { OAuthService } from '@/types/userProfile/connectedAccounts';
 import { z } from 'zod';
-
-export interface OAuthService {
-  name: string;
-  oauthType: string;
-  component: React.ElementType;
-  required: boolean;
-}
-// Define an interface for the OAuth data
-export interface OAuthData {
-  accessToken: string;
-  refreshToken?: string;
-  expiresIn: number;
-  tokenType: string;
-  scope: string;
-  [key: string]: any; // To allow additional properties if needed
-}
 
 // Define a validation schema for OAuthData using zod
 export const oAuthDataSchema = z.object({

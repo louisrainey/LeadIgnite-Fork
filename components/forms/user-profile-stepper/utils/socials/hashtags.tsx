@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormField,
   FormItem,
@@ -25,6 +25,14 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
 
+  // Load initial hashtags from the form state
+  useEffect(() => {
+    const initialHashtags = form.getValues('socialMediatags') || [];
+    if (initialHashtags.length > 0) {
+      setHashtags(initialHashtags);
+    }
+  }, [form]);
+
   // Update form state when hashtags change
   const updateFormHashtags = (updatedHashtags: string[]) => {
     setHashtags(updatedHashtags);
@@ -33,13 +41,19 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
 
   // Handle adding a hashtag
   const handleAddHashtag = () => {
-    const trimmedValue = inputValue.trim();
+    let trimmedValue = inputValue.trim();
+
+    // Remove all extra leading hashes, keeping just one
+    trimmedValue = trimmedValue.replace(/^#+/, '');
+
+    // Ensure the hashtag starts with a single '#'
+    trimmedValue = `#${trimmedValue}`;
 
     // Prevent adding empty, duplicate, or invalid hashtags (like spaces)
     if (
       !trimmedValue ||
-      hashtags.includes(trimmedValue) ||
-      trimmedValue.includes(' ')
+      hashtags.includes(trimmedValue) || // Prevent duplicates
+      trimmedValue.includes(' ') // Prevent hashtags with spaces
     ) {
       return;
     }
@@ -69,7 +83,7 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
   return (
     <FormField
       control={form.control}
-      name="socialMediatags" // The name should match the field in your form state
+      name="socialMediatags"
       render={({ field, fieldState: { error } }) => (
         <FormItem>
           <FormLabel>
@@ -108,7 +122,7 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
                 className="flex items-center rounded-full bg-gray-200 px-2 py-1 dark:bg-gray-700"
               >
                 <span className="text-sm text-gray-700 dark:text-gray-300">
-                  #{hashtag}
+                  {hashtag}
                 </span>
                 <button
                   type="button"

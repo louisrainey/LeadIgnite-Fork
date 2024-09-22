@@ -62,6 +62,59 @@ const aIKnowledgebase: AIKnowledgebase = {
   }
 };
 
+export const connectedAccounts = {
+  facebook: faker.datatype.boolean()
+    ? {
+        accessToken: faker.string.alphanumeric(32),
+        refreshToken: faker.string.alphanumeric(32),
+        expiresIn: faker.number.int({ min: 3600, max: 7200 }),
+        tokenType: 'Bearer',
+        scope: 'public_profile,email',
+        platform: 'facebook',
+        profileId: faker.string.uuid(),
+        pageId: faker.helpers.maybe(() => faker.string.uuid()) // Optional Page ID
+      }
+    : undefined, // Not connected if false
+
+  instagram: faker.datatype.boolean()
+    ? {
+        accessToken: faker.string.alphanumeric(32),
+        refreshToken: faker.string.alphanumeric(32),
+        expiresIn: faker.number.int({ min: 3600, max: 7200 }),
+        tokenType: 'Bearer',
+        scope: 'user_profile,user_media',
+        platform: 'instagram',
+        userId: faker.string.uuid(),
+        username: faker.internet.userName()
+      }
+    : undefined, // Not connected if false
+
+  linkedIn: faker.datatype.boolean()
+    ? {
+        accessToken: faker.string.alphanumeric(32),
+        refreshToken: faker.string.alphanumeric(32),
+        expiresIn: faker.number.int({ min: 3600, max: 7200 }),
+        tokenType: 'Bearer',
+        scope: 'r_liteprofile,r_emailaddress',
+        platform: 'linkedin',
+        userId: faker.string.uuid(),
+        companyId: faker.helpers.maybe(() => faker.string.uuid()) // Optional company ID
+      }
+    : undefined, // Not connected if false
+
+  twitter: faker.datatype.boolean()
+    ? {
+        accessToken: faker.string.alphanumeric(32),
+        refreshToken: faker.string.alphanumeric(32),
+        expiresIn: faker.number.int({ min: 3600, max: 7200 }),
+        tokenType: 'Bearer',
+        scope: 'tweet.read,users.read',
+        platform: 'twitter',
+        userId: faker.string.uuid(),
+        handle: faker.internet.userName()
+      }
+    : undefined // Not connected if false
+};
 // Mocking a user profile with Faker.js
 export const mockUserProfile: UserProfile = {
   UniqueIdentifier: faker.string.uuid(), // Generates a UUID, // Generate unique ID
@@ -72,7 +125,7 @@ export const mockUserProfile: UserProfile = {
   country: faker.location.country(),
   city: faker.location.city(),
   personalNum: '3325436201',
-
+  connectedAccounts: connectedAccounts,
   leadPreferences: {
     preferredLocation: [faker.location.city(), faker.location.city()],
     industry: 'Real Estate', // Static or use faker.commerce.department()
@@ -107,6 +160,10 @@ export const mockUserProfile: UserProfile = {
   companyInfo: {
     companyName: faker.company.name(),
     webhook: faker.internet.url(),
+    socialMediaTags: faker.lorem
+      .words(3)
+      .split(' ')
+      .map((word) => `#${word}`),
     companyLogo: faker.image.avatarGitHub(), // Static, can be a URL or file path
     GHLID: { locationId: faker.string.uuid() }, // Random location ID
     assets: {

@@ -16,6 +16,13 @@ import { LeadTypeGlobal } from '../_dashboard/leads';
 import VoiceClone from '@/public/lottie/RecordingButton.json';
 import { LeadList } from '../_dashboard/leadList';
 import { TaskTracking, KanbanState } from '../_dashboard/kanban';
+import {
+  FacebookOAuthData,
+  OAuthData,
+  InstagramOAuthData,
+  LinkedInOAuthData,
+  TwitterOAuthData
+} from './connectedAccounts';
 
 type HexColor = `#${string}`;
 export interface LeadPreferences {
@@ -115,6 +122,8 @@ export interface CompanyInfo {
     ghlAssets?: string[];
   };
   webhook?: string;
+  socialMediaTags: string[];
+
   companyLogo: File | String;
   GHLID: GetSubAccountPathParams;
   campaigns: CompanyCampaignsUserProfile;
@@ -178,6 +187,12 @@ export interface UserProfile {
   country: string;
   city: string;
   personalNum: string;
+  connectedAccounts: {
+    facebook?: FacebookOAuthData;
+    instagram?: InstagramOAuthData;
+    linkedIn?: LinkedInOAuthData;
+    twitter?: TwitterOAuthData;
+  }; // List of connected accounts
   // New fields
   leadPreferences: LeadPreferences; // Preferences for lead generation
   savedSearches: SavedSearch[]; // Array of saved searches

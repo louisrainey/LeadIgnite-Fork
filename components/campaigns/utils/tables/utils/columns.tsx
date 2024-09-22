@@ -1,9 +1,5 @@
 import { Button } from '@/components/ui/button';
-import {
-  SocialMediaCampaign,
-  EmailCampaign,
-  CallCampaign
-} from '@/types/_dashboard/campaign';
+import { SocialMediaCampaign, CallCampaign } from '@/types/_dashboard/campaign';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'; // Fixed import path for dropdown-menu from shadcn/ui
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { EmailCampaign } from '@/types/goHighLevel/email';
 
 // Define the column configuration for SocialMediaCampaign
 export const socialMediaColumns: ColumnDef<SocialMediaCampaign>[] = [
