@@ -25,8 +25,8 @@ import { mockSubscriptions } from './userSubscription';
 
 // Example object adhering to AIKnowledgebase interface with Faker.js data
 const aIKnowledgebase: AIKnowledgebase = {
-  emailTemplate: faker.lorem.sentence(), // Static or faker.lorem.sentence()
-  salesScript: faker.lorem.sentence(), // Static or faker.lorem.sentence()
+  emailTemplate: '../../staticFiles/email-inlined.html', // Static or faker.lorem.sentence()
+  salesScript: '../../staticFiles/voiceCloneScript.txt', // Static or faker.lorem.sentence()
   assignedAssistantID: faker.helpers.arrayElement(['ai', 'female', 'male']), // Randomly chosen from the array
   assignedSquadID: faker.string.uuid(), // Random UUID for the assigned squad
 
