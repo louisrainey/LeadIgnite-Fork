@@ -955,7 +955,8 @@ const OAuthSetup: React.FC<{
             } Login`}</FormLabel>
             {serviceData ? (
               // If user is already logged in, show Refresh Login button
-              <>
+              <div className="flex flex-col items-center justify-center">
+                {' '}
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   You are logged in.
                 </p>
@@ -965,7 +966,7 @@ const OAuthSetup: React.FC<{
                 >
                   Refresh Login
                 </button>
-              </>
+              </div>
             ) : (
               // Otherwise, show the regular login button
               buttonComponent
