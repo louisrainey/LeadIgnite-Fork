@@ -54,6 +54,11 @@ import {
   extractInitialBaseDataFromUserProfile
 } from './utils/const/getBasetProfile';
 import Image from 'next/image';
+import {
+  InitialKnowledgeBaseData,
+  extractInitialKnowledgeBaseDataFromUserProfile
+} from './utils/const/getKnowledgeBase';
+import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 const twoFactorAuthOptions = [
   { name: 'twoFactoAuth.sms', label: 'SMS' },
   { name: 'twoFactoAuth.email', label: 'Email ' },
@@ -648,17 +653,19 @@ const BaseSetup: React.FC<{
   );
 };
 
-const KnowledgeBaseSetup: React.FC<{
+interface KnowledgeBaseSetupProps {
   form: any;
   loading: boolean;
-
   voices: AssistantVoice[]; // Add voices prop for VoiceSelector
   handleVoiceSelect: (voiceId: string) => void; // Voice select handler
   handleScriptUpload: (scriptContent: string) => void; // Script upload handler
   selectedScriptFileName: string; // Selected script file name
   handleEmailUpload: (emailContent: string) => void; // Email upload handler
   selectedEmailFileName: string; // Selected email file name
-}> = ({
+  initialData?: InitialKnowledgeBaseData; // Optional initial data to pre-fill the form
+}
+
+const KnowledgeBaseSetup: React.FC<KnowledgeBaseSetupProps> = ({
   form,
   loading,
   voices,
@@ -666,10 +673,25 @@ const KnowledgeBaseSetup: React.FC<{
   handleScriptUpload,
   selectedScriptFileName,
   handleEmailUpload,
-  selectedEmailFileName
+  selectedEmailFileName,
+  initialData // New prop for pre-filled data
 }) => {
   const [showVoiceCloneModal, setShowVoiceCloneModal] = useState(false);
   const [showVoicemailModal, setShowVoicemailModal] = useState(false);
+
+  useEffect(() => {
+    if (initialData) {
+      // Prefill form values from initial data
+      form.setValue('selectedVoice', initialData.selectedVoice || '');
+      form.setValue('exampleSalesScript', initialData.exampleSalesScript || '');
+      form.setValue('exampleEmailBody', initialData.exampleEmailBody || '');
+      form.setValue(
+        'voicemailRecordingId',
+        initialData.voicemailRecordingId || ''
+      );
+      form.setValue('clonedVoiceId', initialData.clonedVoiceId || '');
+    }
+  }, [initialData, form]);
 
   // Handle voicemail recording logic
   const handleVoicemailRecording = (recordingId: string) => {
@@ -713,13 +735,30 @@ const KnowledgeBaseSetup: React.FC<{
         render={({ field, fieldState: { error } }) => (
           <FormItem>
             <FormLabel>Upload Sales Script (Optional)</FormLabel>
-            <UploadSalesScript
-              onFileUpload={(fileContent: string) => {
-                field.onChange(fileContent); // Update form state with file content
-                handleScriptUpload(fileContent); // Handle file upload
-              }}
-              selectedFileName={selectedScriptFileName} // Show the selected file name
-            />
+
+            {field.value ? (
+              <div className="flex items-center justify-between">
+                {/* Show the Replace Button if a script is already uploaded */}
+                <button
+                  type="button"
+                  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                  onClick={() => field.onChange(null)} // Reset the value to allow replacement
+                >
+                  Replace Script{' '}
+                  {selectedScriptFileName && `${selectedScriptFileName}`}
+                </button>
+              </div>
+            ) : (
+              // Show the Upload Component when there is no value
+              <UploadSalesScript
+                onFileUpload={(fileContent: string) => {
+                  field.onChange(fileContent); // Update form state with file content
+                  handleScriptUpload(fileContent); // Handle file upload
+                }}
+                selectedFileName={selectedScriptFileName} // Show the selected file name
+              />
+            )}
+
             <FormMessage>{error?.message}</FormMessage>
           </FormItem>
         )}
@@ -732,13 +771,30 @@ const KnowledgeBaseSetup: React.FC<{
         render={({ field, fieldState: { error } }) => (
           <FormItem>
             <FormLabel>Upload Email Body (Optional)</FormLabel>
-            <UploadEmailBody
-              onFileUpload={(fileContent: string) => {
-                field.onChange(fileContent); // Update form state with file content
-                handleEmailUpload(fileContent); // Handle file upload
-              }}
-              selectedFileName={selectedEmailFileName} // Show the selected file name
-            />
+
+            {field.value ? (
+              <div className="flex items-center justify-between">
+                {/* Show the Replace Button if an email body is already uploaded */}
+                <button
+                  type="button"
+                  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                  onClick={() => field.onChange(null)} // Reset the value to allow replacement
+                >
+                  Replace Email Body{' '}
+                  {selectedEmailFileName && `${selectedEmailFileName}`}
+                </button>
+              </div>
+            ) : (
+              // Show the Upload Component when there is no value
+              <UploadEmailBody
+                onFileUpload={(fileContent: string) => {
+                  field.onChange(fileContent); // Update form state with file content
+                  handleEmailUpload(fileContent); // Handle file upload
+                }}
+                selectedFileName={selectedEmailFileName} // Show the selected file name
+              />
+            )}
+
             <FormMessage>{error?.message}</FormMessage>
           </FormItem>
         )}
@@ -751,13 +807,29 @@ const KnowledgeBaseSetup: React.FC<{
         render={({ field, fieldState: { error } }) => (
           <FormItem>
             <FormLabel>Record Voicemail (1m - 5m)</FormLabel>
-            <button
-              type="button"
-              className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-              onClick={() => setShowVoicemailModal(true)}
-            >
-              Record Voicemail
-            </button>
+
+            {field.value ? (
+              <div className="flex items-center justify-between">
+                {/* Show the Replace Button if a voicemail is already recorded */}
+                <button
+                  type="button"
+                  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                  onClick={() => field.onChange(null)} // Reset the value to allow re-recording
+                >
+                  Replace Voicemail
+                </button>
+              </div>
+            ) : (
+              // Show the Recording Button if no voicemail exists
+              <button
+                type="button"
+                className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                onClick={() => setShowVoicemailModal(true)}
+              >
+                Record Voicemail
+              </button>
+            )}
+
             <FormMessage>{error?.message}</FormMessage>
           </FormItem>
         )}
@@ -770,43 +842,33 @@ const KnowledgeBaseSetup: React.FC<{
         render={({ field, fieldState: { error } }) => (
           <FormItem>
             <FormLabel>Record Voice Clone (5m - 10m)</FormLabel>
-            <button
-              type="button"
-              className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-              onClick={() => setShowVoiceCloneModal(true)}
-            >
-              Record Voice Clone
-            </button>
+
+            {field.value ? (
+              <div className="flex items-center justify-between">
+                {/* Show the Replace Button if a voice clone is already recorded */}
+                <button
+                  type="button"
+                  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                  onClick={() => field.onChange(null)} // Reset the value to allow re-recording
+                >
+                  Replace Voice Clone
+                </button>
+              </div>
+            ) : (
+              // Show the Recording Button if no voice clone exists
+              <button
+                type="button"
+                className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                onClick={() => setShowVoiceCloneModal(true)}
+              >
+                Record Voice Clone
+              </button>
+            )}
+
             <FormMessage>{error?.message}</FormMessage>
           </FormItem>
         )}
       />
-
-      {/* Voicemail Recording Modal */}
-      {showVoicemailModal && (
-        <DynamicCloningModal
-          onClose={() => setShowVoicemailModal(false)}
-          minRecordingLength={60} // 1 minute
-          maxRecordingLength={300} // 5 minutes
-          onRecordingComplete={handleVoicemailRecording} // Handle completed recording
-          scriptText={['Please record your voicemail message.']} // Script for voicemail
-        />
-      )}
-
-      {/* Voice Clone Recording Modal */}
-      {showVoiceCloneModal && (
-        <DynamicCloningModal
-          onClose={() => setShowVoiceCloneModal(false)}
-          minRecordingLength={300} // 5 minutes
-          maxRecordingLength={600} // 10 minutes
-          onRecordingComplete={handleVoiceCloneRecording} // Handle completed recording
-          scriptText={[
-            'Please read the following script to clone your voice.',
-            'Keep a consistent tone and pace throughout the recording.',
-            'The voice clone will generate from this reading.'
-          ]} // Script for voice cloning
-        />
-      )}
     </>
   );
 };
@@ -1242,6 +1304,9 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
                 selectedScriptFileName={selectedScriptFileName} // Pass the selected script file name
                 handleEmailUpload={handleEmailUpload} // Pass the handler for email upload
                 selectedEmailFileName={selectedEmailFileName} // Pass the selected email file name
+                initialData={extractInitialKnowledgeBaseDataFromUserProfile(
+                  mockUserProfile
+                )}
               />
             )}
 
