@@ -8,7 +8,8 @@ const nextConfig = {
       'pixabay.com',
       'ap.rdcpix.com',
       'loremflickr.com',
-      'picsum.photos'
+      'picsum.photos',
+      'avatars.githubusercontent.com'
     ]
   }
 };
