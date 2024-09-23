@@ -135,13 +135,13 @@ export const WebhookModal: React.FC = () => {
 
   // Function to handle webhook testing
   const handleTestWebhook = () => {
-    console.log('Testing Webhook URL:', webhookUrl);
-    console.log('Testing Webhook Payload:', webhookPayload);
+    console.warn('Testing Webhook URL:', webhookUrl);
+    console.warn('Testing Webhook Payload:', webhookPayload);
   };
 
   // Function to save webhook configuration
   const handleSaveWebhook = () => {
-    console.log('Webhook saved:', { webhookUrl });
+    console.warn('Webhook saved:', { webhookUrl });
     closeWebhookModal();
   };
 

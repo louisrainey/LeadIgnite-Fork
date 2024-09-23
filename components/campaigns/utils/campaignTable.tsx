@@ -104,6 +104,7 @@ const CampaignsMainContent: React.FC = () => {
 
     // Clear the interval when the component unmounts
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastUpdated]);
 
   const renderCampaignTable = () => {
@@ -227,7 +228,7 @@ const CampaignsMainContent: React.FC = () => {
 };
 
 export default CampaignsMainContent;
-function exportSingleCampaignTypeToZip(
+export function exportSingleCampaignTypeToZip(
   currentCampaignType: string,
   filteredCampaigns: (
     | CallCampaign

@@ -51,8 +51,6 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
     }
 
     // Proceed with submission logic
-    console.log(`Skipping trace for ${recordsToSkip} leads`);
-    console.log(`Redo skip trace: ${redoSkipTrace}`);
 
     onClose(); // Close the dialog after submission
   };

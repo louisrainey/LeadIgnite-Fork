@@ -159,7 +159,7 @@ export default function PropertyHeader({
       {/* Sidebar */}
       {isSidebarOpen && (
         <ActivitySidebar
-          leadData={mockGeneratedLeads}
+          leadData={mockGeneratedLeads[0]}
           onClose={() => setIsSidebarOpen(false)} // Close the sidebar when the user clicks "X"
         />
       )}

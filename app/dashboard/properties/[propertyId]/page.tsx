@@ -90,6 +90,7 @@ export default async function PropertyPage({
   if (equityPercentage > 70) {
     equityStatus = 'High';
   } else if (equityPercentage > 40) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     equityStatus = 'Medium';
   }
 

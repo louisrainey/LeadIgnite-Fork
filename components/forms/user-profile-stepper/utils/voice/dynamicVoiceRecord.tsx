@@ -99,10 +99,10 @@ const DynamicCloningModal: React.FC<VoiceCloningModalProps> = ({
       lottieRef.current?.pause();
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, {
-          type: 'audio/wav'
-        });
-        console.log('Recording stopped. Audio file created:', audioBlob);
+        // const audioBlob = new Blob(audioChunksRef.current, {
+        //   type: 'audio/wav'
+        // });
+        // console.log('Recording stopped. Audio file created:', audioBlob);
         // Handle the audio file, e.g., upload or play it
 
         // Show the "Finish Recording" button if recording length is valid
@@ -140,7 +140,7 @@ const DynamicCloningModal: React.FC<VoiceCloningModalProps> = ({
 
   // Handle the "Finish Recording" button click
   const handleFinishRecording = () => {
-    console.log('Recording finished, processing...');
+    // console.log('Recording finished, processing...');
     // Here you can handle the final steps (e.g., upload the audio or navigate away)
     setShowFinishButton(false);
   };

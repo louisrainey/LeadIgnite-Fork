@@ -255,7 +255,7 @@ export const leadListColumns: ColumnDef<LeadTypeGlobal>[] = [
           ];
 
           // Debug: Log the data that will be exported
-          console.log('Data to export:', data);
+          console.warn('Data to export:', data);
 
           // Call the export function for Leads with Social Links and Email
           exportLeadsTableDataToExcel(
@@ -275,7 +275,7 @@ export const leadListColumns: ColumnDef<LeadTypeGlobal>[] = [
 // Function to handle status change (can be moved into a component where state is maintained)
 const handleStatusChange = (id: string, newValue: string) => {
   // Your logic to handle status change, e.g., updating state or making an API call
-  console.log(`Status changed for Lead ID ${id} to ${newValue}`);
+  console.warn(`Status changed for Lead ID ${id} to ${newValue}`);
 };
 
 // Function to get status color (should match your dark mode colors)
@@ -309,5 +309,5 @@ const statusOptions = [
 // Sidebar logic
 const openSidebar = (leadId: string) => {
   // Logic to open the sidebar for a given lead
-  console.log(`Opening sidebar for Lead ID ${leadId}`);
+  console.warn(`Opening sidebar for Lead ID ${leadId}`);
 };

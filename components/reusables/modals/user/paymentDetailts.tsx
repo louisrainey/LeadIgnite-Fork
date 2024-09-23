@@ -45,7 +45,6 @@ export const PaymentModal: React.FC<{ closePaymentModal: () => void }> = ({
   });
 
   const onSubmit = (data: any) => {
-    console.log('Payment Info:', data);
     closePaymentModal(); // Close modal on successful submission
   };
 

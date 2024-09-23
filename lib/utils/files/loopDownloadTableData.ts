@@ -5,7 +5,7 @@ import {
 } from '@/types/_dashboard/campaign';
 import { LeadList } from '@/types/_dashboard/leadList';
 import { LeadTypeGlobal } from '@/types/_dashboard/leads';
-import { EmailCampaign, GetEmailByIdResponse } from '@/types/goHighLevel/email';
+import { GetEmailByIdResponse } from '@/types/goHighLevel/email';
 import { TextMessage } from '@/types/goHighLevel/text';
 import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 import ExcelJS from 'exceljs';

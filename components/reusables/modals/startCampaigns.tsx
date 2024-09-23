@@ -267,7 +267,7 @@ const ChannelCustomizationModal: React.FC<ChannelCustomizationModalProps> = ({
         ) : (
           <Button
             onClick={() => {
-              const mockAccount = 'connected-account';
+              // const mockAccount = 'connected-account';
               const shown_account = channel.toUpperCase();
 
               if (onConnectAccount) {
@@ -510,6 +510,7 @@ const MultiStepCampaign: React.FC<{ closeModal: () => void }> = ({
 }) => {
   const [step, setStep] = useState(1);
   const [primaryChannel, setPrimaryChannel] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [secondaryChannel, setSecondaryChannel] = useState<string>('');
   const [campaignName, setCampaignName] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');

@@ -78,7 +78,8 @@ export function SocialMediaCampaignTable<TData, TValue>({
         scroll: false
       }
     );
-    console.log('Social Media Campaign Data', data);
+    console.warn('Social Media Campaign Data', data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex, pageSize, router, pathname, createQueryString]);
 
   const table = useReactTable({

@@ -16,6 +16,7 @@ export const PlayButtonTimeLine = ({
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for the audio element
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0); // Progress percentage (0 - 100)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [duration, setDuration] = useState(0); // Duration of the audio in seconds
   const lottieRef = useRef<any>(null); // Ref for Lottie animation control
 
@@ -75,11 +76,11 @@ export const PlayButtonTimeLine = ({
   };
 
   // Format time in MM:SS format
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  };
+  // const formatTime = (seconds: number) => {
+  //   const minutes = Math.floor(seconds / 60);
+  //   const remainingSeconds = Math.floor(seconds % 60);
+  //   return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  // };
 
   useEffect(() => {
     if (audioRef.current) {

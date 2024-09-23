@@ -1,3 +1,4 @@
+import { PhoneNumberProvider } from '@/types/vapiAi/api/phoneNumbers/create';
 import { ListPhoneNumbersResponse } from '@/types/vapiAi/api/phoneNumbers/list';
 import fetch from 'node-fetch'; // Or node-fetch v3 or axios if preferred
 

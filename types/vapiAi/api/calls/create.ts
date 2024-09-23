@@ -229,7 +229,7 @@ export interface ToolMessage {
   role?: MessageRole; // Optional, default is 'assistant', can be 'system'
   endCallAfterSpokenEnabled?: boolean; // Whether to end the call after speaking this message, default false
   timingMilliseconds?: number; // For delayed messages, how long to wait before saying the message
-  conditions?: Condition[]; // Optional conditions for the tool message to trigger
+  conditions?: readonly Condition[]; // Allow readonly arrays for conditions
 }
 
 // Tool message array for usage

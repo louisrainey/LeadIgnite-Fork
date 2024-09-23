@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -37,8 +37,6 @@ export function LeadListDataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel()
   });
 
-  const [statuses, setStatuses] = useState<Record<string, string>>({});
-
   // const handleStatusChange = (id: string, newValue: string) => {
   //   setStatuses((prev) => ({ ...prev, [id]: newValue }));
   // };
@@ -46,7 +44,7 @@ export function LeadListDataTable<TData, TValue>({
   // Download function for individual row
   const handleDownload = (rowId: string) => {
     // Handle download logic here
-    console.log(`Downloading data for row: ${rowId}`);
+    // console.log(`Downloading data for row: ${rowId}`);
     // Example: download logic using fetch or a direct download link
   };
 

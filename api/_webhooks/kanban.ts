@@ -89,7 +89,7 @@ app.post('/webhook/add-task', async (req: Request, res: Response) => {
       }
     });
 
-    console.log(`Added new task for customer ${customerId}:`, newTask);
+    // console.log(`Added new task for customer ${customerId}:`, newTask);
 
     return res.status(200).json({
       message: 'Task added successfully',
@@ -129,5 +129,5 @@ app.get('/customer/:customerId/tasks', async (req: Request, res: Response) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.warn(`Server is running on http://localhost:${port}`);
 });

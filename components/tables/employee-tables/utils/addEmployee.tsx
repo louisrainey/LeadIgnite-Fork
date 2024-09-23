@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useTheme } from 'next-themes';
+// import { useTheme } from 'next-themes';
 import { UserPermissions } from '@/types/userProfile';
 import { z } from 'zod';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
@@ -132,7 +132,7 @@ const CustomSwitch: React.FC<{
 
 // Invite Employee Modal Component
 export const InviteEmployeeModal = () => {
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
   const { isEmployeeModalOpen, closeEmployeeModal } = useModalStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
