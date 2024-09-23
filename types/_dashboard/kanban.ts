@@ -4,7 +4,7 @@ export interface KanbanColumn {
   id: UniqueIdentifier;
   title: string;
 }
-export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE' | null;
+export type Status = UniqueIdentifier;
 
 const defaultCols = [
   {
@@ -22,7 +22,7 @@ const defaultCols = [
 ] satisfies KanbanColumn[];
 
 export type ColumnId = (typeof defaultCols)[number]['id'];
-export type Priority = 'low' | 'medium' | 'high' | 'urgent';
+export type Priority = 'low' | 'medium' | 'high';
 
 export interface TaskActivity {
   action: 'created' | 'updated' | 'deleted';

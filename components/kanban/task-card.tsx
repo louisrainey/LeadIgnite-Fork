@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Task } from '@/lib/stores/taskActions';
+import {} from '@/lib/stores/taskActions';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
 import { GripVertical } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { mockTeamMembers } from '@/constants/_faker/profile/team/members';
+import { KanbanTask } from '@/types/_dashboard/kanban';
 
 // Priority-to-Badge variant mapping
 const priorityBadgeVariant = {
@@ -17,7 +18,7 @@ const priorityBadgeVariant = {
 } as const;
 
 interface TaskCardProps {
-  task: Task;
+  task: KanbanTask;
   isOverlay?: boolean;
 }
 
@@ -25,7 +26,7 @@ export type TaskType = 'Task';
 
 export interface TaskDragData {
   type: TaskType;
-  task: Task;
+  task: KanbanTask;
 }
 
 export function TaskCard({ task, isOverlay }: TaskCardProps) {
