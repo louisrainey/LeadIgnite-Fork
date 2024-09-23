@@ -1,4 +1,4 @@
-import { useDndContext, type UniqueIdentifier } from '@dnd-kit/core';
+import { useDndContext } from '@dnd-kit/core';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';

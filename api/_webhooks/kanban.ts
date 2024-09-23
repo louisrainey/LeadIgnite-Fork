@@ -2,10 +2,10 @@ import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaClient } from '@prisma/client'; // Prisma client import
-import { Priority, Status, Task } from '@/lib/stores/taskActions';
+import { KanbanTask, Priority } from '@/types/_dashboard/kanban';
+import { UniqueIdentifier } from '@dnd-kit/core'; // UniqueIdentifier type
 
 const prisma = new PrismaClient();
-
 const app = express();
 const port = 3000;
 
@@ -18,12 +18,16 @@ const isValidPriority = (priority: any): priority is Priority =>
 const isValidDueDate = (dueDate: any): boolean =>
   /^\d{4}-\d{2}-\d{2}$/.test(dueDate);
 
-// Webhook to add a task for a specific customer (but customerId is not in the task model)
+const isValidStatus = (status: any): status is UniqueIdentifier =>
+  ['TODO', 'IN_PROGRESS', 'DONE'].includes(status) ||
+  typeof status === 'number';
+
+// Webhook to add a task for a specific customer (with status as UniqueIdentifier)
 app.post('/webhook/add-task', async (req: Request, res: Response) => {
   const { customerId, status, taskTitle, taskDescription, priority, dueDate } =
     req.body as {
       customerId: string; // Used only to find the customer
-      status: Status;
+      status: UniqueIdentifier; // Can be string or number
       taskTitle: string;
       taskDescription?: string;
       priority?: Priority;
@@ -31,12 +35,7 @@ app.post('/webhook/add-task', async (req: Request, res: Response) => {
     };
 
   // Validate incoming data
-  if (
-    !customerId ||
-    !status ||
-    !taskTitle ||
-    !['TODO', 'IN_PROGRESS', 'DONE'].includes(status)
-  ) {
+  if (!customerId || !status || !taskTitle || !isValidStatus(status)) {
     return res.status(400).json({
       message:
         'Invalid input. Please provide valid customerId, status, and taskTitle.'
@@ -64,26 +63,26 @@ app.post('/webhook/add-task', async (req: Request, res: Response) => {
     return res.status(404).json({ message: 'Customer not found.' });
   }
 
-  // Create a new task (without customerId)
+  // Create a new task (without customerId in the task model)
   try {
-    const newTask: Task = {
+    const newTask: KanbanTask = {
       id: uuidv4(), // Unique task ID
       title: taskTitle,
       description: taskDescription || '', // Optional description
-      status,
+      status, // UniqueIdentifier type, can be string or number
       priority: priority || 'medium', // Default to medium if not provided
       dueDate: dueDate
         ? new Date(dueDate).toISOString().split('T')[0]
         : undefined // Optional due date
     };
 
-    // Save the task to the customer’s database (based on customerId)
+    // Save the task to the database (without customerId in task model)
     await prisma.task.create({
       data: {
         id: newTask.id,
         title: newTask.title,
         description: newTask.description,
-        status: newTask.status,
+        status: newTask.status, // Can be string or number
         priority: newTask.priority,
         dueDate: newTask.dueDate ? new Date(newTask.dueDate) : null,
         customer: { connect: { id: customerId } } // Link task to customer without adding customerId to task itself
@@ -92,9 +91,10 @@ app.post('/webhook/add-task', async (req: Request, res: Response) => {
 
     console.log(`Added new task for customer ${customerId}:`, newTask);
 
-    return res
-      .status(200)
-      .json({ message: 'Task added successfully', task: newTask });
+    return res.status(200).json({
+      message: 'Task added successfully',
+      task: newTask
+    });
   } catch (error) {
     console.error('Error creating task:', error);
     return res.status(500).json({
@@ -103,7 +103,7 @@ app.post('/webhook/add-task', async (req: Request, res: Response) => {
   }
 });
 
-// Get all tasks for a specific customer (for debugging or review)
+// Get all tasks for a specific customer
 app.get('/customer/:customerId/tasks', async (req: Request, res: Response) => {
   const { customerId } = req.params;
 
