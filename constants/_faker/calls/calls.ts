@@ -15,7 +15,6 @@ import {
   KnowledgeBase,
   ModelTool,
   MessageRole,
-  ToolMessage,
   ToolMessageType,
   ServerDetails,
   ModelFunction,
@@ -29,18 +28,17 @@ import {
   UserMessage,
   ChunkPlan,
   FormatPlan,
-  Voice
+  Voice,
+  ToolMessagesArray
 } from '../../../types/vapiAi/api/calls/create';
-import { number, string } from 'zod';
+// import { number, string } from 'zod';
 import { APP_TESTING_MODE } from '@/constants/data';
 
 // Assuming tools have a basic structure with ids and names
-const generateTools = () => [
+export const generateTools = () => [
   { id: faker.string.uuid(), name: faker.lorem.word() }
 ];
-
-// Updated generateToolMessages function
-const generateToolMessages = (): ToolMessage[] => {
+const generateToolMessages = (): ToolMessagesArray => {
   return Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, () => ({
     type: faker.helpers.arrayElement<ToolMessageType>([
       ToolMessageType.ToolMessageComplete,
@@ -67,20 +65,23 @@ const generateToolMessages = (): ToolMessage[] => {
     ),
 
     // Optional conditions
-    conditions: faker.helpers.maybe(() => [
-      {
-        value: faker.lorem.word(), // Random word for value
-        operator: faker.helpers.arrayElement<ConditionOperator>([
-          ConditionOperator.Eq,
-          ConditionOperator.Neq,
-          ConditionOperator.Lt,
-          ConditionOperator.Gte
-        ]),
-        param: faker.lorem.word() // Random word for the parameter name
-      }
-    ])
+    conditions: faker.helpers
+      .maybe(() => [
+        {
+          value: faker.lorem.word(), // Random word for value
+          operator: faker.helpers.arrayElement<ConditionOperator>([
+            ConditionOperator.Eq,
+            ConditionOperator.Neq,
+            ConditionOperator.Lt,
+            ConditionOperator.Gte
+          ]),
+          param: faker.lorem.word() // Random word for the parameter name
+        }
+      ])
+      ?.map((condition) => ({ ...condition })) // Optional chaining to ensure safe access
   }));
 };
+
 // Stub for KnowledgeBase if it's needed
 const generateKnowledgeBase = (): KnowledgeBase => ({
   provider: 'canonical', // Hardcoded provider as per the type definition

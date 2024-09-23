@@ -63,10 +63,6 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
       return;
     }
 
-    // If validation passes, proceed with the submission
-    console.log('Submitting skip trace with list:', listToUse);
-    console.log('Valid data:', formData);
-
     // Close the dialog after validation succeeds
     onClose();
   };

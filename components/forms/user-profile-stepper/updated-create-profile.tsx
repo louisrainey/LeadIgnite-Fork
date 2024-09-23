@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import {
   InstagramLoginButton,
@@ -59,6 +60,7 @@ import {
   InitialOauthSetupData,
   extractOAuthDataFromUserProfile
 } from './utils/const/connectedAccounts';
+import { toast } from 'sonner';
 const twoFactorAuthOptions = [
   { name: 'twoFactoAuth.sms', label: 'SMS' },
   { name: 'twoFactoAuth.email', label: 'Email ' },
@@ -149,16 +151,6 @@ const PersonalInformationForm: React.FC<{
         'notifications.notifyForCampaignUpdates',
         initialData.notifications?.notifyForCampaignUpdates || false
       );
-      // Log each individual field after setting
-      console.log('First Name:', form.getValues('firstName')); // Logs First Name
-      console.log('Last Name:', form.getValues('lastName')); // Logs Last Name
-      console.log('Email:', form.getValues('email')); // Logs Email
-      console.log('Personal Num:', form.getValues('personalNum')); // Logs Personal Phone Number
-      console.log('City:', form.getValues('city')); // Logs City
-      console.log('Country:', form.getValues('country')); // Logs Country
-
-      // Log all form values after setting all fields
-      console.log('All form values after setting:', form.getValues());
     }
   }, [initialData, form]);
 
@@ -390,13 +382,6 @@ const BaseSetup: React.FC<{
       form.setValue('companyAssets', initialData.companyAssets || []);
     }
 
-    console.log('First Name:', form.getValues('companyName')); // Logs First Name
-    console.log('Last Name:', form.getValues('companyLogo')); // Logs Last Name
-    console.log('Email:', form.getValues('companyAssets')); // Logs Email
-    console.log('Personal Num:', form.getValues('personalNum')); // Logs Personal Phone Number
-    console.log('City:', form.getValues('city')); // Logs City
-    console.log('Country:', form.getValues('country')); // Logs Country
-
     // Log all form values after setting all fields
   }, [initialData, form]);
 
@@ -442,10 +427,12 @@ const BaseSetup: React.FC<{
                   {' '}
                   {/* Display the existing logo from URL */}
                   {typeof logoFromForm === 'string' ? (
-                    <img
+                    <Image
                       src={logoFromForm}
                       alt="Company Logo"
                       className="mb-4 h-32 w-32 rounded-lg object-cover"
+                      width={300}
+                      height={300}
                     />
                   ) : (
                     <p>No logo available</p>
@@ -697,14 +684,14 @@ const KnowledgeBaseSetup: React.FC<KnowledgeBaseSetupProps> = ({
   const handleVoicemailRecording = (recordingId: string) => {
     form.setValue('voicemailRecordingId', recordingId); // Store the voicemail recording ID in the form
     setShowVoicemailModal(false); // Close the modal
-    console.log('Voicemail recorded with ID:', recordingId);
+    // console.log('Voicemail recorded with ID:', recordingId);
   };
 
   // Handle voice clone recording logic
   const handleVoiceCloneRecording = (recordingId: string) => {
     form.setValue('clonedVoiceId', recordingId); // Store the voice clone recording ID in the form
     setShowVoiceCloneModal(false); // Close the modal
-    console.log('Voice clone recorded with ID:', recordingId);
+    // console.log('Voice clone recorded with ID:', recordingId);
   };
 
   return (
@@ -898,11 +885,6 @@ const OAuthSetup: React.FC<{
       form.setValue('twitter', initialData.connectedAccounts.twitter);
       form.setValue('linkedIn', initialData.connectedAccounts.linkedIn);
       form.setValue('socialMediatags', initialData.socialMediaTags || []);
-
-      console.log(
-        'Current form state after setting initial data:',
-        form.getValues()
-      );
     }
   }, [initialData, form]);
 
@@ -1166,15 +1148,14 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
     }
   ];
   const next = async () => {
-    console.log('Next button clicked, current step:', currentStep); // Debug log
+    // console.log('Next button clicked, current step:', currentStep); // Debug log
     const stepFields = steps[currentStep].fields as (keyof ProfileFormValues)[];
 
     const isStepValid = await form.trigger(stepFields); // Validate current step
-    console.log('Step Valid:', isStepValid); // Debug validation
+    // console.log('Step Valid:', isStepValid); // Debug validation
 
     if (isStepValid) {
       if (currentStep === steps.length - 1) {
-        console.log('Submitting form...');
         try {
           // Show alert for successful "form submission"
           window.alert('Form saved successfully!');
@@ -1184,14 +1165,12 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         } catch (error) {
           // Catch and log any unexpected errors
           console.error('Error during form submission:', error);
-          window.alert('An error occurred during form submission.');
+          toast('An error occurred during form submission.');
         }
       } else {
-        console.log('Going to the next step...');
         setCurrentStep((prevStep) => prevStep + 1);
       }
     } else {
-      console.log('Step validation failed.');
     }
   };
 
@@ -1207,19 +1186,19 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   // Handle voice selection (use form.setValue to track selected voice)
   const handleVoiceSelect = (voiceId: string) => {
     form.setValue('selectedVoice', voiceId); // Update form state with selected voice
-    console.log('Selected voice:', voiceId);
+    // console.log('Selected voice:', voiceId);
   };
 
   // Function to handle file uploads for sales script
   const handleScriptUpload = (fileContent: string) => {
     form.setValue('exampleSalesScript', fileContent); // Update form state with sales script content
-    console.log('Uploaded Sales Script Content:', fileContent);
+    // console.log('Uploaded Sales Script Content:', fileContent);
   };
 
   // Function to handle file uploads for email body
   const handleEmailUpload = (fileContent: string) => {
     form.setValue('exampleEmailBody', fileContent); // Update form state with email body content
-    console.log('Uploaded Email Body Content:', fileContent);
+    // console.log('Uploaded Email Body Content:', fileContent);
   };
 
   return (

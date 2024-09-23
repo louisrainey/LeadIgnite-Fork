@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus, Calendar, Download, HelpCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { leadListColumns } from './columns';
 import AddLeadModal from '@/components/reusables/modals/leadModal';
 import Lottie from 'lottie-react';
@@ -20,8 +19,8 @@ import PropertySearchModal from '@/components/reusables/tutorials/walkthroughMod
 export const LeadClient: React.FC = () => {
   // State for modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isFilterOpen, setIsFilterOpen] = useState(false); // State for filter dropdown visibility
-  const [searchKey, setSearchKey] = useState(''); // Local state to manage search key
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false); // State for modal visibility
   // Zustand's setCampaignType and filterCampaignsByStatus functions
   const [isTourOpen, setIsTourOpen] = useState(false);
@@ -52,7 +51,6 @@ export const LeadClient: React.FC = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const toggleFilter = () => setIsFilterOpen((prev) => !prev);
 
   const applyFilter = () => {
     if (selectedStatus) {
@@ -63,13 +61,13 @@ export const LeadClient: React.FC = () => {
       filterByCampaignID(selectedCampaign);
     }
 
-    console.log('Applying Filter:', { selectedCampaign, selectedStatus });
+    // console.log('Applying Filter:', { selectedCampaign, selectedStatus });
     setIsFilterOpen(false); // Close the dropdown after applying the filter
   };
 
-  const closeFilterDropdown = () => {
-    setIsFilterOpen(false);
-  };
+  // const closeFilterDropdown = () => {
+  //   setIsFilterOpen(false);
+  // };
 
   const resetFilter = () => {
     setSelectedCampaign(undefined);
@@ -89,6 +87,7 @@ export const LeadClient: React.FC = () => {
       .map((lead) => lead.campaignID) // Extract campaign IDs
       .filter((campaignID): campaignID is string => !!campaignID); // Filter out undefined/null and cast to string
     return Array.from(new Set(campaignIds)); // Return only unique campaign IDs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leads]);
 
   return (

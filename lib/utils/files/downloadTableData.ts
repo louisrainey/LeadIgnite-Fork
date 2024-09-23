@@ -67,7 +67,7 @@ export async function exportCampaignMessagesToExcel(
   const worksheet = workbook.addWorksheet(sheetName);
 
   // Log the initial message data to ensure it's being passed correctly
-  console.log('Messages to export:', messages);
+  console.warn('Messages to export:', messages);
 
   // Add headers to the worksheet (columns)
   worksheet.columns = columns.map((col) => ({
@@ -77,7 +77,7 @@ export async function exportCampaignMessagesToExcel(
   }));
 
   // Log the worksheet columns to ensure headers are set correctly
-  console.log('Worksheet columns:', worksheet.columns);
+  console.warn('Worksheet columns:', worksheet.columns);
 
   // Add each message as a row
   messages.forEach((message, index) => {
@@ -98,7 +98,7 @@ export async function exportCampaignMessagesToExcel(
     );
 
     // Log each row before adding it to the worksheet
-    console.log(`Row ${index + 1}:`, rowData);
+    console.warn(`Row ${index + 1}:`, rowData);
 
     worksheet.addRow(rowData);
   });
@@ -122,7 +122,7 @@ export async function exportEmailCampaignToExcel(
   const worksheet = workbook.addWorksheet(sheetName);
 
   // Log the incoming data for validation
-  console.log('Emails to export:', emails);
+  console.warn('Emails to export:', emails);
 
   // Check if emails array is empty or undefined
   if (!emails || emails.length === 0) {
@@ -144,7 +144,7 @@ export async function exportEmailCampaignToExcel(
   }
 
   // Log the worksheet columns to ensure headers are set correctly
-  console.log('Worksheet columns:', worksheet.columns);
+  console.warn('Worksheet columns:', worksheet.columns);
 
   // Add each email as a row
   emails.forEach((email, index) => {
@@ -179,7 +179,7 @@ export async function exportEmailCampaignToExcel(
     );
 
     // Log each row before adding it to the worksheet
-    console.log(`Row ${index + 1}:`, rowData);
+    console.warn(`Row ${index + 1}:`, rowData);
 
     // Add the row to the worksheet
     worksheet.addRow(rowData);
@@ -187,7 +187,7 @@ export async function exportEmailCampaignToExcel(
 
   // Log the final worksheet rows to ensure rows were added correctly
   worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
-    console.log(`Row ${rowNumber}:`, row.values);
+    console.warn(`Row ${rowNumber}:`, row.values);
   });
 
   // Auto-size columns based on content length

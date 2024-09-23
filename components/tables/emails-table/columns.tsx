@@ -2,7 +2,6 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { EmailCampaign, GetEmailByIdResponse } from '@/types/goHighLevel/email';
-import { EyeIcon } from 'lucide-react';
 import { exportEmailCampaignToExcel } from '@/lib/utils/files/downloadTableData';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -36,12 +35,12 @@ const statusColor: Record<EmailCampaign['status'], string> = {
 //   );
 // };
 
-const handleEmailSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  const emailUrl = event.target.value;
-  if (emailUrl) {
-    window.open(emailUrl, '_blank', 'noopener,noreferrer'); // Open the email in a new tab
-  }
-};
+// const handleEmailSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+//   const emailUrl = event.target.value;
+//   if (emailUrl) {
+//     window.open(emailUrl, '_blank', 'noopener,noreferrer'); // Open the email in a new tab
+//   }
+// };
 export const emailCampaignColumns: ColumnDef<EmailCampaign>[] = [
   {
     id: 'select',
@@ -154,8 +153,6 @@ export const emailCampaignColumns: ColumnDef<EmailCampaign>[] = [
           <button
             className="p-2 text-blue-500 hover:underline"
             onClick={() => {
-              console.log('Emails data:', emails); // Log for debugging
-
               exportEmailCampaignToExcel(
                 `Emails_${row.original.name}`, // Sheet name based on campaign name
                 emailColumns, // Columns for the Excel export

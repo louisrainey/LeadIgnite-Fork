@@ -79,6 +79,7 @@ export function LeadDataTable({
   pageSizeOptions = [10, 20, 30, 50]
 }: DataTableProps) {
   const [search, setSearch] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [statuses, setStatuses] = useState<Record<string, string>>({});
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [selectedLead, setSelectedLead] = useState<LeadTypeGlobal>(

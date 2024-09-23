@@ -43,9 +43,9 @@ const CampaignHeader: React.FC = () => {
   const filterCampaignsByStatus = useCampaignStore(
     (state) => state.filterCampaignsByStatus
   );
-  const filteredCampaigns = useCampaignStore(
-    (state) => state.filteredCampaigns
-  ); // Filtered campaigns after applying the filter
+  // const filteredCampaigns = useCampaignStore(
+  //   (state) => state.filteredCampaigns
+  // ); // Filtered campaigns after applying the filter
 
   // Function to handle filter clicks
   const handleFilterClick = (filter: string) => {
@@ -119,10 +119,10 @@ const CampaignHeader: React.FC = () => {
     totalCallCampaigns;
 
   // Calculate total calls (inbound + outbound)
-  const totalCalls = callCampaigns.reduce(
-    (sum, campaign) => sum + campaign.calls,
-    0
-  );
+  // const totalCalls = callCampaigns.reduce(
+  //   (sum, campaign) => sum + campaign.calls,
+  //   0
+  // );
 
   // Aggregate other campaign data as needed (e.g., DMs)
   const totalDMs = socialCampaigns.reduce(

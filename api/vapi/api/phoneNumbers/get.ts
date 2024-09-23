@@ -1,3 +1,4 @@
+import { PhoneNumberProvider } from '@/types/vapiAi/api/phoneNumbers/create';
 import { GetPhoneNumberResponse } from '@/types/vapiAi/api/phoneNumbers/get';
 import fetch from 'node-fetch';
 

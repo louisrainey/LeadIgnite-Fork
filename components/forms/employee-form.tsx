@@ -20,7 +20,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -77,6 +77,7 @@ export const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
   initialData
 }) => {
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 

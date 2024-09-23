@@ -35,7 +35,6 @@ const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
     contactType: 'phone' | 'email',
     contactInfo: string
   ) => {
-    console.log(`Added ${contactType}: ${contactInfo}`);
     closeAddContactModal(); // Close modal after submitting
   };
 

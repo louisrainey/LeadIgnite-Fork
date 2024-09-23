@@ -25,6 +25,7 @@ type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
   const defaultValues = {
     email: 'demo@gmail.com'

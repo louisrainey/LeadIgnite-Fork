@@ -14,7 +14,7 @@ import {
   SelectItem
 } from '@/components/ui/select';
 import { ChevronDown, Filter } from 'lucide-react';
-import { LeadStatus } from '@/constants/data';
+import { LeadStatus } from '@/types/_dashboard/leads';
 
 interface FilterDropdownProps {
   selectedCampaign: string | undefined;

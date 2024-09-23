@@ -94,7 +94,7 @@ const VoiceCloningModal: React.FC<VoiceCloningModalProps> = ({ onClose }) => {
         const audioBlob = new Blob(audioChunksRef.current, {
           type: 'audio/wav'
         });
-        console.log('Recording stopped. Audio file created:', audioBlob);
+        console.warn('Recording stopped. Audio file created:', audioBlob);
         // Handle the audio file, e.g., upload or play it
 
         // Show the "Finish Recording" button if recording length is valid
@@ -130,7 +130,7 @@ const VoiceCloningModal: React.FC<VoiceCloningModalProps> = ({ onClose }) => {
 
   // Handle the "Finish Recording" button click
   const handleFinishRecording = () => {
-    console.log('Recording finished, processing...');
+    console.warn('Recording finished, processing...');
     // Here you can handle the final steps (e.g., upload the audio or navigate away)
     setShowFinishButton(false);
   };

@@ -5,7 +5,7 @@ import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 import { UserProfileSubscription } from '@/constants/_faker/profile/userSubscription';
 import React, { useState, useEffect } from 'react';
 
-interface UsageData {
+export interface UsageData {
   subscription: UserProfileSubscription;
 }
 
@@ -44,16 +44,8 @@ const AiUsageModal: React.FC = () => {
     return <div>Error loading data</div>;
   }
 
-  const {
-    name,
-    status,
-    aiCredits,
-    leads,
-    skipTraces,
-    price,
-    renewalDate,
-    planDetails
-  } = subscriptionData;
+  const { name, status, aiCredits, leads, skipTraces, price, renewalDate } =
+    subscriptionData;
 
   const { allotted, used, resetInDays } = aiCredits;
   const usagePercentage = (used / allotted) * 100 || 0;

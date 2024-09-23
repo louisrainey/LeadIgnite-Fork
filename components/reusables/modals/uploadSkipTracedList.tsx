@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -88,8 +89,6 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
 
   const formState = watch();
 
-  console.log('Current Form State:', formState); // This will log real-time form data
-
   // Setup dropzone
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -121,7 +120,6 @@ const UploadListModal: React.FC<UploadListModalProps> = ({
       // Validate the form data against the Zod schema
       leadSchema.parse(data);
       toast.success('Form submitted successfully!');
-      console.log('Form Submitted Data:', data);
     } catch (validationError: any) {
       toast.error(
         'Validation failed: ' + validationError.message || validationError

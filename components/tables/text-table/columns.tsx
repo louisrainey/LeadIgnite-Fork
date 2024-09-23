@@ -157,8 +157,6 @@ export const textMessageCampaignColumns: ColumnDef<GHLTextMessageCampaign>[] = [
           <button
             className="p-2 text-blue-500 hover:underline"
             onClick={() => {
-              console.log('Messages data:', messages); // Log for debugging
-
               exportCampaignMessagesToExcel(
                 `Messages_${row.original.name}`, // Sheet name based on campaign name
                 messageColumns, // Columns for the Excel export

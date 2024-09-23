@@ -89,14 +89,14 @@ export default function LeadsComponent() {
     toast('Submitted');
     // Use the location from form data to fetch addresses from the mock API
     const fetchedCoordinates = await mockFetchAddressesFromApi([data.location]);
-    console.log('Fetched Coordinates:', fetchedCoordinates);
+    // console.log('Fetched Coordinates:', fetchedCoordinates);
 
     // Convert the fetched addresses and coordinates to markers directly
     const newMarkers = fetchedCoordinates.map((coord) => ({
       lat: coord.lat,
       lng: coord.lng
     }));
-    console.log('New Markers:', newMarkers);
+    // console.log('New Markers:', newMarkers);
 
     // Only set markers if newMarkers is not empty
     if (newMarkers && newMarkers.length > 0) {
@@ -105,7 +105,7 @@ export default function LeadsComponent() {
       // Calculate and set the center based on the new markers
       const newCenter = calculateCenter(newMarkers);
       setCenter(newCenter);
-      console.log('New Center:', newCenter);
+      // console.log('New Center:', newCenter);
     }
   };
 

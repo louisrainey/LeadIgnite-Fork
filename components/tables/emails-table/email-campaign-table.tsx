@@ -43,6 +43,7 @@ export function EmailCampaignTable<TData, TValue>({
   const searchParams = useSearchParams();
   const page = searchParams?.get('page') ?? '1';
   const per_page = searchParams?.get('limit') ?? '10';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [search, setSearch] = useState('');
 
   const [{ pageIndex, pageSize }, setPagination] =

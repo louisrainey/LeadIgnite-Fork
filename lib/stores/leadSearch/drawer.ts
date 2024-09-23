@@ -40,15 +40,11 @@ export const usePropertyStore = create<PropertyStoreState>((set, get) => ({
   },
 
   setProperties: (properties) => {
-    console.log('Setting properties:', properties);
-
     // Set the properties first
     set({ properties });
 
     // Then derive visible properties after setting properties
     const visibleProps = properties.slice(0, MAX_CARDS_PER_LOAD);
-
-    console.log('Visible properties after slice:', visibleProps);
 
     set({
       visibleProperties: visibleProps,

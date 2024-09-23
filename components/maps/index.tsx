@@ -29,7 +29,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
 }) => {
   // Get the relevant state from Zustand store
   const {
-    properties,
     visibleProperties, // Zustand-managed properties list
     setProperties, // Action to set properties in the store
     isDrawerOpen, // Drawer visibility state
@@ -60,14 +59,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
     setDrawingMode(null); // Stop the drawing mode
     setShapeDrawn(false); // Reset shape drawn state
-    console.log('Drawing canceled');
+    // console.log('Drawing canceled');
   };
 
   const handleApply = () => {
     if (shapeRef.current) {
       setBoundaryApplied(true);
       setShapeDrawn(false);
-      console.log('Drawing applied');
+      // console.log('Drawing applied');
     }
   };
 
@@ -77,7 +76,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       shapeRef.current = null;
     }
     setBoundaryApplied(false);
-    console.log('Boundaries removed');
+    // console.log('Boundaries removed');
   };
 
   // Load properties into the Zustand store, but don't override unless necessary
@@ -99,12 +98,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     setProperties(MockInHouseLeadAgrigator); // Use mock data to initialize Zustand properties
   }, [setProperties]);
 
-  useEffect(() => {
-    console.log('Properties', properties);
-
-    console.log('Visible Properties:', visibleProperties);
-    console.log('Is Drawer Open:', isDrawerOpen);
-  }, [visibleProperties, isDrawerOpen]);
+  useEffect(() => {}, [visibleProperties, isDrawerOpen]);
 
   return (
     <LoadScript googleMapsApiKey={apiKey} libraries={['drawing']}>

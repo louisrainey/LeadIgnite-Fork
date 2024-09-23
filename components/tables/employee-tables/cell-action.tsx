@@ -24,6 +24,7 @@ export const CellAction: React.FC<CellActionProps> = ({
   data,
   currentUserRole
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [permissions, setPermissions] = useState(data.permissions); // Manage permissions locally

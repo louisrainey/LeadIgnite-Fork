@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { LeadList } from '@/constants/dashboard/leadList'; // Assuming you have mock lead lists data
 import { exportLeadListsToZip } from '../utils/files/loopDownloadTableData';
 import { toast } from 'sonner';
 import { MockUserProfile } from '@/constants/_faker/profile/userProfile';
+import { LeadList } from '@/types/_dashboard/leadList';
 // Define the state and actions for managing lead lists
 interface LeadListState {
   leadLists: LeadList[]; // Holds the lead list data

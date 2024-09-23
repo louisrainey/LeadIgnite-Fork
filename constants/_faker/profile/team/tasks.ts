@@ -1,6 +1,10 @@
 import { faker } from '@faker-js/faker';
-import { Task, TaskActivity, TaskTracking } from '@/lib/stores/taskActions';
 import { APP_TESTING_MODE } from '../../../data';
+import {
+  KanbanTask,
+  TaskActivity,
+  TaskTracking
+} from '@/types/_dashboard/kanban';
 
 // Generate mock TaskActivity logs using Faker.js
 const generateMockTaskActivity = (): TaskActivity[] => {
@@ -13,7 +17,7 @@ const generateMockTaskActivity = (): TaskActivity[] => {
 };
 
 // Generate mock tasks using Faker.js
-const generateMockTasks = (count: number): Task[] => {
+const generateMockTasks = (count: number): KanbanTask[] => {
   const statuses: Array<'TODO' | 'IN_PROGRESS' | 'DONE'> = [
     'TODO',
     'IN_PROGRESS',
@@ -46,7 +50,7 @@ export const generateTaskTracking = (taskCount: number): TaskTracking => {
     .flatMap((task) => task.activityLog || []) // Ensure the log exists or provide an empty array
     .filter(Boolean); // Filter out undefined entries
 
-  const assignedTasks: Record<string, Task[]> = tasks.reduce(
+  const assignedTasks: Record<string, KanbanTask[]> = tasks.reduce(
     (acc, task) => {
       if (task.assignedToTeamMember) {
         if (!acc[task.assignedToTeamMember]) {
@@ -56,7 +60,7 @@ export const generateTaskTracking = (taskCount: number): TaskTracking => {
       }
       return acc;
     },
-    {} as Record<string, Task[]>
+    {} as Record<string, KanbanTask[]>
   );
 
   return {

@@ -27,6 +27,7 @@ export const LeadListClient: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State for Upload List modal visibility
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false); // State for Help modal visibility
   const [isTourOpen, setIsTourOpen] = useState(false); // State for tour visibility
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchKey, setSearchKey] = useState(''); // State for search key
 
   // Dropdown filter state

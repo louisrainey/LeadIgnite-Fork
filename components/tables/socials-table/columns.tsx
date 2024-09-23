@@ -252,7 +252,7 @@ export const socialMediaCampaignColumns: ColumnDef<SocialMediaCampaign>[] = [
           );
 
           // Debug: Log available platforms
-          console.log('Available Platforms:', platforms);
+          console.warn('Available Platforms:', platforms);
 
           // Function to filter actions by platform
           const filterActionsByPlatform = (platform: string) => {
@@ -282,7 +282,7 @@ export const socialMediaCampaignColumns: ColumnDef<SocialMediaCampaign>[] = [
           );
 
           // Debug: Log the data that will be exported
-          console.log('Data to export:', data);
+          console.warn('Data to export:', data);
 
           // Call the export function (ensure it's defined elsewhere in your code)
           exportSocialTableDataToExcel(
