@@ -210,6 +210,7 @@ model ActivityLog {
     TeamMember     TeamMember?  @relation(fields: [teamMemberId], references: [id])
     teamMemberId   String?
     taskTrackingId String
+    userAgent      String?
 }
 
 model TaskTracking {

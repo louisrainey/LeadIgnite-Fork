@@ -100,6 +100,7 @@ export interface ActivityLog {
   timestamp: Date; // When the action was performed
   performedBy: string; // Who performed the action
   taskTracking: TaskTracking;
+  userAgent?: string;
 }
 
 export interface SecuritySettings {
