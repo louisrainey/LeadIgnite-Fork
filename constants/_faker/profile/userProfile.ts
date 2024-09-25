@@ -231,7 +231,8 @@ export const mockUserProfile: UserProfile = {
       action: faker.helpers.arrayElement(['created', 'updated', 'deleted']),
       timestamp: faker.date.recent(),
       performedBy: faker.person.firstName(),
-      taskTracking: mockTrackingData
+      taskTracking: mockTrackingData,
+      userAgent: faker.system.networkInterface() + faker.internet.userAgent()
     }
   ],
 
