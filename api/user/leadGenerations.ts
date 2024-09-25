@@ -1,7 +1,18 @@
 import prisma from '../../lib/prisma'; // Import the singleton PrismaClient
+import checkAndUpdateCredits from './_utilils/checkCredits'; // Adjust the path as needed
+
 // Create a new lead
-async function createLead(data: any) {
+async function createLead(data: any, creditsToUse: number) {
+  // Accept creditsToUse as a parameter
   try {
+    // Step 1: Check and update LeadCredits before creating the lead
+    await checkAndUpdateCredits(
+      data.subscriptionId,
+      'LeadCredits',
+      creditsToUse // Use the parameter passed
+    );
+
+    // Step 2: Create the lead if enough credits are available
     const lead = await prisma.leadTypeGlobal.create({
       data: {
         firstName: data.firstName,
@@ -23,8 +34,14 @@ async function createLead(data: any) {
     console.log('Lead created:', lead);
     return lead;
   } catch (error) {
-    console.error('Error creating lead:', error);
-    throw error;
+    // Safely handle the error, as it might be related to credits or other issues
+    if (error instanceof Error) {
+      console.error('Error creating lead:', error.message);
+      throw new Error(error.message || 'Failed to create lead');
+    } else {
+      console.error('Unknown error:', error);
+      throw new Error('An unknown error occurred during lead creation');
+    }
   }
 }
 
@@ -69,15 +86,19 @@ async function deleteLead(leadId: string) {
   }
 }
 
-// Example usage
-createLead({
-  firstName: 'John',
-  lastName: 'Doe',
-  email: 'johndoe@example.com',
-  phone: '123-456-7890',
-  status: 'New_Lead',
-  companyInfoId: 'some-company-id'
-})
+// Example usage with subscriptionId for credit checks
+createLead(
+  {
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'johndoe@example.com',
+    phone: '123-456-7890',
+    status: 'New_Lead',
+    companyInfoId: 'some-company-id',
+    subscriptionId: 'subscription-id-here' // Ensure the subscription ID is passed
+  },
+  5
+) // Specify the number of credits to use here
   .then(() => getLeads())
   .catch((error) => console.error(error))
   .finally(() => prisma.$disconnect());
