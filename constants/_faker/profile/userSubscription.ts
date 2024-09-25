@@ -2,6 +2,7 @@ import { APP_TESTING_MODE } from '../../data';
 
 export interface UserProfileSubscription {
   id: string;
+  stripeSubscriptionID: string;
   name: string; // Plan name, e.g., "Basic", "Enterprise"
   type: 'monthly' | 'yearly';
   status: 'active' | 'inactive';
@@ -91,6 +92,7 @@ const generateMockSubscriptions = (): UserProfileSubscription[] => {
   const subscriptions: UserProfileSubscription[] = [
     {
       id: '1', // Unique identifier for the subscription
+      stripeSubscriptionID: 'sadasasa',
       name: planDetails.earlyAdopter.name,
       type: 'monthly',
       status: 'active',
@@ -118,6 +120,8 @@ const generateMockSubscriptions = (): UserProfileSubscription[] => {
     {
       id: '2',
       name: planDetails.basic.name,
+      stripeSubscriptionID: 'sadasasa',
+
       type: 'yearly',
       status: 'inactive',
       price: `$${planDetails.basic.price}`,
@@ -144,6 +148,8 @@ const generateMockSubscriptions = (): UserProfileSubscription[] => {
     {
       id: '3',
       name: planDetails.enterprise.name,
+      stripeSubscriptionID: 'sadasasa',
+
       type: 'yearly',
       status: 'active',
       price: `$${planDetails.enterprise.price}`,

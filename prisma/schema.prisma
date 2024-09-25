@@ -49,7 +49,7 @@ model ConnectedAccounts {
     linkedinId    String?
     twitter       TwitterOAuthData?   @relation(fields: [twitterId], references: [id])
     twitterId     String?
-    userProfileId String @unique
+    userProfileId String              @unique
     userProfile   UserProfile         @relation(fields: [userProfileId], references: [id])
 }
 
@@ -102,19 +102,20 @@ model TwitterOAuthData {
 }
 
 model UserProfileSubscription {
-    id            String             @id @default(uuid())
-    name          String
-    type          SubscriptionType
-    status        SubscriptionStatus
-    price         String
-    aiCredits     AICredits?
-    leads         LeadCredits?
-    skipTraces    SkipTraceCredits?
-    renewalDate   DateTime
-    createdAt     DateTime
-    planDetails   String
-    userProfileId String @unique
-    userProfile   UserProfile        @relation(fields: [userProfileId], references: [id], name: "UserProfileToSubscription", map: "FK_UserProfile_Subscription")
+    id                   String             @id @default(uuid())
+    stripeSubscriptionID String
+    name                 String
+    type                 SubscriptionType
+    status               SubscriptionStatus
+    price                String
+    aiCredits            AICredits?
+    leads                LeadCredits?
+    skipTraces           SkipTraceCredits?
+    renewalDate          DateTime
+    createdAt            DateTime
+    planDetails          String
+    userProfileId        String             @unique
+    userProfile          UserProfile        @relation(fields: [userProfileId], references: [id], name: "UserProfileToSubscription", map: "FK_UserProfile_Subscription")
 
     @@index([userProfileId], name: "idx_userProfile_subscription")
 }
@@ -125,7 +126,7 @@ model LeadPreferences {
     industry          String
     minLeadQuality    Int
     maxBudget         Float
-    userProfileId     String @unique
+    userProfileId     String      @unique
     userProfile       UserProfile @relation(fields: [userProfileId], references: [id])
 }
 
@@ -153,7 +154,7 @@ model TwoFactorAuth {
     methods       TwoFactorMethods
     lastEnabledAt DateTime?
     userProfile   UserProfile      @relation(fields: [userProfileId], references: [id])
-    userProfileId String @unique
+    userProfileId String           @unique
     TeamMember    TeamMember[]
 }
 
@@ -167,7 +168,7 @@ model UserPermissions {
     canAccessAI           Boolean
     canMoveCompanyTasks   Boolean
     canEditCompanyProfile Boolean
-    teamMemberId          String @unique
+    teamMemberId          String     @unique
     teamMember            TeamMember @relation(fields: [teamMemberId], references: [id])
 }
 
@@ -178,7 +179,7 @@ model NotificationPreferences {
     notifyForNewLeads        Boolean
     notifyForCampaignUpdates Boolean
     userProfile              UserProfile  @relation(fields: [userProfileId], references: [id])
-    userProfileId            String @unique
+    userProfileId            String       @unique
     TeamMember               TeamMember[]
 }
 
@@ -233,9 +234,10 @@ model TaskActivity {
 
 model SecuritySettings {
     id                String      @id @default(uuid())
+    password          String
     lastLoginTime     DateTime?
     passwordUpdatedAt DateTime?
-    userProfileId     String @unique
+    userProfileId     String      @unique
     userProfile       UserProfile @relation(fields: [userProfileId], references: [id])
 }
 
@@ -255,7 +257,7 @@ model CompanyInfo {
     leads                         LeadTypeGlobal[]
     leadLists                     LeadList[]
     kanbanTasks                   KanbanState                 @relation(fields: [kanbanStateId], references: [id])
-    userProfileId                 String @unique
+    userProfileId                 String                      @unique
     userProfile                   UserProfile                 @relation(fields: [userProfileId], references: [id])
     companyCampaignsUserProfileId String
     kanbanStateId                 String
@@ -328,7 +330,7 @@ model SocialLinks {
     linkedin  String?
     instagram String?
     twitter   String?
-    leadId    String @unique
+    leadId    String         @unique
     lead      LeadTypeGlobal @relation(fields: [leadId], references: [id])
 }
 
@@ -418,7 +420,7 @@ model SocialMediaCampaign {
     platform                      String
     senderHandle                  String
     receiverHandle                String
-    hashtags                      Json 
+    hashtags                      Json
     companyCampaignsUserProfileId String
     companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
 }
@@ -442,7 +444,7 @@ model AIKnowledgebase {
     recordings          Recording   @relation(fields: [recordingId], references: [id])
     aiAvatar            AIAvatar?   @relation(fields: [aIAvatarId], references: [id])
     background          Background? @relation(fields: [backgroundId], references: [id])
-    userProfileId       String @unique
+    userProfileId       String      @unique
     userProfile         UserProfile @relation(fields: [userProfileId], references: [id])
     recordingId         String
     aIAvatarId          String?
@@ -464,7 +466,7 @@ model PaymentDetails {
     cardType      String
     cardLastFour  String
     expiry        String
-    userProfileId String @unique
+    userProfileId String      @unique
     userProfile   UserProfile @relation(fields: [userProfileId], references: [id])
 }
 
@@ -474,7 +476,7 @@ model AICredits {
     used           Int
     resetInDays    Int
     subscription   UserProfileSubscription @relation(fields: [subscriptionId], references: [id])
-    subscriptionId String @unique
+    subscriptionId String                  @unique
 }
 
 model LeadCredits {
@@ -483,7 +485,7 @@ model LeadCredits {
     used           Int
     resetInDays    Int
     subscription   UserProfileSubscription @relation(fields: [subscriptionId], references: [id])
-    subscriptionId String @unique
+    subscriptionId String                  @unique
 }
 
 model SkipTraceCredits {
@@ -492,7 +494,7 @@ model SkipTraceCredits {
     used           Int
     resetInDays    Int
     subscription   UserProfileSubscription @relation(fields: [subscriptionId], references: [id])
-    subscriptionId String @unique
+    subscriptionId String                  @unique
 }
 
 model Recording {

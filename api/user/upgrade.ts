@@ -1,33 +1,59 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
-const prisma = require('../../lib/prisma'); // Adjust the path as needed
+import prisma from '../../lib/prisma'; // Adjust the path as needed
+
+// Initialize Stripe client
 const stripe = new Stripe('your-stripe-secret-key', {
-  apiVersion: '2022-11-15'
+  apiVersion: '2024-06-20'
 });
 
-async function upgradeSubscription(userProfileId: string, newPlanId: string) {
-  const userProfile = await prisma.userProfile.findUnique({
-    where: { id: userProfileId },
-    include: { subscription: true }
-  });
-
-  if (!userProfile || !userProfile.subscription) {
-    throw new Error('User or subscription not found');
+export default async function upgradeSubscription(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const subscription = await stripe.subscriptions.update(
-    userProfile.subscription.stripeSubscriptionId,
-    {
-      items: [{ plan: newPlanId }]
-    }
-  );
+  try {
+    const { userProfileId, newPlanId } = req.body;
 
-  await prisma.userProfileSubscription.update({
-    where: { userProfileId },
-    data: {
-      stripeSubscriptionId: subscription.id,
-      name: subscription.items.data[0].plan.nickname || 'Updated Plan'
+    if (!userProfileId || !newPlanId) {
+      return res
+        .status(400)
+        .json({ error: 'userProfileId and newPlanId are required' });
     }
-  });
 
-  console.log('Subscription upgraded:', subscription);
+    const userProfile = await prisma.userProfile.findUnique({
+      where: { id: userProfileId },
+      include: { subscription: true }
+    });
+
+    if (!userProfile || !userProfile.subscription) {
+      return res.status(404).json({ error: 'User or subscription not found' });
+    }
+
+    const subscription = await stripe.subscriptions.update(
+      userProfile.subscription.stripeSubscriptionID,
+      {
+        items: [{ plan: newPlanId }]
+      }
+    );
+
+    await prisma.userProfileSubscription.update({
+      where: { userProfileId },
+      data: {
+        stripeSubscriptionID: subscription.id,
+        name: subscription.items.data[0].plan.nickname || 'Updated Plan'
+      }
+    });
+
+    return res.status(200).json({
+      message: 'Subscription upgraded successfully',
+      subscription
+    });
+  } catch (error) {
+    console.error('Error upgrading subscription:', error);
+    return res.status(500).json({ error: 'Failed to upgrade subscription' });
+  }
 }
