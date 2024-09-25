@@ -1,17 +1,17 @@
-// var secret = speakeasy.generateSecret();
+import { authenticator } from 'otplib';
+import prisma from '../../lib/prisma'; // Adjust the path as needed
 
-// import prisma from '../../lib/prisma'; // Import the singleton PrismaClient
-// async function enable2FA(userId: string) {
-//   const secret = speakeasy.generateSecret();
+async function enable2FA(userId: string) {
+  const secret = authenticator.generateSecret();
 
-//   await prisma.twoFactorAuth.update({
-//     where: { userProfileId: userId },
-//     data: {
-//       isEnabled: true,
-//       methods: 'authenticatorApp',
-//       lastEnabledAt: new Date()
-//     }
-//   });
+  await prisma.twoFactorAuth.update({
+    where: { userProfileId: userId },
+    data: {
+      isEnabled: true,
+      methods: 'authenticatorApp',
+      lastEnabledAt: new Date()
+    }
+  });
 
-//   console.log('2FA enabled, secret:', secret.base32);
-// }
+  console.log('2FA enabled, secret:', secret);
+}
