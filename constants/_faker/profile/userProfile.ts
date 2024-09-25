@@ -237,6 +237,7 @@ export const mockUserProfile: UserProfile = {
 
   securitySettings: {
     lastLoginTime: faker.date.recent(),
+    password: faker.string.uuid(),
     passwordUpdatedAt: faker.date.past()
   }
 };

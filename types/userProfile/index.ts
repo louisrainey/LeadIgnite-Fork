@@ -104,6 +104,7 @@ export interface ActivityLog {
 
 export interface SecuritySettings {
   lastLoginTime: Date | null; // Date of last login
+  password: String;
   passwordUpdatedAt: Date | null; // When the password was last updated
 }
 
