@@ -1,6 +1,7 @@
 {
   "name": "lead_ignite",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "author": {
     "name": "Kiran",
@@ -57,6 +58,7 @@
     "@types/papaparse": "^5.3.14",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
+    "@types/speakeasy": "^2.0.10",
     "@uploadthing/react": "^5.7.0",
     "autoprefixer": "10.4.15",
     "axios": "^1.7.5",
@@ -92,10 +94,10 @@
     "recharts": "^2.12.7",
     "sharp": "^0.32.5",
     "sonner": "^1.5.0",
+    "speakeasy": "^2.0.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "5.2.2",
     "uploadthing": "^5.7.4",
     "uuid": "^9.0.1",
     "vaul": "^0.9.3",
@@ -109,6 +111,9 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
     "prettier": "3.0.3",
-    "prettier-plugin-tailwindcss": "^0.5.14"
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "prisma": "^5.20.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
   }
 }

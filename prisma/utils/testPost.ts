@@ -1,27 +1,25 @@
-// // testPost.ts
-// const { PrismaClient } = require('@prisma/client');
+// testPost.ts
+import prisma from '../../lib/prisma'; // Import the singleton PrismaClient
 
-// const prisma = new PrismaClient();
+async function main() {
+  const user = await prisma.userProfile.create({
+    data: {
+      uniqueIdentifier: '12345',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'johndoe@example.com',
+      country: 'USA',
+      city: 'New York',
+      personalNum: '123-456-7890'
+    }
+  });
+  console.log(user);
+}
 
-// async function main() {
-//   const user = await prisma.userProfile.create({
-//     data: {
-//       uniqueIdentifier: '12345',
-//       firstName: 'John',
-//       lastName: 'Doe',
-//       email: 'johndoe@example.com',
-//       country: 'USA',
-//       city: 'New York',
-//       personalNum: '123-456-7890',
-//     },
-//   });
-//   console.log(user);
-// }
-
-// main()
-//   .catch((e) => {
-//     console.error(e);
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect();
-//   });
+main()
+  .catch((e) => {
+    console.error(e);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

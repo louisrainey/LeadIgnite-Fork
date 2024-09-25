@@ -1,6 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+import prisma from '../../lib/prisma'; // Import the singleton PrismaClient
 
 // Function to delete the first user in the UserProfile table
 async function deleteFirstUser() {
