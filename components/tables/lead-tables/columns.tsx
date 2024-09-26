@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar, MessageCircle } from 'lucide-react';
-import { exportLeadsTableDataToExcel } from '@/lib/utils/files/downloadTableData';
+import { exportLeadsTableDataToExcel } from '@/lib/_utils/files/downloadTableData';
 import { LeadTypeGlobal } from '@/types/_dashboard/leads';
 
 // Assuming the Lead type matches the lead/contact structure

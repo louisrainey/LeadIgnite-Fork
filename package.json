@@ -1,7 +1,6 @@
 {
   "name": "lead_ignite",
   "version": "0.1.0",
-  "type": "module",
   "private": true,
   "author": {
     "name": "Kiran",

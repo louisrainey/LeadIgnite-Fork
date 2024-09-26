@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { exportLeadListsToZip } from '../utils/files/loopDownloadTableData';
+import { exportLeadListsToZip } from '../_utils/files/loopDownloadTableData';
 import { toast } from 'sonner';
 import { MockUserProfile } from '@/constants/_faker/profile/userProfile';
 import { LeadList } from '@/types/_dashboard/leadList';

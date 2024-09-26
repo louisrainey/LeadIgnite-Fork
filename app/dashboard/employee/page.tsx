@@ -12,7 +12,7 @@ import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { HelpCircle, Plus } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils/kanban/utils';
+import { cn } from '@/lib/_utils/kanban/utils';
 import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 import { TeamMember } from '@/types/userProfile';
 

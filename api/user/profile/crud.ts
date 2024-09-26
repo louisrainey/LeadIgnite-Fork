@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../lib/prisma'; // Adjust the path as needed
+import prisma from '../../../lib/prisma'; // Adjust the path as needed
 import { v4 as uuidv4 } from 'uuid'; // Import UUID to generate unique identifiers
 // Main handler for the API requests
 export default async function handler(

@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useState } from 'react';
 import { SocialAction, SocialMediaCampaign } from '@/types/_dashboard/campaign';
-import { exportSocialTableDataToExcel } from '@/lib/utils/files/downloadTableData';
+import { exportSocialTableDataToExcel } from '@/lib/_utils/files/downloadTableData';
 import { Checkbox } from '@/components/ui/checkbox';
 
 // Color statuses for the social media campaign

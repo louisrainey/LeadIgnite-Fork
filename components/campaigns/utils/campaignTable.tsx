@@ -16,7 +16,7 @@ import { emailCampaignColumns } from '@/components/tables/emails-table/columns';
 import { CallCampaign, SocialMediaCampaign } from '@/types/_dashboard/campaign';
 import { EmailCampaign } from '@/types/goHighLevel/email';
 import { GHLTextMessageCampaign } from '@/types/goHighLevel/text';
-import { exportMultipleCampaignsToZip } from '@/lib/utils/files/arrayTableData';
+import { exportMultipleCampaignsToZip } from '@/lib/_utils/files/arrayTableData';
 
 const CampaignsMainContent: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

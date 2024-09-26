@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GHLTextMessageCampaign, TextMessage } from '@/types/goHighLevel/text';
 import { EyeIcon } from 'lucide-react';
-import { exportCampaignMessagesToExcel } from '@/lib/utils/files/downloadTableData';
+import { exportCampaignMessagesToExcel } from '@/lib/_utils/files/downloadTableData';
 import { Checkbox } from '@/components/ui/checkbox';
 
 // Color statuses for the text message campaign
