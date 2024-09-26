@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/kanban/utils';
+import { cn } from '@/lib/_utils/kanban/utils';
 
 function Skeleton({
   className,

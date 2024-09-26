@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { hasDraggableData } from '@/lib/utils/kanban/utils';
+import { hasDraggableData } from '@/lib/_utils/kanban/utils';
 import {
   Announcements,
   DndContext,

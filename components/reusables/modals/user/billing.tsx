@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { useModalStore } from '@/lib/stores/dashboard';
 import { UserProfileSubscription } from '@/constants/_faker/profile/userSubscription';
-import { downloadBillingHistoryAsXlsx } from '@/lib/utils/files/billingHistory';
+import { downloadBillingHistoryAsXlsx } from '@/lib/_utils/files/billingHistory';
 import { PaymentModal } from './paymentDetailts';
 import {
   BillingHistoryItem,

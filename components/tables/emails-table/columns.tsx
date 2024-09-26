@@ -2,7 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { EmailCampaign, GetEmailByIdResponse } from '@/types/goHighLevel/email';
-import { exportEmailCampaignToExcel } from '@/lib/utils/files/downloadTableData';
+import { exportEmailCampaignToExcel } from '@/lib/_utils/files/downloadTableData';
 import { Checkbox } from '@/components/ui/checkbox';
 
 // Color statuses for the email campaign

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { exportLeadsToExcel } from '../utils/files/loopDownloadTableData';
+import { exportLeadsToExcel } from '../_utils/files/loopDownloadTableData';
 import { toast } from 'sonner';
 import { LeadTypeGlobal } from '@/types/_dashboard/leads';
 import { MockUserProfile } from '@/constants/_faker/profile/userProfile';

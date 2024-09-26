@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { faker } from '@faker-js/faker'; // Import Faker
 import UserAuthForm from '@/components/forms/user-auth-form';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils/kanban/utils';
+import { cn } from '@/lib/_utils/kanban/utils';
 import { FlameIcon } from 'lucide-react';
 import { useKanbanStore } from '@/lib/stores/user/login';
 import Image from 'next/image';

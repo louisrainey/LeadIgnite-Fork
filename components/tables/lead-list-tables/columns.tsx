@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Download } from 'lucide-react';
-import { exportLeadListsToExcel } from '@/lib/utils/files/loopDownloadTableData';
+import { exportLeadListsToExcel } from '@/lib/_utils/files/loopDownloadTableData';
 import SkipTraceDialog from './utils/skipLeadsList'; // Assuming SkipTraceDialog component is in utils
 import { LeadList } from '@/types/_dashboard/leadList';
 

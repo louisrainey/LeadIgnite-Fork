@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { DashboardNav } from '@/components/dashboard-nav';
 import { navItems } from '@/constants/data';
-import { cn } from '@/lib/utils/kanban/utils';
+import { cn } from '@/lib/_utils/kanban/utils';
 import { ChevronLeft, FlameIcon } from 'lucide-react';
 import Link from 'next/link';
 
