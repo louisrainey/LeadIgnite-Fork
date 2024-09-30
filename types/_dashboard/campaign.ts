@@ -1,4 +1,5 @@
 import { EmailCampaign } from '../goHighLevel/email';
+import { GHLTextMessageCampaign } from '../goHighLevel/text';
 import { GetCallResponse } from '../vapiAi/api/calls/get';
 
 // Common fields for all campaigns
@@ -36,12 +37,6 @@ export const campaignStatusesGB: CampaignBase['status'][] = [
   'unread'
 ];
 // Specific types for Text Campaigns
-export interface TextCampaign extends CampaignBase {
-  phoneNumber: string;
-  message: string;
-  sentAt: Date;
-  status: 'delivered' | 'failed' | 'pending'; // Overrides status for text-specific values
-}
 
 // Specific types for Call Campaigns
 export interface CallCampaign extends CampaignBase {
@@ -142,7 +137,7 @@ export type Stat = {
 // Reusable type for campaign data
 // Updated Campaign type to include primaryType and secondaryType
 export type CampaignGlobalType =
-  | TextCampaign
+  | GHLTextMessageCampaign
   | CallCampaign
   | SocialMediaCampaign
   | EmailCampaign;

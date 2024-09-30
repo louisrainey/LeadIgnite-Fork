@@ -1,20 +1,76 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../lib/prisma'; // Adjust the path as needed
 import checkAndUpdateCredits from './_utilils/checkCredits'; // Import the credit utility function
+import { CallType, CampaignStatus } from '@prisma/client';
+import prisma from '../../lib/prisma'; // Import the singleton PrismaClient
 
 // Function to create a campaign based on the campaign type
-async function createCampaign(data: any, campaignType: string) {
+
+interface EmailCampaignData {
+  senderEmail: string;
+  recipientCount: number;
+  companyCampaignsUserProfileId: string;
+  status?: CampaignStatus;
+  name?: string;
+  startDate?: Date;
+}
+
+interface TextCampaignData {
+  phoneNumber: string;
+  message: string;
+  companyCampaignsUserProfileId: string;
+  status?: CampaignStatus;
+  name?: string;
+  startDate?: Date;
+}
+
+interface SocialMediaCampaignData {
+  platform: string;
+  senderHandle: string;
+  receiverHandle: string;
+  hashtags: string[];
+  companyCampaignsUserProfileId: string;
+  status?: CampaignStatus;
+  name?: string;
+  startDate?: Date;
+}
+
+interface CallCampaignData {
+  callerNumber: string;
+  receiverNumber: string;
+  duration: number;
+  callType: CallType;
+  companyCampaignsUserProfileId: string;
+  status?: CampaignStatus;
+  name?: string;
+  startDate?: Date;
+}
+
+type CampaignData =
+  | EmailCampaignData
+  | TextCampaignData
+  | SocialMediaCampaignData
+  | CallCampaignData;
+
+async function createCampaign(data: CampaignData, campaignType: string) {
   let campaign;
 
   switch (campaignType) {
     case 'email':
       campaign = await prisma.emailCampaign.create({
         data: {
-          senderEmail: data.senderEmail,
-          recipientCount: data.recipientCount,
-          sentCount: 0, // Initially, no emails are sent
-          deliveredCount: 0, // Initially, no emails are delivered
-          companyCampaignsUserProfileId: data.companyCampaignsUserProfileId
+          senderEmail: (data as EmailCampaignData).senderEmail,
+          recipientCount: (data as EmailCampaignData).recipientCount,
+          sentCount: 0,
+          deliveredCount: 0,
+          status: (data as EmailCampaignData).status ?? CampaignStatus.pending,
+          name:
+            (data as EmailCampaignData).name || 'Default Email Campaign Name',
+          startDate: (data as EmailCampaignData).startDate || new Date(),
+          companyCampaignsUserProfile: {
+            connect: {
+              id: (data as EmailCampaignData).companyCampaignsUserProfileId
+            }
+          }
         }
       });
       break;
@@ -22,11 +78,17 @@ async function createCampaign(data: any, campaignType: string) {
     case 'text':
       campaign = await prisma.textCampaign.create({
         data: {
-          phoneNumber: data.phoneNumber,
-          message: data.message,
-          sentAt: new Date(), // Timestamp when the text is sent
-          status: 'Pending', // Status can be updated later
-          companyCampaignsUserProfileId: data.companyCampaignsUserProfileId
+          phoneNumber: (data as TextCampaignData).phoneNumber,
+          message: (data as TextCampaignData).message,
+          sentAt: new Date(),
+          status: (data as TextCampaignData).status ?? CampaignStatus.pending,
+          name: (data as TextCampaignData).name || 'Default Text Campaign Name',
+          startDate: (data as TextCampaignData).startDate || new Date(),
+          companyCampaignsUserProfile: {
+            connect: {
+              id: (data as TextCampaignData).companyCampaignsUserProfileId
+            }
+          }
         }
       });
       break;
@@ -34,11 +96,22 @@ async function createCampaign(data: any, campaignType: string) {
     case 'social':
       campaign = await prisma.socialMediaCampaign.create({
         data: {
-          platform: data.platform,
-          senderHandle: data.senderHandle,
-          receiverHandle: data.receiverHandle,
-          hashtags: data.hashtags,
-          companyCampaignsUserProfileId: data.companyCampaignsUserProfileId
+          platform: (data as SocialMediaCampaignData).platform,
+          senderHandle: (data as SocialMediaCampaignData).senderHandle,
+          receiverHandle: (data as SocialMediaCampaignData).receiverHandle,
+          hashtags: (data as SocialMediaCampaignData).hashtags,
+          status:
+            (data as SocialMediaCampaignData).status ?? CampaignStatus.pending,
+          name:
+            (data as SocialMediaCampaignData).name ||
+            'Default Social Campaign Name',
+          startDate: (data as SocialMediaCampaignData).startDate || new Date(),
+          companyCampaignsUserProfile: {
+            connect: {
+              id: (data as SocialMediaCampaignData)
+                .companyCampaignsUserProfileId
+            }
+          }
         }
       });
       break;
@@ -46,11 +119,18 @@ async function createCampaign(data: any, campaignType: string) {
     case 'call':
       campaign = await prisma.callCampaign.create({
         data: {
-          callerNumber: data.callerNumber,
-          receiverNumber: data.receiverNumber,
-          duration: data.duration,
-          callType: data.callType,
-          companyCampaignsUserProfileId: data.companyCampaignsUserProfileId
+          callerNumber: (data as CallCampaignData).callerNumber,
+          receiverNumber: (data as CallCampaignData).receiverNumber,
+          duration: (data as CallCampaignData).duration,
+          callType: (data as CallCampaignData).callType,
+          status: (data as CallCampaignData).status ?? CampaignStatus.pending,
+          name: (data as CallCampaignData).name || 'Default Call Campaign Name',
+          startDate: (data as CallCampaignData).startDate || new Date(),
+          companyCampaignsUserProfile: {
+            connect: {
+              id: (data as CallCampaignData).companyCampaignsUserProfileId
+            }
+          }
         }
       });
       break;
@@ -59,12 +139,6 @@ async function createCampaign(data: any, campaignType: string) {
       throw new Error('Invalid campaign type');
   }
 
-  console.log(
-    `${
-      campaignType.charAt(0).toUpperCase() + campaignType.slice(1)
-    } campaign created:`,
-    campaign
-  );
   return campaign;
 }
 

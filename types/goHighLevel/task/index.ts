@@ -46,3 +46,8 @@ export type UpdateTaskCompletedResponse = {
 export type DeleteTaskResponse = {
   succeeded: boolean;
 };
+
+export interface GetTasksHeaders {
+  Authorization: string;
+  Version: string;
+}

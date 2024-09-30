@@ -37,6 +37,7 @@ model UserProfile {
   CampaignAnalytics           CampaignAnalytics[]
   LeadList                    LeadList[]
   KanbanState                 KanbanState[]
+  KanbanTask                  KanbanTask[]
 }
 
 model ConnectedAccounts {
@@ -376,6 +377,10 @@ model KanbanTask {
   assignedTo    String?
   kanbanStateId String
   kanbanState   KanbanState @relation(fields: [kanbanStateId], references: [id])
+
+  // Add these lines to define the relation with UserProfile
+  userProfileId String? // Foreign key to the UserProfile model
+  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
 }
 
 model KanbanColumn {
