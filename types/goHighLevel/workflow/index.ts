@@ -1,3 +1,13 @@
+// Request body for adding/removing a contact from a workflow
+export type WorkflowRequest = {
+  eventStartTime?: string; // Optional, only needed for adding to a workflow
+};
+
+// Response type for adding/removing a contact from a workflow
+export type WorkflowActionResponse = {
+  succeeded: boolean;
+};
+
 export type Workflow = {
   id: string; // Workflow ID
   name: string; // Name of the workflow
@@ -8,7 +18,7 @@ export type Workflow = {
   locationId: string; // Location ID associated with the workflow
 };
 
-type GetWorkflowResponse = {
+export type GetWorkflowResponse = {
   workflows: Workflow[]; // Array of Workflow objects
 };
 

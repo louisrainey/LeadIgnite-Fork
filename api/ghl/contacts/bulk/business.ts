@@ -1,7 +1,10 @@
-// pages/api/workflows/index.ts
+// pages/api/contacts/bulk/business.ts
 
+import {
+  BulkBusinessRequest,
+  BulkBusinessResponse
+} from '@/types/goHighLevel/bulk/business';
 import { AuthHeaders } from '@/types/goHighLevel/task';
-import { GetWorkflowResponse } from '@/types/goHighLevel/workflow';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const API_BASE_URL = 'https://services.leadconnectorhq.com'; // External API base URL
@@ -10,9 +13,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Validate that the request method is GET
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
+  // Validate that the request method is POST
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', ['POST']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
@@ -37,29 +40,33 @@ export default async function handler(
     Version: version
   };
 
-  // Extract query parameters
-  const { locationId } = req.query;
+  // Validate and parse the request body
+  const { locationId, ids, businessId }: BulkBusinessRequest = req.body;
 
-  // Validate required query parameter
-  if (!locationId || Array.isArray(locationId)) {
+  if (
+    !locationId ||
+    typeof locationId !== 'string' ||
+    !Array.isArray(ids) ||
+    ids.length === 0 ||
+    (typeof businessId !== 'string' && businessId !== null)
+  ) {
     return res.status(400).json({
-      error: 'Missing or invalid query parameter: locationId is required'
+      error:
+        'Invalid or missing request body parameters: locationId, ids, and businessId are required'
     });
   }
 
   try {
-    // Make the API request to get workflows
-    const apiResponse = await fetch(
-      `${API_BASE_URL}/workflows/?locationId=${locationId}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: headers.Authorization,
-          Version: headers.Version,
-          Accept: 'application/json'
-        }
-      }
-    );
+    // Make the API request to add/remove contacts from a business
+    const apiResponse = await fetch(`${API_BASE_URL}/contacts/bulk/business`, {
+      method: 'POST',
+      headers: {
+        Authorization: headers.Authorization,
+        Version: headers.Version,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ locationId, ids, businessId })
+    });
 
     if (!apiResponse.ok) {
       return res.status(apiResponse.status).json({
@@ -67,7 +74,7 @@ export default async function handler(
       });
     }
 
-    const data: GetWorkflowResponse = await apiResponse.json();
+    const data: BulkBusinessResponse = await apiResponse.json();
     return res.status(200).json(data); // 200 OK
   } catch (error) {
     return res.status(500).json({ error: 'Internal Server Error' });

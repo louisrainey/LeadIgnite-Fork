@@ -1,8 +1,8 @@
-// pages/api/workflows/index.ts
+// pages/api/contacts/[contactId]/campaigns/removeAll.ts
 
-import { AuthHeaders } from '@/types/goHighLevel/task';
-import { GetWorkflowResponse } from '@/types/goHighLevel/workflow';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { CampaignActionResponse } from '.';
+import { AuthHeaders } from '../task';
 
 const API_BASE_URL = 'https://services.leadconnectorhq.com'; // External API base URL
 
@@ -10,10 +10,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Validate that the request method is GET
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
+  const { contactId } = req.query;
+
+  // Validate path parameters
+  if (!contactId || Array.isArray(contactId)) {
+    return res.status(400).json({
+      error: 'Missing or invalid path parameter: contactId is required'
+    });
   }
 
   // Extract headers (Authorization and Version)
@@ -37,22 +40,16 @@ export default async function handler(
     Version: version
   };
 
-  // Extract query parameters
-  const { locationId } = req.query;
-
-  // Validate required query parameter
-  if (!locationId || Array.isArray(locationId)) {
-    return res.status(400).json({
-      error: 'Missing or invalid query parameter: locationId is required'
-    });
+  if (req.method !== 'DELETE') {
+    res.setHeader('Allow', ['DELETE']);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
   try {
-    // Make the API request to get workflows
     const apiResponse = await fetch(
-      `${API_BASE_URL}/workflows/?locationId=${locationId}`,
+      `${API_BASE_URL}/contacts/${contactId}/campaigns/removeAll`,
       {
-        method: 'GET',
+        method: 'DELETE',
         headers: {
           Authorization: headers.Authorization,
           Version: headers.Version,
@@ -67,7 +64,7 @@ export default async function handler(
       });
     }
 
-    const data: GetWorkflowResponse = await apiResponse.json();
+    const data: CampaignActionResponse = await apiResponse.json();
     return res.status(200).json(data); // 200 OK
   } catch (error) {
     return res.status(500).json({ error: 'Internal Server Error' });
