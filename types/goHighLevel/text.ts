@@ -77,3 +77,144 @@ export interface TextMessageCampaignAnalytics extends CampaignBase {
   conversationId: string; // Associated conversation ID
   messages: TextMessage[]; // Array of messages in the campaign
 }
+
+export interface SendMessageRequest {
+  type:
+    | 'SMS'
+    | 'Email'
+    | 'WhatsApp'
+    | 'GMB'
+    | 'IG'
+    | 'FB'
+    | 'Custom'
+    | 'Live_Chat';
+  contactId: string;
+  appointmentId?: string;
+  attachments?: string[];
+  emailFrom?: string;
+  emailCc?: string[];
+  emailBcc?: string[];
+  html?: string;
+  message?: string;
+  subject?: string;
+  replyMessageId?: string;
+  templateId?: string;
+  scheduledTimestamp?: number;
+  conversationProviderId?: string;
+  emailTo?: string;
+  emailReplyMode?: 'reply' | 'reply_all';
+}
+
+export interface SendMessageResponse {
+  conversationId: string;
+  emailMessageId?: string;
+  messageId: string;
+  messageIds?: string[];
+  msg?: string;
+}
+
+export interface AddInboundMessageRequest {
+  type:
+    | 'SMS'
+    | 'Email'
+    | 'WhatsApp'
+    | 'GMB'
+    | 'IG'
+    | 'FB'
+    | 'Custom'
+    | 'WebChat'
+    | 'Live_Chat'
+    | 'Call';
+  attachments?: string[];
+  message?: string;
+  conversationId: string;
+  conversationProviderId: string;
+  html?: string;
+  subject?: string;
+  emailFrom?: string;
+  emailTo?: string;
+  emailCc?: string[];
+  emailBcc?: string[];
+  emailMessageId?: string;
+  altId?: string;
+  direction?: 'outbound' | 'inbound';
+  date?: string;
+  call?: {
+    to: string;
+    from: string;
+    status:
+      | 'pending'
+      | 'completed'
+      | 'answered'
+      | 'busy'
+      | 'no-answer'
+      | 'failed'
+      | 'canceled'
+      | 'voicemail';
+  };
+}
+
+export interface CancelScheduledMessageResponse {
+  status: number;
+  message: string;
+}
+export interface AddInboundMessageResponse {
+  success: boolean;
+  conversationId: string;
+  messageId: string;
+  message: string;
+  contactId: string;
+  dateAdded: string;
+  emailMessageId?: string;
+}
+
+export interface AddOutboundCallRequest {
+  type: 'Call';
+  attachments?: string[];
+  conversationId: string;
+  conversationProviderId: string;
+  altId?: string;
+  date?: string;
+  call?: {
+    to: string;
+    from: string;
+    status:
+      | 'pending'
+      | 'completed'
+      | 'answered'
+      | 'busy'
+      | 'no-answer'
+      | 'failed'
+      | 'canceled'
+      | 'voicemail';
+  };
+}
+
+export interface AddOutboundCallResponse {
+  success: boolean;
+  conversationId: string;
+  messageId: string;
+  message: string;
+  contactId: string;
+  dateAdded: string;
+  emailMessageId?: string;
+}
+
+export interface UpdateMessageStatusResponse {
+  conversationId: string;
+  emailMessageId?: string;
+  messageId: string;
+  messageIds?: string[];
+  msg?: string;
+}
+
+export interface UpdateMessageStatusRequest {
+  status: 'read' | 'pending' | 'delivered' | 'failed';
+  error?: {
+    code: string;
+    type: string;
+    message: string;
+  };
+  emailMessageId?: string;
+  recipients?: string[];
+}
