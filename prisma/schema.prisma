@@ -35,6 +35,7 @@ model UserProfile {
     CampaignAnalytics           CampaignAnalytics[]
     LeadList                    LeadList[]
     KanbanState                 KanbanState[]
+    KanbanTask                  KanbanTask[]
 
     @@index([email], name: "idx_email")
 }
@@ -372,7 +373,7 @@ model KanbanState {
 }
 
 model KanbanTask {
-    id            String      @id @default(uuid())
+    id            String       @id @default(uuid())
     title         String
     description   String?
     status        String
@@ -380,7 +381,10 @@ model KanbanTask {
     dueDate       DateTime?
     assignedTo    String?
     kanbanStateId String
-    kanbanState   KanbanState @relation(fields: [kanbanStateId], references: [id])
+    kanbanState   KanbanState  @relation(fields: [kanbanStateId], references: [id])
+    // Add the following lines for the relation to UserProfile
+    userProfileId String? // Foreign key to UserProfile
+    userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
 }
 
 model KanbanColumn {
@@ -396,14 +400,166 @@ enum Priority {
     high
 }
 
+// Enums for statuses, call types, and message types
+enum CampaignStatus {
+    delivered
+    delivering
+    failed
+    pending
+    completed
+    missed
+    queued
+    read
+    unread
+}
+
+enum CallType {
+    inboundPhoneCall
+    outboundPhoneCall
+    webCall
+}
+
+enum MessageType {
+    TYPE_SMS
+    TYPE_EMAIL
+}
+
+// TextCampaign Message Model
+model TextMessage {
+    id             String      @id @default(uuid())
+    type           Int // E.g., 1 for SMS, 3 for EMAIL
+    messageType    MessageType
+    locationId     String
+    contactId      String
+    conversationId String
+    dateAdded      DateTime
+    body           String?
+    direction      String // 'inbound' or 'outbound'
+    status         String // Use enums if needed
+    contentType    String
+    meta           Json?
+    source         String? // E.g., 'workflow', 'bulk_actions'
+    userId         String?
+
+    textCampaignId String
+    textCampaign   TextCampaign @relation(fields: [textCampaignId], references: [id])
+
+    // Relation to attachments
+    attachments TextMessageAttachment[]
+}
+
+model TextMessageAttachment {
+    id            String      @id @default(uuid())
+    url           String // URL or file path of the attachment
+    textMessageId String
+    textMessage   TextMessage @relation(fields: [textMessageId], references: [id])
+}
+
+// Email Campaign Message Model
+model EmailMessage {
+    id               String   @id @default(uuid())
+    altId            String?
+    threadId         String
+    locationId       String
+    contactId        String
+    conversationId   String
+    dateAdded        DateTime
+    subject          String?
+    body             String
+    direction        String // 'inbound' or 'outbound'
+    status           String // Use enums if needed
+    contentType      String
+    provider         String // 'Leadconnector', 'Gmail', etc.
+    from             String
+    replyToMessageId String?
+    source           String?
+
+    emailCampaignId String
+    emailCampaign   EmailCampaign @relation(fields: [emailCampaignId], references: [id])
+
+    // Relations to other models
+    attachments EmailAttachment[]
+    recipients  EmailRecipient[]
+}
+
+model EmailAttachment {
+    id             String       @id @default(uuid())
+    url            String
+    emailMessageId String
+    emailMessage   EmailMessage @relation(fields: [emailMessageId], references: [id])
+}
+
+model EmailRecipient {
+    id             String       @id @default(uuid())
+    email          String
+    type           String // 'to', 'cc', 'bcc'
+    emailMessageId String
+    emailMessage   EmailMessage @relation(fields: [emailMessageId], references: [id])
+}
+
+// Call Campaign Details Model
+model CallDetail {
+    id                 String    @id @default(uuid())
+    orgId              String
+    type               CallType
+    phoneCallProvider  String // 'twilio', 'vonage', 'vapi'
+    phoneCallTransport String // 'sip', 'pstn'
+    status             String // Use enums if needed
+    endedReason        String?
+    messages           Json // Store as JSON for now
+    destination        Json?
+    createdAt          DateTime
+    updatedAt          DateTime
+    startedAt          DateTime?
+    endedAt            DateTime?
+    cost               Float
+    costBreakdown      Json
+    transcript         String
+    recordingUrl       String?
+    stereoRecordingUrl String?
+    artifact           Json?
+    analysis           Json?
+    assistantId        String?
+
+    callCampaignId String
+    callCampaign   CallCampaign @relation(fields: [callCampaignId], references: [id])
+}
+
+// Social Media Campaign Action Model
+model SocialAction {
+    id           String  @id @default(uuid())
+    status       String // 'pending', 'successful', 'failed'
+    attempt      Int
+    successful   Int
+    failed       Int
+    viewLink     String
+    type         String // Store action type as a string (Twitter, LinkedIn, Instagram actions)
+    replyMessage String?
+
+    socialMediaCampaignId String
+    socialMediaCampaign   SocialMediaCampaign @relation(fields: [socialMediaCampaignId], references: [id])
+}
+
+// Campaign Models
 model TextCampaign {
     id                            String                      @id @default(uuid())
     phoneNumber                   String
     message                       String
     sentAt                        DateTime
-    status                        String
+    status                        CampaignStatus // Use enum for status
     companyCampaignsUserProfileId String
     companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
+    name                          String
+    goal                          String?
+    startDate                     DateTime
+    endDate                       DateTime?
+    aiVoice                       String?
+    aiScript                      String?
+    updatedAt                     DateTime?
+    aiAvatarAgent                 String?
+
+    // Relation to messages
+    messages TextMessage[]
 }
 
 model EmailCampaign {
@@ -412,8 +568,42 @@ model EmailCampaign {
     recipientCount                Int
     sentCount                     Int
     deliveredCount                Int
+    status                        CampaignStatus
     companyCampaignsUserProfileId String
     companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
+    name                          String
+    goal                          String?
+    startDate                     DateTime
+    endDate                       DateTime?
+    aiVoice                       String?
+    aiScript                      String?
+    updatedAt                     DateTime?
+    aiAvatarAgent                 String?
+
+    // Relation to emails
+    emails EmailMessage[]
+}
+
+model CallCampaign {
+    id                            String                      @id @default(uuid())
+    callerNumber                  String
+    receiverNumber                String
+    duration                      Int
+    callType                      CallType
+    status                        CampaignStatus
+    companyCampaignsUserProfileId String
+    companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
+    name                          String
+    goal                          String?
+    startDate                     DateTime
+    endDate                       DateTime?
+    aiVoice                       String?
+    aiScript                      String?
+    updatedAt                     DateTime?
+    aiAvatarAgent                 String?
+
+    // Relation to call details
+    callDetails CallDetail[]
 }
 
 model SocialMediaCampaign {
@@ -422,18 +612,20 @@ model SocialMediaCampaign {
     senderHandle                  String
     receiverHandle                String
     hashtags                      Json
+    status                        CampaignStatus
     companyCampaignsUserProfileId String
     companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
-}
+    name                          String
+    goal                          String?
+    startDate                     DateTime
+    endDate                       DateTime?
+    aiVoice                       String?
+    aiScript                      String?
+    updatedAt                     DateTime?
+    aiAvatarAgent                 String?
 
-model CallCampaign {
-    id                            String                      @id @default(uuid())
-    callerNumber                  String
-    receiverNumber                String
-    duration                      Int
-    callType                      String
-    companyCampaignsUserProfileId String
-    companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
+    // Relation to social actions
+    actions SocialAction[]
 }
 
 model AIKnowledgebase {

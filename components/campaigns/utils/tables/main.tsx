@@ -8,16 +8,16 @@ import {
   TableRow
 } from '@/components/ui/table'; // Import ShadCN UI Table components
 import {
-  TextCampaign,
   CallCampaign,
   SocialMediaCampaign,
   CampaignType
 } from '@/types/_dashboard/campaign';
 import { EmailCampaign } from '@/types/goHighLevel/email';
+import { GHLTextMessageCampaign } from '../../../../types/goHighLevel/text';
 
 interface CampaignsTableProps {
   campaigns: Array<
-    TextCampaign | CallCampaign | SocialMediaCampaign | EmailCampaign
+    GHLTextMessageCampaign | CallCampaign | SocialMediaCampaign | EmailCampaign
   >;
   campaignType: CampaignType;
 }
@@ -68,22 +68,26 @@ const getHeadersByType = (campaignType: CampaignType) => {
 
 // Helper function to render table cells dynamically
 const renderTableRowCells = (
-  campaign: TextCampaign | CallCampaign | SocialMediaCampaign | EmailCampaign,
+  campaign:
+    | GHLTextMessageCampaign
+    | CallCampaign
+    | SocialMediaCampaign
+    | EmailCampaign,
   campaignType: CampaignType
 ) => {
   switch (campaignType) {
     case 'text':
-      const textCampaign = campaign as TextCampaign;
+      const textCampaign = campaign as GHLTextMessageCampaign;
       return (
         <>
           <TableCell className="p-2 text-center">
-            {textCampaign.phoneNumber}
+            {textCampaign.messages[0].contactId}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {textCampaign.message}
+            {textCampaign.messages[0].body}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {textCampaign.sentAt.toLocaleString()}
+            {textCampaign.createdAt.toLocaleString()}
           </TableCell>
           <TableCell className="p-2 text-center">
             {textCampaign.status}
