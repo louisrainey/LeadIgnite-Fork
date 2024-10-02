@@ -1,3 +1,50 @@
+import {
+  PropertyIDField,
+  AgentNameField,
+  AgentMainPhoneField,
+  PropertyAltPhotosField,
+  AddressedValueField,
+  PropertyBedsField,
+  BrokerNameField,
+  BrokerPhoneField,
+  BrokerWebsiteField,
+  PropertyCityField,
+  PropertyCountyField,
+  DaysOnMLSField,
+  EstimatedValueField,
+  FipsCodeField,
+  FullBathsField,
+  FullStreetAddressField,
+  HalfBathsField,
+  HoaFeeField,
+  LastSaleDateField,
+  LatitudeField,
+  ListDateField,
+  ListPriceField,
+  LongitudeField,
+  LotSqftField,
+  MLSField,
+  NearbySchoolsField,
+  MLSIDField,
+  NeighborhoodsField,
+  ParkingGarageField,
+  PricePerSqftField,
+  PrimaryPhotoField,
+  PropertyURLField,
+  SoldPriceField,
+  SqftField,
+  StatusField,
+  StoriesField,
+  PropertyStreetField,
+  PropertyStateField,
+  PropertyStyleField,
+  MLSDescriptionField,
+  UnitField,
+  YearBuiltField,
+  PropertyZipCodeField,
+  CustomOptions
+} from './_enums';
+
 export type DndSettings = {
   status: string; // DND status (e.g., "active")
   message: string; // DND message
@@ -78,6 +125,53 @@ export type Contact = {
   lastAttributionSource?: AttributionSource; // Last attribution source (optional)
 };
 
+// Extend the Contact type to include the new custom fields and social profiles
+export type ExtendedContact = Contact & {
+  property_id?: PropertyIDField;
+  agent_name?: AgentNameField;
+  agent_main_phone?: AgentMainPhoneField;
+  property_alt_photos?: PropertyAltPhotosField;
+  addressed_value?: AddressedValueField;
+  property_beds?: PropertyBedsField;
+  broker_name?: BrokerNameField;
+  broker_phone?: BrokerPhoneField;
+  broker_website?: BrokerWebsiteField;
+  property_city?: PropertyCityField;
+  property_county?: PropertyCountyField;
+  days_on_mls?: DaysOnMLSField;
+  estimated_value?: EstimatedValueField;
+  fips_code?: FipsCodeField;
+  full_baths?: FullBathsField;
+  full_street_address?: FullStreetAddressField;
+  half_baths?: HalfBathsField;
+  hoa_fee?: HoaFeeField;
+  last_sale_date?: LastSaleDateField;
+  latitude?: LatitudeField;
+  list_date?: ListDateField;
+  list_price?: ListPriceField;
+  longitude?: LongitudeField;
+  lot_sqft?: LotSqftField;
+  mls?: MLSField;
+  nearby_schools?: NearbySchoolsField;
+  mls_id?: MLSIDField;
+  neighborhoods?: NeighborhoodsField;
+  parking_garage?: ParkingGarageField;
+  price_per_sqft?: PricePerSqftField;
+  primary_photo?: PrimaryPhotoField;
+  property_url?: PropertyURLField;
+  sold_price?: SoldPriceField;
+  sqft?: SqftField;
+  status?: StatusField;
+  stories?: StoriesField;
+  property_street?: PropertyStreetField;
+  property_state?: PropertyStateField;
+  property_style?: PropertyStyleField;
+  mls_description?: MLSDescriptionField;
+  unit?: UnitField;
+  year_built?: YearBuiltField;
+  property_zip_code?: PropertyZipCodeField;
+  customOptions?: CustomOptions;
+};
 export type GetContactResponse = {
   contact: Contact; // Contact object returned in the response
 };

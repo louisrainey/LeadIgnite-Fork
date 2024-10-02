@@ -6,9 +6,10 @@ import {
   campaignStatusesGB
 } from '../../../types/_dashboard/campaign';
 import { APP_TESTING_MODE } from '../../data';
-import { CallStatus, EndedReason } from '@/types/vapiAi/api/calls/create';
+import { CallStatus } from '@/types/vapiAi/api/calls/create';
 import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 import { CallType } from '@prisma/client';
+import { endedReasonValues } from '@/types/vapiAi/api/calls/_enums';
 
 // Helper function to generate a phone number in the +1-XXX-XXX-XXXX format
 const generatePhoneNumber = (): string => {
@@ -32,13 +33,6 @@ const generateGetCallResponse = (): GetCallResponse => {
     'outboundPhoneCall',
     'webCall'
   ];
-  const endReasons: EndedReason[] = [
-    'assistant-error',
-    'assistant-not-found',
-    'customer-busy',
-    'exceeded-max-duration',
-    'manually-canceled'
-  ];
 
   return {
     id: faker.string.uuid(),
@@ -48,7 +42,7 @@ const generateGetCallResponse = (): GetCallResponse => {
     phoneCallTransport: faker.helpers.arrayElement(['sip', 'pstn']),
     status: faker.helpers.arrayElement(callStatuses),
     endedReason: faker.helpers.maybe(
-      () => faker.helpers.arrayElement(endReasons),
+      () => faker.helpers.arrayElement(endedReasonValues),
       {
         probability: 0.3
       }

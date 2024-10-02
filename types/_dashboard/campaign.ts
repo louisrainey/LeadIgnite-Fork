@@ -1,6 +1,7 @@
 import { EmailCampaign } from '../goHighLevel/email';
 import { GHLTextMessageCampaign } from '../goHighLevel/text';
 import { GetCallResponse } from '../vapiAi/api/calls/get';
+import { EndedReason } from '../vapiAi/api/calls/_enums';
 
 // Common fields for all campaigns
 export interface CampaignBase {
