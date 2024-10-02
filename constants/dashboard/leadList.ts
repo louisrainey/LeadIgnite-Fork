@@ -4,7 +4,6 @@ import {
   generateMockLeads,
   staticMockLeadData
 } from '../data';
-import { LeadTypeGlobal } from '@/types/_dashboard/leads';
 import { LeadList } from '@/types/_dashboard/leadList';
 
 export function generateMockLeadLists(count: number): LeadList[] {

@@ -6,11 +6,7 @@
 
 # 🪳 Fix Selects not able to be updated hydration error
 
-# 💾 Set Up Database for nested users, connected with ai usage and skip trace usage, stripe subscriptions
-
 # 💾 Connect Lead search to api
-
-# 💾 Add activity logging hook/ middleware
 
 # 💾 Enable importing user data, into leads , lead data
 
@@ -18,9 +14,9 @@
 
 # 💾 add CRUD functionality Leade Generation | Campaigns | Leads | Lead List Managment | Kanban | Employees
 
-# 💾 Add webhook for updating kanban state
-
 # 💾 Add upgrade functionality
+
+# 💾 Integrate fetching campaigns and cron job to update them
 
 # 💾 Security add update password, enable 2fa
 
@@ -43,6 +39,12 @@
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # 💾 ✅ Add webhook for updating kanban state -->
+
+<!-- # 💾 ✅ Set Up Database for nested users, connected with ai usage and skip trace usage, stripe subscriptions -->
+
+<!-- # 💾 ✅ Add activity logging hook/ middleware -->
 
 <!-- # 💾 ✅  Social Planner , Sub Accounts , Email Text, Oauth -->
 

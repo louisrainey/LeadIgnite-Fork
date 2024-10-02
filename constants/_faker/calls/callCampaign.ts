@@ -1,15 +1,14 @@
 import { faker } from '@faker-js/faker';
-import {
-  CallStatus,
-  CallType,
-  EndedReason,
-  GetCallResponse
-} from '../../../types/vapiAi/api/calls/get';
+
 import {
   CallCampaign,
+  CallInfo,
   campaignStatusesGB
 } from '../../../types/_dashboard/campaign';
 import { APP_TESTING_MODE } from '../../data';
+import { CallStatus, EndedReason } from '@/types/vapiAi/api/calls/create';
+import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
+import { CallType } from '@prisma/client';
 
 // Helper function to generate a phone number in the +1-XXX-XXX-XXXX format
 const generatePhoneNumber = (): string => {
@@ -42,7 +41,7 @@ const generateGetCallResponse = (): GetCallResponse => {
   ];
 
   return {
-    id: faker.string.uuid(), // Fix: use faker.string.uuid() for UUID
+    id: faker.string.uuid(),
     orgId: faker.string.uuid(),
     type: faker.helpers.arrayElement(callTypes),
     phoneCallProvider: faker.helpers.arrayElement(['twilio', 'vonage', 'vapi']),
@@ -50,14 +49,16 @@ const generateGetCallResponse = (): GetCallResponse => {
     status: faker.helpers.arrayElement(callStatuses),
     endedReason: faker.helpers.maybe(
       () => faker.helpers.arrayElement(endReasons),
-      { probability: 0.3 }
+      {
+        probability: 0.3
+      }
     ),
     messages: [], // Assuming no messages for simplicity
     createdAt: faker.date.past().toISOString(),
     updatedAt: faker.date.recent().toISOString(),
     startedAt: faker.date.recent().toISOString(),
     endedAt: faker.date.recent().toISOString(),
-    cost: faker.number.int({ min: 10, max: 100 }), // Fix: use faker.number.int() instead of faker.datatype.number()
+    cost: faker.number.int({ min: 10, max: 100 }),
     costBreakdown: {
       transport: faker.number.int({ min: 1, max: 10 }),
       stt: faker.number.int({ min: 1, max: 10 }),
@@ -82,29 +83,33 @@ const generateGetCallResponse = (): GetCallResponse => {
       successEvaluation: faker.lorem.sentence()
     },
     assistantId: faker.string.uuid(),
-    assistant: undefined // Assuming assistant info is not provided
+    assistant: undefined, // Assuming assistant info is not provided
+    // Add the required monitor property
+    monitor: {
+      listenUrl: faker.internet.url(),
+      controlUrl: faker.internet.url()
+    }
+  };
+};
+
+// Helper function to create CallInfo object
+const generateCallInfo = (campaignId: string): CallInfo => {
+  return {
+    callResponse: generateGetCallResponse(),
+    contactId: faker.string.uuid(), // Generate a unique contact ID
+    campaignId: campaignId // Use the same campaign ID for all calls within a campaign
   };
 };
 
 // Helper function to create CallCampaign data
 const generateCallCampaign = (): CallCampaign => {
-  const callStatuses: CallCampaign['status'][] = [
-    'queued',
-    'delivered',
-    'delivering',
-    'failed',
-    'pending',
-    'completed',
-    'missed',
-    'read',
-    'unread'
-  ];
+  const campaignId = faker.string.uuid(); // Unique campaign ID for this campaign
 
   const callTypes: CallCampaign['callType'][] = ['inbound', 'outbound'];
 
   return {
-    id: faker.string.uuid(), // Fix: use faker.string.uuid() for UUID
-    name: ` ${faker.company.name()}`, // Fix: use faker.company.name() for company name
+    id: campaignId,
+    name: `${faker.company.name()}`,
     goal: faker.lorem.sentence(),
     status: faker.helpers.arrayElement(campaignStatusesGB),
     startDate: faker.date.past().toISOString(),
@@ -113,14 +118,16 @@ const generateCallCampaign = (): CallCampaign => {
     }),
     aiVoice: faker.helpers.maybe(() => faker.person.firstName(), {
       probability: 0.3
-    }), // Fix: use faker.person.firstName() for names
+    }),
     aiScript: faker.lorem.paragraph(),
     aiAvatarAgent: faker.helpers.maybe(() => faker.person.firstName(), {
       probability: 0.2
     }),
-    vapi: Array.from({ length: 10 }, () => generateGetCallResponse()),
-    callerNumber: generatePhoneNumber(), // Using custom generatePhoneNumber function
-    receiverNumber: generatePhoneNumber(), // Using custom generatePhoneNumber function
+    callInformation: Array.from({ length: 10 }, () =>
+      generateCallInfo(campaignId)
+    ), // Use CallInfo objects
+    callerNumber: generatePhoneNumber(),
+    receiverNumber: generatePhoneNumber(),
     duration: faker.number.int({ min: 30, max: 600 }), // Call duration in seconds
     callType: faker.helpers.arrayElement(callTypes),
     timestamp: faker.date.recent(),
@@ -131,8 +138,11 @@ const generateCallCampaign = (): CallCampaign => {
     hungUp: faker.number.int({ min: 0, max: 10 }),
     dead: faker.number.int({ min: 0, max: 5 }),
     wrongNumber: faker.number.int({ min: 0, max: 5 }),
-    inactiveNumber: faker.number.int({ min: 0, max: 5 }),
-    dnc: faker.number.int({ min: 0, max: 5 })
+    inactiveNumbers: faker.number.int({ min: 0, max: 5 }),
+    dnc: faker.number.int({ min: 0, max: 5 }),
+    scriptID: faker.string.uuid(),
+    funnelID: faker.string.uuid(),
+    workflowID: faker.string.uuid()
   };
 };
 

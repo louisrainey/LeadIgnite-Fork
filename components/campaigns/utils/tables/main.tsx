@@ -121,7 +121,7 @@ const renderTableRowCells = (
             {callCampaign.wrongNumber}
           </TableCell>
           <TableCell className="p-2 text-center">
-            {callCampaign.inactiveNumber}
+            {callCampaign.inactiveNumbers}
           </TableCell>
           <TableCell className="p-2 text-center">{callCampaign.dnc}</TableCell>
           <TableCell className="p-2 text-center">

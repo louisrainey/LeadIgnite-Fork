@@ -38,9 +38,15 @@ export const campaignStatusesGB: CampaignBase['status'][] = [
 ];
 // Specific types for Text Campaigns
 
+// CallInfo object to encapsulate call response, contact ID, and campaign ID
+export interface CallInfo {
+  callResponse: GetCallResponse; // The VAPI call response
+  contactId: string; // Unique identifier for the contact associated with the call
+  campaignId: string; // Unique identifier for the campaign associated with the call
+}
 // Specific types for Call Campaigns
 export interface CallCampaign extends CampaignBase {
-  vapi: GetCallResponse[];
+  callInformation: CallInfo[];
   callerNumber: string;
   receiverNumber: string;
   duration: number; // in seconds
@@ -54,7 +60,7 @@ export interface CallCampaign extends CampaignBase {
   hungUp: number;
   dead: number;
   wrongNumber: number;
-  inactiveNumber: number;
+  inactiveNumbers: number;
   dnc: number;
   scriptID?: string;
   funnelID?: string;
