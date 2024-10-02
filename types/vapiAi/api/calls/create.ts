@@ -26,12 +26,6 @@ export type CallStatus =
   | 'ended';
 
 // Enum for call end reasons
-export type EndedReason =
-  | 'assistant-error'
-  | 'assistant-not-found'
-  | 'customer-busy'
-  | 'exceeded-max-duration'
-  | 'manually-canceled';
 
 // Type for creating a call request
 export interface CreateCallRequest {

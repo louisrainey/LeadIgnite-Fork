@@ -1,13 +1,9 @@
 // Reusing the assistant types from CreateCallRequest
 
 import { CampaignBase } from '@/types/_dashboard/campaign';
-import {
-  Assistant,
-  CallStatus,
-  ConversationMessage,
-  EndedReason
-} from './create';
+import { Assistant, CallStatus, ConversationMessage } from './create';
 import { CallType } from '@prisma/client';
+import { EndedReason } from './_enums';
 
 // Add the other reasons as specified...
 
