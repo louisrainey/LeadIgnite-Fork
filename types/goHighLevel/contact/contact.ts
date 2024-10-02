@@ -173,7 +173,7 @@ export type ExtendedContact = Contact & {
   customOptions?: CustomOptions;
 };
 export type GetContactResponse = {
-  contact: Contact; // Contact object returned in the response
+  contact: Contact | ExtendedContact; // Contact object returned in the response
 };
 
 export type GetContactPathParams = {
@@ -270,5 +270,104 @@ export const exampleGetContactResponse: GetContactResponse = {
       medium: 'survey',
       mediumId: 'FglfHAn30PRwsZVyQlKp'
     }
+  }
+};
+
+export const exampleExtendedContact: ExtendedContact = {
+  ...exampleGetContactResponse.contact, // Spread the original contact object
+
+  // Custom Fields
+  property_id: { optionName: 'PROP-12345', uniqueKey: 'property_id' },
+  agent_name: { optionName: 'John Doe', uniqueKey: 'agent_name' },
+  agent_main_phone: {
+    optionName: '+1234567890',
+    uniqueKey: 'agent_main_phone'
+  },
+  property_alt_photos: {
+    optionName: [
+      'https://example.com/photo1.jpg',
+      'https://example.com/photo2.jpg'
+    ],
+    uniqueKey: 'property_alt_photos'
+  },
+  addressed_value: { optionName: 500000, uniqueKey: 'addressed_value' },
+  property_beds: { optionName: 4, uniqueKey: 'property_beds' },
+  broker_name: { optionName: 'Best Real Estate', uniqueKey: 'broker_name' },
+  broker_phone: { optionName: '+1987654321', uniqueKey: 'broker_phone' },
+  broker_website: {
+    optionName: 'https://brokerwebsite.com',
+    uniqueKey: 'broker_website'
+  },
+  property_city: { optionName: 'Sample City', uniqueKey: 'property_city' },
+  property_county: {
+    optionName: 'Sample County',
+    uniqueKey: 'property_county'
+  },
+  days_on_mls: { optionName: 30, uniqueKey: 'days_on_mls' },
+  estimated_value: { optionName: 550000, uniqueKey: 'estimated_value' },
+  fips_code: { optionName: 12345, uniqueKey: 'fips_code' },
+  full_baths: { optionName: 2, uniqueKey: 'full_baths' },
+  full_street_address: {
+    optionName: '1234 Elm St',
+    uniqueKey: 'full_street_address'
+  },
+  half_baths: { optionName: 1, uniqueKey: 'half_baths' },
+  hoa_fee: { optionName: 150, uniqueKey: 'hoa_fee' },
+  last_sale_date: {
+    optionName: '2023-08-01T00:00:00.000Z',
+    uniqueKey: 'last_sale_date'
+  },
+  latitude: { optionName: 40.7128, uniqueKey: 'latitude' },
+  list_date: { optionName: '2023-07-01T00:00:00.000Z', uniqueKey: 'list_date' },
+  list_price: { optionName: 600000, uniqueKey: 'list_price' },
+  longitude: { optionName: -74.006, uniqueKey: 'longitude' },
+  lot_sqft: { optionName: 10000, uniqueKey: 'lot_sqft' },
+  mls: { optionName: 'MLS123456', uniqueKey: 'mls' },
+  nearby_schools: {
+    optionName: ['School A', 'School B'],
+    uniqueKey: 'nearby_schools'
+  },
+  mls_id: { optionName: '123-MLS-ID', uniqueKey: 'mls_id' },
+  neighborhoods: {
+    optionName: ['Downtown', 'Uptown'],
+    uniqueKey: 'neighborhoods'
+  },
+  parking_garage: { optionName: 'Yes', uniqueKey: 'parking_garage' },
+  price_per_sqft: { optionName: 200, uniqueKey: 'price_per_sqft' },
+  primary_photo: {
+    optionName: 'https://example.com/primary_photo.jpg',
+    uniqueKey: 'primary_photo'
+  },
+  property_url: {
+    optionName: 'https://propertywebsite.com',
+    uniqueKey: 'property_url'
+  },
+  sold_price: { optionName: 590000, uniqueKey: 'sold_price' },
+  sqft: { optionName: 3000, uniqueKey: 'sqft' },
+  status: { optionName: 'For Sale', uniqueKey: 'status' },
+  stories: { optionName: 2, uniqueKey: 'stories' },
+  property_street: { optionName: '1234 Elm St', uniqueKey: 'property_street' },
+  property_state: { optionName: 'NY', uniqueKey: 'property_state' },
+  property_style: { optionName: 'Colonial', uniqueKey: 'property_style' },
+  mls_description: {
+    optionName: 'A beautiful colonial-style home...',
+    uniqueKey: 'mls_description'
+  },
+  unit: { optionName: 'Unit 1', uniqueKey: 'unit' },
+  year_built: { optionName: 1990, uniqueKey: 'year_built' },
+  property_zip_code: { optionName: 12345, uniqueKey: 'property_zip_code' },
+
+  // Custom Options (nested)
+  customOptions: {
+    facebook_profile: {
+      optionName: 'https://facebook.com/sampleprofile',
+      uniqueKey: 'facebook_profile'
+    },
+    instagram_profile: {
+      optionName: 'https://instagram.com/sampleprofile',
+      uniqueKey: 'instagram_profile'
+    },
+    custom_dnd: { optionName: 'Email', uniqueKey: 'custom_dnd' },
+    call_outcome: { optionName: 'voicemail', uniqueKey: 'call_outcome' }
   }
 };

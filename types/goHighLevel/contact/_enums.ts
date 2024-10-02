@@ -1,9 +1,23 @@
 import { EndedReason } from '@/types/vapiAi/api/calls/_enums';
 
-// Define a generic custom field type
+// Define a generic custom field type for receiving custom fields in the response
+export type ContactCustomField = {
+  id: string; // Unique ID of the custom field
+  value: any; // The value of the custom field (can be string, number, etc.)
+};
+
+// Define a type for custom fields when updating
+export type UpdateCustomField = {
+  id: string; // Unique ID of the custom field
+  key: string; // The key or name of the custom field
+  field_value: any; // The new value for the custom field
+};
+
+// Define a generic custom field type for specific custom fields in ExtendedContact
 export type CustomField<T> = {
-  optionName: T; // Value of the field
-  uniqueKey: string; // Unique key associated with the field
+  optionName: T; // Value of the field (this can be used for display purposes)
+  uniqueKey: string; // Unique key associated with the custom field (same as in GHL)
+  id?: string; // Optional ID for updating existing fields
 };
 
 // Define custom field types for each specific field with their respective unique keys
@@ -118,6 +132,7 @@ export type CallOutcomeOption = {
   uniqueKey: 'call_outcome';
 };
 
+// Define the structure for custom options in contacts
 export type CustomOptions = {
   facebook_profile?: FacebookProfileField;
   instagram_profile?: InstagramProfileField;
