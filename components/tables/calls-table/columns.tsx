@@ -1,6 +1,5 @@
 import { PlayButtonSkip } from '@/components/reusables/calls/playButton';
-import { CallCampaign } from '@/types/_dashboard/campaign';
-import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
+import { CallCampaign, CallInfo } from '@/types/_dashboard/campaign';
 import { ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -10,11 +9,11 @@ const statusColor: Record<CallCampaign['status'], string> = {
   completed: 'bg-blue-100 text-blue-600',
   failed: 'bg-red-100 text-red-600',
   missed: 'bg-yellow-100 text-yellow-600',
-  delivered: 'bg-teal-100 text-teal-600', // Example color for "delivered"
-  pending: 'bg-orange-100 text-orange-600', // Example color for "pending"
-  queued: 'bg-gray-100 text-gray-600', // Example color for "queued"
-  read: 'bg-indigo-100 text-indigo-600', // Example color for "read"
-  unread: 'bg-purple-100 text-purple-600' // Example color for "unread"
+  delivered: 'bg-teal-100 text-teal-600',
+  pending: 'bg-orange-100 text-orange-600',
+  queued: 'bg-gray-100 text-gray-600',
+  read: 'bg-indigo-100 text-indigo-600',
+  unread: 'bg-purple-100 text-purple-600'
 };
 
 // Adjust the column structure to match the table design
@@ -79,9 +78,9 @@ export const callCampaignColumns: ColumnDef<CallCampaign>[] = [
     cell: ({ row }) => <span>{row.original.wrongNumber}</span>
   },
   {
-    accessorKey: 'inactiveNumber',
+    accessorKey: 'inactiveNumbers',
     header: 'Inactive #',
-    cell: ({ row }) => <span>{row.original.inactiveNumber}</span>
+    cell: ({ row }) => <span>{row.original.inactiveNumbers}</span>
   },
   {
     accessorKey: 'dnc',
@@ -114,8 +113,11 @@ export const callCampaignColumns: ColumnDef<CallCampaign>[] = [
     accessorKey: 'callRecording',
     header: 'Playback',
     cell: ({ row }) => {
-      if (row.original.vapi && row.original.vapi.length > 0) {
-        return <PlaybackCell vapi={row.original.vapi} />;
+      if (
+        row.original.callInformation &&
+        row.original.callInformation.length > 0
+      ) {
+        return <PlaybackCell callInformation={row.original.callInformation} />;
       } else {
         return 'No Calls';
       }
@@ -124,14 +126,14 @@ export const callCampaignColumns: ColumnDef<CallCampaign>[] = [
 ];
 
 interface PlaybackCellProps {
-  vapi: GetCallResponse[];
+  callInformation: CallInfo[];
 }
 
-export const PlaybackCell = ({ vapi }: PlaybackCellProps) => {
+export const PlaybackCell = ({ callInformation }: PlaybackCellProps) => {
   const [currentCallIndex, setCurrentCallIndex] = useState(0);
 
   const handleNextCall = () => {
-    if (currentCallIndex < vapi.length - 1) {
+    if (currentCallIndex < callInformation.length - 1) {
       setCurrentCallIndex(currentCallIndex + 1); // Move to the next call
     }
   };
@@ -142,7 +144,7 @@ export const PlaybackCell = ({ vapi }: PlaybackCellProps) => {
     }
   };
 
-  const currentCall = vapi[currentCallIndex]; // Access the current call
+  const currentCall = callInformation[currentCallIndex].callResponse; // Access the current call's response
   const title = currentCall.id;
   const recordingUrl = currentCall.recordingUrl;
   const startedAt = currentCall.startedAt
@@ -161,7 +163,7 @@ export const PlaybackCell = ({ vapi }: PlaybackCellProps) => {
         endTime={endedAt}
         onNextCall={handleNextCall}
         onPrevCall={handlePrevCall}
-        isNextDisabled={currentCallIndex >= vapi.length - 1}
+        isNextDisabled={currentCallIndex >= callInformation.length - 1}
         isPrevDisabled={currentCallIndex <= 0}
       />
     );

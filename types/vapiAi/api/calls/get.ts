@@ -1,26 +1,14 @@
 // Reusing the assistant types from CreateCallRequest
 
 import { CampaignBase } from '@/types/_dashboard/campaign';
-import { Assistant, ConversationMessage } from './create';
+import {
+  Assistant,
+  CallStatus,
+  ConversationMessage,
+  EndedReason
+} from './create';
+import { CallType } from '@prisma/client';
 
-// Call types
-export type CallType = 'inboundPhoneCall' | 'outboundPhoneCall' | 'webCall';
-
-// Available call statuses
-export type CallStatus =
-  | 'queued'
-  | 'ringing'
-  | 'in-progress'
-  | 'forwarding'
-  | 'ended';
-
-// Call end reasons
-export type EndedReason =
-  | 'assistant-error'
-  | 'assistant-not-found'
-  | 'customer-busy'
-  | 'exceeded-max-duration'
-  | 'manually-canceled';
 // Add the other reasons as specified...
 
 // Cost breakdown of the call
@@ -59,6 +47,8 @@ export interface GetCallResponse {
   endedReason?: EndedReason; // Why the call ended (optional)
   messages: ConversationMessage[]; // Messages spoken during the call
   destination?: Destination; // Transfer destination
+  monitor: Monitor;
+
   createdAt: string; // ISO date-time of call creation
   updatedAt: string; // ISO date-time of last update
   startedAt?: string; // ISO date-time of when the call started
@@ -74,6 +64,11 @@ export interface GetCallResponse {
   assistant?: Assistant; // Assistant data (reusing existing type)
 }
 
+export interface ghlCallResponseo extends GetCallResponse {
+  contactId: string; // Unique identifier for the contact associated with the call
+  campaignId: string; // Unique identifier for the campaign associated with the call
+}
+
 // Destination object
 export interface Destination {
   type: 'number'; // Type of the destination
@@ -83,6 +78,11 @@ export interface Destination {
   message: string; // Message (optional)
   description: string; // Description (optional)
 }
+
+export type Monitor = {
+  listenUrl: string;
+  controlUrl: string;
+};
 
 export interface CallCampaignAnalytics extends CampaignBase {
   id: string; // Campaign ID
