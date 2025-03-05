@@ -1,5 +1,5 @@
 // lib/stores/kanbanStore.ts
-import create from 'zustand';
+import { create } from 'zustand';
 
 // Define the type for a single quote
 interface Quote {

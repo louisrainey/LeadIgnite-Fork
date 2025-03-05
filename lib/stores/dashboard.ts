@@ -1,6 +1,6 @@
 // stores/useModalStore.ts
 
-import create from 'zustand';
+import { create } from 'zustand';
 
 interface ModalState {
   isUsageModalOpen: boolean;
