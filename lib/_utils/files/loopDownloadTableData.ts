@@ -1,5 +1,6 @@
 import {
   CallCampaign,
+  CallInfo,
   SocialAction,
   SocialMediaCampaign
 } from '@/types/_dashboard/campaign';
@@ -168,12 +169,12 @@ export async function exportCallCampaignsToExcel(
   }));
 
   // Process each call campaign and create rows for each call response
+  // Process each call campaign and create rows for each call response
   data.forEach((campaign) => {
-    campaign.vapi.forEach((callResponse: GetCallResponse) => {
+    campaign.callInformation.forEach(({ callResponse }: CallInfo) => {
       const rowData = columns.reduce(
         (acc, col) => {
           if (col.accessorKey === 'status') {
-            // Get the campaign status from the main campaign object, not the individual call
             acc[col.accessorKey] = campaign.status || 'No Status';
           } else if (col.accessorKey === 'createdAt') {
             acc[col.accessorKey] = new Date(
@@ -198,15 +199,10 @@ export async function exportCallCampaignsToExcel(
           } else if (col.accessorKey === 'phoneCallProvider') {
             acc[col.accessorKey] = callResponse.phoneCallProvider;
           } else if (col.accessorKey === 'transcript') {
-            // Get the actual transcript text if available, else return 'No Transcript'
             acc[col.accessorKey] = callResponse.transcript || 'No Transcript';
           } else if (col.accessorKey === 'recordingUrl') {
-            // Get the actual recording URL if available, else return 'No Recording'
-            acc[col.accessorKey] = callResponse.recordingUrl
-              ? callResponse.recordingUrl
-              : 'No Recording';
+            acc[col.accessorKey] = callResponse.recordingUrl || 'No Recording';
           } else {
-            // Handle additional fields from the campaign object itself
             acc[col.accessorKey] =
               campaign[col.accessorKey as keyof CallCampaign] || '';
           }
@@ -215,7 +211,7 @@ export async function exportCallCampaignsToExcel(
         {} as Record<string, any>
       );
 
-      worksheet.addRow(rowData); // Add the row for the current call response
+      worksheet.addRow(rowData);
     });
   });
 

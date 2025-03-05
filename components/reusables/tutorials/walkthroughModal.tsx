@@ -82,7 +82,7 @@ const PropertySearchModal: FC<PropertySearchModalProps> = ({
           {/* Conditionally render the Terms of Use clause */}
           {termsUrl && (
             <p className="mt-4 text-sm text-gray-400 dark:text-gray-400">
-              The use of the OttoLeads Property Search is subject to our{' '}
+              The use of the Lead ignite Property Search is subject to our{' '}
               <a
                 href={termsUrl}
                 className="text-blue-500 underline dark:text-blue-400"

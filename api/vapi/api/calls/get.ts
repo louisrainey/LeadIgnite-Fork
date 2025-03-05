@@ -47,6 +47,10 @@ export const exampleCallResponse: GetCallResponse = {
   phoneCallTransport: 'sip',
   status: 'ended',
   endedReason: 'assistant-error',
+  monitor: {
+    listenUrl: 'https://example.com/listen',
+    controlUrl: 'https://example.com/control'
+  },
   messages: [
     {
       role: 'user',
