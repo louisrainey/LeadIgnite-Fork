@@ -1,6 +1,6 @@
 datasource db {
-    provider = "mysql"
-    url      = env("LOCAL_DATABASE_URL")
+    provider = "postgresql" // or other supported DB providers
+    url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -10,13 +10,15 @@ generator client {
 model UserProfile {
     id                          String                        @id @default(uuid())
     uniqueIdentifier            String                        @unique
-    subscription                UserProfileSubscription?      @relation(name: "UserProfileToSubscription")
+    subscription                UserProfileSubscription?      @relation(name: "UserProfileToSubscription") // Removed onDelete from here
     firstName                   String
     lastName                    String
     email                       String                        @unique
     country                     String
     city                        String
     personalNum                 String
+    createdAt                   DateTime                      @default(now())
+    updatedAt                   DateTime                      @updatedAt
     connectedAccounts           ConnectedAccounts?
     leadPreferences             LeadPreferences?
     savedSearches               SavedSearch[]
@@ -38,68 +40,45 @@ model UserProfile {
     KanbanTask                  KanbanTask[]
 
     @@index([email], name: "idx_email")
+    @@index([uniqueIdentifier], name: "idx_uniqueIdentifier")
 }
 
 model ConnectedAccounts {
-    id            String              @id @default(uuid())
-    facebook      FacebookOAuthData?  @relation(fields: [facebookId], references: [id])
-    facebookId    String?
-    instagram     InstagramOAuthData? @relation(fields: [instagramId], references: [id])
-    instagramId   String?
-    linkedin      LinkedInOAuthData?  @relation(fields: [linkedinId], references: [id])
-    linkedinId    String?
-    twitter       TwitterOAuthData?   @relation(fields: [twitterId], references: [id])
-    twitterId     String?
-    userProfileId String              @unique
-    userProfile   UserProfile         @relation(fields: [userProfileId], references: [id])
+    id            String       @id @default(uuid())
+    userProfileId String?      @unique
+    userProfile   UserProfile? @relation(fields: [userProfileId], references: [id], onDelete: SetNull)
+
+    oauthData OAuthData[] @relation("OAuthDataConnectedAccounts")
+
+    @@index([userProfileId], name: "idx_connected_accounts_user")
 }
 
-model FacebookOAuthData {
-    id                String              @id @default(uuid())
-    profileId         String
-    pageId            String?
-    accessToken       String
-    refreshToken      String?
-    expiresIn         Int
-    tokenType         String
-    scope             String
-    ConnectedAccounts ConnectedAccounts[]
+model OAuthData {
+    id              String        @id @default(uuid())
+    provider        OAuthProvider
+    userId          String
+    username        String?
+    pageId          String?
+    companyId       String?
+    handle          String?
+    accessToken     String
+    refreshToken    String?
+    expiresIn       Int
+    tokenType       String
+    scope           String?
+    lastRefreshedAt DateTime?
+
+    connectedAccountId String
+    connectedAccounts  ConnectedAccounts @relation(fields: [connectedAccountId], references: [id], name: "OAuthDataConnectedAccounts")
+
+    @@index([provider, userId], name: "idx_oauth_provider_user")
 }
 
-model InstagramOAuthData {
-    id                String              @id @default(uuid())
-    userId            String
-    username          String
-    accessToken       String
-    refreshToken      String?
-    expiresIn         Int
-    tokenType         String
-    scope             String
-    ConnectedAccounts ConnectedAccounts[]
-}
-
-model LinkedInOAuthData {
-    id                String              @id @default(uuid())
-    userId            String
-    companyId         String?
-    accessToken       String
-    refreshToken      String?
-    expiresIn         Int
-    tokenType         String
-    scope             String
-    ConnectedAccounts ConnectedAccounts[]
-}
-
-model TwitterOAuthData {
-    id                String              @id @default(uuid())
-    userId            String
-    handle            String
-    accessToken       String
-    refreshToken      String?
-    expiresIn         Int
-    tokenType         String
-    scope             String
-    ConnectedAccounts ConnectedAccounts[]
+enum OAuthProvider {
+    FACEBOOK
+    INSTAGRAM
+    LINKEDIN
+    TWITTER
 }
 
 model UserProfileSubscription {
@@ -116,7 +95,7 @@ model UserProfileSubscription {
     createdAt            DateTime
     planDetails          String
     userProfileId        String             @unique
-    userProfile          UserProfile        @relation(fields: [userProfileId], references: [id], name: "UserProfileToSubscription", map: "FK_UserProfile_Subscription")
+    userProfile          UserProfile        @relation(fields: [userProfileId], references: [id], name: "UserProfileToSubscription", map: "FK_UserProfile_Subscription", onDelete: Cascade)
 
     @@index([userProfileId], name: "idx_userProfile_subscription")
 }
@@ -179,9 +158,11 @@ model NotificationPreferences {
     smsNotifications         Boolean
     notifyForNewLeads        Boolean
     notifyForCampaignUpdates Boolean
-    userProfile              UserProfile  @relation(fields: [userProfileId], references: [id])
+    userProfile              UserProfile  @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
     userProfileId            String       @unique
     TeamMember               TeamMember[]
+
+    @@index([userProfileId], name: "idx_notifications_user")
 }
 
 model TeamMember {
@@ -236,11 +217,13 @@ model TaskActivity {
 
 model SecuritySettings {
     id                String      @id @default(uuid())
-    password          String
+    passwordHash      String
     lastLoginTime     DateTime?
     passwordUpdatedAt DateTime?
     userProfileId     String      @unique
-    userProfile       UserProfile @relation(fields: [userProfileId], references: [id])
+    userProfile       UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+    @@index([userProfileId], name: "idx_security_user")
 }
 
 model CompanyInfo {
@@ -285,9 +268,13 @@ model CampaignAnalytics {
     bouncedCount   Int
     failedCount    Int
     userProfileId  String
-    userProfile    UserProfile  @relation(fields: [userProfileId], references: [id])
-    CompanyInfo    CompanyInfo? @relation(fields: [companyInfoId], references: [id])
+    userProfile    UserProfile  @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    CompanyInfo    CompanyInfo? @relation(fields: [companyInfoId], references: [id], onDelete: Cascade)
     companyInfoId  String?
+
+    @@index([campaignId], name: "idx_campaignId")
+    @@index([userProfileId], name: "idx_campaign_user")
+    @@index([type], name: "idx_campaign_type") // New index added
 }
 
 enum CampaignType {
@@ -308,15 +295,20 @@ model LeadTypeGlobal {
     bath          Int
     sqft          Int
     status        LeadStatus
+    leadScore     Int          @default(0)
     followUp      DateTime?
     lastUpdate    DateTime
     address1      String
     campaignID    String?
     socials       SocialLinks?
-    companyInfo   CompanyInfo  @relation(fields: [companyInfoId], references: [id])
+    companyInfo   CompanyInfo  @relation(fields: [companyInfoId], references: [id], onDelete: Cascade)
     companyInfoId String
     LeadList      LeadList?    @relation(fields: [leadListId], references: [id])
     leadListId    String?
+
+    @@index([companyInfoId], name: "idx_companyInfoId")
+    @@index([email], name: "idx_leadEmail")
+    @@index([leadScore], name: "idx_leadScore") // New index added
 }
 
 enum LeadStatus {
@@ -333,7 +325,9 @@ model SocialLinks {
     instagram String?
     twitter   String?
     leadId    String         @unique
-    lead      LeadTypeGlobal @relation(fields: [leadId], references: [id])
+    lead      LeadTypeGlobal @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+    @@index([leadId], name: "idx_social_leadId")
 }
 
 model LeadList {
@@ -347,10 +341,12 @@ model LeadList {
     socials        SocialsCount     @relation(fields: [socialsCountId], references: [id])
     emails         Int
     userProfileId  String
-    userProfile    UserProfile      @relation(fields: [userProfileId], references: [id])
-    CompanyInfo    CompanyInfo?     @relation(fields: [companyInfoId], references: [id])
+    userProfile    UserProfile      @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    CompanyInfo    CompanyInfo?     @relation(fields: [companyInfoId], references: [id], onDelete: Cascade)
     companyInfoId  String?
     socialsCountId String
+
+    @@index([userProfileId], name: "idx_leadlist_user")
 }
 
 model SocialsCount {
@@ -426,7 +422,7 @@ enum MessageType {
 
 // TextCampaign Message Model
 model TextMessage {
-    id             String      @id @default(uuid())
+    id             String       @id @default(uuid())
     type           Int // E.g., 1 for SMS, 3 for EMAIL
     messageType    MessageType
     locationId     String
@@ -440,7 +436,6 @@ model TextMessage {
     meta           Json?
     source         String? // E.g., 'workflow', 'bulk_actions'
     userId         String?
-
     textCampaignId String
     textCampaign   TextCampaign @relation(fields: [textCampaignId], references: [id])
 
