@@ -8,15 +8,15 @@ export const SubscriptionFeatures = [
     icon: PhoneCall
   },
   {
-    title: 'Human vs OttoLeads.',
+    title: 'Human vs Lead ignite.',
     subtitle:
-      'It takes a human on a dialer 3 years to do what OttoLeads can do in one day. Let us do the heavy lifting while you focus on closing deals.',
+      'It takes a human on a dialer 3 years to do what Lead ignite can do in one day. Let us do the heavy lifting while you focus on closing deals.',
     icon: UserCheck
   },
   {
     title: 'Scale rapidly and dominate your market.',
     subtitle:
-      'Scaling your business used to take years; with OttoLeads, you can scale in months.',
+      'Scaling your business used to take years; with Lead ignite, you can scale in months.',
     icon: TrendingUp
   }
 ];

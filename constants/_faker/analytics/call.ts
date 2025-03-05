@@ -1,6 +1,5 @@
 import {
   CallStatus,
-  EndedReason,
   ConversationMessage,
   Assistant,
   TranscriberProvider,
@@ -9,13 +8,14 @@ import {
 } from '@/types/vapiAi/api/calls/create';
 import {
   CallCampaignAnalytics,
-  CallType,
   CostBreakdown,
   ArtifactPlan,
   AnalysisPlan
 } from '@/types/vapiAi/api/calls/get';
 import { faker } from '@faker-js/faker';
 import { APP_TESTING_MODE } from '../../data';
+import { EndedReason } from '@/types/vapiAi/api/calls/_enums';
+import { CallType } from '@prisma/client';
 
 // Mock Data for CallCampaignAnalytics
 const generateMockCallCampaignAnalytics = (): CallCampaignAnalytics => {

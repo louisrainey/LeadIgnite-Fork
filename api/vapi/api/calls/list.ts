@@ -53,6 +53,10 @@ export const exampleListCallsResponse: ListCallsResponse = {
       id: 'call-id-001',
       orgId: 'org-id-001',
       type: 'inboundPhoneCall',
+      monitor: {
+        listenUrl: 'https://example.com/listen',
+        controlUrl: 'https://example.com/control'
+      },
       phoneCallProvider: 'twilio',
       phoneCallTransport: 'sip',
       status: 'ended',

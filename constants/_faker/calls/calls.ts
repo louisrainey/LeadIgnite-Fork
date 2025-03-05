@@ -1,10 +1,5 @@
 import { faker } from '@faker-js/faker';
-import {
-  GetCallResponse,
-  CallType,
-  CallStatus,
-  EndedReason
-} from '@/types/vapiAi/api/calls/get';
+import { GetCallResponse } from '@/types/vapiAi/api/calls/get';
 import {
   AssistantModel,
   FirstMessageMode,
@@ -29,10 +24,13 @@ import {
   ChunkPlan,
   FormatPlan,
   Voice,
-  ToolMessagesArray
+  ToolMessagesArray,
+  CallStatus
 } from '../../../types/vapiAi/api/calls/create';
 // import { number, string } from 'zod';
 import { APP_TESTING_MODE } from '@/constants/data';
+import { EndedReason } from '@/types/vapiAi/api/calls/_enums';
+import { CallType } from '@prisma/client';
 
 // Assuming tools have a basic structure with ids and names
 export const generateTools = () => [
@@ -342,6 +340,10 @@ export const generateCallData = (): GetCallResponse[] => {
       id: faker.string.uuid(),
       orgId: faker.string.uuid(),
       type,
+      monitor: {
+        listenUrl: 'https://example.com/listen',
+        controlUrl: 'https://example.com/control'
+      },
       phoneCallProvider: faker.helpers.arrayElement([
         'twilio',
         'vonage',
