@@ -1,74 +1,78 @@
+// Import dependencies
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import 'https://deno.land/x/dotenv/load.ts';
 
-// Environment Variables
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-
-// Initialize Supabase client
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-
 // Define CORS Headers
-const headers: Record<string, string> = {
+const corsHeaders: Record<string, string> = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Methods': 'OPTIONS, POST',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Credentials': 'true'
 };
 
-Deno.serve(async (req) => {
-  console.log('📢 Function triggered!');
+// ✅ Use `SUPABASE_SERVICE_ROLE_KEY` instead of `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
+// ✅ Ensure environment variables are loaded
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  console.error('❌ Missing required environment variables.');
+  throw new Error('Missing Supabase environment variables.');
+}
+
+// ✅ Correct Supabase client initialization
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+serve(async (req) => {
+  console.log('📢 Login function triggered:', req.method);
+
+  // ✅ Handle CORS Preflight Request (OPTIONS)
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers });
+    console.log('📢 Handling OPTIONS request for CORS');
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   try {
     const { email, password } = await req.json();
-    console.log('📢 Received request payload:', { email });
+    console.log('📢 Received request:', { email });
 
     if (!email || !password) {
       console.log('❌ Missing email or password');
       return new Response(
         JSON.stringify({ error: 'Email and password are required.' }),
-        { status: 400, headers }
+        { status: 400, headers: corsHeaders }
       );
     }
 
-    // Sign up the user with Supabase Auth (enforce email confirmation)
-    console.log('📢 Creating new user in auth.users...');
-    const { data, error } = await supabase.auth.admin.createUser({
+    // ✅ Authenticate User via Supabase Auth
+    console.log('📢 Authenticating user...');
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password,
-      email_confirm: true // Requires user to verify email before login
+      password
     });
 
     if (error) {
-      console.error('❌ Error creating user:', error);
+      console.error('❌ Authentication failed:', error);
       return new Response(JSON.stringify({ error: error.message }), {
-        status: 400,
-        headers
+        status: 401,
+        headers: corsHeaders
       });
     }
 
-    console.log('✅ User successfully created:', data.user?.id);
-    console.log(
-      '🔄 UserProfile will be auto-created via the database trigger.'
-    );
+    console.log('✅ Login successful for user:', data.user?.id);
 
+    // ✅ Return user session token
     return new Response(
-      JSON.stringify({
-        message: 'Signup successful! Check your email to verify your account.'
-      }),
-      { status: 200, headers }
+      JSON.stringify({ token: data.session?.access_token, user: data.user }),
+      { status: 200, headers: corsHeaders }
     );
   } catch (err) {
-    console.error('❌ Unexpected Signup Error:', err);
+    console.error('❌ Unexpected Login Error:', err);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
-      headers
+      headers: corsHeaders
     });
   }
 });
