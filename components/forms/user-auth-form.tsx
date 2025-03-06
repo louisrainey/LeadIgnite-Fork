@@ -14,6 +14,8 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { LinkedInLoginButton } from 'react-social-login-buttons';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -27,7 +29,8 @@ type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSignUp, setIsSignUp] = useState(false); // Toggle between Login & Signup
+  const [isSignUp, setIsSignUp] = useState(false);
+  const supabase = createClientComponentClient(); // Supabase client
 
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
@@ -41,8 +44,6 @@ export default function UserAuthForm() {
     const endpoint = isSignUp
       ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/signup`
       : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/login`;
-
-    console.log('📢 API Request:', endpoint);
 
     setLoading(true);
     setError(null);
@@ -61,17 +62,41 @@ export default function UserAuthForm() {
       if (!response.ok)
         throw new Error(result.error || 'Authentication failed');
 
-      console.log(`${isSignUp ? 'Signup' : 'Login'} successful!`, result);
       alert(
         `${
           isSignUp
-            ? 'Signup successful! Check your email to verify your account.'
+            ? 'Signup successful! Check your email.'
             : 'Login successful!'
         }`
       );
     } catch (err) {
       setError(err.message);
       console.error('Authentication Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLinkedInLogin = async () => {
+    setLoading(true);
+    try {
+      console.log('📢 Initiating LinkedIn Login');
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'linkedin_oidc',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`, // ✅ Ensure correct redirect URL
+          skipBrowserRedirect: false, // ✅ Ensure Supabase handles redirection
+          scopes: 'openid profile email', // ✅ Ensure LinkedIn scopes are correct
+          pkce: true // ✅ Enable PKCE flow
+        }
+      });
+
+      if (error) throw error;
+      console.log('✅ LinkedIn Login Data:', data);
+    } catch (err) {
+      setError(err.message);
+      console.error('❌ LinkedIn Login Error:', err);
     } finally {
       setLoading(false);
     }
@@ -132,6 +157,13 @@ export default function UserAuthForm() {
           </Button>
         </form>
       </Form>
+
+      {/* LinkedIn Login Button */}
+      <LinkedInLoginButton onClick={handleLinkedInLogin} disabled={loading}>
+        <span>
+          {isSignUp ? 'Sign Up with LinkedIn' : 'Log In with LinkedIn'}
+        </span>
+      </LinkedInLoginButton>
 
       <div className="text-center">
         <p className="text-sm">
