@@ -22,39 +22,6 @@ export default function AuthForm({ isSignUp, setIsSignUp }) {
 
       <UserAuthForm />
 
-      {isSignUp && (
-        <div className="flex flex-col items-center space-y-4">
-          <p className="text-center text-sm text-muted-foreground">
-            Start your free trial today!
-          </p>
-          <Button>Sign Up for Free Trial</Button>
-        </div>
-      )}
-
-      <div className="text-center text-sm text-muted-foreground">
-        {isSignUp ? (
-          <p>
-            Already have an account?{' '}
-            <button
-              className="underline hover:text-primary"
-              onClick={() => setIsSignUp(false)}
-            >
-              Sign In
-            </button>
-          </p>
-        ) : (
-          <p>
-            Don’t have an account?{' '}
-            <button
-              className="underline hover:text-primary"
-              onClick={() => setIsSignUp(true)}
-            >
-              Sign Up
-            </button>
-          </p>
-        )}
-      </div>
-
       <p className="px-8 text-center text-sm text-muted-foreground">
         By clicking continue, you agree to our{' '}
         <Link

@@ -27,6 +27,8 @@ type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSignUp, setIsSignUp] = useState(false); // Toggle between Login & Signup
+
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,82 +38,112 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (data: UserFormValue) => {
+    const endpoint = isSignUp
+      ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/signup`
+      : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/login`;
+
+    console.log('📢 API Request:', endpoint);
+
     setLoading(true);
     setError(null);
 
     try {
-      // Directly calling the Supabase Edge Function
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/signup`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}` // Optional: Use if needed
-          },
-          body: JSON.stringify({ email: data.email, password: data.password })
-        }
-      );
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({ email: data.email, password: data.password })
+      });
 
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error || 'Signup failed');
+      if (!response.ok)
+        throw new Error(result.error || 'Authentication failed');
 
-      console.log('Signup successful!', result);
-      alert('Signup successful! Check your email to verify your account.');
+      console.log(`${isSignUp ? 'Signup' : 'Login'} successful!`, result);
+      alert(
+        `${
+          isSignUp
+            ? 'Signup successful! Check your email to verify your account.'
+            : 'Login successful!'
+        }`
+      );
     } catch (err) {
       setError(err.message);
-      console.error('Error signing up:', err);
+      console.error('Authentication Error:', err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="Enter your email..."
-                  disabled={loading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Enter your password..."
-                  disabled={loading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div className="w-full space-y-4">
+      <h2 className="text-center text-xl font-semibold">
+        {isSignUp ? 'Sign Up' : 'Log In'}
+      </h2>
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-2"
+        >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="Enter your email..."
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Enter your password..."
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Button disabled={loading} className="ml-auto w-full" type="submit">
-          {loading ? 'Processing...' : 'Submit'}
-        </Button>
-      </form>
-    </Form>
+          {error && <p className="text-sm text-red-500">{error}</p>}
+
+          <Button disabled={loading} className="ml-auto w-full" type="submit">
+            {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Log In'}
+          </Button>
+        </form>
+      </Form>
+
+      <div className="text-center">
+        <p className="text-sm">
+          {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+          <button
+            className="text-primary underline"
+            onClick={() => setIsSignUp(!isSignUp)}
+          >
+            {isSignUp ? 'Log In' : 'Sign Up'}
+          </button>
+        </p>
+      </div>
+    </div>
   );
 }
