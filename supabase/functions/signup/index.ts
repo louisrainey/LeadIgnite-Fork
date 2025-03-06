@@ -19,24 +19,26 @@ const headers: Record<string, string> = {
 };
 
 Deno.serve(async (req) => {
+  console.log('📢 Function triggered!');
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers });
   }
 
   try {
     const { email, password } = await req.json();
+    console.log('📢 Received request payload:', { email });
 
     if (!email || !password) {
+      console.log('❌ Missing email or password');
       return new Response(
         JSON.stringify({ error: 'Email and password are required.' }),
-        {
-          status: 400,
-          headers
-        }
+        { status: 400, headers }
       );
     }
 
     // Sign up the user with Supabase Auth (enforce email confirmation)
+    console.log('📢 Creating new user in auth.users...');
     const { data, error } = await supabase.auth.admin.createUser({
       email,
       password,
@@ -44,46 +46,17 @@ Deno.serve(async (req) => {
     });
 
     if (error) {
+      console.error('❌ Error creating user:', error);
       return new Response(JSON.stringify({ error: error.message }), {
         status: 400,
         headers
       });
     }
 
-    const userId = data.user?.id;
-    if (!userId) {
-      return new Response(JSON.stringify({ error: 'User ID not found.' }), {
-        status: 500,
-        headers
-      });
-    }
-
-    // Insert the new user into the UserProfile table with default values
-    const { error: profileError } = await supabase.from('UserProfile').insert([
-      {
-        id: userId, // Use the same UUID from Supabase Auth
-        uniqueIdentifier: userId, // Also store it as uniqueIdentifier
-        firstName: 'New', // Default placeholder values
-        lastName: 'User',
-        email: email,
-        country: 'Unknown',
-        city: 'Unknown',
-        personalNum: '0000000000',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-    ]);
-
-    if (profileError) {
-      console.error('Profile Insert Error:', profileError);
-      return new Response(
-        JSON.stringify({ error: 'Failed to create user profile.' }),
-        {
-          status: 500,
-          headers
-        }
-      );
-    }
+    console.log('✅ User successfully created:', data.user?.id);
+    console.log(
+      '🔄 UserProfile will be auto-created via the database trigger.'
+    );
 
     return new Response(
       JSON.stringify({
@@ -92,7 +65,7 @@ Deno.serve(async (req) => {
       { status: 200, headers }
     );
   } catch (err) {
-    console.error('Signup Error:', err);
+    console.error('❌ Unexpected Signup Error:', err);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
       headers
