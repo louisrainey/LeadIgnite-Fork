@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { LinkedInLoginButton } from 'react-social-login-buttons';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
+import { signIn, signUp } from '@/actions/auth';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -79,6 +80,30 @@ export default function UserAuthForm() {
       setLoading(false);
     }
   };
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const formData = new FormData(event.currentTarget);
+
+    try {
+      const result = isSignUp ? await signUp(formData) : await signIn(formData); // ✅ Calls signUp function
+
+      if (result.status === 'success') {
+        isSignUp ? setIsSignUp(false) : router.push('/dashboard');
+      } else {
+        setError(result.status); // ✅ Handle authentication errors
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'An unknown error occurred'
+      );
+      console.error('Authentication Error:', err);
+    }
+
+    setLoading(false);
+  };
 
   const handleLinkedInLogin = async () => {
     setLoading(true);
@@ -111,10 +136,7 @@ export default function UserAuthForm() {
       </h2>
 
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-2"
-        >
+        <form onSubmit={handleSubmit} className="w-full space-y-2">
           <FormField
             control={form.control}
             name="email"
