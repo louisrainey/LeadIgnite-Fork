@@ -16,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { LinkedInLoginButton } from 'react-social-login-buttons';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -27,11 +28,12 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
+  const router = useRouter(); // ✅ Initialize Next.js router
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSignUp, setIsSignUp] = useState(false);
   const supabase = createClientComponentClient(); // Supabase client
-
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,14 +43,14 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    const endpoint = isSignUp
-      ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/signup`
-      : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/login`;
-
     setLoading(true);
     setError(null);
 
     try {
+      const endpoint = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/${
+        isSignUp ? 'signup' : 'login'
+      }`;
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -63,14 +65,15 @@ export default function UserAuthForm() {
         throw new Error(result.error || 'Authentication failed');
 
       alert(
-        `${
-          isSignUp
-            ? 'Signup successful! Check your email.'
-            : 'Login successful!'
-        }`
+        isSignUp ? 'Signup successful! Check your email.' : 'Login successful!'
       );
+
+      // ✅ Ensure redirect happens only after success
+      router.replace('/dashboard');
     } catch (err) {
-      setError(err.message);
+      setError(
+        err instanceof Error ? err.message : 'An unknown error occurred'
+      );
       console.error('Authentication Error:', err);
     } finally {
       setLoading(false);
@@ -87,15 +90,14 @@ export default function UserAuthForm() {
         options: {
           redirectTo: `${window.location.origin}/dashboard`, // ✅ Ensure correct redirect URL
           skipBrowserRedirect: false, // ✅ Ensure Supabase handles redirection
-          scopes: 'openid profile email', // ✅ Ensure LinkedIn scopes are correct
-          pkce: true // ✅ Enable PKCE flow
+          scopes: 'openid profile email' // ✅ Ensure LinkedIn scopes are correct
         }
       });
 
       if (error) throw error;
       console.log('✅ LinkedIn Login Data:', data);
     } catch (err) {
-      setError(err.message);
+      setError((err as Error).message); // ❗ Bypasses TypeScript check
       console.error('❌ LinkedIn Login Error:', err);
     } finally {
       setLoading(false);

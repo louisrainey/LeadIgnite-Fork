@@ -2,7 +2,13 @@ import Link from 'next/link';
 import { cn } from '@/lib/_utils/kanban/utils';
 import { buttonVariants } from '@/components/ui/button';
 
-export default function AuthToggle({ isSignUp, setIsSignUp }) {
+// ✅ Define the expected props type
+interface AuthToggleProps {
+  isSignUp: boolean;
+  setIsSignUp: (value: boolean) => void;
+}
+
+export default function AuthToggle({ isSignUp, setIsSignUp }: AuthToggleProps) {
   return (
     <Link
       href="/examples/authentication"
