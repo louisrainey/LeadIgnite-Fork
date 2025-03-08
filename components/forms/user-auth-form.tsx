@@ -18,6 +18,7 @@ import { LinkedInLoginButton } from 'react-social-login-buttons';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { signIn, signInWithOAuth, signUp } from '@/actions/auth';
+import Link from 'next/link';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -43,43 +44,43 @@ export default function UserAuthForm() {
     }
   });
 
-  const onSubmit = async (data: UserFormValue) => {
-    setLoading(true);
-    setError(null);
+  // const onSubmit = async (data: UserFormValue) => {
+  //   setLoading(true);
+  //   setError(null);
 
-    try {
-      const endpoint = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/${
-        isSignUp ? 'signup' : 'login'
-      }`;
+  //   try {
+  //     const endpoint = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/${
+  //       isSignUp ? 'signup' : 'login'
+  //     }`;
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
-        },
-        body: JSON.stringify({ email: data.email, password: data.password })
-      });
+  //     const response = await fetch(endpoint, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
+  //       },
+  //       body: JSON.stringify({ email: data.email, password: data.password })
+  //     });
 
-      const result = await response.json();
-      if (!response.ok)
-        throw new Error(result.error || 'Authentication failed');
+  //     const result = await response.json();
+  //     if (!response.ok)
+  //       throw new Error(result.error || 'Authentication failed');
 
-      alert(
-        isSignUp ? 'Signup successful! Check your email.' : 'Login successful!'
-      );
+  //     alert(
+  //       isSignUp ? 'Signup successful! Check your email.' : 'Login successful!'
+  //     );
 
-      // ✅ Ensure redirect happens only after success
-      router.replace('/dashboard');
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unknown error occurred'
-      );
-      console.error('Authentication Error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     // ✅ Ensure redirect happens only after success
+  //     router.replace('/dashboard');
+  //   } catch (err) {
+  //     setError(
+  //       err instanceof Error ? err.message : 'An unknown error occurred'
+  //     );
+  //     console.error('Authentication Error:', err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
@@ -179,13 +180,26 @@ export default function UserAuthForm() {
         <p className="text-sm">
           {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button
-            className="text-primary underline"
+            className="mx-2 text-primary underline"
             onClick={() => setIsSignUp(!isSignUp)}
           >
             {isSignUp ? 'Log In' : 'Sign Up'}
           </button>
         </p>
       </div>
+      {!isSignUp && (
+        <div className="text-center">
+          <p className="text-sm">
+            Forgot Password?
+            <Link
+              className="mx-2 text-primary underline"
+              href={'/forgot-password'}
+            >
+              Reset password
+            </Link>
+          </p>
+        </div>
+      )}
     </div>
   );
 }
