@@ -1,5 +1,4 @@
 import { GetSubAccountPathParams } from '@/types/goHighLevel/subAccounts';
-import { UniqueIdentifier } from '@dnd-kit/core';
 import { SocialMediaCampaign, CallCampaign } from '../_dashboard/campaign';
 import {
   BillingHistoryItem,
@@ -180,9 +179,8 @@ export interface AIKnowledgebase {
 }
 
 export interface UserProfile {
-  UniqueIdentifier: UniqueIdentifier;
+  userId: string;
   subscription: UserProfileSubscription; // Subscription information
-
   firstName: string;
   lastName: string;
   email: string;

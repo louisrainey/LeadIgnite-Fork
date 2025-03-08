@@ -9,7 +9,7 @@ import {
   DragOverlay,
   MouseSensor,
   TouchSensor,
-  UniqueIdentifier,
+  userId,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -49,7 +49,7 @@ export function KanbanBoard() {
 
   if (!isMounted) return null;
 
-  function getDraggingTaskData(taskId: UniqueIdentifier, columnId: ColumnId) {
+  function getDraggingTaskData(taskId: userId, columnId: ColumnId) {
     const tasksInColumn = tasks.filter((task) => task.status === columnId);
     const taskPosition = tasksInColumn.findIndex((task) => task.id === taskId);
     const column = columns.find((col) => col.id === columnId);

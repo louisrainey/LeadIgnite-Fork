@@ -21,16 +21,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/components/ui/use-toast';
 import { useTaskStore } from '@/lib/stores/taskActions';
-import { UniqueIdentifier } from '@dnd-kit/core';
+import { userId } from '@dnd-kit/core';
 import { Input } from '../ui/input';
 
-export function ColumnActions({
-  title,
-  id
-}: {
-  title: string;
-  id: UniqueIdentifier;
-}) {
+export function ColumnActions({ title, id }: { title: string; id: userId }) {
   const [name, setName] = React.useState(title);
   const updateCol = useTaskStore((state) => state.updateCol);
   const removeCol = useTaskStore((state) => state.removeCol);

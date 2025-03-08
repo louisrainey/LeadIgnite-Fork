@@ -1,10 +1,10 @@
-import { UniqueIdentifier } from '@dnd-kit/core';
+import { userId } from '@dnd-kit/core';
 
 export interface KanbanColumn {
-  id: UniqueIdentifier;
+  id: userId;
   title: string;
 }
-export type Status = UniqueIdentifier;
+export type Status = userId;
 
 const defaultCols = [
   {

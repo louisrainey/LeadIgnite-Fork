@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { v4 as uuid } from 'uuid';
 import { persist } from 'zustand/middleware';
-import { UniqueIdentifier } from '@dnd-kit/core';
+import { userId } from '@dnd-kit/core';
 import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 import {
   KanbanTask,
@@ -67,10 +67,10 @@ export type Actions = {
   addCol: (title: string) => void;
   dragTask: (id: string | null) => void;
   removeTask: (title: string) => void;
-  removeCol: (id: UniqueIdentifier) => void;
+  removeCol: (id: userId) => void;
   setTasks: (updatedTask: KanbanTask[]) => void;
   setCols: (cols: KanbanColumn[]) => void;
-  updateCol: (id: UniqueIdentifier, newName: string) => void;
+  updateCol: (id: userId, newName: string) => void;
 };
 
 export const useTaskStore = create<KanbanState & Actions>()(
@@ -86,7 +86,7 @@ export const useTaskStore = create<KanbanState & Actions>()(
             { id: uuid(), title, description, status: 'TODO' }
           ]
         })),
-      updateCol: (id: UniqueIdentifier, newName: string) =>
+      updateCol: (id: userId, newName: string) =>
         set((state) => ({
           columns: state.columns.map((col) =>
             col.id === id ? { ...col, title: newName } : col
@@ -104,7 +104,7 @@ export const useTaskStore = create<KanbanState & Actions>()(
         set((state) => ({
           tasks: state.tasks.filter((task) => task.id !== id)
         })),
-      removeCol: (id: UniqueIdentifier) =>
+      removeCol: (id: userId) =>
         set((state) => ({
           columns: state.columns.filter((col) => col.id !== id)
         })),

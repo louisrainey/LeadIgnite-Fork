@@ -9,7 +9,8 @@ generator client {
 
 model UserProfile {
     id                          String                        @id @default(uuid())
-    uniqueIdentifier            String                        @unique
+    user_id                     String                        @unique
+    username                        String
     subscription                UserProfileSubscription?      @relation(name: "UserProfileToSubscription") // Removed onDelete from here
     firstName                   String
     lastName                    String
@@ -40,7 +41,7 @@ model UserProfile {
     KanbanTask                  KanbanTask[]
 
     @@index([email], name: "idx_email")
-    @@index([uniqueIdentifier], name: "idx_uniqueIdentifier")
+    @@index([user_id], name: "idx_uniqueIdentifier")
 }
 
 model ConnectedAccounts {

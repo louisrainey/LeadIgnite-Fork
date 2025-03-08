@@ -117,7 +117,7 @@ export const connectedAccounts = {
 };
 // Mocking a user profile with Faker.js
 export const mockUserProfile: UserProfile = {
-  UniqueIdentifier: faker.string.uuid(), // Generates a UUID, // Generate unique ID
+  userId: faker.string.uuid(), // Generates a UUID, // Generate unique ID
   subscription: mockSubscriptions[1],
   firstName: faker.person.firstName(),
   lastName: faker.person.lastName(),
