@@ -5,6 +5,16 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
+export async function getUserSession() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error) {
+    return null;
+  } else {
+    return { status: 'success', user: data?.user };
+  }
+}
 export async function signUp(formData: FormData) {
   const supabase = await createClient();
 
@@ -71,13 +81,11 @@ export async function signIn(formData: FormData) {
     .single();
 
   if (!existingUser) {
-    const { error: insertError } = await supabase
-      .from('UserProfile')
-      .insert({
-        user_id: data?.user.id,
-        email: data?.user.email,
-        username: data?.user.user_metadata.username
-      });
+    const { error: insertError } = await supabase.from('UserProfile').insert({
+      user_id: data?.user.id,
+      email: data?.user.email,
+      username: data?.user.user_metadata.username
+    });
     if (insertError) {
       return {
         status: insertError.message,

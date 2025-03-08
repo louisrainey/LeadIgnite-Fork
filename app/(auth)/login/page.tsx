@@ -6,9 +6,9 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/_utils/kanban/utils';
 import { FlameIcon } from 'lucide-react';
 import { Carousel } from '@/components/ui/carousel';
-import AuthToggle from '../(auth)/(signin)/authToggle';
-import QuoteSection from '../(auth)/(signin)/QuoteSection';
-import AuthForm from '../(auth)/(signin)/userAuth';
+import AuthToggle from '../(signin)/authToggle';
+import QuoteSection from '../(signin)/QuoteSection';
+import AuthForm from '../(signin)/userAuth';
 
 export default function AuthenticationPage() {
   const [isSignUp, setIsSignUp] = useState(false);
