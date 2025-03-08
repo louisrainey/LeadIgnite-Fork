@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { LinkedInLoginButton } from 'react-social-login-buttons';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
-import { signIn, signUp } from '@/actions/auth';
+import { signIn, signInWithOAuth, signUp } from '@/actions/auth';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -30,7 +30,7 @@ type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
   const router = useRouter(); // ✅ Initialize Next.js router
-
+  const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSignUp, setIsSignUp] = useState(false);
@@ -105,28 +105,16 @@ export default function UserAuthForm() {
     setLoading(false);
   };
 
-  const handleLinkedInLogin = async () => {
-    setLoading(true);
-    try {
-      console.log('📢 Initiating LinkedIn Login');
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'linkedin_oidc',
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`, // ✅ Ensure correct redirect URL
-          skipBrowserRedirect: false, // ✅ Ensure Supabase handles redirection
-          scopes: 'openid profile email' // ✅ Ensure LinkedIn scopes are correct
-        }
-      });
-
-      if (error) throw error;
-      console.log('✅ LinkedIn Login Data:', data);
-    } catch (err) {
-      setError((err as Error).message); // ❗ Bypasses TypeScript check
-      console.error('❌ LinkedIn Login Error:', err);
-    } finally {
-      setLoading(false);
-    }
+  const handleLinkedInLogin = () => {
+    startTransition(async () => {
+      try {
+        console.log('📢 Initiating LinkedIn Login');
+        await signInWithOAuth();
+        console.log('✅ LinkedIn Login Successful');
+      } catch (error) {
+        console.error('❌ LinkedIn Login Error:', error);
+      }
+    });
   };
 
   return (
@@ -184,9 +172,7 @@ export default function UserAuthForm() {
 
       {/* LinkedIn Login Button */}
       <LinkedInLoginButton onClick={handleLinkedInLogin} disabled={loading}>
-        <span>
-          {isSignUp ? 'Sign Up with LinkedIn' : 'Log In with LinkedIn'}
-        </span>
+        <span>{isPending ? 'Redirecting...' : 'Log In with LinkedIn'}</span>
       </LinkedInLoginButton>
 
       <div className="text-center">

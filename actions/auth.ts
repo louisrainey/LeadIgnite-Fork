@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
+import { Provider } from '@supabase/supabase-js';
 
 export async function getUserSession() {
   const supabase = await createClient();
@@ -86,6 +87,7 @@ export async function signIn(formData: FormData) {
       email: data?.user.email,
       username: data?.user.user_metadata.username
     });
+
     if (insertError) {
       return {
         status: insertError.message,
@@ -107,4 +109,23 @@ export async function signOut() {
   }
   revalidatePath('/', 'layout');
   redirect('/login');
+}
+
+export async function signInWithOAuth(
+  provider: Provider | null = 'linkedin_oidc'
+) {
+  const supabase = await createClient();
+  const origin = (await headers()).get('origin');
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: provider || 'linkedin', // Ensures a default value if provider is null
+    options: {
+      redirectTo: `${origin}/auth/callback`
+    }
+  });
+
+  if (error) {
+    redirect('/error');
+  } else if (data.url) {
+    return redirect(data.url);
+  }
 }
