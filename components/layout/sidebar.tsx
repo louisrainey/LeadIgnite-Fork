@@ -9,16 +9,23 @@ import { useNavbarStore } from '@/lib/stores/dashboard/navbarStore';
 import { createClient } from '@/utils/supabase/server';
 import { useSessionStore } from '@/lib/stores/user/useSessionStore';
 import { User } from '@supabase/auth-helpers-nextjs';
+import { getUserProfile } from '@/actions/auth';
+import { useUserProfileStore } from '@/lib/stores/user/userProfile';
 
 export default function SidebarClient({ user }: { user: User | null }) {
   const { isSidebarMinimized, toggleSidebar } = useNavbarStore();
-  const { setUser } = useSessionStore(); // ✅ Zustand state
+  const { setSessionUser } = useSessionStore(); // ✅ Zustand state
+  const { setUserProfile } = useUserProfileStore(); // ✅ Zustand store update function
 
   useEffect(() => {
-    if (user) {
-      setUser(user); // ✅ Set Zustand state on mount
+    if (user?.id) {
+      getUserProfile(user.id).then((profileResponse) => {
+        if (profileResponse.status === 'success') {
+          setUserProfile(profileResponse.userProfile); // ✅ Update Zustand store
+        }
+      });
     }
-  }, [user, setUser]);
+  }, [user, setUserProfile]);
 
   return (
     <aside

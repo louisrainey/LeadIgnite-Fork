@@ -1,16 +1,18 @@
 datasource db {
     provider = "postgresql" // or other supported DB providers
     url      = env("DATABASE_URL")
+    schemas  = ["public"]
 }
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["multiSchema"] // Enables support for multiple schemas
 }
 
 model UserProfile {
     id                          String                        @id @default(uuid())
     user_id                     String                        @unique
-    username                        String
+    username                    String
     subscription                UserProfileSubscription?      @relation(name: "UserProfileToSubscription") // Removed onDelete from here
     firstName                   String
     lastName                    String
@@ -42,22 +44,23 @@ model UserProfile {
 
     @@index([email], name: "idx_email")
     @@index([user_id], name: "idx_uniqueIdentifier")
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model ConnectedAccounts {
-    id            String       @id @default(uuid())
-    userProfileId String?      @unique
-    userProfile   UserProfile? @relation(fields: [userProfileId], references: [id], onDelete: SetNull)
+    id          String       @id @default(uuid())
+    user_id     String?      @unique
+    userProfile UserProfile? @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
 
     oauthData OAuthData[] @relation("OAuthDataConnectedAccounts")
 
-    @@index([userProfileId], name: "idx_connected_accounts_user")
+    @@index([user_id], name: "idx_connected_accounts_user")
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model OAuthData {
     id              String        @id @default(uuid())
     provider        OAuthProvider
-    userId          String
     username        String?
     pageId          String?
     companyId       String?
@@ -72,7 +75,8 @@ model OAuthData {
     connectedAccountId String
     connectedAccounts  ConnectedAccounts @relation(fields: [connectedAccountId], references: [id], name: "OAuthDataConnectedAccounts")
 
-    @@index([provider, userId], name: "idx_oauth_provider_user")
+    @@index([provider], name: "idx_oauth_provider_user")
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum OAuthProvider {
@@ -80,10 +84,13 @@ enum OAuthProvider {
     INSTAGRAM
     LINKEDIN
     TWITTER
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model UserProfileSubscription {
     id                   String             @id @default(uuid())
+    user_id              String             @unique
     stripeSubscriptionID String
     name                 String
     type                 SubscriptionType
@@ -95,48 +102,72 @@ model UserProfileSubscription {
     renewalDate          DateTime
     createdAt            DateTime
     planDetails          String
-    userProfileId        String             @unique
-    userProfile          UserProfile        @relation(fields: [userProfileId], references: [id], name: "UserProfileToSubscription", map: "FK_UserProfile_Subscription", onDelete: Cascade)
+    userProfile          UserProfile        @relation(fields: [user_id], references: [user_id], name: "UserProfileToSubscription", map: "FK_UserProfile_Subscription", onDelete: Cascade)
 
-    @@index([userProfileId], name: "idx_userProfile_subscription")
+    @@index([user_id], name: "idx_userProfile_subscription")
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model LeadPreferences {
     id                String      @id @default(uuid())
+    user_id           String      @unique
     preferredLocation Json
     industry          String
     minLeadQuality    Int
     maxBudget         Float
-    userProfileId     String      @unique
-    userProfile       UserProfile @relation(fields: [userProfileId], references: [id])
+    userProfile       UserProfile @relation(fields: [user_id], references: [user_id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model SavedSearch {
     id             String      @id @default(uuid())
+    user_id        String
     name           String
     searchCriteria Json
     createdAt      DateTime
-    userProfile    UserProfile @relation(fields: [userProfileId], references: [id])
-    userProfileId  String
+    userProfile    UserProfile @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+    @@index([user_id], name: "idx_savedsearch_user") // ✅ Add an index for faster lookups
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model Integration {
-    id            String            @id @default(uuid())
-    platform      String
-    apiKey        String
-    status        IntegrationStatus
-    userProfile   UserProfile       @relation(fields: [userProfileId], references: [id])
-    userProfileId String
+    id      String @id @default(uuid())
+    user_id String @unique
+
+    platform    String
+    apiKey      String
+    status      IntegrationStatus
+    userProfile UserProfile       @relation(fields: [user_id], references: [user_id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model TwoFactorAuth {
     id            String           @id @default(uuid())
+    user_id       String           @unique
+    totpSecret    String?
+    backupCodes   Json?
     isEnabled     Boolean
     methods       TwoFactorMethods
     lastEnabledAt DateTime?
-    userProfile   UserProfile      @relation(fields: [userProfileId], references: [id])
-    userProfileId String           @unique
+    userProfile   UserProfile      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
     TeamMember    TeamMember[]
+
+    @@index([user_id], name: "idx_2fa_user") // ✅ Added index for performance
+    @@schema("public") // Explicitly state it belongs to public
+}
+
+model AuditLog {
+    id        String   @id @default(uuid())
+    user_id   String
+    action    String
+    timestamp DateTime @default(now())
+    ipAddress String?
+    metadata  Json?
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model UserPermissions {
@@ -151,19 +182,22 @@ model UserPermissions {
     canEditCompanyProfile Boolean
     teamMemberId          String     @unique
     teamMember            TeamMember @relation(fields: [teamMemberId], references: [id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model NotificationPreferences {
     id                       String       @id @default(uuid())
+    user_id                  String       @unique
     emailNotifications       Boolean
     smsNotifications         Boolean
     notifyForNewLeads        Boolean
     notifyForCampaignUpdates Boolean
-    userProfile              UserProfile  @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
-    userProfileId            String       @unique
+    userProfile              UserProfile  @relation(fields: [user_id], references: [id], onDelete: Cascade)
     TeamMember               TeamMember[]
 
-    @@index([userProfileId], name: "idx_notifications_user")
+    @@index([user_id], name: "idx_notifications_user")
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model TeamMember {
@@ -176,24 +210,29 @@ model TeamMember {
     notificationPreferences   NotificationPreferences? @relation(fields: [notificationPreferencesId], references: [id])
     twoFactorAuth             TwoFactorAuth?           @relation(fields: [twoFactorAuthId], references: [id])
     activityLog               ActivityLog[]
-    userProfile               UserProfile              @relation(fields: [userProfileId], references: [id])
-    userProfileId             String
+    userProfile               UserProfile              @relation(fields: [user_id], references: [user_id])
+    user_id                   String
     notificationPreferencesId String?
     twoFactorAuthId           String?
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model ActivityLog {
     id             String       @id @default(uuid())
+    user_id        String
     action         String
     timestamp      DateTime
     performedBy    String
     taskTracking   TaskTracking @relation(fields: [taskTrackingId], references: [id])
-    userProfile    UserProfile  @relation(fields: [userProfileId], references: [id])
-    userProfileId  String
     TeamMember     TeamMember?  @relation(fields: [teamMemberId], references: [id])
     teamMemberId   String?
     taskTrackingId String
     userAgent      String?
+    userProfile    UserProfile  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+    @@index([user_id], name: "idx_activityLog") // ✅ Add an index for faster lookups
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model TaskTracking {
@@ -205,6 +244,8 @@ model TaskTracking {
     assignedTasks   Json
     taskHistory     TaskActivity[]
     ActivityLog     ActivityLog[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model TaskActivity {
@@ -214,6 +255,8 @@ model TaskActivity {
     performedBy    String
     taskTrackingId String
     taskTracking   TaskTracking @relation(fields: [taskTrackingId], references: [id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model SecuritySettings {
@@ -221,61 +264,66 @@ model SecuritySettings {
     passwordHash      String
     lastLoginTime     DateTime?
     passwordUpdatedAt DateTime?
-    userProfileId     String      @unique
-    userProfile       UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    user_id           String      @unique
+    userProfile       UserProfile @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-    @@index([userProfileId], name: "idx_security_user")
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model CompanyInfo {
-    id                            String                      @id @default(uuid())
-    companyName                   String
-    assets                        Json
-    webhook                       String?
-    socialMediaTags               Json
-    companyLogo                   String
-    GHLID                         String
-    forwardingNumber              String
-    outreachEmail                 String
-    explainerVideo                String?
-    campaigns                     CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
-    campaignAnalytics             CampaignAnalytics[]
-    leads                         LeadTypeGlobal[]
-    leadLists                     LeadList[]
-    kanbanTasks                   KanbanState                 @relation(fields: [kanbanStateId], references: [id])
-    userProfileId                 String                      @unique
-    userProfile                   UserProfile                 @relation(fields: [userProfileId], references: [id])
-    companyCampaignsUserProfileId String
-    kanbanStateId                 String
+    id                      String                      @id @default(uuid())
+    user_id                 String                      @unique
+    companyName             String
+    assets                  Json
+    webhook                 String?
+    socialMediaTags         Json
+    companyLogo             String
+    GHLID                   String
+    forwardingNumber        String
+    outreachEmail           String
+    explainerVideo          String?
+    campaigns               CompanyCampaignsUserProfile @relation(fields: [companyCampaignsuser_id], references: [id])
+    campaignAnalytics       CampaignAnalytics[]
+    leads                   LeadTypeGlobal[]
+    leadLists               LeadList[]
+    kanbanTasks             KanbanState                 @relation(fields: [kanbanStateId], references: [id])
+    userProfile             UserProfile                 @relation(fields: [user_id], references: [user_id])
+    companyCampaignsuser_id String
+    kanbanStateId           String
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model CompanyCampaignsUserProfile {
     id              String                @id @default(uuid())
+    user_id         String
     textCampaigns   TextCampaign[]
     emailCampaigns  EmailCampaign[]
     socialCampaigns SocialMediaCampaign[]
     callCampaigns   CallCampaign[]
-    userProfileId   String
-    userProfile     UserProfile           @relation(fields: [userProfileId], references: [id])
+    userProfile     UserProfile           @relation(fields: [user_id], references: [user_id])
     CompanyInfo     CompanyInfo[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model CampaignAnalytics {
     id             String       @id @default(uuid())
+    user_id        String
     campaignId     String
     type           CampaignType
     deliveredCount Int
     openedCount    Int
     bouncedCount   Int
     failedCount    Int
-    userProfileId  String
-    userProfile    UserProfile  @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    userProfile    UserProfile  @relation(fields: [user_id], references: [id], onDelete: Cascade)
     CompanyInfo    CompanyInfo? @relation(fields: [companyInfoId], references: [id], onDelete: Cascade)
     companyInfoId  String?
 
     @@index([campaignId], name: "idx_campaignId")
-    @@index([userProfileId], name: "idx_campaign_user")
+    @@index([user_id], name: "idx_campaign_user")
     @@index([type], name: "idx_campaign_type") // New index added
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum CampaignType {
@@ -283,6 +331,8 @@ enum CampaignType {
     text
     call
     social
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model LeadTypeGlobal {
@@ -310,6 +360,7 @@ model LeadTypeGlobal {
     @@index([companyInfoId], name: "idx_companyInfoId")
     @@index([email], name: "idx_leadEmail")
     @@index([leadScore], name: "idx_leadScore") // New index added
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum LeadStatus {
@@ -317,6 +368,8 @@ enum LeadStatus {
     Contacted
     Closed
     Lost
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model SocialLinks {
@@ -329,10 +382,12 @@ model SocialLinks {
     lead      LeadTypeGlobal @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
     @@index([leadId], name: "idx_social_leadId")
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model LeadList {
     id             String           @id @default(uuid())
+    user_id        String
     listName       String
     uploadDate     DateTime
     leads          LeadTypeGlobal[]
@@ -341,13 +396,13 @@ model LeadList {
     dataLink       String
     socials        SocialsCount     @relation(fields: [socialsCountId], references: [id])
     emails         Int
-    userProfileId  String
-    userProfile    UserProfile      @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    userProfile    UserProfile      @relation(fields: [user_id], references: [id], onDelete: Cascade)
     CompanyInfo    CompanyInfo?     @relation(fields: [companyInfoId], references: [id], onDelete: Cascade)
     companyInfoId  String?
     socialsCountId String
 
-    @@index([userProfileId], name: "idx_leadlist_user")
+    @@index([user_id], name: "idx_leadlist_user")
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model SocialsCount {
@@ -357,31 +412,37 @@ model SocialsCount {
     instagram Int?
     twitter   Int?
     LeadList  LeadList[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model KanbanState {
-    id            String         @id @default(uuid())
-    tasks         KanbanTask[]
-    columns       KanbanColumn[]
-    draggedTask   String?
-    userProfileId String
-    userProfile   UserProfile    @relation(fields: [userProfileId], references: [id])
-    CompanyInfo   CompanyInfo[]
+    id          String         @id @default(uuid())
+    user_id     String
+    tasks       KanbanTask[]
+    columns     KanbanColumn[]
+    draggedTask String?
+    userProfile UserProfile    @relation(fields: [user_id], references: [user_id])
+    CompanyInfo CompanyInfo[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model KanbanTask {
     id            String       @id @default(uuid())
+    user_id       String
     title         String
     description   String?
     status        String
-    priority      Priority
+    priority      LeadPriority
     dueDate       DateTime?
     assignedTo    String?
     kanbanStateId String
     kanbanState   KanbanState  @relation(fields: [kanbanStateId], references: [id])
-    // Add the following lines for the relation to UserProfile
-    userProfileId String? // Foreign key to UserProfile
-    userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+    userProfile   UserProfile  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+    @@index([user_id], name: "idx_kanbantask_user") // ✅ Added index for performance
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model KanbanColumn {
@@ -389,12 +450,16 @@ model KanbanColumn {
     title         String
     kanbanStateId String
     kanbanState   KanbanState @relation(fields: [kanbanStateId], references: [id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
-enum Priority {
+enum LeadPriority {
     low
     medium
     high
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 // Enums for statuses, call types, and message types
@@ -408,17 +473,23 @@ enum CampaignStatus {
     queued
     read
     unread
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum CallType {
     inboundPhoneCall
     outboundPhoneCall
     webCall
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum MessageType {
     TYPE_SMS
     TYPE_EMAIL
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 // TextCampaign Message Model
@@ -442,6 +513,8 @@ model TextMessage {
 
     // Relation to attachments
     attachments TextMessageAttachment[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model TextMessageAttachment {
@@ -449,6 +522,8 @@ model TextMessageAttachment {
     url           String // URL or file path of the attachment
     textMessageId String
     textMessage   TextMessage @relation(fields: [textMessageId], references: [id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 // Email Campaign Message Model
@@ -476,6 +551,8 @@ model EmailMessage {
     // Relations to other models
     attachments EmailAttachment[]
     recipients  EmailRecipient[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model EmailAttachment {
@@ -483,6 +560,8 @@ model EmailAttachment {
     url            String
     emailMessageId String
     emailMessage   EmailMessage @relation(fields: [emailMessageId], references: [id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model EmailRecipient {
@@ -491,6 +570,8 @@ model EmailRecipient {
     type           String // 'to', 'cc', 'bcc'
     emailMessageId String
     emailMessage   EmailMessage @relation(fields: [emailMessageId], references: [id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 // Call Campaign Details Model
@@ -519,6 +600,8 @@ model CallDetail {
 
     callCampaignId String
     callCampaign   CallCampaign @relation(fields: [callCampaignId], references: [id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 // Social Media Campaign Action Model
@@ -534,98 +617,110 @@ model SocialAction {
 
     socialMediaCampaignId String
     socialMediaCampaign   SocialMediaCampaign @relation(fields: [socialMediaCampaignId], references: [id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 // Campaign Models
 model TextCampaign {
-    id                            String                      @id @default(uuid())
-    phoneNumber                   String
-    message                       String
-    sentAt                        DateTime
-    status                        CampaignStatus // Use enum for status
-    companyCampaignsUserProfileId String
-    companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
-    name                          String
-    goal                          String?
-    startDate                     DateTime
-    endDate                       DateTime?
-    aiVoice                       String?
-    aiScript                      String?
-    updatedAt                     DateTime?
-    aiAvatarAgent                 String?
+    id                          String                      @id @default(uuid())
+    phoneNumber                 String
+    message                     String
+    sentAt                      DateTime
+    status                      CampaignStatus // Use enum for status
+    companyCampaignsuser_id     String
+    companyCampaignsUserProfile CompanyCampaignsUserProfile @relation(fields: [companyCampaignsuser_id], references: [id])
+    name                        String
+    goal                        String?
+    startDate                   DateTime
+    endDate                     DateTime?
+    aiVoice                     String?
+    aiScript                    String?
+    updatedAt                   DateTime?
+    aiAvatarAgent               String?
 
     // Relation to messages
     messages TextMessage[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model EmailCampaign {
-    id                            String                      @id @default(uuid())
-    senderEmail                   String
-    recipientCount                Int
-    sentCount                     Int
-    deliveredCount                Int
-    status                        CampaignStatus
-    companyCampaignsUserProfileId String
-    companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
-    name                          String
-    goal                          String?
-    startDate                     DateTime
-    endDate                       DateTime?
-    aiVoice                       String?
-    aiScript                      String?
-    updatedAt                     DateTime?
-    aiAvatarAgent                 String?
+    id                          String                      @id @default(uuid())
+    senderEmail                 String
+    recipientCount              Int
+    sentCount                   Int
+    deliveredCount              Int
+    status                      CampaignStatus
+    companyCampaignsuser_id     String
+    companyCampaignsUserProfile CompanyCampaignsUserProfile @relation(fields: [companyCampaignsuser_id], references: [id])
+    name                        String
+    goal                        String?
+    startDate                   DateTime
+    endDate                     DateTime?
+    aiVoice                     String?
+    aiScript                    String?
+    updatedAt                   DateTime?
+    aiAvatarAgent               String?
 
     // Relation to emails
     emails EmailMessage[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model CallCampaign {
-    id                            String                      @id @default(uuid())
-    callerNumber                  String
-    receiverNumber                String
-    duration                      Int
-    callType                      CallType
-    status                        CampaignStatus
-    companyCampaignsUserProfileId String
-    companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
-    name                          String
-    goal                          String?
-    startDate                     DateTime
-    endDate                       DateTime?
-    aiVoice                       String?
-    aiScript                      String?
-    updatedAt                     DateTime?
-    aiAvatarAgent                 String?
+    id                          String                      @id @default(uuid())
+    callerNumber                String
+    receiverNumber              String
+    duration                    Int
+    callType                    CallType
+    status                      CampaignStatus
+    companyCampaignsuser_id     String
+    companyCampaignsUserProfile CompanyCampaignsUserProfile @relation(fields: [companyCampaignsuser_id], references: [id])
+    name                        String
+    goal                        String?
+    startDate                   DateTime
+    endDate                     DateTime?
+    aiVoice                     String?
+    aiScript                    String?
+    updatedAt                   DateTime?
+    aiAvatarAgent               String?
 
     // Relation to call details
     callDetails CallDetail[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model SocialMediaCampaign {
-    id                            String                      @id @default(uuid())
-    platform                      String
-    senderHandle                  String
-    receiverHandle                String
-    hashtags                      Json
-    status                        CampaignStatus
-    companyCampaignsUserProfileId String
-    companyCampaignsUserProfile   CompanyCampaignsUserProfile @relation(fields: [companyCampaignsUserProfileId], references: [id])
-    name                          String
-    goal                          String?
-    startDate                     DateTime
-    endDate                       DateTime?
-    aiVoice                       String?
-    aiScript                      String?
-    updatedAt                     DateTime?
-    aiAvatarAgent                 String?
+    id                          String                      @id @default(uuid())
+    platform                    String
+    senderHandle                String
+    receiverHandle              String
+    hashtags                    Json
+    status                      CampaignStatus
+    companyCampaignsuser_id     String
+    companyCampaignsUserProfile CompanyCampaignsUserProfile @relation(fields: [companyCampaignsuser_id], references: [id])
+    name                        String
+    goal                        String?
+    startDate                   DateTime
+    endDate                     DateTime?
+    aiVoice                     String?
+    aiScript                    String?
+    updatedAt                   DateTime?
+    aiAvatarAgent               String?
 
     // Relation to social actions
     actions SocialAction[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model AIKnowledgebase {
-    id                  String      @id @default(uuid())
+    id      String @id @default(uuid())
+    user_id String @unique
+
     emailTemplate       String?
     salesScript         String?
     assignedAssistantID String
@@ -633,30 +728,36 @@ model AIKnowledgebase {
     recordings          Recording   @relation(fields: [recordingId], references: [id])
     aiAvatar            AIAvatar?   @relation(fields: [aIAvatarId], references: [id])
     background          Background? @relation(fields: [backgroundId], references: [id])
-    userProfileId       String      @unique
-    userProfile         UserProfile @relation(fields: [userProfileId], references: [id])
+    userProfile         UserProfile @relation(fields: [user_id], references: [user_id])
     recordingId         String
     aIAvatarId          String?
     backgroundId        String?
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model BillingHistoryItem {
-    id            String        @id @default(uuid())
-    invoice       String
-    amount        String
-    date          DateTime
-    status        BillingStatus
-    userProfileId String
-    userProfile   UserProfile   @relation(fields: [userProfileId], references: [id])
+    id          String        @id @default(uuid())
+    user_id     String
+    invoice     String
+    amount      String
+    date        DateTime
+    status      BillingStatus
+    userProfile UserProfile   @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+    @@index([user_id], name: "idx_billing_user") // ✅ Add an index for faster lookups
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model PaymentDetails {
-    id            String      @id @default(uuid())
-    cardType      String
-    cardLastFour  String
-    expiry        String
-    userProfileId String      @unique
-    userProfile   UserProfile @relation(fields: [userProfileId], references: [id])
+    id           String      @id @default(uuid())
+    user_id      String      @unique
+    cardType     String
+    cardLastFour String
+    expiry       String
+    userProfile  UserProfile @relation(fields: [user_id], references: [user_id])
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model AICredits {
@@ -666,6 +767,8 @@ model AICredits {
     resetInDays    Int
     subscription   UserProfileSubscription @relation(fields: [subscriptionId], references: [id])
     subscriptionId String                  @unique
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model LeadCredits {
@@ -675,6 +778,8 @@ model LeadCredits {
     resetInDays    Int
     subscription   UserProfileSubscription @relation(fields: [subscriptionId], references: [id])
     subscriptionId String                  @unique
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model SkipTraceCredits {
@@ -684,6 +789,8 @@ model SkipTraceCredits {
     resetInDays    Int
     subscription   UserProfileSubscription @relation(fields: [subscriptionId], references: [id])
     subscriptionId String                  @unique
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model Recording {
@@ -693,6 +800,8 @@ model Recording {
     voicemailFile   String
     AIKnowledgebase AIKnowledgebase[]
     voiceCloneId    String?
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model VoiceClone {
@@ -700,6 +809,8 @@ model VoiceClone {
     audioFile     String
     clonedVoiceID String
     Recording     Recording[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model AIAvatar {
@@ -709,6 +820,8 @@ model AIAvatar {
     videoDetails     VideoDetails      @relation(fields: [videoDetailsId], references: [id])
     AIKnowledgebase  AIKnowledgebase[]
     videoDetailsId   String
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model VideoDetails {
@@ -718,6 +831,8 @@ model VideoDetails {
     ctaText     String
     ctaLink     String
     AIAvatar    AIAvatar[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model Background {
@@ -727,6 +842,8 @@ model Background {
     colorScheme         ColorScheme       @relation(fields: [colorSchemeId], references: [id])
     AIKnowledgebase     AIKnowledgebase[]
     colorSchemeId       String
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 model ColorScheme {
@@ -735,35 +852,49 @@ model ColorScheme {
     secondaryColor String
     accentColor    String?
     Background     Background[]
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum SubscriptionType {
     monthly
     yearly
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum SubscriptionStatus {
     active
     inactive
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum BillingStatus {
     Paid
     Unpaid
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum IntegrationStatus {
     connected
     disconnected
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum TeamMemberRole {
     admin
     member
+
+    @@schema("public") // Explicitly state it belongs to public
 }
 
 enum TwoFactorMethods {
     sms
     email
     authenticatorApp
+
+    @@schema("public") // Explicitly state it belongs to public
 }

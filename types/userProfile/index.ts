@@ -180,13 +180,13 @@ export interface AIKnowledgebase {
 
 export interface UserProfile {
   userId: string;
+  userName?: string;
   subscription: UserProfileSubscription; // Subscription information
   firstName: string;
   lastName: string;
   email: string;
   country: string;
   city: string;
-  personalNum: string;
   connectedAccounts: {
     facebook?: FacebookOAuthData;
     instagram?: InstagramOAuthData;

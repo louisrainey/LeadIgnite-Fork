@@ -11,6 +11,8 @@ import { Toaster } from '@/components/ui/sonner';
 import { InviteEmployeeModal } from '@/components/tables/employee-tables/utils/addEmployee';
 import { mockUserProfile } from '@/constants/_faker/profile/userProfile';
 import { useSessionStore } from '@/lib/stores/user/useSessionStore';
+import { fetchUserProfileData, getUserProfile } from '@/actions/auth';
+
 export const metadata: Metadata = {
   title:
     'Lead Ignite Dashboard | Real Estate Property Search & Market Analysis',
@@ -24,9 +26,16 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
+  const { data } = await supabase.auth.getUser(); // ✅ Get authenticated user session
 
-  const { data } = await supabase.auth.getUser(); // ✅ Correct structure
+  if (!data?.user) {
+    return <p>Unauthorized</p>;
+  }
 
+  // const userProfile = await getUserProfile(data.user.id); // ✅ Fetch full user profile on the server
+  const response = await fetchUserProfileData('data.user.id', 'ActivityLog');
+
+  console.log(`Table Fetch ${data.user.id}`, response);
   return (
     <div className="flex">
       <Sidebar user={data?.user} />

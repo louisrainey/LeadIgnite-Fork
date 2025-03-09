@@ -18,7 +18,18 @@
 
 # 💾 Integrate fetching campaigns and cron job to update them
 
-# 💾 Security add update password, enable 2fa
+# 🔐 Integrate fetching campaigns and cron job to update them High-Risk Fields:
+
+    Passwords (SecuritySettings.passwordHash)
+    OAuth Tokens (OAuthData.accessToken, OAuthData.refreshToken)
+    Two-Factor Authentication (2FA) Secrets (TwoFactorAuth.totpSecret, TwoFactorAuth.backupCodes)
+    Billing Details (PaymentDetails.cardLastFour, PaymentDetails.expiry)
+    API Keys (Integration.apiKey)
+    Personal Identifiable Information (PII) (Optional):
+        UserProfile.email
+        UserProfile.personalNum
+
+# 🔐 Enable RLS For tables
 
 # 💾 Enable inviting employees
 
@@ -39,6 +50,8 @@
 # 💾 Add Check for multiple emails / ips to prevent trial misuse
 
 # 💾 Add Update activity and assigned on more or member reassign
+
+<!-- # ✅ 💾 Security add update password, enable 2fa -->
 
 <!-- # 💾 ✅ Add webhook for updating kanban state -->
 

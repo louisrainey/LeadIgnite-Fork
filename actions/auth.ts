@@ -169,3 +169,81 @@ export async function resetPassword(formData: FormData, code: string) {
 
   return { status: 'success' };
 }
+
+export async function getUserProfile(userId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('UserProfile')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (error) {
+    return { status: 'error', message: error.message, userProfile: null };
+  }
+
+  return { status: 'success', userProfile: data };
+}
+
+export async function fetchUserProfileData(userId: string, table?: string) {
+  const supabase = await createClient();
+
+  if (table) {
+    // ✅ Fetch a specific table related to the user
+    const { data, error } = await supabase
+      .from(table)
+      .select('*')
+      .eq('user_id', userId);
+
+    if (error) {
+      return {
+        status: 'error',
+        message: `Failed to fetch ${table}: ${error.message}`,
+        data: null
+      };
+    }
+
+    return { status: 'success', data };
+  } else {
+    // ✅ Fetch the entire user profile with all relations
+    const { data, error } = await supabase
+      .from('UserProfile')
+      .select(
+        `
+          *,
+          subscription:UserProfileSubscription(*),
+          connectedAccounts:ConnectedAccounts(*),
+          leadPreferences:LeadPreferences(*),
+          savedSearches:SavedSearch(*),
+          notificationPreferences:NotificationPreferences(*),
+          integrations:Integration(*),
+          companyInfo:CompanyInfo(*),
+          aIKnowledgebase:AIKnowledgebase(*),
+          billingHistory:BillingHistoryItem(*),
+          paymentDetails:PaymentDetails(*),
+          twoFactorAuth:TwoFactorAuth(*),
+          teamMembers:TeamMember(*),
+          activityLog:ActivityLog(*),
+          securitySettings:SecuritySettings(*),
+          CompanyCampaignsUserProfile:CompanyCampaignsUserProfile(*),
+          CampaignAnalytics:CampaignAnalytics(*),
+          LeadList:LeadList(*),
+          KanbanState:KanbanState(*),
+          KanbanTask:KanbanTask(*)
+          `
+      )
+      .eq('user_id', userId)
+      .single();
+
+    if (error) {
+      return {
+        status: 'error',
+        message: `Failed to fetch user profile: ${error.message}`,
+        data: null
+      };
+    }
+
+    return { status: 'success', data };
+  }
+}

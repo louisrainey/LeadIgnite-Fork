@@ -5,14 +5,14 @@ import type { User } from '@supabase/auth-helpers-nextjs'; // ✅ Import Supabas
 
 interface SessionState {
   user: User | null; // ✅ Holds user context
-  setUser: (user: User) => void; // ✅ Allows setting user data
+  setSessionUser: (user: User) => void; // ✅ Allows setting user data
   clearUser: () => void; // ✅ Allows clearing session
 }
 
 export const useSessionStore = create<SessionState>((set) => ({
   user: null, // ✅ Initially no user
 
-  setUser: (user) => set({ user }),
+  setSessionUser: (user) => set({ user }),
 
   clearUser: () => set({ user: null })
 }));
