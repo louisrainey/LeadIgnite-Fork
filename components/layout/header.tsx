@@ -4,6 +4,7 @@ import { MobileSidebar } from './mobile-sidebar';
 import { UserNav } from './user-nav';
 import { UpgradeButton } from '../reusables/modals/user/upgrade';
 import { mockSubscriptions } from '@/constants/_faker/profile/userSubscription';
+import { SecurityModal } from '../reusables/modals/user/security';
 
 export default function Header() {
   return (
@@ -13,6 +14,7 @@ export default function Header() {
           <UpgradeButton currentMembership={mockSubscriptions[1]} />
           <UserNav />
           <ThemeToggle />
+          <SecurityModal />
         </div>
         <div className={cn('mx-5 block lg:!hidden')}>
           <MobileSidebar />

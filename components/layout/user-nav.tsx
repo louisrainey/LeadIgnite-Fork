@@ -1,4 +1,5 @@
 'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,100 +13,101 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useModalStore } from '@/lib/stores/dashboard';
-import { signOut, useSession } from 'next-auth/react';
+import { useUserProfileStore } from '@/lib/stores/user/userProfile';
+import { signOut } from 'next-auth/react'; // Still needed for logging out
 import { useRouter } from 'next/navigation';
+
 export function UserNav() {
-  const router = useRouter(); // Use next/navigation
-  const { data: session } = useSession();
+  const router = useRouter();
+  const { userProfile } = useUserProfileStore(); // ✅ Fetching profile from Zustand store
   const {
     openUsageModal,
     openBillingModal,
     openSecurityModal,
     openWebhookModal,
     openEmployeeModal
-  } = useModalStore(); // Zustand hook to open the modal
+  } = useModalStore();
 
-  if (session) {
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="h-8 w-8">
-              <AvatarImage
-                src={session.user?.image ?? ''}
-                alt={session.user?.name ?? ''}
-              />
-              <AvatarFallback>{session.user?.name?.[0]}</AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {session.user?.name}
-              </p>
-              <p className="text-xs leading-none text-muted-foreground">
-                {session.user?.email}
-              </p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => router.push('/dashboard/profile')}
-            >
-              Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={openUsageModal}
-            >
-              {/* Open the modal */}
-              Usage
-              <DropdownMenuShortcut>⌘U</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={openBillingModal}
-            >
-              Billing
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={openSecurityModal}
-            >
-              Security
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={openWebhookModal}
-            >
-              Webhooks
-              <DropdownMenuShortcut>⌘W</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={openEmployeeModal}
-              className="cursor-pointer"
-            >
-              Add Team Member
-              <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
+  if (!userProfile) return null; // ✅ Ensure component doesn't render without profile
+
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    userProfile.firstName
+  )}`;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarImage
+              src={userProfile?.companyInfo?.companyLogo ?? avatarUrl}
+              alt={userProfile?.firstName ?? ''}
+            />
+            <AvatarFallback>
+              {userProfile?.firstName?.charAt(0).toUpperCase() ?? '?'}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">
+              {userProfile?.firstName ?? 'User'}
+            </p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {userProfile?.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => signOut()}
+            onClick={() => router.push('/dashboard/profile')}
           >
-            Log out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            Profile
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    );
-  }
+          <DropdownMenuItem className="cursor-pointer" onClick={openUsageModal}>
+            Usage
+            <DropdownMenuShortcut>⌘U</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={openBillingModal}
+          >
+            Billing
+            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={openSecurityModal}
+          >
+            Security
+            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={openWebhookModal}
+          >
+            Webhooks
+            <DropdownMenuShortcut>⌘W</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={openEmployeeModal}
+          >
+            Add Team Member
+            <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
+          Log out
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }

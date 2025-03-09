@@ -125,7 +125,7 @@ export interface CompanyInfo {
   webhook?: string;
   socialMediaTags: string[];
 
-  companyLogo: File | String;
+  companyLogo: string | undefined;
   GHLID: GetSubAccountPathParams;
   campaigns: CompanyCampaignsUserProfile;
   forwardingNumber: string;
