@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 // The client you created from the Server-Side Auth instructions
 import { createClient } from '@/utils/supabase/server';
-
+import { v4 as uuidv4 } from 'uuid';
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
@@ -29,6 +29,7 @@ export async function GET(request: Request) {
         const { error: insertError } = await supabase
           .from('UserProfile')
           .insert({
+            id: uuidv4(),
             user_id: data?.user.id,
             email: data?.user.email,
             username: data?.user.user_metadata.username

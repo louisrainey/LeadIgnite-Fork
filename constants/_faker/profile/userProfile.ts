@@ -122,8 +122,10 @@ export const mockUserProfile: UserProfile = {
   firstName: faker.person.firstName(),
   lastName: faker.person.lastName(),
   email: faker.internet.email(),
-  country: faker.location.country(),
+  state: faker.location.state(),
   city: faker.location.city(),
+
+  country: faker.location.country(),
   personalNum: '3325436201',
   connectedAccounts: connectedAccounts,
   leadPreferences: {

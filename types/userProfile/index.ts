@@ -185,7 +185,9 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   email: string;
+  personalNum: string;
   country: string;
+  state: string;
   city: string;
   connectedAccounts: {
     facebook?: FacebookOAuthData;

@@ -11,7 +11,7 @@ export interface InitialProfileData {
   email?: string;
   personalNum?: string;
   city?: string;
-  country?: string;
+  state?: string;
   twoFactorAuth?: TwoFactorAuth;
   notifications?: NotificationPreferences;
 }
@@ -30,7 +30,7 @@ export const extractInitialDataFromUserProfile = (
     email: userProfile.email,
     personalNum: userProfile.personalNum, // Extract personalNum from preferred location
     city: userProfile.city,
-    country: userProfile.country,
+    state: userProfile.country,
 
     // Two-Factor Authentication settings
     twoFactorAuth: {

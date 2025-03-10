@@ -68,6 +68,7 @@
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "country-state-city": "^3.2.1",
     "date-fns": "^2.30.0",
     "elevenlabs": "^0.15.0",
     "embla-carousel-react": "^8.2.0",

@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { Provider } from '@supabase/supabase-js';
-
+import { v4 as uuidv4 } from 'uuid';
 export async function getUserSession() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
@@ -83,6 +83,7 @@ export async function signIn(formData: FormData) {
 
   if (!existingUser) {
     const { error: insertError } = await supabase.from('UserProfile').insert({
+      id: uuidv4(),
       user_id: data?.user.id,
       email: data?.user.email,
       username: data?.user.user_metadata.username

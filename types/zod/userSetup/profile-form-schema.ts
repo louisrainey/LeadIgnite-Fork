@@ -104,7 +104,8 @@ export const profileSchema = z.object({
     notifyForNewLeads: z.boolean().optional(), // Notify when new leads are available
     notifyForCampaignUpdates: z.boolean().optional() // Notify when campaigns are updated
   }),
-  country: z
+
+  state: z
     .string()
     .min(1, { message: 'Please select a country.' })
     .max(100, { message: 'Country name cannot exceed 100 characters.' }),

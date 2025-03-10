@@ -6,7 +6,9 @@ import {
   TwitterLoginButton,
   LinkedInLoginButton
 } from 'react-social-login-buttons';
+import { State, City } from 'country-state-city';
 import { Button } from '@/components/ui/button';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Form,
   FormControl,
@@ -61,6 +63,10 @@ import {
   extractOAuthDataFromUserProfile
 } from './utils/const/connectedAccounts';
 import { toast } from 'sonner';
+import { useUserProfileStore } from '@/lib/stores/user/userProfile';
+import { updateUserProfile } from '@/actions/user';
+import { uuid } from 'uuidv4';
+
 const twoFactorAuthOptions = [
   { name: 'twoFactoAuth.sms', label: 'SMS' },
   { name: 'twoFactoAuth.email', label: 'Email ' },
@@ -106,53 +112,157 @@ const ProfileHeading: React.FC<{
 const PersonalInformationForm: React.FC<{
   form: any;
   loading: boolean;
-  countries: { id: string; name: string }[];
-  cities: { id: string; name: string }[];
-  initialData?: InitialProfileData; // Optional prop for pre-filling data
-}> = ({ form, loading, countries, cities, initialData }) => {
-  // Populate form fields with initial data if it exists
+
+  initialData?: InitialProfileData; // Optional for pre-filling data
+}> = ({ form, loading, initialData }) => {
+  const { userProfile } = useUserProfileStore(); // ✅ Fetch from Zustand store
+  const selectedState = form.watch('state'); // Watch state changes
+
+  const countryCode = 'US'; // USA
+  const stateList =
+    State.getStatesOfCountry(countryCode)?.map((state) => ({
+      id: state.isoCode,
+      name: state.name
+    })) || [];
+
+  const cityList =
+    City.getCitiesOfState(countryCode, selectedState)?.map((city) => ({
+      id: city.name,
+      name: city.name
+    })) || [];
+
   useEffect(() => {
-    if (initialData) {
-      form.setValue('firstName', initialData.firstName);
-      form.setValue('lastName', initialData.lastName);
-      form.setValue('email', initialData.email);
-      form.setValue('personalNum', initialData.personalNum || '324234234');
-      form.setValue('city', 'Kerala');
-      form.setValue('country', initialData.country);
+    console.log('🟢 Form State Updated:', form.getValues()); // Logs entire form state
+  }, [selectedState]); // Runs when the state field changes
 
-      // Two-factor authentication
-      form.setValue(
-        'twoFactoAuth.sms',
-        initialData.twoFactorAuth?.methods?.sms || false
-      );
-      form.setValue(
-        'twoFactoAuth.email',
-        initialData.twoFactorAuth?.methods?.email || false
-      );
-      form.setValue(
-        'twoFactoAuth.authenticatorApp',
-        initialData.twoFactorAuth?.methods?.authenticatorApp || false
+  // ✅ Check for missing profile data and show a toast notification
+  useEffect(() => {
+    if (userProfile) {
+      const requiredFields: (keyof UserProfile)[] = [
+        'firstName',
+        'lastName',
+        'email',
+        'state',
+        'city'
+      ];
+
+      const isProfileComplete = requiredFields.every(
+        (field) => userProfile?.[field as keyof UserProfile]
       );
 
-      // Notifications
+      if (!isProfileComplete) {
+        toast.error('⚠️ Please complete your profile before proceeding.');
+      }
+
+      // ✅ Populate form fields with Zustand profile data if available
+      form.setValue(
+        'firstName',
+        userProfile?.firstName || initialData?.firstName || ''
+      );
+      form.setValue(
+        'lastName',
+        userProfile?.lastName || initialData?.lastName || ''
+      );
+      form.setValue('email', userProfile?.email || initialData?.email || '');
+      form.setValue(
+        'personalNum',
+        userProfile?.personalNum || initialData?.personalNum || '000-000-0000'
+      );
+      form.setValue('city', userProfile?.city || initialData?.city || '');
+      form.setValue('state', userProfile?.state || initialData?.state || '');
+
+      // ✅ Two-Factor Authentication
+      form.setValue(
+        'twoFactorAuth.sms',
+        userProfile?.twoFactorAuth?.methods.sms ||
+          initialData?.twoFactorAuth?.methods.sms ||
+          false
+      );
+      form.setValue(
+        'twoFactorAuth.email',
+        userProfile?.twoFactorAuth?.methods.email ||
+          initialData?.twoFactorAuth?.methods.email ||
+          false
+      );
+      form.setValue(
+        'twoFactorAuth.authenticatorApp',
+        userProfile?.twoFactorAuth?.methods.authenticatorApp ||
+          initialData?.twoFactorAuth?.methods.authenticatorApp ||
+          false
+      );
+
+      // ✅ Notifications
       form.setValue(
         'notifications.smsNotifications',
-        initialData.notifications?.smsNotifications || false
+        userProfile?.notificationPreferences?.smsNotifications ||
+          initialData?.notifications?.smsNotifications ||
+          false
       );
       form.setValue(
         'notifications.emailNotifications',
-        initialData.notifications?.emailNotifications || false
+        userProfile?.notificationPreferences?.emailNotifications ||
+          initialData?.notifications?.emailNotifications ||
+          false
       );
       form.setValue(
         'notifications.notifyForNewLeads',
-        initialData.notifications?.notifyForNewLeads || false
+        userProfile?.notificationPreferences?.notifyForNewLeads ||
+          initialData?.notifications?.notifyForNewLeads ||
+          false
       );
       form.setValue(
         'notifications.notifyForCampaignUpdates',
-        initialData.notifications?.notifyForCampaignUpdates || false
+        userProfile?.notificationPreferences?.notifyForCampaignUpdates ||
+          initialData?.notifications?.notifyForCampaignUpdates ||
+          false
+      );
+      // ✅ Two-Factor Authentication (2FA)
+      form.setValue(
+        'twoFactorAuth.sms',
+        userProfile?.twoFactorAuth?.methods.sms ??
+          initialData?.twoFactorAuth?.methods.sms ??
+          false
+      );
+      form.setValue(
+        'twoFactorAuth.email',
+        userProfile?.twoFactorAuth?.methods.email ??
+          initialData?.twoFactorAuth?.methods.email ??
+          false
+      );
+      form.setValue(
+        'twoFactorAuth.authenticatorApp',
+        userProfile?.twoFactorAuth?.methods.authenticatorApp ??
+          initialData?.twoFactorAuth?.methods.authenticatorApp ??
+          false
+      );
+
+      // ✅ Notifications
+      form.setValue(
+        'notifications.smsNotifications',
+        userProfile?.notificationPreferences?.smsNotifications ??
+          initialData?.notifications?.smsNotifications ??
+          false
+      );
+      form.setValue(
+        'notifications.emailNotifications',
+        userProfile?.notificationPreferences?.emailNotifications ??
+          initialData?.notifications?.emailNotifications ??
+          false
+      );
+      form.setValue(
+        'notifications.notifyForNewLeads',
+        userProfile?.notificationPreferences?.notifyForNewLeads ??
+          initialData?.notifications?.notifyForNewLeads ??
+          false
+      );
+      form.setValue(
+        'notifications.notifyForCampaignUpdates',
+        userProfile?.notificationPreferences?.notifyForCampaignUpdates ??
+          initialData?.notifications?.notifyForCampaignUpdates ??
+          false
       );
     }
-  }, [initialData, form]);
+  }, [userProfile, form, initialData]);
 
   return (
     <>
@@ -220,7 +330,38 @@ const PersonalInformationForm: React.FC<{
           </FormItem>
         )}
       />
-
+      <FormField
+        control={form.control}
+        name="state"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>State</FormLabel>
+            <Select
+              disabled={loading}
+              onValueChange={field.onChange}
+              value={field.value}
+              defaultValue={field.value}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue
+                    defaultValue={field.value}
+                    placeholder="Select a state"
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {stateList.map((state) => (
+                  <SelectItem key={state.id} value={state.id}>
+                    {state.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={form.control}
         name="city"
@@ -228,7 +369,7 @@ const PersonalInformationForm: React.FC<{
           <FormItem>
             <FormLabel>City</FormLabel>
             <Select
-              disabled={loading}
+              disabled={loading || !selectedState}
               onValueChange={field.onChange}
               value={field.value}
               defaultValue={field.value}
@@ -242,42 +383,9 @@ const PersonalInformationForm: React.FC<{
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {cities.map((city) => (
+                {cityList.map((city) => (
                   <SelectItem key={city.id} value={city.id}>
                     {city.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="country"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Country</FormLabel>
-            <Select
-              disabled={loading}
-              onValueChange={field.onChange}
-              value={field.value}
-              defaultValue={field.value}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue
-                    defaultValue={field.value}
-                    placeholder="Select a country"
-                  />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {countries.map((country) => (
-                  <SelectItem key={country.id} value={country.id}>
-                    {country.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -351,6 +459,7 @@ const PersonalInformationForm: React.FC<{
     </>
   );
 };
+
 const BaseSetup: React.FC<{
   form: any;
   loading: boolean;
@@ -1047,12 +1156,6 @@ const StepNavigation: React.FC<{
   </div>
 );
 
-// Main Component
-
-// Main Component
-
-// Main Component
-// Main Component
 export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   initialData
 }) => {
@@ -1106,7 +1209,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         'lastName',
         'email',
         'personalNum',
-        'country',
+        'state',
         'city',
         'twoFactoAuth',
         'notifications'
@@ -1147,39 +1250,47 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
       ]
     }
   ];
-  const next = async () => {
-    // console.log('Next button clicked, current step:', currentStep); // Debug log
-    const stepFields = steps[currentStep].fields as (keyof ProfileFormValues)[];
+  const { userProfile } = useUserProfileStore(); // ✅ Fetch from Zustand store
 
-    const isStepValid = await form.trigger(stepFields); // Validate current step
-    // console.log('Step Valid:', isStepValid); // Debug validation
+  const next = async () => {
+    const stepFields = steps[currentStep].fields as (keyof ProfileFormValues)[];
+    const isStepValid = await form.trigger(stepFields);
 
     if (isStepValid) {
-      if (currentStep === steps.length - 1) {
-        try {
-          // Show alert for successful "form submission"
-          window.alert('Form saved successfully!');
+      try {
+        setLoading(true); // Show loading state
 
-          // Redirect to dashboard after "submission"
-          router.push('/dashboard');
-        } catch (error) {
-          // Catch and log any unexpected errors
-          console.error('Error during form submission:', error);
-          toast('An error occurred during form submission.');
+        // Extract the updated data from form state
+        const updatedData: Partial<UserProfile> = form.getValues();
+
+        // Call the function to update the user profile
+        const response = await updateUserProfile(
+          userProfile!.userId,
+          updatedData
+        );
+
+        if (response.status === 'error') {
+          toast.error(response.message);
+          return; // Stop further execution if the update fails
         }
-      } else {
-        setCurrentStep((prevStep) => prevStep + 1);
+
+        if (currentStep === steps.length - 1) {
+          toast.success('Profile setup completed! Redirecting...');
+          router.push('/dashboard');
+        } else {
+          setCurrentStep((prevStep) => prevStep + 1);
+        }
+      } catch (error) {
+        console.error('Profile update error:', error);
+        toast.error('An unexpected error occurred.');
+      } finally {
+        setLoading(false); // Reset loading state
       }
-    } else {
     }
   };
-
   const prev = () => {
     if (currentStep > 0) setCurrentStep((step) => step - 1);
   };
-
-  const countries = [{ id: '1', name: 'India' }];
-  const cities = [{ id: '2', name: 'Kerala' }];
 
   const voices: AssistantVoice[] = mockVoices; // Generate 5 mock voices
 
@@ -1270,12 +1381,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
             )}
           >
             {currentStep === 0 && (
-              <PersonalInformationForm
-                form={form}
-                loading={loading}
-                countries={countries}
-                cities={cities}
-              />
+              <PersonalInformationForm form={form} loading={loading} />
             )}
 
             {currentStep === 1 && (
