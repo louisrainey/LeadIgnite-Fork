@@ -173,18 +173,23 @@ export async function resetPassword(formData: FormData, code: string) {
 
 export async function getUserProfile(userId: string) {
   const supabase = await createClient();
-
   const { data, error } = await supabase
     .from('UserProfile')
     .select('*')
     .eq('user_id', userId)
     .single();
 
-  if (error) {
-    return { status: 'error', message: error.message, userProfile: null };
+  if (error || !data) {
+    return { status: 'error', message: error?.message || 'User not found' };
   }
 
-  return { status: 'success', userProfile: data };
+  return {
+    status: 'success',
+    userProfile: {
+      ...data,
+      userId: data.user_id // ✅ Map `user_id` from DB to `userId` in Zustand
+    }
+  };
 }
 
 export async function fetchUserProfileData(userId: string, table?: string) {

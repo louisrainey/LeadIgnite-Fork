@@ -34,14 +34,12 @@ export const extractInitialDataFromUserProfile = (
 
     // Two-Factor Authentication settings
     twoFactorAuth: {
-      isEnabled: userProfile.twoFactorAuth?.isEnabled || false,
       methods: {
         sms: userProfile.twoFactorAuth?.methods?.sms || false,
         email: userProfile.twoFactorAuth?.methods?.email || false,
         authenticatorApp:
           userProfile.twoFactorAuth?.methods?.authenticatorApp || false
-      },
-      lastEnabledAt: userProfile.twoFactorAuth?.lastEnabledAt || null
+      }
     },
 
     // Notification settings

@@ -15,13 +15,16 @@ import { useUserProfileStore } from '@/lib/stores/user/userProfile';
 export default function SidebarClient({ user }: { user: User | null }) {
   const { isSidebarMinimized, toggleSidebar } = useNavbarStore();
   const { setSessionUser } = useSessionStore(); // ✅ Zustand state
-  const { setUserProfile } = useUserProfileStore(); // ✅ Zustand store update function
+  const { setUserProfile, userProfile } = useUserProfileStore(); // ✅ Zustand store update function
 
   useEffect(() => {
     if (user?.id) {
       getUserProfile(user.id).then((profileResponse) => {
         if (profileResponse.status === 'success') {
           setUserProfile(profileResponse.userProfile); // ✅ Update Zustand store
+          console.log('User profile Set', userProfile);
+        } else {
+          console.log('Error fetching user profile');
         }
       });
     }

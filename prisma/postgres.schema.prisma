@@ -150,7 +150,7 @@ model TwoFactorAuth {
   id            String           @id @default(uuid())
   isEnabled     Boolean
   methods       TwoFactorMethods
-  lastEnabledAt DateTime?
+  lastUpdatedAt DateTime?
   userProfile   UserProfile      @relation(fields: [userProfileId], references: [id])
   userProfileId String           @unique
   TeamMember    TeamMember[]

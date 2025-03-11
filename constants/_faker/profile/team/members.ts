@@ -32,7 +32,7 @@ const generateMockTeamMember = (): TeamMember => ({
       email: faker.datatype.boolean(),
       authenticatorApp: faker.datatype.boolean()
     },
-    lastEnabledAt: faker.datatype.boolean() ? faker.date.past() : null
+    lastUpdatedAt: faker.datatype.boolean() ? faker.date.past() : null
   }
 });
 

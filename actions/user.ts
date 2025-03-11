@@ -1,32 +1,144 @@
 'use server';
 
+// utils/server/updateUserProfile.ts
+import { NotificationPreferences, TwoFactorAuth } from '@/types/userProfile';
 import { createClient } from '@/utils/supabase/server';
 import { UserProfile } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-
-/** ✅ Update User Profile */
+import { v4 as uuidv4 } from 'uuid'; // ✅ Import UUID generator
 export async function updateUserProfile(
   userId: string,
-  updatedData: Partial<UserProfile>
+  updatedData: Partial<UserProfile>,
+  twoFactorAuth?: TwoFactorAuth,
+  notifications?: Partial<NotificationPreferences>
 ) {
-  if (!userId || Object.keys(updatedData).length === 0) {
-    return { status: 'error', message: 'Invalid update request.' };
+  if (!userId) {
+    return {
+      status: 'error',
+      message: 'Invalid update request. Missing userId.'
+    };
   }
 
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
+    let errors: string[] = [];
 
+    // ✅ Update User Profile
+    if (Object.keys(updatedData).length > 0) {
+      const success = await updateUserProfileData(
+        userId,
+        updatedData,
+        supabase
+      );
+      if (!success) errors.push(`Failed to update UserProfile.`);
+    }
+
+    // ✅ Update Two-Factor Authentication (2FA)
+    if (twoFactorAuth) {
+      const success = await updateTwoFactorAuth(
+        userId,
+        twoFactorAuth,
+        supabase
+      );
+      if (!success) errors.push(`Failed to update TwoFactorAuth.`);
+    }
+
+    // ✅ Update Notification Preferences
+    if (notifications) {
+      const success = await updateNotificationPreferences(
+        userId,
+        notifications,
+        supabase
+      );
+      if (!success) errors.push(`Failed to update NotificationPreferences.`);
+    }
+
+    // ✅ Handle Errors or Success
+    if (errors.length > 0) {
+      return { status: 'error', message: errors.join(', ') };
+    }
+
+    revalidatePath('/dashboard/profile');
+    return { status: 'success', message: 'Profile updated successfully!' };
+  } catch (error) {
+    return {
+      status: 'error',
+      message: `Unexpected error: ${(error as Error).message}`
+    };
+  }
+}
+
+// ✅ Update User Profile Table (Refactored)
+async function updateUserProfileData(
+  userId: string,
+  updatedData: Partial<UserProfile>,
+  supabase: any
+) {
   const { error } = await supabase
     .from('UserProfile')
     .update(updatedData)
     .eq('user_id', userId);
 
   if (error) {
-    return {
-      status: 'error',
-      message: `Failed to update profile: ${error.message}`
-    };
+    console.error(`🚨 UserProfile Update Failed: ${error.message}`);
+    return false;
   }
+  return true;
+}
 
-  revalidatePath('/dashboard/profile');
-  return { status: 'success', message: 'Profile updated successfully!' };
+// ✅ Update Two-Factor Authentication Table (Refactored)
+async function updateTwoFactorAuth(
+  userId: string,
+  twoFactorAuth: TwoFactorAuth,
+  supabase: any
+) {
+  const id = uuidv4(); // ✅ Generate a new UUID
+  const { error } = await supabase.from('TwoFactorAuth').upsert(
+    [
+      {
+        id,
+        user_id: userId,
+        sms: twoFactorAuth.methods.sms, // ✅ Individual fields
+        email: twoFactorAuth.methods.email,
+        authenticatorApp: twoFactorAuth.methods.authenticatorApp,
+        lastUpdatedAt: twoFactorAuth.lastUpdatedAt ?? null
+      }
+    ],
+    { onConflict: 'user_id' }
+  );
+
+  if (error) {
+    console.error(`🚨 TwoFactorAuth Update Failed: ${error.message}`);
+    return false;
+  }
+  return true;
+}
+
+// ✅ Update Notification Preferences Table (Refactored)
+async function updateNotificationPreferences(
+  userId: string,
+  notifications: Partial<NotificationPreferences>,
+  supabase: any
+) {
+  const id = uuidv4(); // ✅ Generate a new UUID
+  const { error } = await supabase.from('NotificationPreferences').upsert(
+    [
+      {
+        id,
+        user_id: userId,
+        emailNotifications: notifications.emailNotifications ?? false,
+        smsNotifications: notifications.smsNotifications ?? false,
+        notifyForNewLeads: notifications.notifyForNewLeads ?? false,
+        notifyForCampaignUpdates:
+          notifications.notifyForCampaignUpdates ?? false
+      }
+    ],
+    { onConflict: 'user_id' }
+  );
+
+  if (error) {
+    console.error(`🚨 NotificationPreferences Update Failed: ${error.message}`);
+    return false;
+  }
+  return true;
 }

@@ -87,16 +87,18 @@ export const profileSchema = z.object({
   personalNum: z
     .string()
     .min(10, { message: 'Contact number must be at least 10 digits.' })
-    .max(15, { message: 'Contact number cannot exceed 15 digits.' })
+    .max(10, { message: 'Contact number cannot exceed 10 digits.' })
     .refine((value) => /^[0-9]+$/.test(value), {
       message: 'Contact number can only contain numbers.'
     }),
-  twoFactoAuth: z.object({
-    sms: z.boolean().optional(), // SMS-based 2FA
-    email: z.boolean().optional(), // Email-based 2FA
-    authenticatorApp: z.boolean().optional() // Authenticator app like Google Authenticator
+  twoFactorAuth: z.object({
+    methods: z.object({
+      sms: z.boolean().default(false), // Default to false
+      email: z.boolean().default(false), // Default to false
+      authenticatorApp: z.boolean().default(false) // Default to false
+    }),
+    lastUpdatedAt: z.date().optional() // Timestamp of last update
   }),
-
   // Notifications Schema (Optional Fields)
   notifications: z.object({
     emailNotifications: z.boolean().optional(), // Whether the user wants to receive email notifications

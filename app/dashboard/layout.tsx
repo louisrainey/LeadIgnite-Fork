@@ -32,7 +32,7 @@ export default async function DashboardLayout({
     return <p>Unauthorized</p>;
   }
 
-  // const userProfile = await getUserProfile(data.user.id); // ✅ Fetch full user profile on the server
+  const userProfile = await getUserProfile(data.user.id); // ✅ Fetch full user profile on the server
   const response = await fetchUserProfileData('data.user.id', 'ActivityLog');
 
   console.log(`Table Fetch ${data.user.id}`, response);

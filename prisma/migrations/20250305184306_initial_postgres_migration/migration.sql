@@ -135,7 +135,7 @@ CREATE TABLE "TwoFactorAuth" (
     "id" TEXT NOT NULL,
     "isEnabled" BOOLEAN NOT NULL,
     "methods" "TwoFactorMethods" NOT NULL,
-    "lastEnabledAt" TIMESTAMP(3),
+    "lastUpdatedAt" TIMESTAMP(3),
     "userProfileId" TEXT NOT NULL,
 
     CONSTRAINT "TwoFactorAuth_pkey" PRIMARY KEY ("id")

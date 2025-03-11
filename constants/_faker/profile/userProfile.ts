@@ -124,7 +124,8 @@ export const mockUserProfile: UserProfile = {
   email: faker.internet.email(),
   state: faker.location.state(),
   city: faker.location.city(),
-
+  createdAt: faker.date.past(),
+  updatedAt: faker.date.recent(),
   country: faker.location.country(),
   personalNum: '3325436201',
   connectedAccounts: connectedAccounts,
@@ -217,13 +218,11 @@ export const mockUserProfile: UserProfile = {
   },
 
   twoFactorAuth: {
-    isEnabled: faker.datatype.boolean(),
     methods: {
       sms: faker.datatype.boolean(),
       email: faker.datatype.boolean(),
       authenticatorApp: faker.datatype.boolean()
-    },
-    lastEnabledAt: faker.date.past()
+    }
   },
 
   teamMembers: mockTeamMembers,

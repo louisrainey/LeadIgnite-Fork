@@ -10,14 +10,16 @@ generator client {
 }
 
 model UserProfile {
-    id                          String                        @id @default(uuid())
-    user_id                     String                        @unique
-    username                    String
-    subscription                UserProfileSubscription?      @relation(name: "UserProfileToSubscription") // Removed onDelete from here
-    firstName                   String
-    lastName                    String
-    email                       String                        @unique
-    country                     String
+    id           String                   @id @default(uuid())
+    user_id      String                   @unique
+    username     String
+    subscription UserProfileSubscription? @relation(name: "UserProfileToSubscription") // Removed onDelete from here
+    firstName    String
+    lastName     String
+    email        String                   @unique
+    country      String
+    state        String
+
     city                        String
     personalNum                 String
     createdAt                   DateTime                      @default(now())
@@ -149,9 +151,8 @@ model TwoFactorAuth {
     user_id       String           @unique
     totpSecret    String?
     backupCodes   Json?
-    isEnabled     Boolean
     methods       TwoFactorMethods
-    lastEnabledAt DateTime?
+    lastUpdatedAt DateTime?
     userProfile   UserProfile      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
     TeamMember    TeamMember[]
 
@@ -188,8 +189,7 @@ model UserPermissions {
 
 model NotificationPreferences {
     id                       String       @id @default(uuid())
-    user_id                  String       @unique
-    emailNotifications       Boolean
+    user_id                  String       @unique @default(uuid()) // ✅ UUID Foreign Key    emailNotifications       Boolean
     smsNotifications         Boolean
     notifyForNewLeads        Boolean
     notifyForCampaignUpdates Boolean

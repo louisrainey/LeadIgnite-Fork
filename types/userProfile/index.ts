@@ -46,13 +46,12 @@ export interface Integration {
 }
 // Two-Factor Authentication (2FA) Type
 export interface TwoFactorAuth {
-  isEnabled: boolean; // Whether 2FA is enabled or not
   methods: {
     sms: boolean; // SMS-based 2FA
     email: boolean; // Email-based 2FA
     authenticatorApp: boolean; // Authenticator app like Google Authenticator
   };
-  lastEnabledAt: Date | null; // Date when 2FA was last enabled, can be null if never enabled
+  lastUpdatedAt?: Date; // Timestamp of the last update
 }
 
 // UserPermissions for team members
@@ -189,6 +188,9 @@ export interface UserProfile {
   country: string;
   state: string;
   city: string;
+  updatedAt: Date;
+  createdAt: Date;
+
   connectedAccounts: {
     facebook?: FacebookOAuthData;
     instagram?: InstagramOAuthData;

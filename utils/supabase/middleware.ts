@@ -51,23 +51,23 @@ export async function updateSession(request: NextRequest) {
     .single();
 
   // ✅ 3. Validate Profile Completeness
-  const isProfileComplete =
-    userProfile &&
-    userProfile.firstName &&
-    userProfile.lastName &&
-    userProfile.email &&
-    userProfile.companyInfo; // Add more fields as necessary
+  // const isProfileComplete =
+  //   userProfile &&
+  //   userProfile.firstName &&
+  //   userProfile.lastName &&
+  //   userProfile.email &&
+  //   userProfile.companyInfo; // Add more fields as necessary
 
-  // ✅ 4. Redirect Incomplete Profiles to /dashboard/profile
-  if (
-    !isProfileComplete &&
-    request.nextUrl.pathname.startsWith('/dashboard') &&
-    request.nextUrl.pathname !== '/dashboard/profile'
-  ) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/dashboard/profile';
-    return NextResponse.redirect(url);
-  }
+  // // ✅ 4. Redirect Incomplete Profiles to /dashboard/profile
+  // if (
+  //   !isProfileComplete &&
+  //   request.nextUrl.pathname.startsWith('/dashboard') &&
+  //   request.nextUrl.pathname !== '/dashboard/profile'
+  // ) {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = '/dashboard/profile';
+  //   return NextResponse.redirect(url);
+  // }
 
   return supabaseResponse;
 }

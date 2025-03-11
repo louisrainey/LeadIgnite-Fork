@@ -66,11 +66,12 @@ import { toast } from 'sonner';
 import { useUserProfileStore } from '@/lib/stores/user/userProfile';
 import { updateUserProfile } from '@/actions/user';
 import { uuid } from 'uuidv4';
+import { updatePersonalInfoUtil } from './utils/_data/updateProfile';
 
 const twoFactorAuthOptions = [
-  { name: 'twoFactoAuth.sms', label: 'SMS' },
-  { name: 'twoFactoAuth.email', label: 'Email ' },
-  { name: 'twoFactoAuth.authenticatorApp', label: 'Authenticator App' }
+  // { name: 'twoFactorAuth.sms', label: 'SMS' },
+  // { name: 'twoFactorAuth.email', label: 'Email ' },
+  { name: 'twoFactorAuth.authenticatorApp', label: 'Authenticator App' }
 ];
 
 const notificationOptions = [
@@ -137,130 +138,62 @@ const PersonalInformationForm: React.FC<{
 
   // ✅ Check for missing profile data and show a toast notification
   useEffect(() => {
-    if (userProfile) {
-      const requiredFields: (keyof UserProfile)[] = [
-        'firstName',
-        'lastName',
-        'email',
-        'state',
-        'city'
-      ];
+    if (userProfile || initialData) {
+      // ✅ Define form fields and their corresponding values
+      const fieldsToUpdate = {
+        firstName: userProfile?.firstName || initialData?.firstName || '',
+        lastName: userProfile?.lastName || initialData?.lastName || '',
+        email: userProfile?.email || initialData?.email || '',
+        personalNum:
+          userProfile?.personalNum ||
+          initialData?.personalNum ||
+          '000-000-0000',
+        city: userProfile?.city || initialData?.city || '',
+        state: userProfile?.state || initialData?.state || ''
+      };
 
-      const isProfileComplete = requiredFields.every(
-        (field) => userProfile?.[field as keyof UserProfile]
-      );
+      // ✅ Two-Factor Authentication fields
+      const twoFactorFields = {
+        'twoFactorAuth.sms':
+          userProfile?.twoFactorAuth?.methods?.sms ??
+          initialData?.twoFactorAuth?.methods?.sms ??
+          false,
+        'twoFactorAuth.email':
+          userProfile?.twoFactorAuth?.methods?.email ??
+          initialData?.twoFactorAuth?.methods?.email ??
+          false,
+        'twoFactorAuth.authenticatorApp':
+          userProfile?.twoFactorAuth?.methods?.authenticatorApp ??
+          initialData?.twoFactorAuth?.methods?.authenticatorApp ??
+          false
+      };
 
-      if (!isProfileComplete) {
-        toast.error('⚠️ Please complete your profile before proceeding.');
-      }
-
-      // ✅ Populate form fields with Zustand profile data if available
-      form.setValue(
-        'firstName',
-        userProfile?.firstName || initialData?.firstName || ''
-      );
-      form.setValue(
-        'lastName',
-        userProfile?.lastName || initialData?.lastName || ''
-      );
-      form.setValue('email', userProfile?.email || initialData?.email || '');
-      form.setValue(
-        'personalNum',
-        userProfile?.personalNum || initialData?.personalNum || '000-000-0000'
-      );
-      form.setValue('city', userProfile?.city || initialData?.city || '');
-      form.setValue('state', userProfile?.state || initialData?.state || '');
-
-      // ✅ Two-Factor Authentication
-      form.setValue(
-        'twoFactorAuth.sms',
-        userProfile?.twoFactorAuth?.methods.sms ||
-          initialData?.twoFactorAuth?.methods.sms ||
-          false
-      );
-      form.setValue(
-        'twoFactorAuth.email',
-        userProfile?.twoFactorAuth?.methods.email ||
-          initialData?.twoFactorAuth?.methods.email ||
-          false
-      );
-      form.setValue(
-        'twoFactorAuth.authenticatorApp',
-        userProfile?.twoFactorAuth?.methods.authenticatorApp ||
-          initialData?.twoFactorAuth?.methods.authenticatorApp ||
-          false
-      );
-
-      // ✅ Notifications
-      form.setValue(
-        'notifications.smsNotifications',
-        userProfile?.notificationPreferences?.smsNotifications ||
-          initialData?.notifications?.smsNotifications ||
-          false
-      );
-      form.setValue(
-        'notifications.emailNotifications',
-        userProfile?.notificationPreferences?.emailNotifications ||
-          initialData?.notifications?.emailNotifications ||
-          false
-      );
-      form.setValue(
-        'notifications.notifyForNewLeads',
-        userProfile?.notificationPreferences?.notifyForNewLeads ||
-          initialData?.notifications?.notifyForNewLeads ||
-          false
-      );
-      form.setValue(
-        'notifications.notifyForCampaignUpdates',
-        userProfile?.notificationPreferences?.notifyForCampaignUpdates ||
-          initialData?.notifications?.notifyForCampaignUpdates ||
-          false
-      );
-      // ✅ Two-Factor Authentication (2FA)
-      form.setValue(
-        'twoFactorAuth.sms',
-        userProfile?.twoFactorAuth?.methods.sms ??
-          initialData?.twoFactorAuth?.methods.sms ??
-          false
-      );
-      form.setValue(
-        'twoFactorAuth.email',
-        userProfile?.twoFactorAuth?.methods.email ??
-          initialData?.twoFactorAuth?.methods.email ??
-          false
-      );
-      form.setValue(
-        'twoFactorAuth.authenticatorApp',
-        userProfile?.twoFactorAuth?.methods.authenticatorApp ??
-          initialData?.twoFactorAuth?.methods.authenticatorApp ??
-          false
-      );
-
-      // ✅ Notifications
-      form.setValue(
-        'notifications.smsNotifications',
-        userProfile?.notificationPreferences?.smsNotifications ??
+      // ✅ Notification fields
+      const notificationFields = {
+        'notifications.smsNotifications':
+          userProfile?.notificationPreferences?.smsNotifications ??
           initialData?.notifications?.smsNotifications ??
-          false
-      );
-      form.setValue(
-        'notifications.emailNotifications',
-        userProfile?.notificationPreferences?.emailNotifications ??
+          false,
+        'notifications.emailNotifications':
+          userProfile?.notificationPreferences?.emailNotifications ??
           initialData?.notifications?.emailNotifications ??
-          false
-      );
-      form.setValue(
-        'notifications.notifyForNewLeads',
-        userProfile?.notificationPreferences?.notifyForNewLeads ??
+          false,
+        'notifications.notifyForNewLeads':
+          userProfile?.notificationPreferences?.notifyForNewLeads ??
           initialData?.notifications?.notifyForNewLeads ??
-          false
-      );
-      form.setValue(
-        'notifications.notifyForCampaignUpdates',
-        userProfile?.notificationPreferences?.notifyForCampaignUpdates ??
+          false,
+        'notifications.notifyForCampaignUpdates':
+          userProfile?.notificationPreferences?.notifyForCampaignUpdates ??
           initialData?.notifications?.notifyForCampaignUpdates ??
           false
-      );
+      };
+
+      // ✅ Apply all fields dynamically
+      Object.entries({
+        ...fieldsToUpdate,
+        ...twoFactorFields,
+        ...notificationFields
+      }).forEach(([key, value]) => form.setValue(key, value));
     }
   }, [userProfile, form, initialData]);
 
@@ -344,13 +277,15 @@ const PersonalInformationForm: React.FC<{
             >
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue
-                    defaultValue={field.value}
-                    placeholder="Select a state"
-                  />
+                  <SelectValue placeholder="Select a state" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent
+                position="popper"
+                side="bottom"
+                avoidCollisions={false}
+                className="max-h-56 overflow-y-auto"
+              >
                 {stateList.map((state) => (
                   <SelectItem key={state.id} value={state.id}>
                     {state.name}
@@ -369,7 +304,7 @@ const PersonalInformationForm: React.FC<{
           <FormItem>
             <FormLabel>City</FormLabel>
             <Select
-              disabled={loading || !selectedState}
+              disabled={loading}
               onValueChange={field.onChange}
               value={field.value}
               defaultValue={field.value}
@@ -382,7 +317,12 @@ const PersonalInformationForm: React.FC<{
                   />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent
+                position="popper"
+                side="bottom"
+                avoidCollisions={false}
+                className="max-h-64 overflow-y-auto"
+              >
                 {cityList.map((city) => (
                   <SelectItem key={city.id} value={city.id}>
                     {city.name}
@@ -403,7 +343,7 @@ const PersonalInformationForm: React.FC<{
             <FormField
               key={option.name}
               control={form.control}
-              name={option.name}
+              name={`twoFactorAuth.methods.${option.name}`} // ✅ FIXED FIELD NAME
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between space-x-4">
@@ -412,7 +352,7 @@ const PersonalInformationForm: React.FC<{
                     </FormLabel>
                     <FormControl>
                       <Switch
-                        checked={field.value}
+                        checked={field.value ?? false} // ✅ Avoid undefined
                         onCheckedChange={field.onChange}
                         disabled={loading}
                       />
@@ -434,7 +374,7 @@ const PersonalInformationForm: React.FC<{
             <FormField
               key={option.name}
               control={form.control}
-              name={option.name}
+              name={`notifications.${option.name}`} // ✅ FIXED FIELD NAME
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between space-x-4">
@@ -443,7 +383,7 @@ const PersonalInformationForm: React.FC<{
                     </FormLabel>
                     <FormControl>
                       <Switch
-                        checked={field.value}
+                        checked={field.value ?? false} // ✅ Avoid undefined
                         onCheckedChange={field.onChange}
                         disabled={loading}
                       />
@@ -1211,7 +1151,7 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
         'personalNum',
         'state',
         'city',
-        'twoFactoAuth',
+        'twoFactorAuth',
         'notifications'
       ]
     },
@@ -1254,40 +1194,54 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
 
   const next = async () => {
     const stepFields = steps[currentStep].fields as (keyof ProfileFormValues)[];
+    const fieldValues = form.getValues(); // Get all field values
     const isStepValid = await form.trigger(stepFields);
 
-    if (isStepValid) {
-      try {
-        setLoading(true); // Show loading state
+    if (!isStepValid) {
+      console.warn(`⚠️ Step ${currentStep} validation failed.`);
+      console.warn('🔹 stepFields:', stepFields);
+      console.warn(
+        '🔹 Field values:',
+        stepFields.map((field) => ({ [field]: fieldValues[field] }))
+      );
+      console.log('🛠 twoFactorAuth Data:', form.getValues('twoFactorAuth'));
+      console.error('❌ Validation Errors:', form.formState.errors);
+      alert('failed');
+      return;
+    }
 
-        // Extract the updated data from form state
-        const updatedData: Partial<UserProfile> = form.getValues();
+    try {
+      setLoading(true); // ✅ Show loading state
+      console.log('🔄 User:', JSON.stringify(userProfile, null, 2));
 
-        // Call the function to update the user profile
-        const response = await updateUserProfile(
-          userProfile!.userId,
-          updatedData
-        );
+      console.log(`🔄 Updating profile for User ID: ${userProfile!.userId}`);
 
-        if (response.status === 'error') {
-          toast.error(response.message);
-          return; // Stop further execution if the update fails
-        }
+      // ✅ Extract relevant form data and update the database
+      const success = await updatePersonalInfoUtil(
+        userProfile!.userId,
+        form.getValues(),
+        setLoading
+      );
 
-        if (currentStep === steps.length - 1) {
-          toast.success('Profile setup completed! Redirecting...');
-          router.push('/dashboard');
-        } else {
-          setCurrentStep((prevStep) => prevStep + 1);
-        }
-      } catch (error) {
-        console.error('Profile update error:', error);
-        toast.error('An unexpected error occurred.');
-      } finally {
-        setLoading(false); // Reset loading state
+      if (!success) return; // ❌ Stop if update fails
+
+      console.log(`✅ Profile updated successfully for step ${currentStep}`);
+
+      if (currentStep === steps.length - 1) {
+        toast.success('🎉 Profile setup completed! Redirecting...');
+        router.push('/dashboard');
+      } else {
+        setCurrentStep((prevStep) => prevStep + 1);
+        console.log(`➡️ Moving to step ${currentStep + 1}`);
       }
+    } catch (error) {
+      console.error('🚨 Unexpected profile update error:', error);
+      toast.error('An unexpected error occurred.');
+    } finally {
+      setLoading(false); // ✅ Reset loading state
     }
   };
+
   const prev = () => {
     if (currentStep > 0) setCurrentStep((step) => step - 1);
   };
