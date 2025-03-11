@@ -6,6 +6,7 @@ import { createClient } from '@/utils/supabase/server';
 import { UserProfile } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { v4 as uuidv4 } from 'uuid'; // ✅ Import UUID generator
+
 export async function updateUserProfile(
   userId: string,
   updatedData: Partial<UserProfile>,
@@ -141,4 +142,74 @@ async function updateNotificationPreferences(
     return false;
   }
   return true;
+}
+
+export async function getUserPreferences(userId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('UserPreferences')
+    .select('theme, language, timezone, createdAt, updatedAt')
+    .eq('user_id', userId)
+    .single();
+
+  if (error) {
+    console.error(`🚨 User Preferences Retrieval Failed: ${error.message}`);
+    return null;
+  }
+
+  return data;
+}
+
+export async function getTwoFactorAuth(userId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('TwoFactorAuth')
+    .select('sms, email, authenticatorApp, lastUpdatedAt')
+    .eq('user_id', userId)
+    .single();
+
+  if (error) {
+    console.error(
+      `🚨 Two-Factor Authentication Retrieval Failed: ${error.message}`
+    );
+    return null;
+  }
+
+  return {
+    methods: {
+      sms: data.sms ?? false,
+      email: data.email ?? false,
+      authenticatorApp: data.authenticatorApp ?? false
+    },
+    lastUpdatedAt: data.lastUpdatedAt ?? null
+  };
+}
+
+// ✅ Retrieve Notification Settings
+export async function getNotificationPreferences(userId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('NotificationPreferences')
+    .select(
+      'emailNotifications, smsNotifications, notifyForNewLeads, notifyForCampaignUpdates'
+    ) // ✅ Fixed: No trailing comma
+    .eq('user_id', userId)
+    .single();
+
+  if (error) {
+    console.error(
+      `🚨 Notification Preferences Retrieval Failed: ${error.message}`
+    );
+    return null;
+  }
+
+  return {
+    emailNotifications: data.emailNotifications ?? false,
+    smsNotifications: data.smsNotifications ?? false,
+    notifyForNewLeads: data.notifyForNewLeads ?? false,
+    notifyForCampaignUpdates: data.notifyForCampaignUpdates ?? false
+  };
 }

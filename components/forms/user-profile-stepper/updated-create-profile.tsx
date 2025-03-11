@@ -46,7 +46,11 @@ import PropertySearchModal from '@/components/reusables/tutorials/walkthroughMod
 import { Switch } from '@/components/ui/switch';
 import { DynamicFileUpload } from './utils/files/dynamicUploadFiles';
 import HashtagInput from './utils/socials/hashtags';
-import { UserProfile } from '@/types/userProfile';
+import {
+  NotificationPreferences,
+  TwoFactorAuth,
+  UserProfile
+} from '@/types/userProfile';
 import { InitialProfileData } from './utils/const/getProfileInfo';
 import {
   InitialBaseSetupData,
@@ -64,7 +68,12 @@ import {
 } from './utils/const/connectedAccounts';
 import { toast } from 'sonner';
 import { useUserProfileStore } from '@/lib/stores/user/userProfile';
-import { updateUserProfile } from '@/actions/user';
+import {
+  getNotificationPreferences,
+  getTwoFactorAuth,
+  getUserPreferences,
+  updateUserProfile
+} from '@/actions/user';
 import { uuid } from 'uuidv4';
 import { updatePersonalInfoUtil } from './utils/_data/updateProfile';
 
@@ -110,36 +119,71 @@ const ProfileHeading: React.FC<{
 
 // 2. Personal Information Form Component
 
-const PersonalInformationForm: React.FC<{
+export const PersonalInformationForm: React.FC<{
   form: any;
   loading: boolean;
-
-  initialData?: InitialProfileData; // Optional for pre-filling data
+  initialData?: InitialProfileData;
 }> = ({ form, loading, initialData }) => {
-  const { userProfile } = useUserProfileStore(); // ✅ Fetch from Zustand store
-  const selectedState = form.watch('state'); // Watch state changes
+  const { userProfile } = useUserProfileStore();
+  const [isFormInitialized, setIsFormInitialized] = useState(false);
 
-  const countryCode = 'US'; // USA
+  // Example: tracking 'state' field
+  const selectedState = form.watch('state');
+
+  // Country/state/city data
+  const countryCode = 'US';
   const stateList =
-    State.getStatesOfCountry(countryCode)?.map((state) => ({
-      id: state.isoCode,
-      name: state.name
+    State.getStatesOfCountry(countryCode)?.map((st) => ({
+      id: st.isoCode,
+      name: st.name
     })) || [];
-
   const cityList =
     City.getCitiesOfState(countryCode, selectedState)?.map((city) => ({
       id: city.name,
       name: city.name
     })) || [];
 
+  // Just logs entire form state on state change
   useEffect(() => {
-    console.log('🟢 Form State Updated:', form.getValues()); // Logs entire form state
-  }, [selectedState]); // Runs when the state field changes
+    console.log('🟢 Form State Updated:', form.getValues());
+  }, [selectedState, form]); // form is stable if it's not re-created each render
 
-  // ✅ Check for missing profile data and show a toast notification
+  // Initialize form values once, when userProfile.userId or initialData are available
   useEffect(() => {
-    if (userProfile || initialData) {
-      // ✅ Define form fields and their corresponding values
+    // Guard: only run if not yet initialized and if we have userId or initialData
+    if (!isFormInitialized && (userProfile?.userId || initialData)) {
+      // (1) Fetch Notification Preferences
+      getNotificationPreferences(userProfile?.userId!).then((settings) => {
+        useUserProfileStore.getState().updateUserProfile({
+          notificationPreferences: settings
+            ? {
+                emailNotifications: settings.emailNotifications ?? true,
+                smsNotifications: settings.smsNotifications ?? true,
+                notifyForNewLeads: settings.notifyForNewLeads ?? true,
+                notifyForCampaignUpdates:
+                  settings.notifyForCampaignUpdates ?? true
+              }
+            : undefined
+        });
+      });
+
+      // (2) Fetch 2FA
+      getTwoFactorAuth(userProfile?.userId!).then((twoFactor) => {
+        useUserProfileStore.getState().updateUserProfile({
+          twoFactorAuth: twoFactor
+            ? {
+                methods: {
+                  sms: twoFactor.methods.sms ?? false,
+                  email: twoFactor.methods.email ?? false,
+                  authenticatorApp: twoFactor.methods.authenticatorApp ?? false
+                },
+                lastUpdatedAt: twoFactor.lastUpdatedAt ?? null
+              }
+            : undefined
+        });
+      });
+
+      // Merge userProfile & initialData to set form fields
       const fieldsToUpdate = {
         firstName: userProfile?.firstName || initialData?.firstName || '',
         lastName: userProfile?.lastName || initialData?.lastName || '',
@@ -152,7 +196,7 @@ const PersonalInformationForm: React.FC<{
         state: userProfile?.state || initialData?.state || ''
       };
 
-      // ✅ Two-Factor Authentication fields
+      // Two-Factor Auth fields
       const twoFactorFields = {
         'twoFactorAuth.sms':
           userProfile?.twoFactorAuth?.methods?.sms ??
@@ -168,7 +212,7 @@ const PersonalInformationForm: React.FC<{
           false
       };
 
-      // ✅ Notification fields
+      // Notification fields
       const notificationFields = {
         'notifications.smsNotifications':
           userProfile?.notificationPreferences?.smsNotifications ??
@@ -188,14 +232,16 @@ const PersonalInformationForm: React.FC<{
           false
       };
 
-      // ✅ Apply all fields dynamically
       Object.entries({
         ...fieldsToUpdate,
         ...twoFactorFields,
         ...notificationFields
       }).forEach(([key, value]) => form.setValue(key, value));
+
+      // Mark form as initialized
+      setIsFormInitialized(true);
     }
-  }, [userProfile, form, initialData]);
+  }, [userProfile?.userId, initialData, isFormInitialized, form]);
 
   return (
     <>
