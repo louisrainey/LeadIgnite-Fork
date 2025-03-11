@@ -76,7 +76,7 @@ import {
 } from '@/actions/user';
 import { uuid } from 'uuidv4';
 import { updatePersonalInfoUtil } from './utils/_data/updateProfile';
-
+import { useMemo } from 'react'; // ✅ Import useMemo
 const twoFactorAuthOptions = [
   // { name: 'twoFactorAuth.sms', label: 'SMS' },
   // { name: 'twoFactorAuth.email', label: 'Email ' },
@@ -127,7 +127,9 @@ export const PersonalInformationForm: React.FC<{
   const { userProfile } = useUserProfileStore();
   const [isFormInitialized, setIsFormInitialized] = useState(false);
 
-  // Example: tracking 'state' field
+  // console.warn("[DEBUG] userProfile:", userProfile);
+
+  // Track 'state' field
   const selectedState = form.watch('state');
 
   // Country/state/city data
@@ -142,106 +144,6 @@ export const PersonalInformationForm: React.FC<{
       id: city.name,
       name: city.name
     })) || [];
-
-  // Just logs entire form state on state change
-  useEffect(() => {
-    console.log('🟢 Form State Updated:', form.getValues());
-  }, [selectedState, form]); // form is stable if it's not re-created each render
-
-  // Initialize form values once, when userProfile.userId or initialData are available
-  useEffect(() => {
-    // Guard: only run if not yet initialized and if we have userId or initialData
-    if (!isFormInitialized && (userProfile?.userId || initialData)) {
-      // (1) Fetch Notification Preferences
-      getNotificationPreferences(userProfile?.userId!).then((settings) => {
-        useUserProfileStore.getState().updateUserProfile({
-          notificationPreferences: settings
-            ? {
-                emailNotifications: settings.emailNotifications ?? true,
-                smsNotifications: settings.smsNotifications ?? true,
-                notifyForNewLeads: settings.notifyForNewLeads ?? true,
-                notifyForCampaignUpdates:
-                  settings.notifyForCampaignUpdates ?? true
-              }
-            : undefined
-        });
-      });
-
-      // (2) Fetch 2FA
-      getTwoFactorAuth(userProfile?.userId!).then((twoFactor) => {
-        useUserProfileStore.getState().updateUserProfile({
-          twoFactorAuth: twoFactor
-            ? {
-                methods: {
-                  sms: twoFactor.methods.sms ?? false,
-                  email: twoFactor.methods.email ?? false,
-                  authenticatorApp: twoFactor.methods.authenticatorApp ?? false
-                },
-                lastUpdatedAt: twoFactor.lastUpdatedAt ?? null
-              }
-            : undefined
-        });
-      });
-
-      // Merge userProfile & initialData to set form fields
-      const fieldsToUpdate = {
-        firstName: userProfile?.firstName || initialData?.firstName || '',
-        lastName: userProfile?.lastName || initialData?.lastName || '',
-        email: userProfile?.email || initialData?.email || '',
-        personalNum:
-          userProfile?.personalNum ||
-          initialData?.personalNum ||
-          '000-000-0000',
-        city: userProfile?.city || initialData?.city || '',
-        state: userProfile?.state || initialData?.state || ''
-      };
-
-      // Two-Factor Auth fields
-      const twoFactorFields = {
-        'twoFactorAuth.sms':
-          userProfile?.twoFactorAuth?.methods?.sms ??
-          initialData?.twoFactorAuth?.methods?.sms ??
-          false,
-        'twoFactorAuth.email':
-          userProfile?.twoFactorAuth?.methods?.email ??
-          initialData?.twoFactorAuth?.methods?.email ??
-          false,
-        'twoFactorAuth.authenticatorApp':
-          userProfile?.twoFactorAuth?.methods?.authenticatorApp ??
-          initialData?.twoFactorAuth?.methods?.authenticatorApp ??
-          false
-      };
-
-      // Notification fields
-      const notificationFields = {
-        'notifications.smsNotifications':
-          userProfile?.notificationPreferences?.smsNotifications ??
-          initialData?.notifications?.smsNotifications ??
-          false,
-        'notifications.emailNotifications':
-          userProfile?.notificationPreferences?.emailNotifications ??
-          initialData?.notifications?.emailNotifications ??
-          false,
-        'notifications.notifyForNewLeads':
-          userProfile?.notificationPreferences?.notifyForNewLeads ??
-          initialData?.notifications?.notifyForNewLeads ??
-          false,
-        'notifications.notifyForCampaignUpdates':
-          userProfile?.notificationPreferences?.notifyForCampaignUpdates ??
-          initialData?.notifications?.notifyForCampaignUpdates ??
-          false
-      };
-
-      Object.entries({
-        ...fieldsToUpdate,
-        ...twoFactorFields,
-        ...notificationFields
-      }).forEach(([key, value]) => form.setValue(key, value));
-
-      // Mark form as initialized
-      setIsFormInitialized(true);
-    }
-  }, [userProfile?.userId, initialData, isFormInitialized, form]);
 
   return (
     <>
@@ -1145,6 +1047,8 @@ const StepNavigation: React.FC<{
 export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   initialData
 }) => {
+  const { userProfile } = useUserProfileStore(); // ✅ Fetch from Zustand store
+
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -1181,9 +1085,22 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
   // useForm setup with Zod validation
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
-    // defaultValues,
     mode: 'onChange',
-    reValidateMode: 'onChange'
+    reValidateMode: 'onChange',
+    defaultValues: useMemo(
+      () => ({
+        firstName: userProfile?.firstName || initialData?.firstName || '',
+        lastName: userProfile?.lastName || initialData?.lastName || '',
+        email: userProfile?.email || initialData?.email || '',
+        personalNum:
+          userProfile?.personalNum ||
+          initialData?.personalNum ||
+          '000-000-0000',
+        state: userProfile?.state || initialData?.state || '', // 🚀 Persist state
+        city: userProfile?.city || initialData?.city || '' // 🚀 Persist city
+      }),
+      [userProfile, initialData]
+    ) // ✅ Updates when userProfile or initialData change
   });
 
   const steps = [
@@ -1236,7 +1153,6 @@ export const CreateProfileUpdated: React.FC<ProfileFormType> = ({
       ]
     }
   ];
-  const { userProfile } = useUserProfileStore(); // ✅ Fetch from Zustand store
 
   const next = async () => {
     const stepFields = steps[currentStep].fields as (keyof ProfileFormValues)[];
