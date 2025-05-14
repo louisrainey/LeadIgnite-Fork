@@ -64,7 +64,7 @@ CREATE TABLE "ConnectedAccounts" (
 CREATE TABLE "OAuthData" (
     "id" TEXT NOT NULL,
     "provider" "OAuthProvider" NOT NULL,
-    "userId" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
     "username" TEXT,
     "pageId" TEXT,
     "companyId" TEXT,
@@ -383,7 +383,7 @@ CREATE TABLE "TextMessage" (
     "contentType" TEXT NOT NULL,
     "meta" JSONB,
     "source" TEXT,
-    "userId" TEXT,
+    "id" TEXT,
     "textCampaignId" TEXT NOT NULL,
 
     CONSTRAINT "TextMessage_pkey" PRIMARY KEY ("id")
@@ -716,7 +716,7 @@ CREATE UNIQUE INDEX "ConnectedAccounts_userProfileId_key" ON "ConnectedAccounts"
 CREATE INDEX "idx_connected_accounts_user" ON "ConnectedAccounts"("userProfileId");
 
 -- CreateIndex
-CREATE INDEX "idx_oauth_provider_user" ON "OAuthData"("provider", "userId");
+CREATE INDEX "idx_oauth_provider_user" ON "OAuthData"("provider", "id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserProfileSubscription_userProfileId_key" ON "UserProfileSubscription"("userProfileId");

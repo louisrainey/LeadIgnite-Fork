@@ -1,27 +1,27 @@
-import { faker } from '@faker-js/faker';
-import { APP_TESTING_MODE } from '../../data';
-import {
-  KanbanColumn,
-  KanbanTask,
-  Priority,
-  KanbanState,
-  Status
-} from '@/types/_dashboard/kanban';
+import type {
+	KanbanColumn,
+	KanbanState,
+	KanbanTask,
+	Priority,
+	Status,
+} from "@/types/_dashboard/kanban";
+import { faker } from "@faker-js/faker";
+import { APP_TESTING_MODE } from "../../data";
 
 // Default column structure with status-based `id`
 const defaultCols: KanbanColumn[] = [
-  {
-    id: 'TODO',
-    title: 'To Do'
-  },
-  {
-    id: 'IN_PROGRESS',
-    title: 'In Progress'
-  },
-  {
-    id: 'DONE',
-    title: 'Done'
-  }
+	{
+		id: "TODO",
+		title: "To Do",
+	},
+	{
+		id: "IN_PROGRESS",
+		title: "In Progress",
+	},
+	{
+		id: "DONE",
+		title: "Done",
+	},
 ];
 
 // Generate random task activities
@@ -76,43 +76,43 @@ const defaultCols: KanbanColumn[] = [
 // Faker utility to generate mock tasks
 
 export const generateMockTasks = (count: number): KanbanTask[] => {
-  const statuses: Status[] = ['TODO', 'IN_PROGRESS', 'DONE'];
-  const priorities: Priority[] = ['low', 'medium', 'high'];
+	const statuses: Status[] = ["TODO", "IN_PROGRESS", "DONE"];
+	const priorities: Priority[] = ["low", "medium", "high"];
 
-  return Array.from({ length: count }, () => {
-    const status = faker.helpers.arrayElement(statuses); // Random status for the task
-    const priority = faker.helpers.arrayElement(priorities); // Random priority
-    const dueDate = faker.date.future().toISOString().split('T')[0]; // Future date in YYYY-MM-DD format
-    const assignedToTeamMember = faker.person.fullName(); // Random team member name
+	return Array.from({ length: count }, () => {
+		const status = faker.helpers.arrayElement(statuses); // Random status for the task
+		const priority = faker.helpers.arrayElement(priorities); // Random priority
+		const dueDate = faker.date.future().toISOString().split("T")[0]; // Future date in YYYY-MM-DD format
+		const assignedToTeamMember = faker.person.fullName(); // Random team member name
 
-    return {
-      id: faker.string.uuid(),
-      title: faker.company.catchPhrase(),
-      description: faker.lorem.sentences(2),
-      status,
-      priority,
-      dueDate,
-      assignedToTeamMember
-    };
-  });
+		return {
+			id: faker.string.uuid(),
+			title: faker.company.catchPhrase(),
+			description: faker.lorem.sentences(2),
+			status,
+			priority,
+			dueDate,
+			assignedToTeamMember,
+		};
+	});
 };
 // Function to generate the initial Kanban state with Faker data
 export const generateKanbanState = (taskCount: number): KanbanState => {
-  const tasks = generateMockTasks(taskCount);
+	const tasks = generateMockTasks(taskCount);
 
-  // Organize tasks into columns based on their status
-  const columns = defaultCols.map((column) => ({
-    ...column,
-    taskIds: tasks
-      .filter((task) => task.status === column.id) // Only add tasks matching the column's status
-      .map((task) => task.id) // Collect task IDs
-  }));
+	// Organize tasks into columns based on their status
+	const columns = defaultCols.map((column) => ({
+		...column,
+		taskIds: tasks
+			.filter((task) => task.status === column.id) // Only add tasks matching the column's status
+			.map((task) => task.id), // Collect task IDs
+	}));
 
-  return {
-    tasks,
-    columns,
-    draggedTask: null // Initially, no task is being dragged
-  };
+	return {
+		tasks,
+		columns,
+		draggedTask: null, // Initially, no task is being dragged
+	};
 };
 
 // Example usage: Generate a Kanban state with 10 tasks

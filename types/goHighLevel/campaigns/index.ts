@@ -1,3 +1,3 @@
 export type CampaignActionResponse = {
-  succeeded: boolean;
+	succeeded: boolean;
 };

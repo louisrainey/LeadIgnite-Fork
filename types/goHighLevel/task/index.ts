@@ -2,52 +2,52 @@
 
 // Common task structure
 export type GhlTask = {
-  id: string;
-  title: string;
-  body: string;
-  assignedTo: string;
-  dueDate: string;
-  completed: boolean;
-  contactId: string;
+	id: string;
+	title: string;
+	body: string;
+	assignedTo: string;
+	dueDate: string;
+	completed: boolean;
+	contactId: string;
 };
 
 // Common headers structure
 export type AuthHeaders = {
-  Authorization: string; // Bearer token for authorization
-  Version: string; // API version (e.g., '2021-07-28')
+	Authorization: string; // Bearer token for authorization
+	Version: string; // API version (e.g., '2021-07-28')
 };
 
 // Task-related request types
 export type TaskRequest = {
-  title: string;
-  body: string;
-  dueDate: string;
-  completed: boolean;
-  assignedTo: string;
+	title: string;
+	body: string;
+	dueDate: string;
+	completed: boolean;
+	assignedTo: string;
 };
 
 export type UpdateTaskCompletedRequest = {
-  completed: boolean;
+	completed: boolean;
 };
 
 // Response types
 export type GetTasksResponse = {
-  tasks: GhlTask[];
+	tasks: GhlTask[];
 };
 
 export type TaskResponse = {
-  task: GhlTask;
+	task: GhlTask;
 };
 
 export type UpdateTaskCompletedResponse = {
-  task: GhlTask;
+	task: GhlTask;
 };
 
 export type DeleteTaskResponse = {
-  succeeded: boolean;
+	succeeded: boolean;
 };
 
 export interface GetTasksHeaders {
-  Authorization: string;
-  Version: string;
+	Authorization: string;
+	Version: string;
 }

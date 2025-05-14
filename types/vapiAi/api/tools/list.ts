@@ -1,5 +1,6 @@
 // Reuse existing Tool type
+import type { ToolType } from "./create";
 export interface ListToolsResponse {
-  tools: Tool[]; // Assuming Tool is already declared in your types
-  totalCount: number;
+	tools: ToolType[];
+	totalCount: number;
 }

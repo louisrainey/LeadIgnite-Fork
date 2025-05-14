@@ -1,15 +1,15 @@
-import { cn } from '@/lib/_utils/kanban/utils';
+import { cn } from "@/lib/_utils/kanban/utils";
 
 function Skeleton({
-  className,
-  ...props
+	className,
+	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn('animate-pulse rounded-md bg-primary/10', className)}
-      {...props}
-    />
-  );
+	return (
+		<div
+			className={cn("animate-pulse rounded-md bg-primary/10", className)}
+			{...props}
+		/>
+	);
 }
 
 export { Skeleton };

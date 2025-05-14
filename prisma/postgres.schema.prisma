@@ -68,7 +68,6 @@ model FacebookOAuthData {
 
 model InstagramOAuthData {
   id                String              @id @default(uuid())
-  userId            String
   username          String
   accessToken       String
   refreshToken      String?
@@ -80,7 +79,6 @@ model InstagramOAuthData {
 
 model LinkedInOAuthData {
   id                String              @id @default(uuid())
-  userId            String
   companyId         String?
   accessToken       String
   refreshToken      String?
@@ -92,7 +90,6 @@ model LinkedInOAuthData {
 
 model TwitterOAuthData {
   id                String              @id @default(uuid())
-  userId            String
   handle            String
   accessToken       String
   refreshToken      String?

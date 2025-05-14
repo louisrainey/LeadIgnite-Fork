@@ -17,7 +17,7 @@
   - You are about to drop the column `userProfileId` on the `LeadList` table. All the data in the column will be lost.
   - You are about to drop the column `userProfileId` on the `LeadPreferences` table. All the data in the column will be lost.
   - You are about to drop the column `userProfileId` on the `NotificationPreferences` table. All the data in the column will be lost.
-  - You are about to drop the column `userId` on the `OAuthData` table. All the data in the column will be lost.
+  - You are about to drop the column `id` on the `OAuthData` table. All the data in the column will be lost.
   - You are about to drop the column `userProfileId` on the `PaymentDetails` table. All the data in the column will be lost.
   - You are about to drop the column `userProfileId` on the `SavedSearch` table. All the data in the column will be lost.
   - You are about to drop the column `userProfileId` on the `SecuritySettings` table. All the data in the column will be lost.
@@ -264,7 +264,7 @@ ALTER TABLE "public"."NotificationPreferences" DROP COLUMN "userProfileId",
 ADD COLUMN     "user_id" TEXT NOT NULL;
 
 -- AlterTable
-ALTER TABLE "public"."OAuthData" DROP COLUMN "userId";
+ALTER TABLE "public"."OAuthData" DROP COLUMN "id";
 
 -- AlterTable
 ALTER TABLE "public"."PaymentDetails" DROP COLUMN "userProfileId",

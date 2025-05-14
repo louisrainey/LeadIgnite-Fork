@@ -1,4 +1,4 @@
-import { GetPhoneNumberResponse } from './get';
+import type { GetPhoneNumberResponse } from "./get";
 
 // Response type for listing phone numbers
 export type ListPhoneNumbersResponse = GetPhoneNumberResponse[];

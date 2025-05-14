@@ -1,18 +1,18 @@
 // Types for Tag Responses
 export interface Tag {
-  id: string;
-  name: string;
-  locationId: string;
+	id: string;
+	name: string;
+	locationId: string;
 }
 
 export interface GetTagsResponse {
-  tags: Tag[];
+	tags: Tag[];
 }
 
 export interface GetTagResponse {
-  tag: Tag;
+	tag: Tag;
 }
 
 export interface CreateOrUpdateTagRequest {
-  name: string;
+	name: string;
 }
