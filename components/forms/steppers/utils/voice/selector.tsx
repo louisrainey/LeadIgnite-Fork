@@ -45,7 +45,7 @@ const VoiceSelector: React.FC<VoiceSelectorProps> = ({
 
 	return (
 		<div className="relative">
-			<label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+			<label className="block font-medium text-gray-700 text-sm dark:text-gray-300">
 				Choose Your Voice
 			</label>
 			<Select onValueChange={handleVoiceSelect}>

@@ -1,7 +1,7 @@
 import { LinkedInLoginButton } from "react-social-login-buttons";
 
 export const UserAuthOAuthButtons: React.FC = () => (
-	<div className="flex flex-col gap-2 my-4">
+	<div className="my-4 flex flex-col gap-2">
 		<LinkedInLoginButton
 			onClick={() => {
 				/* todo: implement OAuth logic */

@@ -48,12 +48,14 @@ export const useLeadListStore = create<LeadListState>((set, get) => ({
 				return (
 					uploadDate >= new Date(currentDate.setDate(currentDate.getDate() - 7))
 				);
-			} else if (range === "Last 30 Days") {
+			}
+			if (range === "Last 30 Days") {
 				return (
 					uploadDate >=
 					new Date(currentDate.setDate(currentDate.getDate() - 30))
 				);
-			} else if (range === "Last 90 Days") {
+			}
+			if (range === "Last 90 Days") {
 				return (
 					uploadDate >=
 					new Date(currentDate.setDate(currentDate.getDate() - 90))

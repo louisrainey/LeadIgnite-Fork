@@ -11,7 +11,7 @@ export const UserAuthToggle: React.FC<UserAuthToggleProps> = ({
 }) => (
 	<button
 		type="button"
-		className="text-blue-600 underline text-sm mb-4"
+		className="mb-4 text-blue-600 text-sm underline"
 		disabled={loading}
 		onClick={() => setIsSignUp(!isSignUp)}
 	>

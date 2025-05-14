@@ -26,8 +26,8 @@ export default async function handler(
 	}
 
 	// Extract headers (Authorization and Version)
-	const authorization = req.headers["authorization"];
-	const version = req.headers["version"];
+	const authorization = req.headers.authorization;
+	const version = req.headers.version;
 
 	// Validate required headers
 	if (!authorization || Array.isArray(authorization)) {
@@ -55,17 +55,17 @@ export default async function handler(
 				headers,
 				res,
 			);
-		} else if (req.method === "DELETE") {
+		}
+		if (req.method === "DELETE") {
 			return await handleRemoveFromCampaign(
 				contactId as string,
 				campaignId as string,
 				headers,
 				res,
 			);
-		} else {
-			res.setHeader("Allow", ["POST", "DELETE"]);
-			return res.status(405).end(`Method ${req.method} Not Allowed`);
 		}
+		res.setHeader("Allow", ["POST", "DELETE"]);
+		return res.status(405).end(`Method ${req.method} Not Allowed`);
 	} catch (error) {
 		return res.status(500).json({ error: "Internal Server Error" });
 	}

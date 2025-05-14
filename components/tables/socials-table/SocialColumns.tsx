@@ -1,12 +1,12 @@
-import type { ColumnDef } from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
 import type {
 	SocialAction,
 	SocialMediaCampaign,
 } from "@/types/_dashboard/campaign";
-import { Checkbox } from "@/components/ui/checkbox";
+import type { ColumnDef } from "@tanstack/react-table";
+import DownloadCell from "./steps/columns/DownloadCell";
 import PlatformCell from "./steps/columns/PlatformCell";
 import StatusCell from "./steps/columns/StatusCell";
-import DownloadCell from "./steps/columns/DownloadCell";
 
 // Main social columns definition using subcomponents
 export const socialColumns: ColumnDef<SocialMediaCampaign>[] = [

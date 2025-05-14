@@ -93,7 +93,6 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 					(campaign) => campaign.status === "completed",
 				);
 				break;
-			case "all":
 			default:
 				// For 'all', we don't filter and just show all campaigns
 				filteredCampaigns = currentCampaign;

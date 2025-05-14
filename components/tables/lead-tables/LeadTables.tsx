@@ -1,18 +1,18 @@
 "use client";
-import type { ColumnDef } from "@tanstack/react-table";
-import React, { useState } from "react";
-import { useLeadTablePagination } from "@/components/tables/lead-tables/steps/tables/useLeadTablePagination";
-import { LeadTableFilters } from "@/components/tables/lead-tables/steps/tables/LeadTableFilters";
 import { LeadTableBody } from "@/components/tables/lead-tables/steps/tables/LeadTableBody";
+import { LeadTableFilters } from "@/components/tables/lead-tables/steps/tables/LeadTableFilters";
 import { LeadTablePagination } from "@/components/tables/lead-tables/steps/tables/LeadTablePagination";
+import { useLeadTablePagination } from "@/components/tables/lead-tables/steps/tables/useLeadTablePagination";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import type { LeadTypeGlobal } from "@/types/_dashboard/leads";
+import type { ColumnDef } from "@tanstack/react-table";
 import {
-	useReactTable,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
+	useReactTable,
 } from "@tanstack/react-table";
-import type { LeadTypeGlobal } from "@/types/_dashboard/leads";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import React, { useState } from "react";
 
 interface LeadTablesProps {
 	columns: ColumnDef<LeadTypeGlobal>[];

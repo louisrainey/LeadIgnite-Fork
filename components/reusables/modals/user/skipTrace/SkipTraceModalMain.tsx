@@ -1,9 +1,9 @@
 import { useState } from "react";
-import ListNameAndUploadStep from "./steps/ListNameAndUploadStep";
-import FieldMappingStep from "./steps/FieldMappingStep";
-import ReviewAndSubmitStep from "./steps/ReviewAndSubmitStep";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
+import FieldMappingStep from "./steps/FieldMappingStep";
+import ListNameAndUploadStep from "./steps/ListNameAndUploadStep";
+import ReviewAndSubmitStep from "./steps/ReviewAndSubmitStep";
 
 const SkipTraceModalMain = ({
 	isOpen,

@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import type {
 	BillingHistoryItem,
 	PaymentDetails,
 } from "@/constants/_faker/profile/userData";
 import type { UserProfileSubscription } from "@/constants/_faker/profile/userSubscription";
-import PaymentMethodsStep from "./steps/PaymentMethodsStep";
-import BillingHistoryStep from "./steps/BillingHistoryStep";
-import SubscriptionDetailsStep from "./steps/SubscriptionDetailsStep";
-import { Button } from "@/components/ui/button";
 import { downloadBillingHistoryAsXlsx } from "@/lib/_utils/files/billingHistory";
+import { useState } from "react";
+import BillingHistoryStep from "./steps/BillingHistoryStep";
+import PaymentMethodsStep from "./steps/PaymentMethodsStep";
+import SubscriptionDetailsStep from "./steps/SubscriptionDetailsStep";
 
 // * Main Billing UI composed of all billing steps/components
 interface BillingMainProps {

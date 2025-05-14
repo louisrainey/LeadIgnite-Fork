@@ -93,7 +93,7 @@ const updateBusiness = async (
 		const updatePayload = {
 			...validatedPayload,
 		} as any;
-		if (validatedPayload.locationId) delete updatePayload.locationId;
+		if (validatedPayload.locationId) updatePayload.locationId = undefined;
 		const response = await fetch(req, {
 			method: "PUT",
 			headers: headers(accessToken),

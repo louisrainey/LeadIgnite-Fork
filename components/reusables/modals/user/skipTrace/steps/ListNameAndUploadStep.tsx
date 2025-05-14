@@ -1,6 +1,6 @@
-import type { FC } from "react";
 import { Input } from "@/components/ui/input";
-import type { DropzoneRootProps, DropzoneInputProps } from "react-dropzone";
+import type { FC } from "react";
+import type { DropzoneInputProps, DropzoneRootProps } from "react-dropzone";
 
 interface ListNameAndUploadStepProps {
 	listName: string;

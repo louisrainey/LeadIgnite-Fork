@@ -1,8 +1,8 @@
-import React, { useState } from "react";
 import type {
-	SocialMediaCampaign,
 	SocialAction,
+	SocialMediaCampaign,
 } from "@/types/_dashboard/campaign";
+import React, { useState } from "react";
 
 // Component for rendering actions in a dropdown per platform
 export const PlatformActionsDropdown = ({

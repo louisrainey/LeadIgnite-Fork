@@ -1,7 +1,3 @@
-// * LeadSearchForm.tsx
-// ! Main form for property/lead search, including basic fields and advanced filter trigger
-import type { Control, FieldErrors } from "react-hook-form";
-import { Controller } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import {
 	Select,
@@ -10,8 +6,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Sliders } from "lucide-react";
 import type { MapFormSchemaType } from "@/types/_dashboard/maps";
+import { Sliders } from "lucide-react";
+// * LeadSearchForm.tsx
+// ! Main form for property/lead search, including basic fields and advanced filter trigger
+import type { Control, FieldErrors } from "react-hook-form";
+import { Controller } from "react-hook-form";
 
 interface LeadSearchFormProps {
 	control: Control<MapFormSchemaType>;
@@ -35,7 +35,7 @@ const LeadSearchForm: React.FC<LeadSearchFormProps> = ({
 					<input
 						id="location"
 						type="text"
-						className={`rounded border p-2 bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 ${errors.location ? "border-red-500" : "border-gray-300"}`}
+						className={`rounded border bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 ${errors.location ? "border-red-500" : "border-gray-300"}`}
 						placeholder="Enter a city, address, or zip code"
 						{...field}
 					/>
@@ -78,7 +78,7 @@ const LeadSearchForm: React.FC<LeadSearchFormProps> = ({
 						id="beds"
 						type="number"
 						min={0}
-						className="rounded border p-2 bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 border-gray-300"
+						className="rounded border border-gray-300 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
 						placeholder="Beds"
 						{...field}
 					/>
@@ -96,7 +96,7 @@ const LeadSearchForm: React.FC<LeadSearchFormProps> = ({
 						id="baths"
 						type="number"
 						min={0}
-						className="rounded border p-2 bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 border-gray-300"
+						className="rounded border border-gray-300 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
 						placeholder="Baths"
 						{...field}
 					/>
@@ -130,7 +130,7 @@ const LeadSearchForm: React.FC<LeadSearchFormProps> = ({
 			<button
 				type="button"
 				onClick={onAdvancedOpen}
-				className="flex items-center gap-2 rounded border border-gray-300 bg-gray-50 p-2 text-sm font-medium shadow-sm hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
+				className="flex items-center gap-2 rounded border border-gray-300 bg-gray-50 p-2 font-medium text-sm shadow-sm hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
 			>
 				<Sliders className="h-4 w-4" />
 				Advanced

@@ -1,4 +1,4 @@
-import type { FC, ChangeEvent } from "react";
+import type { ChangeEvent, FC } from "react";
 
 interface BillingAddressStepProps {
 	fullName: string;

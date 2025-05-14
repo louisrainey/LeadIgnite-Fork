@@ -1,26 +1,26 @@
+import { Button } from "@/components/ui/button";
+import {
+	calculateCenter,
+	mockFetchAddressesFromApi,
+} from "@/constants/utility/maps";
+import { usePropertyStore } from "@/lib/stores/leadSearch/drawer";
+import type { Coordinate, MapFormSchemaType } from "@/types/_dashboard/maps";
+import { mapFormSchema } from "@/types/zod/propertyList";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Search } from "lucide-react";
 // * PropertySearch.tsx
 // ! Main property search component combining all subcomponents for the leads search feature
 import type React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { usePropertyStore } from "@/lib/stores/leadSearch/drawer";
-import {
-	calculateCenter,
-	mockFetchAddressesFromApi,
-} from "@/constants/utility/maps";
-import type { Coordinate, MapFormSchemaType } from "@/types/_dashboard/maps";
-import { mapFormSchema } from "@/types/zod/propertyList";
 
-import LeadSearchHeader from "./steps/LeadSearchHeader";
-import LeadSearchForm from "./steps/LeadSearchForm";
 import AdvancedFiltersDialog from "./steps/AdvancedFiltersDialog";
+import HelpModal from "./steps/HelpModal";
+import LeadSearchForm from "./steps/LeadSearchForm";
+import LeadSearchHeader from "./steps/LeadSearchHeader";
 import MapSection from "./steps/MapSection";
 import PropertiesList from "./steps/PropertiesList";
-import HelpModal from "./steps/HelpModal";
 
 const PropertySearch: React.FC = () => {
 	const [showAdvanced, setShowAdvanced] = useState(false);

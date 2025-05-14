@@ -152,7 +152,7 @@ const DynamicCloningModal: React.FC<VoiceCloningModalProps> = ({
 				{/* Close Button (X) */}
 				<button
 					onClick={onClose}
-					className="absolute right-2 top-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+					className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +170,7 @@ const DynamicCloningModal: React.FC<VoiceCloningModalProps> = ({
 					</svg>
 				</button>
 
-				<h2 className="mb-4 text-center text-lg font-semibold text-gray-900 dark:text-gray-100">
+				<h2 className="mb-4 text-center font-semibold text-gray-900 text-lg dark:text-gray-100">
 					Clone Your Voice
 				</h2>
 
@@ -226,7 +226,7 @@ const DynamicCloningModal: React.FC<VoiceCloningModalProps> = ({
 
 				{/* Error message for microphone access or short recording */}
 				{recordingError && (
-					<p className="mt-2 text-center text-sm text-red-500">
+					<p className="mt-2 text-center text-red-500 text-sm">
 						{recordingError}
 					</p>
 				)}

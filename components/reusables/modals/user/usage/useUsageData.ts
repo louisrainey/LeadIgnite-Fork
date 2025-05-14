@@ -1,7 +1,7 @@
-// ! useUsageData: Custom hook for fetching usage/subscription data
-import { useEffect, useState } from "react";
 import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
 import type { UserProfileSubscription } from "@/constants/_faker/profile/userSubscription";
+// ! useUsageData: Custom hook for fetching usage/subscription data
+import { useEffect, useState } from "react";
 
 export const useUsageData = () => {
 	const [data, setData] = useState<UserProfileSubscription | null>(null);

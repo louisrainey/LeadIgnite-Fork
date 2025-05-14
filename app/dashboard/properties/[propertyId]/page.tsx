@@ -220,7 +220,7 @@ export default async function PropertyPage({
 
 	return (
 		<PageContainer scrollable={true}>
-			<div className=" h-auto w-full  space-y-4">
+			<div className=" h-auto w-full space-y-4">
 				{/* Full-width container */}
 				<PropertyHeader property={property} />
 

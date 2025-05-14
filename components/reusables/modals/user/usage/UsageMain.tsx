@@ -1,11 +1,11 @@
+import { useModalStore } from "@/lib/stores/dashboard";
 // ! UsageMain: Composes the entire Usage modal from modular subcomponents
 import type React from "react";
-import { useModalStore } from "@/lib/stores/dashboard";
 import { toast } from "sonner";
-import UsageSummary from "./UsageSummary";
-import UsageProgressBar from "./UsageProgressBar";
-import UsageModalActions from "./UsageModalActions";
 import UsageCloseButton from "./UsageCloseButton";
+import UsageModalActions from "./UsageModalActions";
+import UsageProgressBar from "./UsageProgressBar";
+import UsageSummary from "./UsageSummary";
 import { useUsageData } from "./useUsageData";
 
 const UsageMain: React.FC = () => {

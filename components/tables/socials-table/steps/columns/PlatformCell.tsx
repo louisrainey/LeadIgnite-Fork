@@ -1,5 +1,5 @@
-import React from "react";
 import type { SocialAction } from "@/types/_dashboard/campaign";
+import React from "react";
 
 export const PlatformCell = ({ actions }: { actions: SocialAction[] }) => {
 	const uniquePlatforms = Array.from(

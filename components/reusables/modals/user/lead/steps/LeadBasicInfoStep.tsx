@@ -1,5 +1,5 @@
-import type { FC } from "react";
 import { Input } from "@/components/ui/input";
+import type { FC } from "react";
 
 interface LeadBasicInfoStepProps {
 	firstName: string;

@@ -1,5 +1,5 @@
-import type React from "react";
 import { Input } from "@/components/ui/input";
+import type React from "react";
 
 interface SearchBarProps {
 	value: string;

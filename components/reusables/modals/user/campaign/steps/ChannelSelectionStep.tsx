@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import type { FC } from "react";
+import { toast } from "sonner";
 
 // * Step 1: Channel Selection
 interface ChannelSelectionStepProps {

@@ -89,7 +89,7 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
 				<FormItem>
 					<FormLabel>
 						{required ? "Add Hashtags (Required)" : "Add Hashtags (Optional)"}
-						<span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+						<span className="ml-2 text-gray-500 text-xs dark:text-gray-400">
 							{hashtags.length}/{maxHashtags} hashtags
 						</span>
 					</FormLabel>
@@ -103,7 +103,7 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
 							onChange={(e) => setInputValue(e.target.value)}
 							onKeyPress={handleKeyPress}
 							disabled={loading || hashtags.length >= maxHashtags}
-							className="block w-full rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+							className="block w-full rounded border border-gray-300 px-3 py-2 text-gray-700 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
 						/>
 						<button
 							type="button"
@@ -122,7 +122,7 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
 								key={index}
 								className="flex items-center rounded-full bg-gray-200 px-2 py-1 dark:bg-gray-700"
 							>
-								<span className="text-sm text-gray-700 dark:text-gray-300">
+								<span className="text-gray-700 text-sm dark:text-gray-300">
 									{hashtag}
 								</span>
 								<button
@@ -138,7 +138,7 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
 
 					{/* Validation & Error Messages */}
 					{hashtags.length < minHashtags && required && (
-						<p className="text-sm text-red-500">
+						<p className="text-red-500 text-sm">
 							Please add at least {minHashtags} hashtags.
 						</p>
 					)}

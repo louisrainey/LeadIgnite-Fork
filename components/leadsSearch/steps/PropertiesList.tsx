@@ -1,7 +1,7 @@
+import type { PropertyDetails } from "@/types/_dashboard/maps";
 // * PropertiesList.tsx
 // ! Displays the list of properties/leads from search results
 import type { FC } from "react";
-import type { PropertyDetails } from "@/types/_dashboard/maps";
 
 interface PropertiesListProps {
 	properties: PropertyDetails[];

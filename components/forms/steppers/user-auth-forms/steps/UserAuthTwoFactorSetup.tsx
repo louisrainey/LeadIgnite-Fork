@@ -18,8 +18,8 @@ export const UserAuthTwoFactorSetup: React.FC<UserAuthTwoFactorSetupProps> = ({
 		<div className="space-y-4">
 			{qrCodeUrl && (
 				<div className="flex flex-col items-center">
-					<img src={qrCodeUrl} alt="2FA QR Code" className="mb-2 w-40 h-40" />
-					<span className="text-xs text-muted-foreground">
+					<img src={qrCodeUrl} alt="2FA QR Code" className="mb-2 h-40 w-40" />
+					<span className="text-muted-foreground text-xs">
 						Scan this QR code with your authenticator app.
 					</span>
 				</div>

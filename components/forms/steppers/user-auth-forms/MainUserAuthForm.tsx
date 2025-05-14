@@ -84,7 +84,7 @@ export default function MainUserAuthForm() {
 
 	// Render based on authState
 	return (
-		<div className="w-full max-w-md mx-auto space-y-6">
+		<div className="mx-auto w-full max-w-md space-y-6">
 			{authState === "login" && (
 				<Form {...form}>
 					<form onSubmit={handleSubmit} className="space-y-4">
@@ -100,7 +100,7 @@ export default function MainUserAuthForm() {
 						/>
 						<button
 							type="button"
-							className="text-xs text-blue-700 underline mt-2"
+							className="mt-2 text-blue-700 text-xs underline"
 							onClick={() => setAuthState("forgot")}
 							disabled={loading}
 						>

@@ -1,17 +1,17 @@
 "use client";
-import type { ColumnDef } from "@tanstack/react-table";
-import React from "react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useEmployeeTablePagination } from "./steps/useEmployeeTablePagination";
-import { EmployeeTableFilters } from "./steps/EmployeeTableFilters";
-import { EmployeeTableBody } from "./steps/EmployeeTableBody";
-import { EmployeeTablePagination } from "./steps/EmployeeTablePagination";
+import type { ColumnDef } from "@tanstack/react-table";
 import {
-	useReactTable,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
+	useReactTable,
 } from "@tanstack/react-table";
+import React from "react";
+import { EmployeeTableBody } from "./steps/EmployeeTableBody";
+import { EmployeeTableFilters } from "./steps/EmployeeTableFilters";
+import { EmployeeTablePagination } from "./steps/EmployeeTablePagination";
+import { useEmployeeTablePagination } from "./steps/useEmployeeTablePagination";
 
 interface EmployeeTablesProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];

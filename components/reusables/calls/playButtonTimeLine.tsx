@@ -1,9 +1,9 @@
 import playAnimation from "@/public/lottie/playButton.json";
 /// <reference types="react" />
 import Lottie from "lottie-react";
+import type { LottieRefCurrentProps } from "lottie-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import type { LottieRefCurrentProps } from "lottie-react";
 
 interface PlayButtonTimeLineProps {
 	audioSrc: string;

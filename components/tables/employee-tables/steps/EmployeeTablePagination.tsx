@@ -1,4 +1,3 @@
-import type React from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Select,
@@ -12,6 +11,7 @@ import {
 	DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import type React from "react";
 
 interface EmployeeTablePaginationProps {
 	pageIndex: number;

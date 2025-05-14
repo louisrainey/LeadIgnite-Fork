@@ -64,13 +64,13 @@ export const extractHeaders = async (file: File): Promise<string[]> => {
 	const fileExtension = file.name.split(".").pop()?.toLowerCase();
 	if (fileExtension === "csv") {
 		return await extractHeadersFromCSV(file);
-	} else if (fileExtension === "xlsx" || fileExtension === "xls") {
-		return await extractHeadersFromExcel(file);
-	} else {
-		throw new Error(
-			"Unsupported file format. Please upload a CSV or Excel file.",
-		);
 	}
+	if (fileExtension === "xlsx" || fileExtension === "xls") {
+		return await extractHeadersFromExcel(file);
+	}
+	throw new Error(
+		"Unsupported file format. Please upload a CSV or Excel file.",
+	);
 };
 
 // Usage example: Pass the File object and get the headers

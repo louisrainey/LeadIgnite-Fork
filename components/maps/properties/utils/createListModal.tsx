@@ -70,7 +70,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 
 	return (
 		<div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
-			<p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+			<p className="mb-4 text-gray-500 text-sm dark:text-gray-400">
 				Skip trace and create a list.
 			</p>
 
@@ -78,7 +78,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 			{availableListNames && availableListNames.length > 1 && (
 				<div className="mb-4">
 					<div className="flex items-center justify-between">
-						<label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label className="font-medium text-gray-700 text-sm dark:text-gray-300">
 							Add to an existing list:
 						</label>
 
@@ -89,9 +89,9 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 								onChange={() => setUseExistingList(!useExistingList)}
 								className="peer sr-only"
 							/>
-							<div className="h-6 w-11 rounded-full bg-gray-200 transition-colors duration-200 peer-checked:bg-blue-500 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-700"></div>
+							<div className="h-6 w-11 rounded-full bg-gray-200 transition-colors duration-200 peer-checked:bg-blue-500 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-700" />
 							<span
-								className={`absolute left-0.5 top-0.5 h-5 w-5 transform rounded-full bg-white transition-transform duration-200 ${
+								className={`absolute top-0.5 left-0.5 h-5 w-5 transform rounded-full bg-white transition-transform duration-200 ${
 									useExistingList ? "translate-x-5" : ""
 								}`}
 							/>
@@ -105,7 +105,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 			availableListNames.length > 1 &&
 			useExistingList ? (
 				<div className="mb-4">
-					<label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+					<label className="block font-medium text-gray-700 text-sm dark:text-gray-300">
 						Select a target list
 					</label>
 
@@ -131,7 +131,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 				</div>
 			) : (
 				<div className="mb-4">
-					<label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+					<label className="block font-medium text-gray-700 text-sm dark:text-gray-300">
 						New List Name
 					</label>
 					<Input
@@ -146,7 +146,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 
 			{/* Records to skip */}
 			<div className="mb-4">
-				<label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+				<label className="block font-medium text-gray-700 text-sm dark:text-gray-300">
 					Records to skip
 				</label>
 				<div className="flex items-center space-x-2">
@@ -158,7 +158,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 						min={1}
 						max={properties.length}
 					/>
-					<span className="text-sm text-gray-500 dark:text-gray-400">
+					<span className="text-gray-500 text-sm dark:text-gray-400">
 						/ {properties.length}
 					</span>
 				</div>
@@ -174,15 +174,15 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 						onChange={() => setRedoSkipTrace(!redoSkipTrace)}
 						className="peer sr-only"
 					/>
-					<div className="h-6 w-11 rounded-full bg-gray-300 transition-colors duration-200 peer-checked:bg-blue-500 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-700"></div>
+					<div className="h-6 w-11 rounded-full bg-gray-300 transition-colors duration-200 peer-checked:bg-blue-500 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-700" />
 					<span
-						className={`absolute left-0.5 top-0.5 h-5 w-5 transform rounded-full bg-white transition-transform duration-200 ${
+						className={`absolute top-0.5 left-0.5 h-5 w-5 transform rounded-full bg-white transition-transform duration-200 ${
 							redoSkipTrace ? "translate-x-5" : ""
 						}`}
 					/>
 				</label>
 
-				<label className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+				<label className="ml-3 font-medium text-gray-700 text-sm dark:text-gray-300">
 					Don’t redo skip traces on data you’ve already purchased in the past 2
 					months
 				</label>
@@ -190,7 +190,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 
 			{/* Total price */}
 			<div className="mb-6">
-				<p className="text-lg font-medium dark:text-white">
+				<p className="font-medium text-lg dark:text-white">
 					Total Price: <span className="text-blue-500">${calculateCost()}</span>
 				</p>
 			</div>
@@ -227,7 +227,7 @@ const SkipTraceDialog: React.FC<SkipTraceDialogProps> = ({
 				</Button>
 			</DialogTrigger>
 
-			<DialogContent className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white shadow-lg sm:max-w-[425px] dark:bg-gray-900 ">
+			<DialogContent className="-translate-x-1/2 -translate-y-1/2 fixed top-1/2 left-1/2 z-50 transform rounded-lg bg-white shadow-lg sm:max-w-[425px] dark:bg-gray-900 ">
 				<DialogHeader>
 					<DialogTitle className="dark:text-white">
 						Create Your List

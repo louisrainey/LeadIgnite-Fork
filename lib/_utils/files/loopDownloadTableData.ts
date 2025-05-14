@@ -130,7 +130,7 @@ export async function exportSocialTableBulkToExcel(
 			column.width = Math.max(
 				...column.values
 					.filter((val) => val !== undefined && val !== null)
-					.map((val) => val!.toString().length),
+					.map((val) => val?.toString().length),
 			);
 		}
 	});
@@ -221,7 +221,7 @@ export async function exportCallCampaignsToExcel(
 			column.width = Math.max(
 				...column.values
 					.filter((val) => val !== undefined && val !== null)
-					.map((val) => val!.toString().length),
+					.map((val) => val?.toString().length),
 			);
 		}
 	});

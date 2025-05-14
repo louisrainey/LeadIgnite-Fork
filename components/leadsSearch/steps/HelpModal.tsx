@@ -1,12 +1,12 @@
-// * HelpModal.tsx
-// ! Modal for property search walkthrough/help
-import type { FC, ReactNode } from "react";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+// * HelpModal.tsx
+// ! Modal for property search walkthrough/help
+import type { FC, ReactNode } from "react";
 
 interface HelpModalProps {
 	open: boolean;

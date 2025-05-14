@@ -20,8 +20,8 @@ export default async function handler(
 	}
 
 	// Extract headers (Authorization and Version)
-	const authorization = req.headers["authorization"];
-	const version = req.headers["version"];
+	const authorization = req.headers.authorization;
+	const version = req.headers.version;
 
 	// Validate required headers
 	if (!authorization || Array.isArray(authorization)) {

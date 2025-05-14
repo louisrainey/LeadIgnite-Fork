@@ -1,6 +1,6 @@
-import React from "react";
 import { exportSocialTableDataToExcel } from "@/lib/_utils/files/downloadTableData";
 import type { SocialAction } from "@/types/_dashboard/campaign";
+import React from "react";
 
 interface RowOriginal {
 	name: string;

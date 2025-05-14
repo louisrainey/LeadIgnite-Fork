@@ -22,7 +22,6 @@ export type GetAllNotesHeaders = {
 export const exampleGetAllNotesResponse: GetAllNotesResponse = {
 	notes: [
 		{
-			id: "HGPcayliwcdoUFzvbTok",
 			body: "lorem ipsum",
 			id: "TUcmRxWrjqzJS8EjkxNK",
 			dateAdded: "2021-07-08T12:02:11.285Z",

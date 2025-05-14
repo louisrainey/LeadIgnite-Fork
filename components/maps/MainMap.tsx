@@ -2,19 +2,19 @@
 // ! Unified main map component combining all property/maps-related logic and subcomponents
 
 "use client";
-import type React from "react";
-import { useEffect, useRef, useState } from "react";
-import {
-	GoogleMap,
-	LoadScript,
-	DrawingManager,
-	Marker,
-	InfoWindow,
-} from "@react-google-maps/api";
-import Lottie from "lottie-react";
-import PropertyListView from "./properties/propertyList";
 import { usePropertyStore } from "@/lib/stores/leadSearch/drawer";
 import type { PropertyDetails } from "@/types/_dashboard/maps";
+import {
+	DrawingManager,
+	GoogleMap,
+	InfoWindow,
+	LoadScript,
+	Marker,
+} from "@react-google-maps/api";
+import Lottie from "lottie-react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
+import PropertyListView from "./properties/propertyList";
 
 const maxCardsPerLoad = 50;
 // * DrawingControls (inline)

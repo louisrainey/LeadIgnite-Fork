@@ -1,4 +1,3 @@
-import type React from "react";
 import {
 	Table,
 	TableBody,
@@ -8,12 +7,13 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { flexRender } from "@tanstack/react-table";
+import type React from "react";
 
 import type {
-	Table as ReactTableType,
-	HeaderGroup,
-	Row,
 	Cell,
+	HeaderGroup,
+	Table as ReactTableType,
+	Row,
 } from "@tanstack/react-table";
 
 interface DataTableProps<TData = unknown> {

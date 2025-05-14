@@ -1,7 +1,7 @@
+import { Marker } from "@react-google-maps/api";
 // * MarkersLayer.tsx
 // ! Renders all map markers
 import type React from "react";
-import { Marker } from "@react-google-maps/api";
 
 interface MarkerData {
 	lat: number;

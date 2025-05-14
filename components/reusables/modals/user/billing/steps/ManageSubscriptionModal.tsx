@@ -1,7 +1,7 @@
-import { useState } from "react";
-import type { UserProfileSubscription } from "@/constants/_faker/profile/userSubscription";
-import SubscriptionDetailsStep from "./SubscriptionDetailsStep";
 import { Button } from "@/components/ui/button";
+import type { UserProfileSubscription } from "@/constants/_faker/profile/userSubscription";
+import { useState } from "react";
+import SubscriptionDetailsStep from "./SubscriptionDetailsStep";
 
 interface ManageSubscriptionModalProps {
 	subscription: UserProfileSubscription;

@@ -7,7 +7,7 @@ export const UserAuthErrorMessage: React.FC<UserAuthErrorMessageProps> = ({
 }) => {
 	if (!error) return null;
 	return (
-		<div className="text-red-600 text-sm mb-2" role="alert">
+		<div className="mb-2 text-red-600 text-sm" role="alert">
 			{error}
 		</div>
 	);

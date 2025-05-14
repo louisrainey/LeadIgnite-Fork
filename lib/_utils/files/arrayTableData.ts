@@ -119,7 +119,7 @@ export async function exportMultipleCampaignsToZip(
 				);
 				break;
 
-			case "text":
+			case "text": {
 				columns = textMessageColumns;
 				const textMessages = (campaign as GHLTextMessageCampaign).messages; // Extract messages for GHLTextMessageCampaign
 				buffer = await exportCampaignMessagesBulkToExcel(
@@ -129,6 +129,7 @@ export async function exportMultipleCampaignsToZip(
 					campaignFilename,
 				);
 				break;
+			}
 
 			case "social":
 				columns = socialColumns;
@@ -171,8 +172,6 @@ export async function exportMultipleCampaignsToZip(
 	const zipBlob = await zip.generateAsync({ type: "blob" });
 	saveAs(
 		zipBlob,
-		`${campaignType.toLocaleUpperCase()}_Campaigns_Export${
-			formattedDate + `.zip`
-		}`,
+		`${campaignType.toLocaleUpperCase()}_Campaigns_Export${`${formattedDate}.zip`}`,
 	);
 }

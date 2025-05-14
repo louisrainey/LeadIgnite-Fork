@@ -1,7 +1,7 @@
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 // * MapContainer.tsx
 // ! Wrapper for GoogleMap, LoadScript, and children overlays
 import type React from "react";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
 
 interface MapContainerProps {
 	apiKey: string;

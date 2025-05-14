@@ -38,7 +38,7 @@ export async function exportSocialTableDataToExcel(
 			column.width = Math.max(
 				...column.values
 					.filter((val) => val !== undefined && val !== null)
-					.map((val) => val!.toString().length),
+					.map((val) => val?.toString().length),
 			);
 		}
 	});
@@ -249,7 +249,7 @@ export async function exportLeadsTableDataToExcel(
 			column.width = Math.max(
 				...column.values
 					.filter((val) => val !== undefined && val !== null)
-					.map((val) => val!.toString().length),
+					.map((val) => val?.toString().length),
 			);
 		}
 	});

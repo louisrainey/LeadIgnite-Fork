@@ -2,10 +2,10 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import type { PropertyDetails } from "@/types/_dashboard/maps";
 import { Pencil } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import type { PropertyDetails } from "@/types/_dashboard/maps";
 
 interface PropertyOverviewCardProps {
 	property: PropertyDetails;

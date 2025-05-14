@@ -2,11 +2,11 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import type { LeadTypeGlobal } from "@/types/_dashboard/leads";
 import type { ColumnDef, Row } from "@tanstack/react-table";
-import { LeadNameCell } from "./steps/columns/LeadNameCell";
 import { EmailCell } from "./steps/columns/EmailCell";
+import { EmailDownloadCell } from "./steps/columns/EmailDownloadCell";
+import { LeadNameCell } from "./steps/columns/LeadNameCell";
 import { SocialsCell } from "./steps/columns/SocialsCell";
 import { StatusCell } from "./steps/columns/StatusCell";
-import { EmailDownloadCell } from "./steps/columns/EmailDownloadCell";
 
 // * Main columns for the Lead Table (React Table)
 /**

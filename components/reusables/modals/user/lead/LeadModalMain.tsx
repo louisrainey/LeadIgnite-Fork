@@ -1,6 +1,6 @@
 import { useState } from "react";
-import LeadBasicInfoStep from "./steps/LeadBasicInfoStep";
 import LeadAddressStep from "./steps/LeadAddressStep";
+import LeadBasicInfoStep from "./steps/LeadBasicInfoStep";
 import LeadContactStep from "./steps/LeadContactStep";
 import LeadSocialsStep from "./steps/LeadSocialsStep";
 

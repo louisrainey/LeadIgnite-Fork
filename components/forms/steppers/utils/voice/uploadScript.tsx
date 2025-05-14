@@ -42,19 +42,19 @@ const UploadSalesScript: React.FC<UploadSalesScriptProps> = ({
 
 	return (
 		<div className="mx-auto mt-4 max-w-3xl overflow-auto rounded-lg border border-gray-300 bg-white p-4 text-gray-900 shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
-			<label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+			<label className="block font-medium text-gray-700 text-sm dark:text-gray-300">
 				Upload Script (.txt, .doc, .docx)
 			</label>
 			<input
 				type="file"
 				accept=".txt,.doc,.docx"
 				onChange={handleFileUpload}
-				className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 dark:text-gray-300 file:dark:bg-blue-500 dark:hover:file:bg-blue-600"
+				className="mt-2 block w-full text-gray-500 text-sm file:mr-4 file:rounded-full file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:font-semibold file:text-sm file:text-white hover:file:bg-blue-700 dark:text-gray-300 file:dark:bg-blue-500 dark:hover:file:bg-blue-600"
 			/>
 
 			{/* Display selected file name and script content */}
 			{fileName && (
-				<p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+				<p className="mt-2 text-gray-600 text-sm dark:text-gray-400">
 					Uploaded file: {fileName}
 				</p>
 			)}

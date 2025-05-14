@@ -1,6 +1,6 @@
+import type { PaginationState } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
-import type { PaginationState } from "@tanstack/react-table";
 
 // * Handles pagination/search param state and effects for EmployeeTable
 export function useEmployeeTablePagination() {

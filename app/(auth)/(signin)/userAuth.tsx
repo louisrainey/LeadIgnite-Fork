@@ -1,7 +1,7 @@
-import { useState } from "react";
 import UserAuthForm from "@/components/forms/steppers/_depr/user-auth-form";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useState } from "react";
 
 // Define the props type
 interface AuthFormProps {

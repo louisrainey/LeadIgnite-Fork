@@ -8,9 +8,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import SearchBar from "./steps/tables/SearchBar";
-import DataTable from "./steps/tables/DataTable";
-import PaginationControls from "./steps/tables/PaginationControls";
 import {
 	type ColumnDef,
 	type PaginationState,
@@ -23,6 +20,9 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
+import DataTable from "./steps/tables/DataTable";
+import PaginationControls from "./steps/tables/PaginationControls";
+import SearchBar from "./steps/tables/SearchBar";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];

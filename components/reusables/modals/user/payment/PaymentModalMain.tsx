@@ -1,7 +1,3 @@
-import { useState } from "react";
-import type { FC } from "react";
-import CardInfoStep from "./steps/CardInfoStep";
-import BillingAddressStep from "./steps/BillingAddressStep";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -9,9 +5,13 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import type { FC } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import BillingAddressStep from "./steps/BillingAddressStep";
+import CardInfoStep from "./steps/CardInfoStep";
 
 // Zod schema for Payment Modal
 const paymentSchema = z.object({

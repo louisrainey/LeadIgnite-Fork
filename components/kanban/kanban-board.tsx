@@ -2,31 +2,31 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { hasDraggableData } from "@/lib/_utils/kanban/utils";
-import {
-	type Announcements,
-	DndContext,
-	DragOverlay,
-	MouseSensor,
-	TouchSensor,
-	useSensor,
-	useSensors,
-	type DragEndEvent,
-	type DragOverEvent,
-	type DragStartEvent,
-} from "@dnd-kit/core";
-import type { UserProfile } from "@/types/userProfile";
-import { SortableContext, arrayMove } from "@dnd-kit/sortable";
-import { BoardColumn, BoardContainer } from "./board-column";
-import NewSectionDialog from "./new-section-dialog";
-import { TaskCard } from "./task-card";
 import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
+import { hasDraggableData } from "@/lib/_utils/kanban/utils";
 import { useTaskStore } from "@/lib/stores/taskActions";
 import type {
 	KanbanColumn,
 	KanbanTask,
 	Status,
 } from "@/types/_dashboard/kanban";
+import type { UserProfile } from "@/types/userProfile";
+import {
+	type Announcements,
+	DndContext,
+	type DragEndEvent,
+	type DragOverEvent,
+	DragOverlay,
+	type DragStartEvent,
+	MouseSensor,
+	TouchSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+import { SortableContext, arrayMove } from "@dnd-kit/sortable";
+import { BoardColumn, BoardContainer } from "./board-column";
+import NewSectionDialog from "./new-section-dialog";
+import { TaskCard } from "./task-card";
 
 const defaultCols = mockUserProfile.companyInfo.KanbanTasks
 	.columns satisfies (KanbanColumn | null)[];

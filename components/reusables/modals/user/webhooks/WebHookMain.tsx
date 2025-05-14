@@ -5,11 +5,11 @@ import { useModalStore } from "@/lib/stores/dashboard";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import WebhookUrlInput from "./WebhookUrlInput";
-import WebhookPayloadSection from "./WebhookPayloadSection";
 import WebhookHistory from "./WebhookHistory";
-import WebhookModalActions from "./WebhookModalActions";
 import type { WebhookEntryType } from "./WebhookHistory";
+import WebhookModalActions from "./WebhookModalActions";
+import WebhookPayloadSection from "./WebhookPayloadSection";
+import WebhookUrlInput from "./WebhookUrlInput";
 const webhookHistory: WebhookEntryType[] = [
 	{
 		date: "2023-09-12",

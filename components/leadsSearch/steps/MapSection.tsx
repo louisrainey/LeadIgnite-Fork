@@ -1,8 +1,8 @@
+import type { Coordinate } from "@/types/_dashboard/maps";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 // * MapSection.tsx
 // ! Map display and marker logic for leads search
 import type { FC } from "react";
-import { GoogleMap, Marker, LoadScript } from "@react-google-maps/api";
-import type { Coordinate } from "@/types/_dashboard/maps";
 
 interface MapSectionProps {
 	markers: Coordinate[];
