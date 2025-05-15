@@ -1,7 +1,7 @@
 "use client"; // Ensure that the component is a client-side component
 
 import { campaignSteps } from "@/_tests/tours/campaignTour";
-import UploadListModal from "@/components/reusables/modals/user/skipTrace/_depr/uploadSkipTracedList";
+import SkipTraceModalMain from "@/components/reusables/modals/user/skipTrace/SkipTraceModalMain";
 import PropertySearchModal from "@/components/reusables/tutorials/walkthroughModal";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
@@ -164,7 +164,7 @@ export const LeadListClient: React.FC = () => {
 			/>
 
 			{/* Upload List Modal */}
-			<UploadListModal isOpen={isModalOpen} onClose={closeModal} />
+			<SkipTraceModalMain isOpen={isModalOpen} onClose={closeModal} />
 		</>
 	);
 };

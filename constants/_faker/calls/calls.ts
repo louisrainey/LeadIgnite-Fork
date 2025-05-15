@@ -3,7 +3,7 @@ import { APP_TESTING_MODE } from "@/constants/data";
 import type { EndedReason } from "@/types/vapiAi/api/calls/_enums";
 import type { GetCallResponse } from "@/types/vapiAi/api/calls/get";
 import { faker } from "@faker-js/faker";
-import type { CallType } from "@prisma/client";
+import type { CallType } from "@/types/vapiAi/api/calls/_enums";
 import {
 	type Assistant,
 	type AssistantModel,
@@ -28,6 +28,7 @@ import {
 	type ToolCallResultMessage,
 	ToolMessageType,
 	type ToolMessagesArray,
+	type Transcriber,
 	type UserMessage,
 	type Voice,
 } from "../../../types/vapiAi/api/calls/create";

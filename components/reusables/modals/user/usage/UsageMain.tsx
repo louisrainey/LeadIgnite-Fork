@@ -8,7 +8,7 @@ import UsageProgressBar from "./UsageProgressBar";
 import UsageSummary from "./UsageSummary";
 import { useUsageData } from "./useUsageData";
 
-const UsageMain: React.FC = () => {
+const UsageModalMain: React.FC = () => {
 	const { isUsageModalOpen, closeUsageModal } = useModalStore();
 	const { data: subscription, loading } = useUsageData();
 
@@ -39,4 +39,4 @@ const UsageMain: React.FC = () => {
 	);
 };
 
-export default UsageMain;
+export default UsageModalMain;

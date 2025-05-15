@@ -4,9 +4,9 @@
 import type {
 	NotificationPreferences,
 	TwoFactorAuth,
+	UserProfile, // ✅ Use type from @/types/userProfile
 } from "@/types/userProfile";
 import { createClient } from "@/utils/supabase/server";
-import type { UserProfile } from "@prisma/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid"; // ✅ Import UUID generator
@@ -85,7 +85,7 @@ async function updateUserProfileData(
 
 // ✅ Update Two-Factor Authentication Table (Refactored)
 async function updateTwoFactorAuth(
-	id: string,
+	userId: string,
 	twoFactorAuth: TwoFactorAuth,
 	supabase: SupabaseClient,
 ) {
@@ -113,7 +113,7 @@ async function updateTwoFactorAuth(
 
 // ✅ Update Notification Preferences Table (Refactored)
 async function updateNotificationPreferences(
-	id: string,
+	userId: string,
 	notifications: Partial<NotificationPreferences>,
 	supabase: SupabaseClient,
 ) {

@@ -1,7 +1,7 @@
 // columns.tsx
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { exportEmailCampaignToExcel } from "@/lib/_utils/files/downloadTableData";
+import { exportEmailCampaignToExcel } from "@/lib/_utils/files/download/email";
 import type {
 	EmailCampaign,
 	GetEmailByIdResponse,

@@ -2,7 +2,7 @@ import ThemeToggle from "@/components/layout/ThemeToggle/theme-toggle";
 import { mockSubscriptions } from "@/constants/_faker/profile/userSubscription";
 import { cn } from "@/lib/_utils/kanban/utils";
 import { SecurityModal } from "../reusables/modals/user/security";
-import { UpgradeButton } from "../reusables/modals/user/usage/_depr/upgrade";
+import { UpgradeButton } from "../reusables/modals/user/usage/UpgradeModalButton";
 import { MobileSidebar } from "./mobile-sidebar";
 import { UserNav } from "./user-nav";
 

@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { endedReasonValues } from "@/types/vapiAi/api/calls/_enums";
 import type { CallStatus } from "@/types/vapiAi/api/calls/create";
 import type { GetCallResponse } from "@/types/vapiAi/api/calls/get";
-import type { CallType } from "@prisma/client";
+import type { CallType } from "@/types/vapiAi/api/calls/_enums";
 import {
 	type CallCampaign,
 	type CallInfo,
@@ -110,6 +110,8 @@ const generateCallCampaign = (): CallCampaign => {
 		endDate: faker.helpers.maybe(() => faker.date.future().toISOString(), {
 			probability: 0.7,
 		}),
+		endedReason: [faker.helpers.arrayElement(endedReasonValues)], // Fixed: endedReason should be an array
+
 		aiVoice: faker.helpers.maybe(() => faker.person.firstName(), {
 			probability: 0.3,
 		}),

@@ -1,7 +1,7 @@
 "use client";
 
 import { AddContactInfoModal } from "@/components/reusables/modals/addContactInfo";
-import { SkipTraceModal } from "@/components/reusables/modals/user/skipTrace/_depr/skipTrace";
+import SkipTraceModalMain from "@/components/reusables/modals/user/skipTrace/SkipTraceModalMain";
 import { Button } from "@/components/ui/button";
 import searchAnimation from "@/public/lottie/SearchPing.json"; // Lottie JSON file path
 import type { PropertyDetails } from "@/types/_dashboard/maps";
@@ -127,7 +127,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
 			/>
 
 			{/* Modal for Skip Trace */}
-			<SkipTraceModal
+			<SkipTraceModalMain
 				isOpen={isSkipTraceModalOpen}
 				onClose={closeSkipTraceModal}
 			/>

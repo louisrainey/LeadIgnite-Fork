@@ -1,6 +1,6 @@
 "use client";
 import { campaignSteps } from "@/_tests/tours/campaignTour";
-import AddLeadModal from "@/components/reusables/modals/user/lead/_depr/leadModal";
+import LeadMainModal from "@/components/reusables/modals/user/lead/LeadModalMain";
 import PropertySearchModal from "@/components/reusables/tutorials/walkthroughModal";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
@@ -13,8 +13,8 @@ import Lottie from "lottie-react";
 import { Calendar, Download, HelpCircle, Plus } from "lucide-react";
 import type React from "react";
 import { useMemo, useRef, useState } from "react";
-import { leadListColumns } from "./steps/columns/_depr/columns";
-import { LeadDataTable } from "./steps/tables/_depr/lead-data-table";
+import { leadListColumns } from "./LeadColumns";
+import { LeadTables } from "./LeadTables";
 import FilterDropdown from "./utils/filterLeads";
 
 export const LeadClient: React.FC = () => {
@@ -166,7 +166,7 @@ export const LeadClient: React.FC = () => {
 
 			{/* Lead Data Table */}
 			{leads.length > 0 ? (
-				<LeadDataTable
+				<LeadTables
 					pageCount={10}
 					searchKey="Leads"
 					columns={leadListColumns}
@@ -200,7 +200,7 @@ export const LeadClient: React.FC = () => {
 				onCloseTour={handleHelpCloseTour} // Function to close the tour
 			/>
 			{/* Add Lead Modal */}
-			<AddLeadModal isOpen={isModalOpen} onClose={closeModal} />
+			<LeadMainModal isOpen={isModalOpen} onClose={closeModal} />
 		</>
 	);
 };

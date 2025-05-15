@@ -1,4 +1,4 @@
-import { updateUserProfile } from "@/actions/_depr/user";
+import { updateUserProfile } from "@/actions/user";
 import type {
 	NotificationPreferences,
 	TwoFactorAuth,

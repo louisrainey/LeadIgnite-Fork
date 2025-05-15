@@ -1,3 +1,4 @@
+"use client";
 import { FormField, FormItem, FormMessage } from "@/components/ui/form";
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
 import type React from "react";

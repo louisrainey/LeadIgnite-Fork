@@ -1,5 +1,5 @@
 "use client";
-import { getUserProfile } from "@/actions/_depr/auth";
+import { getUserProfile } from "@/actions/auth";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { navItems } from "@/constants/data";
 import { cn } from "@/lib/_utils/kanban/utils";

@@ -1,3 +1,4 @@
+"use client";
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
 import type React from "react";
 import { useForm } from "react-hook-form";
@@ -5,6 +6,7 @@ import { OAuthMain } from "./steps/Oauth/OAuthMain";
 import { BaseSetupMain } from "./steps/base/BaseSetupMain";
 import { KnowledgeBaseMain } from "./steps/knowledge/KnowledgeBaseMain";
 import { PersonalInformationFormMain } from "./steps/personal_information/PersonalInformationFormMain";
+import type { AssistantVoice } from "@/types/vapiAi/api/assistant/create";
 
 // Example initial data (replace with real data as needed)
 const initialData = undefined;

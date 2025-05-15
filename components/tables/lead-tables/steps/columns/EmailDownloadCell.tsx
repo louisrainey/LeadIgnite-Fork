@@ -1,6 +1,6 @@
 import { leadExcelColumns } from "@/components/tables/lead-tables/LeadColumns";
 import { Button } from "@/components/ui/button";
-import { exportLeadsTableDataToExcel } from "@/lib/_utils/files/downloadTableData";
+import { exportLeadsToExcel } from "@/lib/_utils/files/loopDownload/leadExports";
 import type { LeadTypeGlobal } from "@/types/_dashboard/leads";
 import type { CellContext } from "@tanstack/react-table";
 
@@ -12,10 +12,9 @@ export function EmailDownloadCell({
 			variant="outline"
 			size="sm"
 			onClick={() =>
-				exportLeadsTableDataToExcel(
-					"LeadsSheet", // sheetName
-					leadExcelColumns, // columns
+				exportLeadsToExcel(
 					[row.original], // data
+					leadExcelColumns, // columns
 					"LeadsExport", // filename
 				)
 			}

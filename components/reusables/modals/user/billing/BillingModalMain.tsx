@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import type {
 	BillingHistoryItem,
@@ -17,7 +19,7 @@ interface BillingMainProps {
 	subscription: UserProfileSubscription;
 }
 
-const BillingMain = ({
+const BillingModalMain = ({
 	billingHistory,
 	paymentDetails,
 	subscription,
@@ -83,4 +85,4 @@ const BillingMain = ({
 	);
 };
 
-export default BillingMain;
+export default BillingModalMain;

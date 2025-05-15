@@ -1,7 +1,7 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { exportLeadListsToExcel } from "@/lib/_utils/files/loopDownloadTableData";
+import { exportLeadListsToExcel } from "@/lib/_utils/files/loopDownload/leadExports";
 import type { LeadList } from "@/types/_dashboard/leadList";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Download } from "lucide-react";

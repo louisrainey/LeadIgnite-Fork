@@ -1,6 +1,6 @@
 "use client";
 
-import { signOut } from "@/actions/_depr/auth";
+import { signOut } from "@/actions/auth";
 import { Icons } from "@/components/icons";
 import { useSidebar } from "@/hooks/useSidebar";
 import { cn } from "@/lib/_utils/kanban/utils";

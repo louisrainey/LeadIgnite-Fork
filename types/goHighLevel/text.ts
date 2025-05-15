@@ -14,7 +14,7 @@ export interface GetMessagesByConversationIdRequest {
 export interface GetMessagesByConversationIdResponse {
 	lastMessageId: string; // Id of the last message in the array
 	nextPage: boolean; // Boolean indicating if there are more pages of messages
-	messages: Message[]; // Array of message objects
+	messages: TextMessage[]; // Array of message objects
 }
 
 // Message type structure, limited to SMS or EMAIL
@@ -42,7 +42,7 @@ export interface TextMessage {
 	attachments?: string[]; // Optional array of attachment URLs
 	meta?: Meta; // Optional meta object for additional data (e.g., emails)
 	source?: "workflow" | "bulk_actions" | "campaign" | "api" | "app"; // Optional: source of the message
-	id?: string; // Optional: User ID
+	userId?: string; // Optional: User ID
 }
 
 // Meta data for the message (used for email-type messages)

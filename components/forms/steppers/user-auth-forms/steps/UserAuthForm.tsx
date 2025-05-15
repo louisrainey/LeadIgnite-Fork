@@ -1,4 +1,4 @@
-import { signIn, signUp } from "@/actions/_depr/auth";
+import { signIn, signUp } from "@/actions/auth";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";

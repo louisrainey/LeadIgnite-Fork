@@ -21,7 +21,7 @@ interface EmployeeTablesProps<TData, TValue> {
 	pageSizeOptions?: number[];
 }
 
-export function EmployeeTables<TData, TValue>({
+export function EmployeeTable<TData, TValue>({
 	columns,
 	data,
 	searchKey,

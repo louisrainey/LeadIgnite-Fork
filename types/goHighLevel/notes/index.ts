@@ -8,8 +8,8 @@ export type CreateNoteRequest = {
 export type CreateNoteResponse = {
 	note: {
 		id: string;
+		userId: string;
 		body: string;
-		id: string;
 		dateAdded: string;
 		contactId: string;
 	};
@@ -19,7 +19,7 @@ export type CreateNoteResponse = {
 export type Note = {
 	id: string;
 	body: string;
-	id: string;
+	userId: string;
 	dateAdded: string;
 	contactId: string;
 };

@@ -14,9 +14,8 @@ import type {
 	CostBreakdown,
 } from "@/types/vapiAi/api/calls/get";
 import { faker } from "@faker-js/faker";
-import type { CallType } from "@prisma/client";
 import { APP_TESTING_MODE } from "../../data";
-
+import type { CallType } from "@/types/vapiAi/api/calls/_enums";
 // Mock Data for CallCampaignAnalytics
 const generateMockCallCampaignAnalytics = (): CallCampaignAnalytics => {
 	const callType: CallType = faker.helpers.arrayElement<CallType>([

@@ -1,3 +1,4 @@
+"use client";
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
 import type React from "react";
 import { useEffect } from "react";

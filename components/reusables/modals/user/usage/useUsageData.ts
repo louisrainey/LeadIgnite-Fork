@@ -1,3 +1,5 @@
+"use client";
+
 import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
 import type { UserProfileSubscription } from "@/constants/_faker/profile/userSubscription";
 // ! useUsageData: Custom hook for fetching usage/subscription data

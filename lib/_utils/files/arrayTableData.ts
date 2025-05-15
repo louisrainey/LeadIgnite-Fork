@@ -13,12 +13,10 @@ import type {
 	GHLTextMessageCampaign,
 	TextMessage,
 } from "@/types/goHighLevel/text";
-import {
-	exportCallCampaignsToExcel,
-	exportCampaignMessagesBulkToExcel,
-	exportEmailCampaignBulkToExcel,
-	exportSocialTableBulkToExcel,
-} from "./loopDownloadTableData";
+import { exportCallCampaignsToExcel } from "./loopDownload/callCampaignExports";
+import { exportCampaignMessagesBulkToExcel } from "./loopDownload/messageExports";
+import { exportEmailCampaignBulkToExcel } from "./loopDownload/emailExports";
+import { exportSocialTableBulkToExcel } from "./loopDownload/socialExports";
 
 // Email campaign columns
 const emailColumns: {
@@ -104,13 +102,15 @@ export async function exportMultipleCampaignsToZip(
 			| SocialMediaCampaign,
 		index: number,
 	) => {
-		let columns: any[] = [];
 		let buffer: Uint8Array | undefined;
 		const campaignFilename = `${filename}_campaign_${index + 1}.xlsx`; // Unique filename per campaign
 
 		switch (campaignType) {
-			case "email":
-				columns = emailColumns;
+			case "email": {
+				const columns: {
+					header: string;
+					accessorKey: keyof GetEmailByIdResponse;
+				}[] = emailColumns;
 				buffer = await exportEmailCampaignBulkToExcel(
 					"Email Campaign",
 					columns,
@@ -118,9 +118,11 @@ export async function exportMultipleCampaignsToZip(
 					campaignFilename,
 				);
 				break;
+			}
 
 			case "text": {
-				columns = textMessageColumns;
+				const columns: { header: string; accessorKey: keyof TextMessage }[] =
+					textMessageColumns;
 				const textMessages = (campaign as GHLTextMessageCampaign).messages; // Extract messages for GHLTextMessageCampaign
 				buffer = await exportCampaignMessagesBulkToExcel(
 					"Text Campaign",
@@ -131,8 +133,10 @@ export async function exportMultipleCampaignsToZip(
 				break;
 			}
 
-			case "social":
-				columns = socialColumns;
+			case "social": {
+				const columns: { header: string; accessorKey: string }[] =
+					socialColumns;
+				const socialCampaign = campaign as SocialMediaCampaign;
 				buffer = await exportSocialTableBulkToExcel(
 					"Social Campaign",
 					campaignType,
@@ -141,9 +145,10 @@ export async function exportMultipleCampaignsToZip(
 					campaignFilename,
 				);
 				break;
+			}
 
-			case "call":
-				columns = callColumns;
+			case "call": {
+				const columns: { header: string; accessorKey: string }[] = callColumns;
 				buffer = await exportCallCampaignsToExcel(
 					"Call Campaign",
 					campaignType,
@@ -152,10 +157,12 @@ export async function exportMultipleCampaignsToZip(
 					campaignFilename,
 				);
 				break;
+			}
 
-			default:
+			default: {
 				console.error("Unsupported campaign type");
-				return;
+				break;
+			}
 		}
 
 		if (buffer) {

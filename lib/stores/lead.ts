@@ -2,8 +2,9 @@ import { MockUserProfile } from "@/constants/_faker/profile/userProfile";
 import type { LeadTypeGlobal } from "@/types/_dashboard/leads";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { exportLeadsToExcel } from "../_utils/files/loopDownloadTableData";
 
+import { exportLeadsToExcel } from "../_utils/files/loopDownload/leadExports";
+import { leadExcelColumns } from "@/components/tables/lead-tables/LeadColumns"; // * Import Excel columns for export
 // Define the state and actions for managing leads
 interface LeadState {
 	leads: LeadTypeGlobal[]; // Holds the lead data
@@ -21,6 +22,32 @@ interface LeadState {
 // Create Zustand store for lead management
 export const useLeadStore = create<LeadState>((set, get) => ({
 	leads: MockUserProfile.companyInfo.leads, // Initial leads data
+	// * Export filtered leads to Excel file
+	exportFilteredLeadsToFile: async () => {
+		try {
+			const filteredLeads = get().filteredLeads;
+			// * Use leadExcelColumns for export
+			const buffer = await exportLeadsToExcel(
+				filteredLeads,
+				leadExcelColumns,
+				`filtered_leads_${new Date().toISOString().slice(0, 10)}.xlsx`,
+			);
+			const blob = new Blob([buffer], {
+				type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			});
+			const url = window.URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = `filtered_leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			window.URL.revokeObjectURL(url);
+			toast.success("Filtered leads exported successfully!");
+		} catch (error) {
+			toast.error("Failed to export filtered leads.");
+		}
+	},
 	filteredLeads: MockUserProfile.companyInfo.leads, // Start with no filter applied, showing all leads
 
 	// Filter leads by status (New Lead, Contacted, Closed, Lost)
@@ -77,60 +104,5 @@ export const useLeadStore = create<LeadState>((set, get) => ({
 	getNumberOfLeads: () => {
 		const { filteredLeads } = get();
 		return filteredLeads.length;
-	},
-
-	// New function to export filtered leads to a ZIP file
-	// New function to export filtered leads to a single Excel file
-	exportFilteredLeadsToFile: async () => {
-		const { filteredLeads } = get(); // Get the filtered leads from the state
-
-		// Define the columns for the Excel export
-		const columns = [
-			{ header: "Lead ID", accessorKey: "id" as keyof LeadTypeGlobal },
-			{
-				header: "First Name",
-				accessorKey: "firstName" as keyof LeadTypeGlobal,
-			},
-			{ header: "Last Name", accessorKey: "lastName" as keyof LeadTypeGlobal },
-			{ header: "Phone", accessorKey: "phone" as keyof LeadTypeGlobal },
-			{ header: "Email", accessorKey: "email" as keyof LeadTypeGlobal },
-			{ header: "Status", accessorKey: "status" as keyof LeadTypeGlobal },
-			{ header: "Follow Up", accessorKey: "followUp" as keyof LeadTypeGlobal },
-			{
-				header: "Campaign ID",
-				accessorKey: "campaignID" as keyof LeadTypeGlobal,
-			},
-			{ header: "Address", accessorKey: "address1" as keyof LeadTypeGlobal },
-			{ header: "Social Media Profiles", accessorKey: "socials" }, // Single column for combined social links
-		];
-
-		// Check if there are any leads to export
-		if (filteredLeads.length === 0) {
-			toast("No leads available for export.");
-			return;
-		}
-
-		// Call the utility function to create the Excel file
-		const excelBuffer = await exportLeadsToExcel(
-			filteredLeads, // Pass the filtered leads
-			columns, // Pass the column definitions
-			"filtered_leads_export.xlsx", // This will be the filename
-		);
-
-		// Create a Blob from the Excel buffer and trigger download
-		const blob = new Blob([excelBuffer], {
-			type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-		});
-		const url = window.URL.createObjectURL(blob);
-
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = "filtered_leads_export.xlsx"; // Set the Excel file name
-		document.body.appendChild(a);
-		a.click(); // Trigger the download
-		document.body.removeChild(a); // Remove the temporary link
-
-		// Clean up the object URL after download
-		window.URL.revokeObjectURL(url);
 	},
 }));

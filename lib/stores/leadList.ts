@@ -2,7 +2,7 @@ import { MockUserProfile } from "@/constants/_faker/profile/userProfile";
 import type { LeadList } from "@/types/_dashboard/leadList";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { exportLeadListsToZip } from "../_utils/files/loopDownloadTableData";
+import { exportLeadListsToZip } from "../_utils/files/loopDownload/leadExports";
 // Define the state and actions for managing lead lists
 interface LeadListState {
 	leadLists: LeadList[]; // Holds the lead list data
@@ -85,8 +85,11 @@ export const useLeadListStore = create<LeadListState>((set, get) => ({
 		}
 
 		// Call the utility function to export the lead lists to a ZIP file
-		const zipBuffer = await exportLeadListsToZip(filteredLeadLists);
-
+		const zipBuffer: Uint8Array = await exportLeadListsToZip(filteredLeadLists);
+		if (!zipBuffer) {
+			toast("Failed to generate ZIP file.");
+			return;
+		}
 		// Create a Blob from the ZIP buffer and trigger download
 		const blob = new Blob([zipBuffer], { type: "application/zip" });
 		const url = window.URL.createObjectURL(blob);

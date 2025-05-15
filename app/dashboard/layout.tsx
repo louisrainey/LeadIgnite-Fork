@@ -1,14 +1,17 @@
-import { fetchUserProfileData, getUserProfile } from "@/actions/_depr/auth";
+import { fetchUserProfileData, getUserProfile } from "@/actions/auth";
 import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
-import { BillingModal } from "@/components/reusables/modals/user/billing/_depr/billing";
+import BillingModalMain from "@/components/reusables/modals/user/billing/BillingModalMain";
 import { SecurityModal } from "@/components/reusables/modals/user/security";
 import AiUsageModal from "@/components/reusables/modals/user/usage";
-import { UpgradeModal } from "@/components/reusables/modals/user/usage/_depr/upgrade";
-import { WebhookModal } from "@/components/reusables/modals/user/webhooks/_depr/webhook";
+import UsageModalMain from "@/components/reusables/modals/user/usage/UsageMain";
+import { WebhookModal } from "@/components/reusables/modals/user/webhooks/WebHookMain";
 import { InviteEmployeeModal } from "@/components/tables/employee-tables/utils/addEmployee";
 import { Toaster } from "@/components/ui/sonner";
-import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
+import {
+	MockUserProfile,
+	mockUserProfile,
+} from "@/constants/_faker/profile/userProfile";
 import { useSessionStore } from "@/lib/stores/user/useSessionStore";
 import { createClient } from "@/utils/supabase/server";
 import type { Metadata } from "next";
@@ -37,11 +40,11 @@ export default async function DashboardLayout({
 	const userProfile =
 		userProfileResponse && userProfileResponse.status === "success"
 			? userProfileResponse.userProfile
-			: null;
+			: MockUserProfile;
 
-	const response = await fetchUserProfileData("data.user.id", "ActivityLog");
+	// const response = await fetchUserProfileData("data.user.id", "ActivityLog");
 
-	console.log(`Table Fetch ${data.user.id}`, response);
+	// console.log(`Table Fetch ${data.user.id}`, response);
 	return (
 		<div className="flex">
 			{/* Pass only a valid UserProfile or null to Sidebar */}
@@ -51,14 +54,14 @@ export default async function DashboardLayout({
 				{children}
 			</main>
 			<AiUsageModal />
-			<BillingModal
+			<BillingModalMain
 				billingHistory={mockUserProfile.billingHistory}
 				paymentDetails={mockUserProfile.paymentDetails}
 				subscription={mockUserProfile.subscription}
 			/>
 			<InviteEmployeeModal />
 			<SecurityModal />
-			<UpgradeModal trial={true} />
+			<UsageModalMain />
 			<WebhookModal />
 			<Toaster />
 		</div>

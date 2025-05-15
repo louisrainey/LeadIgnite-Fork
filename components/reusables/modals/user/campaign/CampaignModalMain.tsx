@@ -6,7 +6,7 @@ import FinalizeCampaignStep from "./steps/FinalizeCampaignStep";
 // * Centralized Campaign Main Component
 const allChannels = ["phone", "email", "twitter", "instagram", "linkedin"];
 
-const CampaignMain = () => {
+const CampaignModalMain = () => {
 	// * Centralized state for all steps
 	const [step, setStep] = useState(0);
 	const [primaryChannel, setPrimaryChannel] = useState("");
@@ -63,4 +63,4 @@ const CampaignMain = () => {
 	);
 };
 
-export default CampaignMain;
+export default CampaignModalMain;

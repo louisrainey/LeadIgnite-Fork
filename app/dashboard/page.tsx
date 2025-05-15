@@ -1,12 +1,11 @@
 "use client";
 
 import PageContainer from "@/components/layout/page-container";
-import LeadsComponent from "../../components/leadsSearch/_depr";
-
+import PropertySearch from "@/components/leadsSearch/PropertySearch";
 export default function Page() {
 	return (
 		<PageContainer scrollable={true}>
-			<LeadsComponent />
+			<PropertySearch />
 		</PageContainer>
 	);
 }

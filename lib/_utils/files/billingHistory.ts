@@ -18,12 +18,9 @@ export const downloadBillingHistoryAsXlsx = async (
 	worksheet.addRow(["Invoice", "Amount", "Date", "Status"]);
 
 	// Add billing history data
-	billingHistory.forEach((entry: BillingHistoryItem) => {
-		// Format the date as a string (e.g., 'MM/DD/YYYY')
+	for (const entry of billingHistory) {
 		const formattedDate =
-			entry.date instanceof Date
-				? entry.date.toLocaleDateString() // Format the Date object to a string
-				: entry.date; // In case it's already a string
+			entry.date instanceof Date ? entry.date.toLocaleDateString() : entry.date;
 
 		worksheet.addRow([
 			entry.invoice,
@@ -31,7 +28,7 @@ export const downloadBillingHistoryAsXlsx = async (
 			formattedDate,
 			entry.status,
 		]);
-	});
+	}
 
 	// Adjust column widths
 	worksheet.columns = [

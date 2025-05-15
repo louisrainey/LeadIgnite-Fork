@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { TeamMemberForm } from "@/components/forms/steppers/_depr/employee-form";
+import { MainEmployeeForm } from "@/components/forms/steppers/employee-form/MainEmployeeForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import React from "react";
 
@@ -14,7 +14,7 @@ export default function Page() {
 		<ScrollArea className="h-full">
 			<div className="flex-1 space-y-4 p-8">
 				<Breadcrumbs items={breadcrumbItems} />
-				<TeamMemberForm initialData={null} key={null} />
+				<MainEmployeeForm initialData={null} key={null} />
 			</div>
 		</ScrollArea>
 	);

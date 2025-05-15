@@ -53,7 +53,7 @@ export const leadListColumns: ColumnDef<LeadTypeGlobal>[] = [
 		 * The cell property is a function that returns a JSX element to be rendered as the cell content for each row.
 		 * In this case, it renders a LeadNameCell component, which is a custom cell renderer for the "name" column.
 		 */
-		cell: ({ row }: { row: Row<LeadTypeGlobal> }) => <LeadNameCell row={row} />,
+		cell: (ctx) => <LeadNameCell {...ctx} />,
 	},
 	{
 		accessorKey: "phone",
@@ -65,7 +65,7 @@ export const leadListColumns: ColumnDef<LeadTypeGlobal>[] = [
 	{
 		accessorKey: "email",
 		header: "Email Address",
-		cell: ({ row }: { row: Row<LeadTypeGlobal> }) => <EmailCell row={row} />,
+		cell: (ctx) => <EmailCell {...ctx} />,
 	},
 	{
 		accessorKey: "socials",

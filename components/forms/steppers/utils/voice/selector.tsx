@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import VoiceCloningModal from "./cloneModal";
+import type { AssistantVoice } from "@/types/vapiAi/api/assistant/create";
 
 interface VoiceSelectorProps {
 	voices: AssistantVoice[]; // Array of AssistantVoice objects
@@ -45,7 +46,10 @@ const VoiceSelector: React.FC<VoiceSelectorProps> = ({
 
 	return (
 		<div className="relative">
-			<label className="block font-medium text-gray-700 text-sm dark:text-gray-300">
+			<label
+				htmlFor="voice-select"
+				className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+			>
 				Choose Your Voice
 			</label>
 			<Select onValueChange={handleVoiceSelect}>
@@ -75,13 +79,14 @@ const VoiceSelector: React.FC<VoiceSelectorProps> = ({
 
 					{/* Load More button to display more voices */}
 					{loadCount < voices.length && (
-						<div
+						<button
 							key="load-more"
+							type="button"
 							className="cursor-pointer py-2 text-center font-semibold hover:bg-gray-100 dark:hover:bg-gray-700"
-							onClick={loadMoreVoices} // Prevent selection, only load more voices
+							onClick={loadMoreVoices}
 						>
 							Load More Voices
-						</div>
+						</button>
 					)}
 				</SelectContent>
 			</Select>

@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { exportCampaignMessagesToExcel } from "@/lib/_utils/files/downloadTableData";
+import { exportCampaignMessagesBulkToExcel } from "@/lib/_utils/files/loopDownload/messageExports";
 import type {
 	GHLTextMessageCampaign,
 	TextMessage,
@@ -161,7 +161,7 @@ export const textMessageCampaignColumns: ColumnDef<GHLTextMessageCampaign>[] = [
 						className="p-2 text-blue-500 hover:underline"
 						type="button"
 						onClick={() => {
-							exportCampaignMessagesToExcel(
+							exportCampaignMessagesBulkToExcel(
 								`Messages_${row.original.name}`, // Sheet name based on campaign name
 								messageColumns, // Columns for the Excel export
 								messages, // Pass the messages array from the campaign

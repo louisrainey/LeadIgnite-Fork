@@ -1,4 +1,4 @@
-import UserAuthForm from "@/components/forms/steppers/_depr/user-auth-form";
+import MainUserAuthForm from "@/components/forms/steppers/user-auth-forms/MainUserAuthForm";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
@@ -26,7 +26,7 @@ export default function AuthForm({ isSignUp, setIsSignUp }: AuthFormProps) {
 				</p>
 			</div>
 
-			<UserAuthForm />
+			<MainUserAuthForm />
 
 			<p className="px-8 text-center text-muted-foreground text-sm">
 				By clicking continue, you agree to our{" "}

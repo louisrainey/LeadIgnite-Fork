@@ -1,6 +1,6 @@
 "use client";
 
-import { resetPassword } from "@/actions/_depr/auth";
+import { resetPassword } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

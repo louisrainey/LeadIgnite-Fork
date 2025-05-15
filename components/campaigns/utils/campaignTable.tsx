@@ -1,10 +1,10 @@
-import MultiStepCampaign from "@/components/reusables/modals/user/campaign/_depr/startCampaigns";
+import CampaignModalMain from "@/components/reusables/modals/user/campaign/CampaignModalMain";
 import { CallCampaignTable } from "@/components/tables/calls-table/call-campaign-table";
 import { callCampaignColumns } from "@/components/tables/calls-table/columns";
 import { emailCampaignColumns } from "@/components/tables/emails-table/columns";
 import { EmailCampaignTable } from "@/components/tables/emails-table/email-campaign-table";
-import { socialMediaCampaignColumns } from "@/components/tables/socials-table/steps/columns/_depr/columns";
-import { SocialMediaCampaignTable } from "@/components/tables/socials-table/steps/tables/_depr/social-campaign-table";
+import { socialColumns } from "@/components/tables/socials-table/SocialColumns";
+import { SocialMediaCampaignTable } from "@/components/tables/socials-table/SocialMediaCampaignTable";
 import { textMessageCampaignColumns } from "@/components/tables/text-table/columns";
 import { TextMessageCampaignTable } from "@/components/tables/text-table/text-campaign-table";
 import { exportMultipleCampaignsToZip } from "@/lib/_utils/files/arrayTableData";
@@ -144,7 +144,7 @@ const CampaignsMainContent: React.FC = () => {
 			case "social":
 				return (
 					<SocialMediaCampaignTable
-						columns={socialMediaCampaignColumns}
+						columns={socialColumns}
 						data={filteredCampaigns as SocialMediaCampaign[]} // Type assertion for SocialMediaCampaign data
 						searchKey="name"
 						pageCount={Math.ceil(filteredCampaigns.length / 10)}
@@ -227,7 +227,7 @@ const CampaignsMainContent: React.FC = () => {
 			</div>
 
 			{/* Modal for multi-step campaign */}
-			{isModalOpen && <MultiStepCampaign closeModal={closeModal} />}
+			{isModalOpen && <CampaignModalMain />}
 		</div>
 	);
 };

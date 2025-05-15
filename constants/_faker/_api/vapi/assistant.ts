@@ -1,11 +1,14 @@
 import { faker } from "@faker-js/faker";
 import { APP_TESTING_MODE } from "../../../data";
+import type { AssistantVoice } from "@/types/vapiAi/api/assistant/create";
 
 // Function to generate mock AssistantVoice data
 function generateMockAssistantVoice(): AssistantVoice {
 	const providers = ["azure", "aws", "google", "11labs"] as const;
 
 	return {
+		id: faker.string.uuid(), // Added id
+		name: `${faker.person.firstName()} ${faker.person.lastName()}`.trim(), // Replaced string concatenation with template literal and added trim()
 		fillerInjectionEnabled: faker.datatype.boolean(),
 		provider: faker.helpers.arrayElement(providers), // Randomly selects one provider
 		voiceId: faker.string.uuid(), // Correct method for generating UUID in latest Faker.js

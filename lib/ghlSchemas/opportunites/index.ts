@@ -23,11 +23,11 @@ export const searchOpportunities = async (
 	const queryParams = new URLSearchParams();
 
 	// Assuming query is an object with properties that need to be added as query parameters
-	Object.entries(query).forEach(([key, value]) => {
+	for (const [key, value] of Object.entries(query)) {
 		if (value !== undefined && value !== null) {
 			queryParams.append(key, String(value));
 		}
-	});
+	}
 
 	const response = await fetch(`${reqUrl}?${queryParams}`, {
 		method: "GET",
