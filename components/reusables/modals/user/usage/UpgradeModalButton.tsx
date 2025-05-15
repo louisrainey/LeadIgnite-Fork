@@ -1,3 +1,4 @@
+"use client";
 import { useModalStore } from "@/lib/stores/dashboard";
 import type { UserProfileSubscription } from "@/constants/_faker/profile/userSubscription";
 import { Button } from "@/components/ui/button";

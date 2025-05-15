@@ -1,4 +1,4 @@
-import { signIn, signUp } from "@/actions/auth";
+// import { signIn, signUp } from "@/actions/auth";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -37,20 +37,20 @@ export default function UserAuthForm() {
 		setLoading(true);
 		setError(null);
 		const formData = new FormData(event.currentTarget);
-		try {
-			const result = isSignUp ? await signUp(formData) : await signIn(formData);
-			if (result.status === "success") {
-				isSignUp ? setIsSignUp(false) : router.push("/dashboard");
-			} else {
-				setError(result.status);
-			}
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "An unknown error occurred",
-			);
-		} finally {
-			setLoading(false);
-		}
+		// try {
+		// 	const result = isSignUp ? await signUp(formData) : await signIn(formData);
+		// 	if (result.status === "success") {
+		// 		isSignUp ? setIsSignUp(false) : router.push("/dashboard");
+		// 	} else {
+		// 		setError(result.status);
+		// 	}
+		// } catch (err) {
+		// 	setError(
+		// 		err instanceof Error ? err.message : "An unknown error occurred",
+		// 	);
+		// } finally {
+		// 	setLoading(false);
+		// }
 	};
 
 	return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { signOut } from "@/actions/auth";
+// import { signOut } from "@/actions/auth";
 import { Icons } from "@/components/icons";
 import { useSidebar } from "@/hooks/useSidebar";
 import { cn } from "@/lib/_utils/kanban/utils";
@@ -34,7 +34,7 @@ export function DashboardNav({
 		event.preventDefault();
 		setLoading(true);
 
-		await signOut();
+		// await signOut();
 
 		setLoading(false);
 	};

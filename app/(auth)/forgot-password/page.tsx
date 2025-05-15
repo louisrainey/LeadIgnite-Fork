@@ -1,6 +1,6 @@
 "use client";
 
-import { forgotPassword } from "@/actions/auth";
+// import { forgotPassword } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,19 +16,19 @@ const ForgotPassword = () => {
 		event.preventDefault();
 		setError(null);
 
-		const formData = new FormData(event.currentTarget);
-		const result = await forgotPassword(formData);
+		// const formData = new FormData(event.currentTarget);
+		// const result = await forgotPassword(formData);
 
-		if (result.status === "success") {
-			setError(null);
-			toast({
-				title: "Email Sent",
-				variant: "default",
-				description: "Please Check Your Email",
-			});
-		} else {
-			setError(result.status);
-		}
+		// if (result.status === "success") {
+		// 	setError(null);
+		// 	toast({
+		// 		title: "Email Sent",
+		// 		variant: "default",
+		// 		description: "Please Check Your Email",
+		// 	});
+		// } else {
+		// 	setError(result.status);
+		// }
 	};
 
 	return (

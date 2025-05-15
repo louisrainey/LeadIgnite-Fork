@@ -1,4 +1,4 @@
-import { getUserSession } from "@/actions/auth";
+// import { getUserSession } from "@/actions/auth";
 import { redirect } from "next/navigation";
 
 export default async function AuthLayout({
@@ -6,9 +6,9 @@ export default async function AuthLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const response = await getUserSession();
-	if (response?.user) {
-		redirect("/dashboard");
-	}
+	// const response = await getUserSession();
+	// if (response?.user) {
+	// 	redirect("/dashboard");
+	// }
 	return <>{children}</>;
 }

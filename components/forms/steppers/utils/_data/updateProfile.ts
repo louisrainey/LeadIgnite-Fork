@@ -1,4 +1,4 @@
-import { updateUserProfile } from "@/actions/user";
+// import { updateUserProfile } from "@/actions/user";
 import type {
 	NotificationPreferences,
 	TwoFactorAuth,
@@ -58,18 +58,18 @@ export const updatePersonalInfoUtil = async (
 		console.log("📌 Updated User Profile Data:", updatedUserProfile);
 
 		// ✅ Call `updateUserProfile` with extracted data
-		const response = await updateUserProfile(
-			id,
-			updatedUserProfile,
-			twoFactorAuth,
-			notificationPreferences,
-		);
+		// const response = await updateUserProfile(
+		// 	id,
+		// 	updatedUserProfile,
+		// 	twoFactorAuth,
+		// 	notificationPreferences,
+		// );
 
-		if (response.status === "error") {
-			toast.error(response.message);
-			console.error("❌ Error updating profile:", response.message);
-			return false;
-		}
+		// if (response.status === "error") {
+		// 	toast.error(response.message);
+		// 	console.error("❌ Error updating profile:", response.message);
+		// 	return false;
+		// }
 
 		toast.success("✅ Personal Information updated successfully!");
 		console.log("✅ Profile update successful!");

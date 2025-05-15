@@ -1,3 +1,4 @@
+"use client";
 import { useModalStore } from "@/lib/stores/dashboard";
 // ! UsageMain: Composes the entire Usage modal from modular subcomponents
 import type React from "react";

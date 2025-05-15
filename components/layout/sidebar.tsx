@@ -1,5 +1,5 @@
 "use client";
-import { getUserProfile } from "@/actions/auth";
+// import { getUserProfile } from "@/actions/auth";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { navItems } from "@/constants/data";
 import { cn } from "@/lib/_utils/kanban/utils";
@@ -19,16 +19,16 @@ export default function SidebarClient({ user }: { user: UserProfile | null }) {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (user?.id) {
-			getUserProfile(user.id).then((profileResponse) => {
-				if (profileResponse.status === "success") {
-					setUserProfile(profileResponse.userProfile); // ✅ Update Zustand store
-					console.log("User profile Set", userProfile);
-				} else {
-					console.log("Error fetching user profile");
-				}
-			});
-		}
+		// if (user?.id) {
+		// 	getUserProfile(user.id).then((profileResponse) => {
+		// 		if (profileResponse.status === "success") {
+		// 			setUserProfile(profileResponse.userProfile); // ✅ Update Zustand store
+		// 			console.log("User profile Set", userProfile);
+		// 		} else {
+		// 			console.log("Error fetching user profile");
+		// 		}
+		// 	});
+		// }
 	}, [user, setUserProfile]);
 
 	return (

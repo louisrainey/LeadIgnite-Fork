@@ -1,4 +1,4 @@
-import { fetchUserProfileData, getUserProfile } from "@/actions/auth";
+// import { fetchUserProfileData, getUserProfile } from "@/actions/auth";
 import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
 import BillingModalMain from "@/components/reusables/modals/user/billing/BillingModalMain";
@@ -13,7 +13,6 @@ import {
 	mockUserProfile,
 } from "@/constants/_faker/profile/userProfile";
 import { useSessionStore } from "@/lib/stores/user/useSessionStore";
-import { createClient } from "@/utils/supabase/server";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,19 +27,19 @@ export default async function DashboardLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	const supabase = await createClient();
-	const { data } = await supabase.auth.getUser(); // ✅ Get authenticated user session
+	// const supabase = await createClient();
+	// const { data } = await supabase.auth.getUser(); // ✅ Get authenticated user session
 
-	if (!data?.user) {
-		return <p>Unauthorized</p>;
-	}
+	// if (!data?.user) {
+	// 	return <p>Unauthorized</p>;
+	// }
 
 	// Fetch the full user profile on the server
-	const userProfileResponse = await getUserProfile(data.user.id);
-	const userProfile =
-		userProfileResponse && userProfileResponse.status === "success"
-			? userProfileResponse.userProfile
-			: MockUserProfile;
+	// const userProfileResponse = await getUserProfile(data.user.id);
+	// const userProfile =
+	// 	userProfileResponse && userProfileResponse.status === "success"
+	// 		? userProfileResponse.userProfile
+	// 		: MockUserProfile;
 
 	// const response = await fetchUserProfileData("data.user.id", "ActivityLog");
 
@@ -48,7 +47,7 @@ export default async function DashboardLayout({
 	return (
 		<div className="flex">
 			{/* Pass only a valid UserProfile or null to Sidebar */}
-			<Sidebar user={userProfile} />
+			<Sidebar user={MockUserProfile} />
 			<main className="w-full flex-1 overflow-hidden">
 				<Header />
 				{children}

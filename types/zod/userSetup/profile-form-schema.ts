@@ -1,4 +1,3 @@
-import type { Provider } from "@supabase/supabase-js";
 import * as z from "zod";
 import { oAuthDataSchema } from "./connect-needed-accounts";
 

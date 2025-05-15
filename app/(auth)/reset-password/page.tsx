@@ -1,6 +1,6 @@
 "use client";
 
-import { resetPassword } from "@/actions/auth";
+// import { resetPassword } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,16 +22,16 @@ const ResetPassword = () => {
 		setError(null);
 		setIsLoading(true);
 
-		const formData = new FormData(event.currentTarget);
-		const password = formData.get("password") as string;
-		const result = await resetPassword(
-			formData,
-			searchParams.get("code") as string,
-		);
+		// const formData = new FormData(event.currentTarget);
+		// const password = formData.get("password") as string;
+		// const result = await resetPassword(
+		// 	formData,
+		// 	searchParams.get("code") as string,
+		// );
 
-		if (result.status === "success") {
-			router.push("login");
-		}
+		// if (result.status === "success") {
+		// 	router.push("login");
+		// }
 
 		setIsLoading(false);
 	};
