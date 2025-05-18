@@ -25,27 +25,22 @@ const PaymentMethodsStep: FC<PaymentMethodsStepProps> = ({
 		{/* * Payment Methods Section */}
 		<h3 className="font-medium text-lg dark:text-gray-200">Payment Methods</h3>
 		<Separator className="my-2 dark:border-gray-600" />
-		<div className="flex flex-col items-start justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0">
-			<div>
-				<p className="font-medium text-sm dark:text-gray-300">
-					{paymentDetails.cardType} ending in {paymentDetails.cardLastFour}
-				</p>
-				<p className="text-muted-foreground text-sm dark:text-gray-400">
-					Expiry {paymentDetails.expiry}
-				</p>
-			</div>
-			<div className="w-full sm:w-auto">
-				<ManageSubscriptionModal subscription={subscription} />
-			</div>
+		<div className="flex w-full flex-col items-center justify-center space-y-2">
+			<p className="text-center font-medium text-sm dark:text-gray-300">
+				{paymentDetails.cardType} ending in {paymentDetails.cardLastFour}
+			</p>
+			<p className="text-center text-muted-foreground text-sm dark:text-gray-400">
+				Expiry {paymentDetails.expiry}
+			</p>
+			<Button
+				onClick={onAddPaymentMethod}
+				variant="link"
+				className="mt-4 p-0 text-blue-600 dark:text-blue-400"
+				type="button"
+			>
+				+ Add new payment method
+			</Button>
 		</div>
-		<Button
-			onClick={onAddPaymentMethod}
-			variant="link"
-			className="mt-4 p-0 text-blue-600 dark:text-blue-400"
-			type="button"
-		>
-			+ Add new payment method
-		</Button>
 	</div>
 );
 

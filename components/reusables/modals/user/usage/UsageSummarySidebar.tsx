@@ -14,7 +14,7 @@ const UsageSummary: React.FC<UsageSummaryProps> = ({ subscription }) => {
 	return (
 		<>
 			<div className="text-center font-medium text-lg">
-				AI Subscription - {name} Plan
+				AI Subscription Sidebar - {name} Plan
 				<span
 					className={`ml-2 text-sm ${status === "active" ? "text-green-500" : "text-red-500"}`}
 				>

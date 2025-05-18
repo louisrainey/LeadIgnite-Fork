@@ -5,6 +5,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import type { MapFormSchemaType } from "@/types/_dashboard/maps";
 // * AdvancedFiltersDialog.tsx
 // ! Dialog for advanced search filters in the leads search UI
@@ -36,14 +37,17 @@ const AdvancedFiltersDialog: React.FC<AdvancedFiltersDialogProps> = ({
 					control={control}
 					render={({ field }) => (
 						<div className="flex flex-col">
-							<Label htmlFor="radius">Radius (miles)</Label>
-							<input
+							<Label htmlFor="radius" className="mb-2">
+								Radius (miles)
+							</Label>
+							<Input
 								id="radius"
+								placeholder="e.g. 5"
 								type="number"
 								min={0}
-								className="rounded border border-gray-300 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-								placeholder="e.g. 5"
 								{...field}
+								className="w-full"
+								error={errors.advanced?.radius?.message as string}
 							/>
 						</div>
 					)}
@@ -54,14 +58,17 @@ const AdvancedFiltersDialog: React.FC<AdvancedFiltersDialogProps> = ({
 					control={control}
 					render={({ field }) => (
 						<div className="flex flex-col">
-							<Label htmlFor="pastDays">Listed in Past (days)</Label>
-							<input
+							<Label htmlFor="pastDays" className="mb-2">
+								Listed in Past (days)
+							</Label>
+							<Input
 								id="pastDays"
+								placeholder="e.g. 30"
 								type="number"
 								min={0}
-								className="rounded border border-gray-300 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-								placeholder="e.g. 30"
 								{...field}
+								className="w-full"
+								error={errors.advanced?.pastDays?.message as string}
 							/>
 						</div>
 					)}
@@ -72,12 +79,16 @@ const AdvancedFiltersDialog: React.FC<AdvancedFiltersDialogProps> = ({
 					control={control}
 					render={({ field }) => (
 						<div className="flex flex-col">
-							<Label htmlFor="dateStart">Date Start</Label>
-							<input
+							<Label htmlFor="dateStart" className="mb-2">
+								Date Start
+							</Label>
+							<Input
 								id="dateStart"
+								placeholder="mm / dd / yyyy"
 								type="date"
-								className="rounded border border-gray-300 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
 								{...field}
+								className="w-full"
+								error={errors.advanced?.dateFrom?.message as string}
 							/>
 						</div>
 					)}
@@ -88,12 +99,16 @@ const AdvancedFiltersDialog: React.FC<AdvancedFiltersDialogProps> = ({
 					control={control}
 					render={({ field }) => (
 						<div className="flex flex-col">
-							<Label htmlFor="dateEnd">Date End</Label>
-							<input
+							<Label htmlFor="dateEnd" className="mb-2">
+								Date End
+							</Label>
+							<Input
 								id="dateEnd"
+								placeholder="mm / dd / yyyy"
 								type="date"
-								className="rounded border border-gray-300 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
 								{...field}
+								className="w-full"
+								error={errors.advanced?.dateTo?.message as string}
 							/>
 						</div>
 					)}

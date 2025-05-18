@@ -4,7 +4,6 @@ import Sidebar from "@/components/layout/sidebar";
 import BillingModalMain from "@/components/reusables/modals/user/billing/BillingModalMain";
 import { SecurityModal } from "@/components/reusables/modals/user/security";
 import AiUsageModal from "@/components/reusables/modals/user/usage";
-import UsageModalMain from "@/components/reusables/modals/user/usage/UsageMain";
 import { WebhookModal } from "@/components/reusables/modals/user/webhooks/WebHookMain";
 import { InviteEmployeeModal } from "@/components/tables/employee-tables/utils/addEmployee";
 import { Toaster } from "@/components/ui/sonner";
@@ -60,7 +59,6 @@ export default async function DashboardLayout({
 			/>
 			<InviteEmployeeModal />
 			<SecurityModal />
-			<UsageModalMain />
 			<WebhookModal />
 			<Toaster />
 		</div>

@@ -1,9 +1,8 @@
 ---
-trigger: model_decision
 description: When being asked to refactor a verbose component
 ---
 
-I have a verbose React component that handles a complex form (see code below). Please refactor this component by splitting it into logical subcomponents (for example: one for card details, one for billing address, etc.), while keeping all functionality, validation, and state management exactly as it is.
+When being asked to refactor a verbose componentI have a verbose React component that handles a complex form (see code below). Please refactor this component by splitting it into logical subcomponents (for example: one for card details, one for billing address, etc.), while keeping all functionality, validation, and state management exactly as it is.
 
 Requirements:
 
