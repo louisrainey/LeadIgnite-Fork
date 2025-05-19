@@ -9,6 +9,7 @@ interface ChannelSelectionStepProps {
 	onNext: () => void;
 	onClose: () => void;
 	allChannels: string[];
+	disabledChannels?: string[];
 }
 
 const ChannelSelectionStep: FC<ChannelSelectionStepProps> = ({
@@ -17,6 +18,7 @@ const ChannelSelectionStep: FC<ChannelSelectionStepProps> = ({
 	onNext,
 	onClose,
 	allChannels,
+	disabledChannels = [],
 }) => {
 	const validateChannel = () => !!primaryChannel;
 
@@ -32,17 +34,26 @@ const ChannelSelectionStep: FC<ChannelSelectionStepProps> = ({
 		<div>
 			<h2 className="mb-4 font-semibold text-lg">Select Primary Channel</h2>
 			<div className="mb-4 flex flex-col gap-3">
-				{allChannels.map((channel) => (
-					<Button
-						key={channel}
-						onClick={() => setPrimaryChannel(channel)}
-						variant={primaryChannel === channel ? "default" : "outline"}
-						className="capitalize"
-						type="button"
-					>
-						{channel}
-					</Button>
-				))}
+				{allChannels.map((channel) => {
+					const isDisabled = disabledChannels.includes(channel);
+					return (
+						<Button
+							key={channel}
+							onClick={() => !isDisabled && setPrimaryChannel(channel)}
+							variant={primaryChannel === channel ? "default" : "outline"}
+							className="flex items-center justify-between capitalize"
+							disabled={isDisabled}
+							type="button"
+						>
+							<span>{channel}</span>
+							{isDisabled && (
+								<span className="ml-2 rounded bg-gray-200 px-2 py-0.5 text-gray-500 text-xs">
+									Coming Soon
+								</span>
+							)}
+						</Button>
+					);
+				})}
 			</div>
 			<div className="flex justify-end gap-2">
 				<Button onClick={onClose} variant="ghost" type="button">
