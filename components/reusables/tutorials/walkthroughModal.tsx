@@ -17,6 +17,20 @@ interface PropertySearchModalProps {
 	onCloseTour: () => void; // Function to close the tour
 }
 
+// Utility to convert YouTube URLs to embed URLs
+const getEmbedUrl = (url: string) => {
+	// Extract video ID and query params
+	const ytMatch = url.match(
+		/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})([\?&][^#]*)?/,
+	);
+	if (ytMatch?.[1]) {
+		// Preserve query string (like ?si=...)
+		const query = ytMatch[2] || "";
+		return `https://www.youtube.com/embed/${ytMatch[1]}${query}`;
+	}
+	return url;
+};
+
 const PropertySearchModal: FC<PropertySearchModalProps> = ({
 	isOpen,
 	onClose,
@@ -43,9 +57,9 @@ const PropertySearchModal: FC<PropertySearchModalProps> = ({
 			{/* Modal */}
 			<div
 				className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-				onMouseDown={handleOutsideClick} // Close the modal when clicking outside
+				onMouseDown={handleOutsideClick?.bind?.(null)} // Close the modal when clicking outside
 			>
-				<div className="relative w-96 rounded-lg bg-white p-6 text-center shadow-lg dark:bg-gray-800">
+				<div className="w-96 rounded-lg bg-white p-6 text-center shadow-lg dark:bg-gray-800">
 					{/* X Button for closing the modal */}
 					<button
 						onClick={onClose}
@@ -56,13 +70,16 @@ const PropertySearchModal: FC<PropertySearchModalProps> = ({
 					</button>
 
 					{/* Video Section */}
-					<div className="mb-4">
+					<div className="mb-4 aspect-video w-full">
 						<iframe
-							width="100%"
-							height="200"
-							src={videoUrl}
-							title={title}
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+							width="560"
+							height="315"
+							className="h-full w-full rounded"
+							src={getEmbedUrl(videoUrl)}
+							title="YouTube video player"
+							frameBorder="0"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							referrerPolicy="strict-origin-when-cross-origin"
 							allowFullScreen
 						/>
 					</div>

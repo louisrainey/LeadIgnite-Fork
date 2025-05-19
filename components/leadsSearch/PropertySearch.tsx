@@ -15,24 +15,30 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { campaignSteps } from "@/_tests/tours/campaignTour";
 import AdvancedFiltersDialog from "./steps/AdvancedFiltersDialog";
+import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
 import HelpModal from "./steps/HelpModal";
 import LeadSearchForm from "./steps/LeadSearchForm";
 import LeadSearchHeader from "./steps/LeadSearchHeader";
 import MapSection from "./steps/MapSection";
 import PropertiesList from "./steps/PropertiesList";
+import PropertySearchModal from "../reusables/tutorials/walkthroughModal";
 
 const PropertySearch: React.FC = () => {
 	const [showAdvanced, setShowAdvanced] = useState(false);
-	const [markers, setMarkers] = useState<Coordinate[]>([
-		{ lat: 39.7392, lng: -104.9903 },
-		{ lat: 39.7294, lng: -104.8319 },
-	]);
+	const [isTourOpen, setIsTourOpen] = useState(false);
 	const [center, setCenter] = useState<Coordinate>({
 		lat: 39.7392,
 		lng: -104.9903,
 	});
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const handleStartTour = () => setIsTourOpen(true);
+	const handleCloseTour = () => setIsTourOpen(false);
+	const [markers, setMarkers] = useState<Coordinate[]>([
+		{ lat: 39.7392, lng: -104.9903 },
+		{ lat: 39.7294, lng: -104.8319 },
+	]);
 
 	const handleOpenModal = () => setIsModalOpen(true);
 	const handleCloseModal = () => setIsModalOpen(false);
@@ -86,6 +92,10 @@ const PropertySearch: React.FC = () => {
 				onHelpClick={handleOpenModal}
 				title="Leads Search"
 				description="Quickly search for properties by location, filters, and more."
+				creditsRemaining={
+					mockUserProfile.subscription.aiCredits.allotted -
+					mockUserProfile.subscription.aiCredits.used
+				}
 			/>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<LeadSearchForm
@@ -93,8 +103,8 @@ const PropertySearch: React.FC = () => {
 					errors={errors}
 					onAdvancedOpen={() => setShowAdvanced(true)}
 				/>
-				<div className="mt-4 flex justify-end">
-					<Button type="submit" className="gap-2">
+				<div className="mt-4 flex justify-center">
+					<Button type="submit" className="w-full max-w-xs gap-2 md:w-auto">
 						<Search className="h-4 w-4" /> Search
 					</Button>
 				</div>
@@ -111,12 +121,18 @@ const PropertySearch: React.FC = () => {
 				mapKey={process.env.NEXT_PUBLIC_GMAPS_KEY}
 			/>
 			<PropertiesList properties={properties} />
-			<HelpModal open={isModalOpen} onClose={handleCloseModal}>
-				<p>
-					Use the search form above to find leads by location and filter
-					criteria. Click Advanced for more options.
-				</p>
-			</HelpModal>
+			<PropertySearchModal
+				isOpen={isModalOpen}
+				onClose={handleCloseModal}
+				videoUrl="https://www.youtube.com/watch?v=hyosynoNbSU" // Example YouTube video URL
+				title="Welcome To Your Lead Search"
+				subtitle="Get help searching and sorting through your properties."
+				// Add the following props to enable the tour
+				steps={campaignSteps} // Tour steps (array of objects with content and selectors)
+				isTourOpen={isTourOpen} // Boolean to track if the tour is currently open
+				onStartTour={handleStartTour} // Function to start the tour (triggered by button)
+				onCloseTour={handleCloseTour} // Function to close the tour
+			/>
 		</div>
 	);
 };
