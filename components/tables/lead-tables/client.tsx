@@ -1,7 +1,7 @@
 "use client";
 import { campaignSteps } from "@/_tests/tours/campaignTour";
 import LeadMainModal from "@/components/reusables/modals/user/lead/LeadModalMain";
-import PropertySearchModal from "@/components/reusables/tutorials/walkthroughModal";
+import WalkThroughModal from "@/components/reusables/tutorials/walkthroughModal";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
@@ -187,7 +187,7 @@ export const LeadClient: React.FC = () => {
 					</Button>
 				</div>
 			)}
-			<PropertySearchModal
+			<WalkThroughModal
 				isOpen={isHelpModalOpen}
 				onClose={handleHelpCloseModal}
 				videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL

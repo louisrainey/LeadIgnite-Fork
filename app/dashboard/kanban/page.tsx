@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { KanbanBoard } from "@/components/kanban/kanban-board";
 import NewTaskDialog from "@/components/kanban/new-task-dialog";
 import PageContainer from "@/components/layout/page-container";
-import PropertySearchModal from "@/components/reusables/tutorials/walkthroughModal"; // Import the help modal
+import WalkThroughModal from "@/components/reusables/tutorials/walkthroughModal"; // Import the help modal
 import { Heading } from "@/components/ui/heading";
 import { HelpCircle } from "lucide-react"; // Import Help icon
 import { useState } from "react"; // Import useState for modal visibility
@@ -55,7 +55,7 @@ export default function Page() {
 			</div>
 
 			{/* Help Modal */}
-			<PropertySearchModal
+			<WalkThroughModal
 				isOpen={isHelpModalOpen}
 				onClose={handleHelpCloseModal}
 				videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL

@@ -38,7 +38,7 @@ import { usePropertyStore } from "@/lib/stores/leadSearch/drawer";
 import type { Coordinate, MapFormSchemaType } from "@/types/_dashboard/maps";
 import { mapFormSchema } from "@/types/zod/propertyList";
 import { toast } from "sonner";
-import PropertySearchModal from "../../reusables/tutorials/walkthroughModal";
+import WalkThroughModal from "../../reusables/tutorials/walkthroughModal";
 import { Heading } from "../../ui/heading";
 
 export default function LeadsComponent() {
@@ -454,7 +454,7 @@ export default function LeadsComponent() {
 					</div>
 				)}
 			</div>
-			<PropertySearchModal
+			<WalkThroughModal
 				isOpen={isModalOpen}
 				onClose={handleCloseModal}
 				videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL

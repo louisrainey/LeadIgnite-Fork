@@ -38,20 +38,14 @@ const LeadSearchHeader: FC<LeadSearchHeaderProps> = ({
 					Credits Remaining: {creditsRemaining}
 				</div>
 				{/* Help Button (moves to new line on mobile) */}
+
 				<button
 					type="button"
 					onClick={onHelpClick}
 					title="Get More help"
-					className="animate-bounce rounded-full bg-blue-500 p-1 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+					className="rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
 				>
-					<button
-						type="button"
-						onClick={onHelpClick}
-						title="Get More help"
-						className="rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
-					>
-						<HelpCircle size={20} />
-					</button>
+					<HelpCircle size={20} />
 				</button>
 			</div>
 		)}

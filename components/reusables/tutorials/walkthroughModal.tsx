@@ -3,7 +3,7 @@ import Joyride, { type Step } from "react-joyride";
 // * Joyride is used for guided tours. Step[] defines the steps for the tour.
 // ! If you see a type error about 'steps', check the parent/consumer component. This file expects Step[] as required by Joyride.
 
-interface PropertySearchModalProps {
+interface WalkThroughModalProps {
 	isOpen: boolean; // To control the modal's visibility
 	onClose: () => void; // Function to close the modal
 	videoUrl: string; // URL for the embedded video
@@ -30,7 +30,7 @@ const getEmbedUrl = (url: string) => {
 	return url;
 };
 
-const PropertySearchModal: FC<PropertySearchModalProps> = ({
+const WalkThroughModal: FC<WalkThroughModalProps> = ({
 	isOpen,
 	onClose,
 	videoUrl,
@@ -157,4 +157,4 @@ const PropertySearchModal: FC<PropertySearchModalProps> = ({
 	);
 };
 
-export default PropertySearchModal;
+export default WalkThroughModal;

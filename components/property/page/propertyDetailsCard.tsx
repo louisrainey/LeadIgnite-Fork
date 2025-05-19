@@ -261,7 +261,14 @@ const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
 						property.mortgage_balance?.toString?.() ??
 						"-",
 				)}
-				{renderPropertyDetails("Text", property.text)}
+				<div className="col-span-2 mb-4 flex flex-col items-start sm:col-span-3 lg:col-span-4">
+					<span className="font-semibold text-gray-500 dark:text-gray-400">
+						Text
+					</span>
+					<span className="whitespace-pre-line break-words">
+						{property.text ? property.text : "-"}
+					</span>
+				</div>
 
 				{/* --- Attributes below are not in PropertyDetails type, kept as comments for future reference --- */}
 				{/* // {renderPropertyDetails("Property Use", property.property_use)}

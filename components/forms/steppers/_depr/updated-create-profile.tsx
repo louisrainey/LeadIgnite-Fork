@@ -7,7 +7,7 @@
 // 	getUserPreferences,
 // 	updateUserProfile,
 // } from "@/actions/_depr/_old_user";
-// import PropertySearchModal from "@/components/reusables/tutorials/walkthroughModal";
+// import WalkThroughModal from "@/components/reusables/tutorials/walkthroughModal";
 // import { Button } from "@/components/ui/button";
 // import {
 // 	Form,
@@ -1271,7 +1271,7 @@
 
 // 			<Separator />
 
-// 			<PropertySearchModal
+// 			<WalkThroughModal
 // 				isOpen={isHelpModalOpen}
 // 				onClose={handleHelpCloseModal}
 // 				videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL

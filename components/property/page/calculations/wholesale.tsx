@@ -40,16 +40,12 @@ export default function WholesaleCalculator() {
 					</label>
 					<input
 						id="arv"
+						name="arv"
 						type="number"
+						min={0}
 						className="rounded border bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
 						placeholder="Enter the ARV"
-						value={arv}
-						onChange={(e) => setArv(Number(e.target.value))}
-					/>
-					<input
-						type="number"
-						className="rounded border bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-						placeholder="Enter the ARV"
+						aria-label="After Repair Value"
 						value={arv}
 						onChange={(e) => setArv(Number(e.target.value))}
 					/>

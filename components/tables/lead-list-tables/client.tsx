@@ -2,7 +2,7 @@
 
 import { campaignSteps } from "@/_tests/tours/campaignTour";
 import SkipTraceModalMain from "@/components/reusables/modals/user/skipTrace/SkipTraceModalMain";
-import PropertySearchModal from "@/components/reusables/tutorials/walkthroughModal";
+import WalkThroughModal from "@/components/reusables/tutorials/walkthroughModal";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
@@ -151,7 +151,7 @@ export const LeadListClient: React.FC = () => {
 			)}
 
 			{/* Help Modal */}
-			<PropertySearchModal
+			<WalkThroughModal
 				isOpen={isHelpModalOpen} // Use the correct state for the help modal
 				onClose={handleHelpCloseModal}
 				videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL

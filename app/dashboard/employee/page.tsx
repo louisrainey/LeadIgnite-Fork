@@ -3,7 +3,7 @@
 import { campaignSteps } from "@/_tests/tours/campaignTour";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
-import PropertySearchModal from "@/components/reusables/tutorials/walkthroughModal";
+import WalkThroughModal from "@/components/reusables/tutorials/walkthroughModal";
 import { EmployeeTable } from "@/components/tables/employee-tables/EmployeeTables";
 import { columns } from "@/components/tables/employee-tables/columns";
 import { buttonVariants } from "@/components/ui/button";
@@ -113,7 +113,7 @@ export default function EmployeePage({
 				<Separator />
 
 				{/* Help Modal */}
-				<PropertySearchModal
+				<WalkThroughModal
 					isOpen={isHelpModalOpen}
 					onClose={handleHelpCloseModal}
 					videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL

@@ -19,7 +19,7 @@ import {
 } from "@/constants/_faker/profile/userProfile";
 
 import { campaignSteps } from "@/_tests/tours/campaignTour";
-import PropertySearchModal from "@/components/reusables/tutorials/walkthroughModal";
+import WalkThroughModal from "@/components/reusables/tutorials/walkthroughModal";
 import { Heading } from "@/components/ui/heading";
 import { HelpCircle } from "lucide-react";
 const creditsRemaining =
@@ -310,7 +310,7 @@ const CampaignHeader: React.FC = () => {
 				))}
 			</div>
 
-			<PropertySearchModal
+			<WalkThroughModal
 				isOpen={isModalOpen}
 				onClose={handleCloseModal}
 				videoUrl="https://www.youtube.com/embed/example-video" // Example YouTube video URL

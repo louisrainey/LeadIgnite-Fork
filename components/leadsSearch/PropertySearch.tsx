@@ -24,7 +24,7 @@ import LeadSearchForm from "./steps/LeadSearchForm";
 import LeadSearchHeader from "./steps/LeadSearchHeader";
 import MapSection from "./steps/MapSection";
 import PropertiesList from "./propertyList";
-import PropertySearchModal from "../reusables/tutorials/walkthroughModal";
+import WalkThroughModal from "../reusables/tutorials/walkthroughModal";
 // ! Use named import, not default
 import { generateFakeProperties } from "@/constants/dashboard/properties";
 
@@ -139,7 +139,7 @@ const PropertySearch: React.FC = () => {
 				mapKey={process.env.NEXT_PUBLIC_GMAPS_KEY}
 			/>
 			<PropertiesList properties={properties} />
-			<PropertySearchModal
+			<WalkThroughModal
 				isOpen={isModalOpen}
 				onClose={handleCloseModal}
 				videoUrl="https://www.youtube.com/watch?v=hyosynoNbSU" // Example YouTube video URL
