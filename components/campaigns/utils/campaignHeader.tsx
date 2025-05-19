@@ -143,7 +143,7 @@ const CampaignHeader: React.FC = () => {
 	];
 
 	// Now define your `stats` array
-	const stats: Stat[] = [
+	const stats: (Stat & { comingSoon?: boolean })[] = [
 		{
 			title: "Total Campaigns",
 			value: totalCampaigns,
@@ -156,37 +156,39 @@ const CampaignHeader: React.FC = () => {
 			value: totalConversations,
 			statType: "conversations",
 			click: false,
-			past24hours: past24HoursData.totalConversations, // Example value for conversations in the past 24 hours
+			past24hours: past24HoursData.totalConversations,
 		},
 		{
 			title: "Total Call Campaigns",
 			value: totalCallCampaigns,
 			statType: "call",
 			click: true,
-			past24hours: past24HoursData.totalCalls, // Example value for call campaigns in the past 24 hours
+			past24hours: past24HoursData.totalCalls,
 		},
-		{
-			title: "Total Email Campaigns",
-			value: totalEmailCampaigns,
-			statType: "email",
-			click: true,
-			past24hours: past24HoursData.totalEmailCampaigns, // Example value for email campaigns in the past 24 hours
-		},
+
 		{
 			title: "Total Text Campaigns",
 			value: totalTextCampaigns,
 			statType: "text",
 			colSpan: 2,
 			click: true,
-			past24hours: past24HoursData.totalTextCampaigns, // Example value for text campaigns in the past 24 hours
+			past24hours: past24HoursData.totalTextCampaigns,
 		},
-
 		{
 			title: "Total Social Campaigns",
 			value: totalDMs,
 			statType: "dm",
 			click: true,
-			past24hours: past24HoursData.totalDMs, // Example value for DMs in the past 24 hours
+			past24hours: past24HoursData.totalDMs,
+			comingSoon: true, // ! Show overlay
+		},
+		{
+			title: "Total Email Campaigns",
+			value: totalEmailCampaigns,
+			statType: "email",
+			click: true,
+			past24hours: past24HoursData.totalEmailCampaigns,
+			comingSoon: true, // ! Show overlay
 		},
 	];
 
@@ -265,8 +267,6 @@ const CampaignHeader: React.FC = () => {
 
 			{/* Campaign Filter Buttons */}
 			<div className="mb-4 flex w-full flex-wrap gap-2 sm:gap-4">
-				{" "}
-				{/* Use flex-wrap to allow wrapping */}
 				{campaignFilters.map((filter) => {
 					const isActive = activeFilter === filter.value;
 					return (
@@ -274,15 +274,17 @@ const CampaignHeader: React.FC = () => {
 							key={filter.label}
 							type="button"
 							onClick={() => handleFilterClick(filter.value)}
-							className={`flex w-full items-center justify-center rounded-md px-4 py-2 sm:w-1/4 ${
+							className={`flex w-full min-w-[120px] max-w-full items-center justify-center rounded-md px-3 py-2 sm:w-1/4 sm:min-w-0 ${
 								isActive
 									? "bg-gray-200 dark:bg-gray-700"
 									: "bg-gray-100 dark:bg-gray-800"
-							} dark:text-white`}
+							} transition-colors duration-150 dark:text-white`}
+							style={{ flex: "1 1 45%" }}
 						>
 							<span className={`h-2 w-2 rounded-full ${filter.color}`} />
-							<span className="ml-2 text-xs sm:text-sm">{filter.label}</span>{" "}
-							{/* Adjust text size for mobile */}
+							<span className="ml-2 truncate text-xs sm:text-sm">
+								{filter.label}
+							</span>
 						</button>
 					);
 				})}
@@ -301,10 +303,11 @@ const CampaignHeader: React.FC = () => {
 							title={stat.title}
 							addedToday={stat.past24hours}
 							value={stat.value}
-							onClick={() => handleCardClick(stat.statType)} // Handle card clicks
-							isActive={index === activeIndex} // Highlight active card
-							click={stat.click} // Control card clickability
-							animationComplete={animationComplete} // Handle animation completion
+							onClick={() => handleCardClick(stat.statType)}
+							isActive={index === activeIndex}
+							click={stat.click}
+							animationComplete={animationComplete}
+							comingSoon={stat.comingSoon}
 						/>
 					</div>
 				))}

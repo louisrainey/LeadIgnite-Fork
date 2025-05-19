@@ -23,9 +23,19 @@ export function PlayButtonSkip({
 	onPrevCall,
 	isNextDisabled,
 	isPrevDisabled,
-	title, // Added title prop
+	title,
 }: PlayButtonSkipProps) {
+	// ! Use a default audio file if audioSrc is not provided
+	const defaultAudio = "/calls/example-call-yt.mp3"; // todo: Replace with your own default audio file if needed
+	// * Use the provided audioSrc if valid, otherwise fallback to defaultAudio
+	const isValidAudio = (src: string) => {
+		if (!src || typeof src !== "string") return false;
+		// Basic extension check (can be expanded)
+		return /\.(mp3|wav|ogg)$/i.test(src);
+	};
+	const src = isValidAudio(audioSrc) ? audioSrc : defaultAudio;
 	const [isPlaying, setIsPlaying] = useState(false);
+	const [audioError, setAudioError] = useState<string | null>(null);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const lottieRef = useRef<LottieRefCurrentProps | null>(null); // Ref for Lottie animation control (typed, correct interface)
 	// biomelint is not defined anywhere in this scope; if you intended to use it, you need to import or define it first.
@@ -54,6 +64,21 @@ export function PlayButtonSkip({
 
 	return (
 		<div className="flex flex-col items-center space-y-2">
+			{/* Error message for audio playback */}
+			{audioError && (
+				<div className="mb-2 text-red-500 text-xs">{audioError}</div>
+			)}
+			{/* Audio element */}
+			<audio
+				ref={audioRef}
+				src={src}
+				onError={() =>
+					setAudioError("Audio file could not be loaded or is not supported.")
+				}
+				preload="auto"
+			>
+				<track kind="captions" srcLang="en" label="English captions" />
+			</audio>
 			{/* Audio Title */}
 			<h2 className="text-center font-semibold text-gray-700 text-sm dark:text-white">
 				{title}
@@ -102,10 +127,6 @@ export function PlayButtonSkip({
 					⏭ Next
 				</button>
 			</div>
-
-			<audio ref={audioRef} src={audioSrc}>
-				<track kind="captions" srcLang="en" label="English captions" />
-			</audio>
 		</div>
 	);
 }

@@ -158,26 +158,30 @@ const CampaignsMainContent: React.FC = () => {
 	return (
 		<div className="h-full w-full rounded-md bg-white dark:bg-gray-900 ">
 			{/* Header with Create Campaign button, Last updated, and Export to CSV */}
-			<div className="flex flex-col space-y-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+			{/* Responsive, modern header: Create left/top, Updated/Refresh & Export right/bottom */}
+			<div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
+				{/* Create Campaign button always left/top */}
 				<button
 					type="button"
 					onClick={openModal}
-					className="w-full rounded-md bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 sm:w-auto"
+					className="order-1 w-full rounded-md bg-blue-700 px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 sm:order-1 sm:w-auto"
 				>
 					<i className="fas fa-rocket mr-2" />
 					Create Campaign
 				</button>
 
-				<div className="flex flex-col text-gray-500 sm:flex-row sm:items-center sm:space-x-4 dark:text-gray-400">
-					<div className="flex items-center justify-between space-x-2">
+				{/* Updated/Refresh and Export buttons always together, right/bottom */}
+				<div className="order-2 flex flex-col gap-4 text-gray-500 sm:order-2 sm:flex-row sm:items-center sm:gap-4 dark:text-gray-400">
+					{/* Updated time + Refresh */}
+					<div className="flex items-center gap-2 rounded-md bg-gray-50 px-3 py-2 text-xs shadow-sm sm:text-sm dark:bg-gray-800">
 						<span>
 							Updated {minutesAgo} {minutesAgo === 1 ? "minute" : "minutes"} ago
 						</span>
 						<button
 							type="button"
 							title="Fetch Updated Campaigns"
-							className="rounded-md p-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-700"
-							onClick={handleRefresh} // Trigger manual refresh
+							className="rounded-md p-2 transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:hover:bg-gray-700"
+							onClick={handleRefresh}
 						>
 							<RefreshCw
 								size={18}
@@ -186,10 +190,11 @@ const CampaignsMainContent: React.FC = () => {
 						</button>
 					</div>
 
+					{/* Export Excel button, always next to refresh */}
 					<button
 						type="button"
-						onClick={handleExport} // Attach the export handler to the button
-						className="mt-4 flex w-full items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-indigo-500 px-6 py-3 font-semibold text-white transition-all duration-300 ease-in-out hover:from-purple-600 hover:to-indigo-600 focus:outline-none focus:ring-4 focus:ring-purple-300 sm:mt-0 dark:from-purple-700 dark:to-indigo-700 dark:focus:ring-indigo-600 dark:hover:from-purple-800 dark:hover:to-indigo-800 "
+						onClick={handleExport}
+						className="flex w-full items-center justify-center rounded-md bg-gradient-to-r from-purple-500 to-indigo-500 px-6 py-3 font-semibold text-white shadow-sm transition-all duration-300 ease-in-out hover:from-purple-600 hover:to-indigo-600 focus:outline-none focus:ring-4 focus:ring-purple-300 sm:w-auto dark:from-purple-700 dark:to-indigo-700 dark:focus:ring-indigo-600 dark:hover:from-purple-800 dark:hover:to-indigo-800"
 					>
 						<i className="fas fa-file-export mr-2" />
 						Export Excel

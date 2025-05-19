@@ -9,6 +9,7 @@ interface StatCardProps {
 	click: boolean; // Prop to check if the card can be clicked
 	animationComplete: boolean; // Prop to check if the animation should stop
 	addedToday?: number; // New prop for how many were added today
+	comingSoon?: boolean; // ! Overlay for coming soon features
 }
 
 const StatCard: React.FC<StatCardProps> = ({
@@ -19,26 +20,21 @@ const StatCard: React.FC<StatCardProps> = ({
 	click,
 	animationComplete,
 	addedToday,
+	comingSoon,
 }) => {
 	return (
 		<div
-			tabIndex={click ? 0 : -1}
-			role={click ? "button" : undefined}
-			onClick={click ? onClick : undefined}
+			className={`relative rounded-md bg-white p-4 text-center shadow-md transition-all dark:bg-gray-800 dark:text-white${click ? " cursor-pointer" : ""}${click && isActive && !animationComplete && value > 0 ? " animate-pulse border-4 border-orange-500 dark:border-gray-400" : ""}`}
+			tabIndex={click && !comingSoon ? 0 : -1}
+			role={click && !comingSoon ? "button" : undefined}
+			onClick={click && !comingSoon ? onClick : undefined}
 			onKeyUp={
-				click
+				click && !comingSoon
 					? (e) => {
 							if (e.key === "Enter" || e.key === " ") onClick();
 						}
 					: undefined
 			}
-			className={`${
-				click && "cursor-pointer"
-			} rounded-md bg-white p-4 text-center shadow-md transition-all dark:bg-gray-800 dark:text-white ${
-				click && isActive && !animationComplete && value > 0
-					? "animate-pulse border-4 border-orange-500 dark:border-gray-400"
-					: ""
-			}`}
 		>
 			<p>{title}</p>
 			<h2 className="py-1 font-bold text-3xl">{value}</h2>
@@ -48,6 +44,19 @@ const StatCard: React.FC<StatCardProps> = ({
 				<div className="mt-2 flex items-center justify-center rounded-full bg-green-100 px-2 py-1 text-green-600 text-sm dark:bg-green-900 dark:text-green-400">
 					<ArrowUpRight className="mr-1" size={16} />
 					<span>{addedToday.toLocaleString()} just today</span>
+				</div>
+			)}
+
+			{/* ! Coming Soon Overlay */}
+			{comingSoon && (
+				// ! Overlay blocks interaction and signals feature is not yet available
+				<div
+					className="pointer-events-auto absolute inset-0 z-10 flex select-none items-center justify-center rounded-md bg-black/60"
+					style={{ backdropFilter: "blur(2px)" }}
+				>
+					<span className="font-bold text-lg text-white drop-shadow">
+						Coming Soon
+					</span>
 				</div>
 			)}
 		</div>
