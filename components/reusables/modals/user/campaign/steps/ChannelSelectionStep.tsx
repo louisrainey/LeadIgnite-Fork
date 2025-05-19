@@ -4,22 +4,21 @@ import { toast } from "sonner";
 
 // * Step 1: Channel Selection
 interface ChannelSelectionStepProps {
-	primaryChannel: string;
-	setPrimaryChannel: (channel: string) => void;
 	onNext: () => void;
 	onClose: () => void;
-	allChannels: string[];
-	disabledChannels?: string[];
+	allChannels: ("email" | "call" | "text" | "social")[];
+	disabledChannels?: ("email" | "call" | "text" | "social")[];
 }
 
+import { useCampaignCreationStore } from "@/lib/stores/campaignCreation";
+
 const ChannelSelectionStep: FC<ChannelSelectionStepProps> = ({
-	primaryChannel,
-	setPrimaryChannel,
 	onNext,
 	onClose,
 	allChannels,
 	disabledChannels = [],
 }) => {
+	const { primaryChannel, setPrimaryChannel } = useCampaignCreationStore();
 	const validateChannel = () => !!primaryChannel;
 
 	const handleNextStep = () => {

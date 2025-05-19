@@ -8,6 +8,8 @@
 
 # 🪳 Fix Selects not able to be updated hydration error
 
+# 🪳 Fix dropdowns not able to be for campaing page 
+
 # 🖥️ Implemen upload lead list functionality
 # 🖥️ Fix Kanban creating to do to add priority due date 
 

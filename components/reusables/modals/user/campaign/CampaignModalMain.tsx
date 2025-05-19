@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChannelCustomizationStep from "./steps/ChannelCustomizationStep";
 import ChannelSelectionStep from "./steps/ChannelSelectionStep";
 import FinalizeCampaignStep from "./steps/FinalizeCampaignStep";
+import { TimingPreferencesStep } from "./steps/TimingPreferencesStep";
+import { useCampaignCreationStore } from "@/lib/stores/campaignCreation"; // Zustand campaign creation store
 import {
 	Dialog,
 	DialogContent,
@@ -11,28 +13,81 @@ import {
 import { X } from "lucide-react";
 
 // * Centralized Campaign Main Component
-const allChannels = [
+const allChannels: ("email" | "call" | "text" | "social")[] = [
 	"call",
 	"text",
 	"email",
-	"twitter",
-	"instagram",
-	"linkedin",
+	"social",
 ];
-const disabledChannels = ["email", "twitter", "instagram", "linkedin"];
+const disabledChannels: ("email" | "call" | "text" | "social")[] = [
+	"email",
+	"social",
+];
 
 const CampaignModalMain = () => {
+	// * Zustand campaign creation store
+	const {
+		primaryChannel,
+		setPrimaryChannel,
+		areaMode,
+		setAreaMode,
+		selectedLeadListId,
+		setSelectedLeadListId,
+		campaignArea,
+		setCampaignArea,
+		leadCount,
+		setLeadCount,
+		daysSelected,
+		setDaysSelected,
+		reachBeforeBusiness,
+		reachAfterBusiness,
+		reachOnWeekend,
+		startDate,
+		setStartDate,
+		endDate,
+		setEndDate,
+		reset,
+	} = useCampaignCreationStore();
+
+	// Helper to count only weekdays (Mon-Fri) between two dates
+	function countWeekdays(start: Date, end: Date): number {
+		let count = 0;
+		const current = new Date(start);
+		while (current <= end) {
+			const day = current.getDay();
+			if (day !== 0 && day !== 6) count++;
+			current.setDate(current.getDate() + 1);
+		}
+		return count;
+	}
+
+	const days =
+		startDate && endDate
+			? Math.max(
+					1,
+					Math.ceil(
+						(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+					) + 1,
+				)
+			: 0;
+
+	// Use reachOnWeekend (from Zustand) for all weekend logic
+	// Apply 35% increase/decrease to the number of days, not credits
+	const mutatedDays =
+		days > 0 ? Math.round(days * (reachOnWeekend ? 1.35 : 1)) : 0;
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		setDaysSelected(mutatedDays);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [mutatedDays, reachOnWeekend]);
+
+	const estimatedCredits =
+		leadCount > 0 && mutatedDays > 0 ? Math.round(leadCount * mutatedDays) : 0;
+
 	// * Modal open state
 	const [open, setOpen] = useState(true);
-	// * Centralized state for all steps
 	const [step, setStep] = useState(0);
-	const [primaryChannel, setPrimaryChannel] = useState("");
-	const [campaignName, setCampaignName] = useState("");
-	const [startDate, setStartDate] = useState("");
-	const [endDate, setEndDate] = useState("");
-	const [estimatedCredits, setEstimatedCredits] = useState(0);
-
-	// todo: Add more state for phone/email/social customization as needed
 
 	// * Step navigation handlers
 	const nextStep = () => setStep((s) => s + 1);
@@ -57,33 +112,34 @@ const CampaignModalMain = () => {
 					</button>
 					{step === 0 && (
 						<ChannelSelectionStep
-							primaryChannel={primaryChannel}
-							setPrimaryChannel={setPrimaryChannel}
 							onNext={nextStep}
 							onClose={closeModal}
-							allChannels={allChannels}
-							disabledChannels={disabledChannels}
+							allChannels={
+								allChannels as ("email" | "call" | "text" | "social")[]
+							}
+							disabledChannels={
+								disabledChannels as ("email" | "call" | "text" | "social")[]
+							}
 						/>
 					)}
 					{step === 1 && (
-						<ChannelCustomizationStep
-							primaryChannel={primaryChannel}
-							// todo: Pass phone/email/social customization props
-							onNext={nextStep}
-							onBack={prevStep}
-						/>
+						<ChannelCustomizationStep onNext={nextStep} onBack={prevStep} />
 					)}
 					{step === 2 && (
+						<TimingPreferencesStep onBack={prevStep} onNext={nextStep} />
+					)}
+					<p style={{ color: "blue", fontSize: "12px" }}>
+						DEBUG: leadCount={leadCount}, startDate={String(startDate)},
+						endDate={String(endDate)}, days={days}, mutatedDays={mutatedDays},
+						reachBeforeBusiness={String(reachBeforeBusiness)},
+						reachAfterBusiness={String(reachAfterBusiness)}, reachOnWeekend=
+						{String(reachOnWeekend)}, estimatedCredits={estimatedCredits}
+					</p>
+					{step === 3 && (
 						<FinalizeCampaignStep
-							campaignName={campaignName}
-							setCampaignName={setCampaignName}
-							startDate={startDate}
-							setStartDate={setStartDate}
-							endDate={endDate}
-							setEndDate={setEndDate}
-							estimatedCredits={estimatedCredits}
-							onLaunch={launchCampaign}
 							onBack={prevStep}
+							onLaunch={launchCampaign}
+							estimatedCredits={estimatedCredits}
 						/>
 					)}
 				</DialogContent>

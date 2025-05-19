@@ -9,35 +9,33 @@ import type { DateRange } from "react-day-picker";
 
 // * Step 3: Finalize Campaign
 interface FinalizeCampaignStepProps {
-	campaignName: string;
-	setCampaignName: (name: string) => void;
-	startDate: string;
-	setStartDate: (date: string) => void;
-	endDate: string;
-	setEndDate: (date: string) => void;
 	estimatedCredits: number;
 	onLaunch: () => void;
 	onBack: () => void;
 }
 
+import { useCampaignCreationStore } from "@/lib/stores/campaignCreation";
+
 const FinalizeCampaignStep: FC<FinalizeCampaignStepProps> = ({
-	campaignName,
-	setCampaignName,
-	startDate,
-	setStartDate,
-	endDate,
-	setEndDate,
 	estimatedCredits,
 	onLaunch,
 	onBack,
 }) => {
+	const {
+		campaignName,
+		setCampaignName,
+		startDate,
+		setStartDate,
+		endDate,
+		setEndDate,
+	} = useCampaignCreationStore();
 	const [campaignGoal, setCampaignGoal] = useState("");
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [goalError, setGoalError] = useState<string | null>(null);
 	const [dateError, setDateError] = useState<string | null>(null);
 	const [dateRange, setDateRange] = useState<DateRange | undefined>({
-		from: startDate ? new Date(startDate) : undefined,
-		to: endDate ? new Date(endDate) : undefined,
+		from: startDate ?? undefined,
+		to: endDate ?? undefined,
 	});
 
 	const handleCampaignNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,20 +78,12 @@ const FinalizeCampaignStep: FC<FinalizeCampaignStepProps> = ({
 
 	const handleDateSelection = (range: DateRange | undefined) => {
 		setDateRange(range);
-
-		if (range?.from) {
-			setStartDate(format(range.from, "yyyy-MM-dd"));
-		}
-		if (range?.to) {
-			setEndDate(format(range.to, "yyyy-MM-dd"));
-		} else {
-			setEndDate("");
-		}
-
-		if (range?.from && range?.to && range.from > range.to) {
-			setDateError("The end date cannot be before the start date.");
-		} else {
+		if (range?.from && range.to) {
+			setStartDate(range.from);
+			setEndDate(range.to);
 			setDateError(null);
+		} else {
+			setDateError("Please select both a start and end date.");
 		}
 	};
 
@@ -140,25 +130,12 @@ const FinalizeCampaignStep: FC<FinalizeCampaignStepProps> = ({
 				maxLength={300}
 			/>
 			{goalError && <p className="text-red-500">{goalError}</p>}
-			<label
-				htmlFor="dateRange"
-				className="mb-1 block text-center font-bold text-sm dark:text-white"
-			>
-				Select Start Date And End Date
-			</label>
-			<div className="mb-4 w-full max-w-lg overflow-auto">
-				<Calendar
-					mode="range"
-					selected={dateRange}
-					onSelect={handleDateSelection}
-					numberOfMonths={2}
-					fromDate={new Date()}
-				/>
-			</div>
-			{dateError && <p className="text-red-500">{dateError}</p>}
+
 			<p className="mb-4 text-gray-500 text-sm dark:text-gray-400">
 				This campaign will cost {estimatedCredits} credits.
 			</p>
+			{/* Debug output for state inspection */}
+
 			<Button
 				onClick={onLaunch}
 				className="w-full"
