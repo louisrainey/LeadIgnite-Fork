@@ -4,13 +4,14 @@ import {
 	mockFetchAddressesFromApi,
 } from "@/constants/utility/maps";
 import { usePropertyStore } from "@/lib/stores/leadSearch/drawer";
+// * Import mock property data generator
 import type { Coordinate, MapFormSchemaType } from "@/types/_dashboard/maps";
 import { mapFormSchema } from "@/types/zod/propertyList";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Search } from "lucide-react";
 // * PropertySearch.tsx
 // ! Main property search component combining all subcomponents for the leads search feature
-import type React from "react";
+import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -22,10 +23,22 @@ import HelpModal from "./steps/HelpModal";
 import LeadSearchForm from "./steps/LeadSearchForm";
 import LeadSearchHeader from "./steps/LeadSearchHeader";
 import MapSection from "./steps/MapSection";
-import PropertiesList from "./steps/PropertiesList";
+import PropertiesList from "./propertyList";
 import PropertySearchModal from "../reusables/tutorials/walkthroughModal";
+// ! Use named import, not default
+import { generateFakeProperties } from "@/constants/dashboard/properties";
 
 const PropertySearch: React.FC = () => {
+	const { properties, setProperties, isDrawerOpen, setIsDrawerOpen } =
+		usePropertyStore();
+
+	// * Set default properties on mount
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	React.useEffect(() => {
+		// ! Populate with mock properties initially (replace with API call in production)
+		setProperties(generateFakeProperties(12));
+		// * Do NOT open the drawer on initial load
+	}, []);
 	const [showAdvanced, setShowAdvanced] = useState(false);
 	const [isTourOpen, setIsTourOpen] = useState(false);
 	const [center, setCenter] = useState<Coordinate>({
@@ -43,7 +56,8 @@ const PropertySearch: React.FC = () => {
 	const handleOpenModal = () => setIsModalOpen(true);
 	const handleCloseModal = () => setIsModalOpen(false);
 
-	const { properties } = usePropertyStore();
+	// moved above useEffect to avoid usage-before-declaration
+	// const { properties, setProperties } = usePropertyStore();
 
 	const {
 		control,
@@ -84,6 +98,10 @@ const PropertySearch: React.FC = () => {
 			const newCenter = calculateCenter(newMarkers);
 			setCenter(newCenter);
 		}
+		// * Set new properties after search
+		setProperties(generateFakeProperties(12));
+		// * Open the drawer to show results
+		setIsDrawerOpen(true);
 	};
 
 	return (
@@ -103,7 +121,7 @@ const PropertySearch: React.FC = () => {
 					errors={errors}
 					onAdvancedOpen={() => setShowAdvanced(true)}
 				/>
-				<div className="mt-4 flex justify-center">
+				<div className="my-4 flex justify-center">
 					<Button type="submit" className="w-full max-w-xs gap-2 md:w-auto">
 						<Search className="h-4 w-4" /> Search
 					</Button>

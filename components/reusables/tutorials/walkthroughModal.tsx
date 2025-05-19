@@ -1,5 +1,4 @@
-import type React from "react";
-import type { FC } from "react";
+import React, { type FC } from "react";
 import Joyride, { type Step } from "react-joyride";
 // * Joyride is used for guided tours. Step[] defines the steps for the tour.
 // ! If you see a type error about 'steps', check the parent/consumer component. This file expects Step[] as required by Joyride.
@@ -43,6 +42,7 @@ const PropertySearchModal: FC<PropertySearchModalProps> = ({
 	onStartTour, // Function to start the tour
 	onCloseTour, // Function to close the tour
 }) => {
+	const [videoLoading, setVideoLoading] = React.useState(true);
 	if (!isOpen) return null; // Do not render the modal if isOpen is false
 
 	// Function to close the modal when clicking outside
@@ -70,7 +70,16 @@ const PropertySearchModal: FC<PropertySearchModalProps> = ({
 					</button>
 
 					{/* Video Section */}
-					<div className="mb-4 aspect-video w-full">
+					<div
+						className="relative mb-4 aspect-video w-full"
+						aria-busy={videoLoading}
+					>
+						{videoLoading && (
+							<div className="absolute inset-0 z-10 flex items-center justify-center bg-white bg-opacity-70">
+								<span className="sr-only">Loading video...</span>
+								<div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500" />
+							</div>
+						)}
 						<iframe
 							width="560"
 							height="315"
@@ -81,6 +90,7 @@ const PropertySearchModal: FC<PropertySearchModalProps> = ({
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 							referrerPolicy="strict-origin-when-cross-origin"
 							allowFullScreen
+							onLoad={() => setVideoLoading(false)}
 						/>
 					</div>
 

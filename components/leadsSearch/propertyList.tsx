@@ -11,7 +11,7 @@ import { X } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import PropertyCard from "./propertyCard";
-import SkipTraceDialog from "./utils/createListModal";
+import SkipTraceDialog from "../maps/properties/utils/createListModal";
 interface PropertyListProps {
 	properties: PropertyDetails[];
 }

@@ -14,7 +14,7 @@ import {
 import Lottie from "lottie-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import PropertyListView from "./properties/propertyList";
+import PropertyListView from "../leadsSearch/propertyList";
 
 const maxCardsPerLoad = 50;
 // * DrawingControls (inline)

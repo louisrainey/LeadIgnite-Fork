@@ -1,10 +1,37 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
 
+
+
 # 🪳 Fix saving profile when editing
 
 # 🪳 Fix multiple file uploads being able to be deleted
 
 # 🪳 Fix Selects not able to be updated hydration error
+
+# 🖥️ Implemen upload lead list functionality
+# 🖥️ Fix Kanban creating to do to add priority due date 
+
+
+
+# 🏔️ Setup Go high level workflows with vapi
+
+# 🏔️ Setup Go high level workflows with phantombuster
+
+# 🧪 Create E2E tests for platform
+
+# 🧪 Create onboarding test for GHL
+
+# Set up user onbaording with https://www.npmjs.com/package/@frigade/react
+
+# ⁉️ optimize load speeds
+
+# 💾 Add Check for multiple emails / ips to prevent trial misuse
+
+# 💾 Add Update activity and assigned on more or member reassign
+
+# 💾 Enable inviting employees
+
+# ‼ 💾 Enable employee access based on permissions
 
 # 💾 Connect Lead search to api
 
@@ -31,25 +58,6 @@
 
 # 🔐 Enable RLS For tables
 
-# 💾 Enable inviting employees
-
-# ‼ 💾 Enable employee access based on permissions
-
-# 🏔️ Setup Go high level workflows with vapi
-
-# 🏔️ Setup Go high level workflows with phantombuster
-
-# 🧪 Create E2E tests for platform
-
-# 🧪 Create onboarding test for GHL
-
-# Set up user onbaording with https://www.npmjs.com/package/@frigade/react
-
-# ⁉️ optimize load speeds
-
-# 💾 Add Check for multiple emails / ips to prevent trial misuse
-
-# 💾 Add Update activity and assigned on more or member reassign
 
 <!-- # ✅ 💾 Security add update password, enable 2fa -->
 

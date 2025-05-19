@@ -1,12 +1,19 @@
 "use client";
 
-import type React from "react";
+import React from "react";
 
 import type { PropertyDetails } from "@/types/_dashboard/maps";
+import { v4 as uuidv4 } from "uuid";
 
 interface PropertyCardProps {
 	property: PropertyDetails;
 }
+
+const handlePrimaryImgError = (
+	e: React.SyntheticEvent<HTMLImageElement, Event>,
+) => {
+	e.currentTarget.style.display = "none";
+};
 
 const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
 	property,
@@ -39,9 +46,97 @@ const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
 			</h2>
 			<div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
 				{renderPropertyDetails("Agent", property.agent)}
-				{renderPropertyDetails("Agent Email", property.agent_email ?? "-")}
-				{/* agent_phones is an array, consider custom rendering if needed */}
-				{renderPropertyDetails("Alt Photos", property.alt_photos)}
+				{/* * Render Agent Email as clickable mailto link with wrapping */}
+				<div className="mb-4 flex flex-col items-start break-all">
+					<span className="font-semibold text-gray-500 dark:text-gray-400">
+						Agent Email
+					</span>
+					{property.agent_email ? (
+						<a
+							href={`mailto:${property.agent_email}`}
+							className="break-all text-blue-600 underline"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{property.agent_email}
+						</a>
+					) : (
+						<span>-</span>
+					)}
+				</div>
+				{/* * Render Alt Photos as thumbnails with lightbox modal preview */}
+				{(() => {
+					const [lightboxOpen, setLightboxOpen] = React.useState(false);
+					const [activePhoto, setActivePhoto] = React.useState<string | null>(
+						null,
+					);
+					const photos: string[] = Array.isArray(property.alt_photos)
+						? property.alt_photos
+						: property.alt_photos
+							? [property.alt_photos]
+							: [];
+
+					return (
+						<div className="mb-4 flex flex-col items-start">
+							<span className="font-semibold text-gray-500 dark:text-gray-400">
+								Alt Photos
+							</span>
+							{photos.length > 0 ? (
+								<div className="mt-2 flex max-w-full space-x-2 overflow-x-auto">
+									{photos.slice(0, 5).map((url, idx) => (
+										<button
+											key={url}
+											type="button"
+											className="focus:outline-none"
+											onClick={() => {
+												setActivePhoto(url);
+												setLightboxOpen(true);
+											}}
+										>
+											<img
+												src={url}
+												alt={`Property ${idx + 1} ${property.latitude} ${property.longitude}`}
+												className="h-16 w-24 rounded border object-cover transition-transform hover:scale-105"
+												loading="lazy"
+											/>
+										</button>
+									))}
+									{photos.length > 5 && (
+										<span className="self-center text-gray-400 text-xs">
+											+{photos.length - 5} more
+										</span>
+									)}
+								</div>
+							) : (
+								<div className="flex h-16 w-24 items-center justify-center rounded bg-gray-200">
+									<span className="text-gray-400">No Photos</span>
+								</div>
+							)}
+
+							{/* Lightbox modal */}
+							{lightboxOpen && activePhoto && (
+								<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+									<div className="relative">
+										<img
+											src={activePhoto}
+											alt="Full property view"
+											className="max-h-[80vh] max-w-[90vw] rounded shadow-lg"
+										/>
+										<button
+											type="button"
+											onClick={() => setLightboxOpen(false)}
+											className="absolute top-2 right-2 rounded-full bg-white p-1 shadow"
+											aria-label="Close"
+										>
+											&#10005;
+										</button>
+									</div>
+								</div>
+							)}
+						</div>
+					);
+				})()}
+
 				{renderPropertyDetails(
 					"Assessed Value",
 					property.assessed_value?.toLocaleString?.() ??
@@ -119,7 +214,23 @@ const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
 						property.price_per_sqft?.toString?.() ??
 						"-",
 				)}
-				{renderPropertyDetails("Primary Photo", property.primary_photo)}
+				{/* * Render Primary Photo as an embedded image if available, else show placeholder */}
+				<div className="mb-4 flex flex-col items-start">
+					<span className="font-semibold text-gray-500 dark:text-gray-400">
+						Primary Photo
+					</span>
+					{property.primary_photo ? (
+						<img
+							src={property.primary_photo}
+							alt="Primary property"
+							className="mt-2 h-24 w-36 rounded border object-cover"
+							loading="lazy"
+							onError={handlePrimaryImgError}
+						/>
+					) : (
+						<span className="text-gray-400">No Photo</span>
+					)}
+				</div>
 				{renderPropertyDetails("Property URL", property.property_url)}
 				{renderPropertyDetails(
 					"Sold Price",
@@ -138,7 +249,6 @@ const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
 				{renderPropertyDetails("Stories", property.stories?.toString() ?? "-")}
 				{renderPropertyDetails("Street", property.street)}
 				{renderPropertyDetails("Style", property.style)}
-				{renderPropertyDetails("Text", property.text)}
 				{renderPropertyDetails("Unit", property.unit ?? "-")}
 				{renderPropertyDetails(
 					"Year Built",
@@ -151,6 +261,8 @@ const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
 						property.mortgage_balance?.toString?.() ??
 						"-",
 				)}
+				{renderPropertyDetails("Text", property.text)}
+
 				{/* --- Attributes below are not in PropertyDetails type, kept as comments for future reference --- */}
 				{/* // {renderPropertyDetails("Property Use", property.property_use)}
   // {renderPropertyDetails("Residential Units", property.residential_units)}
