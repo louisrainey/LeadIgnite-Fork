@@ -186,7 +186,7 @@ export const useTaskStore = create<KanbanState & Actions>()(
 				set((state) => ({
 					columns: [
 						...state.columns,
-						{ title, id: state.columns.length ? title.toUpperCase() : "TODO" },
+						{ title, id: uuid() }, // ! Use a unique UUID for id, not the title
 					],
 				})),
 			dragTask: (id: string | null) => set({ draggedTask: id }),

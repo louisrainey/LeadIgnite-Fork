@@ -38,26 +38,28 @@ export function ColumnActions({
 
 	return (
 		<>
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					setIsEditDisable(!editDisable);
-					updateCol(id, name);
-					toast({
-						title: "Name Updated",
-						variant: "default",
-						description: `${title} updated to ${name}`,
-					});
-				}}
-			>
-				<Input
-					value={name}
-					onChange={(e) => setName(e.target.value)}
-					className="!mt-0 mr-auto text-base disabled:cursor-pointer disabled:border-none disabled:opacity-100"
-					disabled={editDisable}
-					ref={inputRef}
-				/>
-			</form>
+			{/* Only show the input when renaming (edit mode) */}
+			{!editDisable && (
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						setIsEditDisable(true);
+						updateCol(id, name);
+						toast({
+							title: "Name Updated",
+							variant: "default",
+							description: `${title} updated to ${name}`,
+						});
+					}}
+				>
+					<Input
+						value={name}
+						onChange={(e) => setName(e.target.value)}
+						className="!mt-0 mr-auto text-base"
+						ref={inputRef}
+					/>
+				</form>
+			)}
 			<DropdownMenu modal={false}>
 				<DropdownMenuTrigger asChild>
 					<Button variant="secondary" className="ml-1">

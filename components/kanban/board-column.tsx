@@ -87,14 +87,13 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
 					<span className="sr-only">{`Move column: ${column.title}`}</span>
 					<GripVertical />
 				</Button>
-				{/* <span className="mr-auto !mt-0"> {column.title}</span> */}
-				{/* <Input
-          defaultValue={column.title}
-          className="text-base !mt-0 mr-auto"
-        /> */}
-				{/* ! Hide ColumnActions for default columns */}
+				{/* * Always show the column title, left-aligned */}
+				<span className="!mt-0 mr-auto font-semibold text-base">
+					{column.title}
+				</span>
+				{/* ! Show ColumnActions only for non-default columns */}
 				{!defaultColIds.has(column.id) && (
-					<ColumnActions id={column.id} title={column.title} />
+					<ColumnActions title={column.title} id={column.id} />
 				)}
 			</CardHeader>
 			{/* ! Ensure CardContent propagates height and allows children to shrink/expand. min-h-0 prevents flexbox height collapse */}
