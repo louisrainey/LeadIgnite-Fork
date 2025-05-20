@@ -101,6 +101,8 @@ export interface KanbanTask {
 	status: Status;
 	priority?: Priority;
 	dueDate?: string; // YYYY-MM-DD format
+	appointmentDate?: string;
+	appointmentTime?: string;
 	assignedToTeamMember?: TeamMember["id"];
 	leadId?: LeadTypeGlobal["id"];
 	leadListId?: LeadList["id"];

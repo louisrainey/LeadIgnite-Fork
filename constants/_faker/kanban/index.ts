@@ -115,6 +115,8 @@ export const generateMockTasks = (count: number): KanbanTask[] => {
 			description: faker.lorem.sentences(2),
 			status,
 			priority,
+			appointmentDate: faker.date.future().toISOString().split("T")[0], // Future date in YYYY-MM-DD format
+			appointmentTime: faker.date.future().toISOString().split("T")[1], // Future time in HH:mm:ss format	,
 			dueDate,
 			assignedToTeamMember,
 			...(Math.random() > 0.5

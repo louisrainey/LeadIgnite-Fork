@@ -34,10 +34,14 @@ export default function NewTaskDialog() {
 	const [assignedUserId, setAssignedUserId] = useState<string>("");
 	const [formValid, setFormValid] = useState(false);
 
+	// ! Updated validation for due date
+	// ! Use FormData.get to avoid TS errors and ensure type safety
 	const validateForm = (form: HTMLFormElement) => {
-		const title = form.title.value?.trim();
-		const description = form.description.value?.trim();
-		if (!title || !description) return false;
+		const formData = new FormData(form);
+		const title = formData.get("title") as string | null;
+		const description = formData.get("description") as string | null;
+		const dueDate = formData.get("dueDate") as string | null;
+		if (!title || !description || !dueDate) return false;
 		if (!assignType) return false;
 		if (assignType === "lead" && !selectedLeadId) return false;
 		if (assignType === "leadList" && !selectedLeadListId) return false;
@@ -49,19 +53,41 @@ export default function NewTaskDialog() {
 		setFormValid(validateForm(e.currentTarget));
 	};
 
+	// ! Updated to pass all required fields to addTask
+	// ! Updated to collect and pass dueDate, appointmentDate, and appointmentTime
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const form = e.currentTarget;
 		const formData = new FormData(form);
-		const { title, description } = Object.fromEntries(formData);
-		if (typeof title !== "string" || typeof description !== "string") return;
-		if (assignType === "lead" && selectedLeadId) {
-			formData.append("leadId", String(selectedLeadId));
-		}
-		if (assignType === "leadList" && selectedLeadListId) {
-			formData.append("leadListId", String(selectedLeadListId));
-		}
-		addTask(title, description);
+		const { title, description, dueDate, appointmentDate, appointmentTime } =
+			Object.fromEntries(formData);
+		if (
+			typeof title !== "string" ||
+			typeof description !== "string" ||
+			typeof dueDate !== "string"
+		)
+			return;
+		const assignedToTeamMember = assignedUserId;
+		const leadId =
+			assignType === "lead" && selectedLeadId ? selectedLeadId : undefined;
+		const leadListId =
+			assignType === "leadList" && selectedLeadListId
+				? selectedLeadListId
+				: undefined;
+		addTask(
+			title,
+			description,
+			assignedToTeamMember,
+			dueDate,
+			appointmentTime && appointmentTime.length > 0
+				? appointmentTime
+				: undefined,
+			leadId,
+			leadListId,
+			appointmentDate && appointmentDate.length > 0
+				? appointmentDate
+				: undefined,
+		);
 	};
 
 	return (
@@ -71,7 +97,8 @@ export default function NewTaskDialog() {
 					＋ Add New Todo
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
+			{/* ! Make modal vertically scrollable if too much content */}
+			<DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-[425px]">
 				<DialogHeader>
 					<DialogTitle>Add New Todo</DialogTitle>
 					<DialogDescription>
@@ -250,6 +277,62 @@ export default function NewTaskDialog() {
 							required
 						/>
 					</div>
+
+					{/* Due Date Field */}
+					<div className="mb-2">
+						<label
+							htmlFor="dueDate"
+							className="mb-1 block font-medium text-gray-700 text-sm"
+						>
+							Due Date <span className="text-red-500">*</span>
+						</label>
+						<Input
+							id="dueDate"
+							name="dueDate"
+							type="date"
+							aria-label="Due Date"
+							className="w-full rounded-md border border-gray-300 px-3 py-2 transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+							required
+						/>
+					</div>
+
+					{/* Appointment Date & Time Fields - Only for single lead assignment */}
+					{assignType === "lead" && (
+						<>
+							<div className="mb-2">
+								<label
+									htmlFor="appointmentDate"
+									className="mb-1 block font-medium text-gray-700 text-sm"
+								>
+									Appointment Date{" "}
+									<span className="text-gray-400">(optional)</span>
+								</label>
+								<Input
+									id="appointmentDate"
+									name="appointmentDate"
+									type="date"
+									aria-label="Appointment Date"
+									className="w-full rounded-md border border-gray-300 px-3 py-2 transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+								/>
+							</div>
+							<div className="mb-2">
+								<label
+									htmlFor="appointmentTime"
+									className="mb-1 block font-medium text-gray-700 text-sm"
+								>
+									Appointment Time{" "}
+									<span className="text-gray-400">(optional)</span>
+								</label>
+								<Input
+									id="appointmentTime"
+									name="appointmentTime"
+									type="time"
+									aria-label="Appointment Time"
+									className="w-full rounded-md border border-gray-300 px-3 py-2 transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+								/>
+							</div>
+						</>
+					)}
 
 					{/* Description Field */}
 					<div className="mb-2">

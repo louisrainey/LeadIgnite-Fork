@@ -38,6 +38,11 @@ export interface TaskDragData {
 }
 
 export function TaskCard({ task, isOverlay }: TaskCardProps) {
+	// * Only show appointment if assigned to a single lead (not a lead list)
+	const showAppointment =
+		(!!task.appointmentDate || !!task.appointmentTime) &&
+		!!task.leadId &&
+		!task.leadListId;
 	const [assignedTeamMember, setAssignedTeamMember] = useState(
 		task.assignedToTeamMember || "",
 	);
@@ -173,6 +178,24 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
 						<div className="mt-2 text-sm">
 							<span className="font-semibold">Due Date: </span>
 							<span className="text-muted-foreground">{task.dueDate}</span>
+						</div>
+					)}
+
+					{/* Appointment Date/Time - Only show if valid for this task */}
+					{showAppointment && (
+						<div className="mt-2 text-sm">
+							<span className="font-semibold">Appointment: </span>
+							{task.appointmentDate && (
+								<span className="text-muted-foreground">
+									{task.appointmentDate}
+								</span>
+							)}
+							{task.appointmentDate && task.appointmentTime && <span> @ </span>}
+							{task.appointmentTime && (
+								<span className="text-muted-foreground">
+									{task.appointmentTime}
+								</span>
+							)}
 						</div>
 					)}
 

@@ -351,7 +351,7 @@ CREATE TABLE "KanbanTask" (
     "description" TEXT,
     "status" TEXT NOT NULL,
     "priority" "Priority" NOT NULL,
-    "dueDate" TIMESTAMP(3),
+    "appointmentDate" TIMESTAMP(3),
     "assignedTo" TEXT,
     "kanbanStateId" TEXT NOT NULL,
     "userProfileId" TEXT,

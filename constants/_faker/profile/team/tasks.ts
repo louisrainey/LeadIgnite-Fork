@@ -30,7 +30,7 @@ const generateMockTasks = (count: number): KanbanTask[] => {
 		description: faker.lorem.sentence(),
 		status: faker.helpers.arrayElement(statuses), // Random status
 		priority: faker.helpers.arrayElement(["low", "medium", "high"]), // Random priority
-		dueDate: faker.date.soon().toISOString().split("T")[0], // Random future date in YYYY-MM-DD format
+		appointmentDate: faker.date.soon().toISOString().split("T")[0], // Random future date in YYYY-MM-DD format
 		assignedToTeamMember: faker.string.uuid(), // Random team member ID
 		activityLog: generateMockTaskActivity(), // Generate random activity logs
 	}));

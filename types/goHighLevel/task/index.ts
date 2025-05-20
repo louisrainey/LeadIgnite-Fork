@@ -6,7 +6,7 @@ export type GhlTask = {
 	title: string;
 	body: string;
 	assignedTo: string;
-	dueDate: string;
+	appointmentDate: string;
 	completed: boolean;
 	contactId: string;
 };
@@ -21,7 +21,7 @@ export type AuthHeaders = {
 export type TaskRequest = {
 	title: string;
 	body: string;
-	dueDate: string;
+	appointmentDate: string;
 	completed: boolean;
 	assignedTo: string;
 };

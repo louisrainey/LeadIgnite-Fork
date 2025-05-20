@@ -123,16 +123,26 @@ export const initialTasks: KanbanTask[] = [
 	},
 ];
 
-export type Actions = {
-	addTask: (title: string, description?: string) => void;
+// ! Update Actions type for new addTask signature
+// ! Updated to support dueDate (required) and appointmentTime (optional)
+interface Actions {
+	addTask: (
+		title: string,
+		description: string,
+		assignedToTeamMember: string,
+		dueDate: string,
+		appointmentTime?: string,
+		leadId?: number,
+		leadListId?: number,
+	) => void;
 	addCol: (title: string) => void;
 	dragTask: (id: string | null) => void;
-	removeTask: (title: string) => void;
+	removeTask: (id: string) => void;
 	removeCol: (id: string) => void;
 	setTasks: (updatedTask: KanbanTask[]) => void;
 	setCols: (cols: KanbanColumn[]) => void;
 	updateCol: (id: string, newName: string) => void;
-};
+}
 
 export const useTaskStore = create<KanbanState & Actions>()(
 	persist(
@@ -140,11 +150,30 @@ export const useTaskStore = create<KanbanState & Actions>()(
 			tasks: mockKanbanState.tasks,
 			columns: mockKanbanState.columns,
 			draggedTask: null,
-			addTask: (title: string, description?: string) =>
+			// ! Updated to accept assignment, lead/link info, dueDate, and appointmentTime
+			addTask: (
+				title: string,
+				description: string,
+				assignedToTeamMember: string,
+				dueDate: string,
+				appointmentTime?: string,
+				leadId?: number,
+				leadListId?: number,
+			) =>
 				set((state) => ({
 					tasks: [
 						...state.tasks,
-						{ id: uuid(), title, description, status: "TODO" },
+						{
+							id: uuid(),
+							title,
+							description,
+							status: "TODO",
+							assignedToTeamMember, // * assignment
+							leadId, // * optional lead
+							leadListId, // * optional lead list
+							dueDate, // ! required
+							...(appointmentTime ? { appointmentTime } : {}), // ! optional
+						},
 					],
 				})),
 			updateCol: (id: string, newName: string) =>

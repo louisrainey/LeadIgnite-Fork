@@ -370,7 +370,7 @@ model KanbanTask {
   description   String?
   status        String
   priority      Priority
-  dueDate       DateTime?
+  appointmentDate       DateTime?
   assignedTo    String?
   kanbanStateId String
   kanbanState   KanbanState @relation(fields: [kanbanStateId], references: [id])
