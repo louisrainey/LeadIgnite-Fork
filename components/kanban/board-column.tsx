@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { ColumnActions } from "./column-action";
+import { defaultCols } from "@/constants/_faker/kanban"; // * Import default columns
 import { TaskCard } from "./task-card";
 
 export type ColumnType = "Column";
@@ -65,6 +66,9 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
 		},
 	);
 
+	// * Build a Set of default column IDs for fast lookup
+	const defaultColIds = new Set(defaultCols.map((col) => col.id));
+
 	return (
 		<Card
 			ref={setNodeRef}
@@ -88,10 +92,15 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
           defaultValue={column.title}
           className="text-base !mt-0 mr-auto"
         /> */}
-				<ColumnActions id={column.id} title={column.title} />
+				{/* ! Hide ColumnActions for default columns */}
+				{!defaultColIds.has(column.id) && (
+					<ColumnActions id={column.id} title={column.title} />
+				)}
 			</CardHeader>
-			<CardContent className="flex flex-1 flex-col overflow-hidden p-2">
-				<ScrollArea className="flex-1">
+			{/* ! Ensure CardContent propagates height and allows children to shrink/expand. min-h-0 prevents flexbox height collapse */}
+			<CardContent className="flex min-h-0 flex-1 flex-col overflow-hidden p-2">
+				{/* ! Ensure ScrollArea fills available space and doesn't collapse. min-h-0 for flexbox safety */}
+				<ScrollArea className="min-h-0 flex-1">
 					<div className="flex flex-col gap-6">
 						<SortableContext items={tasksIds}>
 							{tasks.map((task) => (

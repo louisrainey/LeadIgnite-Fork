@@ -9,7 +9,7 @@ import { faker } from "@faker-js/faker";
 import { APP_TESTING_MODE, mockGeneratedLeads } from "../../data";
 
 // Default column structure with status-based `id`
-const defaultCols: KanbanColumn[] = [
+export const defaultCols: KanbanColumn[] = [
 	{
 		id: "Backlog",
 		title: "Backlog",
