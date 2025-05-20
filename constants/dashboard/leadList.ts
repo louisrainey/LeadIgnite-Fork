@@ -5,13 +5,14 @@ import {
 	generateMockLeads,
 	staticMockLeadData,
 } from "../data";
+import { v4 as uuidv4 } from "uuid";
 
 export function generateMockLeadLists(count: number): LeadList[] {
 	const leadLists: LeadList[] = [];
 
 	for (let i = 0; i < count; i++) {
 		const leadList: LeadList = {
-			id: i + 1,
+			id: uuidv4(),
 			listName: faker.company.name(), // Random company name as the list name
 			uploadDate: faker.date.past().toISOString().split("T")[0], // Random past date
 			leads: generateMockLeads(10),
@@ -37,7 +38,7 @@ export const mockLeadListData = APP_TESTING_MODE && generateMockLeadLists(100);
 
 export const leadListData: LeadList[] = [
 	{
-		id: 1,
+		id: uuidv4(),
 		listName: "Louisville - On Market / 3+ Beds",
 		uploadDate: "2 weeks ago",
 		records: 720,
@@ -53,7 +54,7 @@ export const leadListData: LeadList[] = [
 		},
 	},
 	{
-		id: 2,
+		id: uuidv4(),
 		listName: "New York - Notice Of Default / Lis Pendens",
 		uploadDate: "2 weeks ago",
 		records: 899,
@@ -70,7 +71,7 @@ export const leadListData: LeadList[] = [
 		},
 	},
 	{
-		id: 3,
+		id: uuidv4(),
 		listName: "Seattle - Probate / Inheritance Only",
 		uploadDate: "2 weeks ago",
 		records: 992,
@@ -87,7 +88,7 @@ export const leadListData: LeadList[] = [
 		},
 	},
 	{
-		id: 4,
+		id: uuidv4(),
 		listName: "Cleveland - 2+ Units / VA Or FHA Loan",
 		uploadDate: "2 weeks ago",
 		records: 1100,
@@ -104,7 +105,7 @@ export const leadListData: LeadList[] = [
 		},
 	},
 	{
-		id: 5,
+		id: uuidv4(),
 		listName: "Atlanta - REO / Vacant",
 		uploadDate: "2 weeks ago",
 		records: 445,
@@ -121,7 +122,7 @@ export const leadListData: LeadList[] = [
 		},
 	},
 	{
-		id: 6,
+		id: uuidv4(),
 		listName: "San Diego - Assumable Debt / Investor Buyer",
 		uploadDate: "2 weeks ago",
 		records: 967,
@@ -138,7 +139,7 @@ export const leadListData: LeadList[] = [
 		},
 	},
 	{
-		id: 7,
+		id: uuidv4(),
 		listName: "Detroit - Low Equity / Tax Liens",
 		uploadDate: "2 weeks ago",
 		records: 1053,
@@ -155,7 +156,7 @@ export const leadListData: LeadList[] = [
 		},
 	},
 	{
-		id: 8,
+		id: uuidv4(),
 		listName: "Tampa 55+ / 70%+ Equity",
 		uploadDate: "2 weeks ago",
 		records: 620,
@@ -172,7 +173,7 @@ export const leadListData: LeadList[] = [
 		},
 	},
 	{
-		id: 9,
+		id: uuidv4(),
 		listName: "Chicago Absentee + Low Equity",
 		uploadDate: "2 weeks ago",
 		records: 1019,
@@ -189,7 +190,7 @@ export const leadListData: LeadList[] = [
 		},
 	},
 	{
-		id: 10,
+		id: uuidv4(),
 		listName: "Austin Pre-Foreclosures",
 		uploadDate: "2 weeks ago",
 		records: 808,

@@ -2,44 +2,62 @@ import type { TeamMember } from "@/types/userProfile";
 import { faker } from "@faker-js/faker";
 import { APP_TESTING_MODE } from "../../../data";
 
-// Helper function to generate a mock team member
-const generateMockTeamMember = (): TeamMember => ({
-	id: faker.string.uuid(),
-	firstName: faker.person.firstName(),
-	lastName: faker.person.lastName(),
-	email: faker.internet.email(),
-	role: faker.helpers.arrayElement(["admin", "member"]),
-	permissions: {
-		canGenerateLeads: faker.datatype.boolean(),
-		canStartCampaigns: faker.datatype.boolean(),
-		canViewReports: faker.datatype.boolean(),
-		canManageTeam: faker.datatype.boolean(),
-		canManageSubscription: faker.datatype.boolean(),
-		canAccessAI: faker.datatype.boolean(),
-		canEditCompanyProfile: faker.datatype.boolean(),
-		canMoveCompanyTasks: faker.datatype.boolean(),
-	},
-	NotificationPreferences: {
-		emailNotifications: faker.datatype.boolean(),
-		smsNotifications: faker.datatype.boolean(),
-		notifyForNewLeads: faker.datatype.boolean(),
-		notifyForCampaignUpdates: faker.datatype.boolean(),
-	},
-	twoFactorAuth: {
-		isEnabled: faker.datatype.boolean(),
-		methods: {
-			sms: faker.datatype.boolean(),
-			email: faker.datatype.boolean(),
-			authenticatorApp: faker.datatype.boolean(),
+// Fixed array of mock team members for consistent IDs and profiles
+
+export const mockTeamMembers: TeamMember[] = [
+	{
+		id: "7d8824fd-603f-4805-9fbc-f5b22e54a610",
+		firstName: "Jane",
+		lastName: "Doe",
+		email: "jane.doe@example.com",
+		role: "admin",
+		permissions: {
+			canGenerateLeads: true,
+			canStartCampaigns: true,
+			canViewReports: true,
+			canManageTeam: true,
+			canManageSubscription: true,
+			canAccessAI: true,
+			canEditCompanyProfile: true,
+			canMoveCompanyTasks: true,
 		},
-		lastUpdatedAt: faker.datatype.boolean() ? faker.date.past() : undefined,
+		NotificationPreferences: {
+			emailNotifications: true,
+			smsNotifications: false,
+			notifyForNewLeads: true,
+			notifyForCampaignUpdates: true,
+		},
+		twoFactorAuth: {
+			isEnabled: true,
+			methods: { sms: true, email: true, authenticatorApp: false },
+		},
 	},
-});
-
-// Generate a list of mock team members
-export const generateMockTeamMembers = (count: number): TeamMember[] => {
-	return Array.from({ length: count }, () => generateMockTeamMember());
-};
-
-// Example usage
-export const mockTeamMembers = APP_TESTING_MODE && generateMockTeamMembers(5);
+	{
+		id: "b8b2e7b2-2d5a-4e4e-8d1c-2a2b2b2b2b2b",
+		firstName: "John",
+		lastName: "Smith",
+		email: "john.smith@example.com",
+		role: "member",
+		permissions: {
+			canGenerateLeads: false,
+			canStartCampaigns: true,
+			canViewReports: true,
+			canManageTeam: false,
+			canManageSubscription: false,
+			canAccessAI: true,
+			canEditCompanyProfile: false,
+			canMoveCompanyTasks: false,
+		},
+		NotificationPreferences: {
+			emailNotifications: true,
+			smsNotifications: true,
+			notifyForNewLeads: false,
+			notifyForCampaignUpdates: true,
+		},
+		twoFactorAuth: {
+			isEnabled: false,
+			methods: { sms: false, email: false, authenticatorApp: false },
+		},
+	},
+	// Add more fixed team members as needed
+];

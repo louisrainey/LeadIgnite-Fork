@@ -19,14 +19,19 @@ interface EmployeeTablesProps<TData, TValue> {
 	searchKey: string;
 	pageCount: number;
 	pageSizeOptions?: number[];
+	searchValue: string;
+	onSearchChange: (value: string) => void;
 }
 
+// * EmployeeTable: Generic table with search and pagination support
 export function EmployeeTable<TData, TValue>({
 	columns,
 	data,
 	searchKey,
 	pageCount,
 	pageSizeOptions = [10, 20, 30, 40, 50],
+	searchValue,
+	onSearchChange,
 }: EmployeeTablesProps<TData, TValue>) {
 	// Use custom pagination/search hook
 	const {
@@ -55,7 +60,7 @@ export function EmployeeTable<TData, TValue>({
 		manualFiltering: true,
 	});
 
-	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
+	// ! searchValue and onSearchChange are now controlled from parent
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	React.useEffect(() => {
@@ -88,8 +93,8 @@ export function EmployeeTable<TData, TValue>({
 			{/* Filter/Search UI */}
 			<EmployeeTableFilters
 				searchKey={searchKey}
-				searchValue={searchValue ?? ""}
-				onChange={(value) => table.getColumn(searchKey)?.setFilterValue(value)}
+				searchValue={searchValue}
+				onChange={onSearchChange}
 			/>
 			<ScrollArea className="h-[calc(80vh-220px)] rounded-md border">
 				<EmployeeTableBody table={table} columnsLength={columns.length} />

@@ -8,7 +8,7 @@ export type SocialLinks = {
 };
 
 export type LeadTypeGlobal = {
-	id: number; // Unique identifier for the lead
+	id: string; // Unique identifier for the lead
 	firstName: string; // First name of the lead
 	lastName: string; // Last name of the lead
 	email: string;

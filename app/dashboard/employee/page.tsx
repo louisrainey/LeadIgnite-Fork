@@ -45,6 +45,7 @@ export default function EmployeePage({
 	const [totalUsers, setTotalUsers] = useState(0); // Total users state
 	const [employees, setEmployees] = useState<TeamMember[]>([]); // Employees state
 	const [pageCount, setPageCount] = useState(0); // Page count state
+	const [search, setSearch] = useState(""); // Search state
 
 	const page = Number(searchParams.page) || 1;
 	const pageLimit = Number(searchParams.limit) || 10;
@@ -126,10 +127,18 @@ export default function EmployeePage({
 				/>
 
 				{/* Employee Table */}
+				{/* Filter employees by search (firstName, lastName, email) */}
 				<EmployeeTable
 					columns={columns}
-					data={employees}
-					searchKey="employees"
+					data={employees.filter(
+						(emp) =>
+							emp.firstName.toLowerCase().includes(search.toLowerCase()) ||
+							emp.lastName.toLowerCase().includes(search.toLowerCase()) ||
+							emp.email.toLowerCase().includes(search.toLowerCase()),
+					)}
+					searchKey="firstName"
+					searchValue={search}
+					onSearchChange={setSearch}
 					pageCount={pageCount}
 					pageSizeOptions={[10, 20, 30, 40, 50]}
 				/>

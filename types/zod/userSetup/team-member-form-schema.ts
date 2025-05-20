@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 export const teamMemberFormSchema = z.object({
+	id: z.string().optional(),
 	firstName: z
 		.string()
 		.min(2, { message: "First name must be at least 2 characters" }),
@@ -40,3 +41,18 @@ export const teamMemberFormSchema = z.object({
 });
 
 export type TeamMemberFormValues = z.infer<typeof teamMemberFormSchema>;
+
+export type TeamMemberResetPasswordFormValues = TeamMemberFormValues & {
+	resetPassword: {
+		newPassword: string;
+		confirmPassword: string;
+	};
+};
+
+export type TeamMemberUpdatePasswordFormValues = TeamMemberFormValues & {
+	updatePassword: {
+		currentPassword: string;
+		newPassword: string;
+		confirmPassword: string;
+	};
+};

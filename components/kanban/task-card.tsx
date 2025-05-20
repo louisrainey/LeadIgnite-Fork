@@ -243,7 +243,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
 							{mockLeadListData && Array.isArray(mockLeadListData) ? (
 								(() => {
 									const leadList = mockLeadListData.find(
-										(l) => l.id === task.leadListId,
+										(l) => String(l.id) === String(task.leadListId),
 									);
 									return leadList ? (
 										leadList.listName

@@ -1,7 +1,7 @@
 import type { LeadTypeGlobal } from "./leads";
 
 export type LeadList = {
-	id: number; // Unique identifier for the lead list
+	id: string; // Unique identifier for the lead list
 	listName: string; // Name of the list
 	uploadDate: string; // Date when the list was uploaded
 	leads: LeadTypeGlobal[];

@@ -67,6 +67,10 @@ export default function NewTaskDialog() {
 			typeof dueDate !== "string"
 		)
 			return;
+		const getString = (val: FormDataEntryValue | undefined) =>
+			typeof val === "string" ? val : "";
+		const getNumber = (val: FormDataEntryValue | undefined) =>
+			typeof val === "number" ? val : undefined;
 		const assignedToTeamMember = assignedUserId;
 		const leadId =
 			assignType === "lead" && selectedLeadId ? selectedLeadId : undefined;
@@ -75,18 +79,17 @@ export default function NewTaskDialog() {
 				? selectedLeadListId
 				: undefined;
 		addTask(
-			title,
-			description,
-			assignedToTeamMember,
-			dueDate,
-			appointmentTime && appointmentTime.length > 0
+			getString(title),
+			getString(description),
+			getString(assignedToTeamMember),
+			getString(dueDate),
+			appointmentTime &&
+				typeof appointmentTime === "string" &&
+				appointmentTime.length > 0
 				? appointmentTime
 				: undefined,
-			leadId,
-			leadListId,
-			appointmentDate && appointmentDate.length > 0
-				? appointmentDate
-				: undefined,
+			leadId !== undefined ? String(leadId) : undefined,
+			leadListId !== undefined ? String(leadListId) : undefined,
 		);
 	};
 
@@ -155,7 +158,7 @@ export default function NewTaskDialog() {
 										{selectedLeadId
 											? (() => {
 													const lead = mockGeneratedLeads.find(
-														(l) => l.id === selectedLeadId,
+														(l) => String(l.id) === String(selectedLeadId),
 													);
 													return lead
 														? `${lead.firstName} ${lead.lastName}`
@@ -168,7 +171,7 @@ export default function NewTaskDialog() {
 									{mockGeneratedLeads.map((lead) => (
 										<DropdownMenuItem
 											key={lead.id}
-											onSelect={() => setSelectedLeadId(lead.id)}
+											onSelect={() => setSelectedLeadId(Number(lead.id))}
 										>
 											{lead.firstName} {lead.lastName}
 										</DropdownMenuItem>
@@ -198,7 +201,7 @@ export default function NewTaskDialog() {
 										{selectedLeadListId
 											? (() => {
 													const list = mockLeadListData.find(
-														(l) => l.id === selectedLeadListId,
+														(l) => String(l.id) === String(selectedLeadListId),
 													);
 													return list ? list.listName : "Select Lead List";
 												})()
@@ -209,7 +212,7 @@ export default function NewTaskDialog() {
 									{mockLeadListData.map((list) => (
 										<DropdownMenuItem
 											key={list.id}
-											onSelect={() => setSelectedLeadListId(list.id)}
+											onSelect={() => setSelectedLeadListId(Number(list.id))}
 										>
 											{list.listName}
 										</DropdownMenuItem>

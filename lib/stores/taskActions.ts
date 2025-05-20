@@ -2,8 +2,16 @@ import { mockKanbanState } from "@/constants/_faker/kanban";
 import type {
 	KanbanColumn,
 	KanbanState,
-	KanbanTask,
+	KanbanTask as BaseKanbanTask,
 } from "@/types/_dashboard/kanban";
+
+// * Extend KanbanTask to include appointmentDate
+export type KanbanTask = BaseKanbanTask & {
+	appointmentDate?: string;
+	leadId?: string;
+	leadListId?: string;
+	assignedToTeamMember?: string;
+};
 import { v4 as uuid } from "uuid";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -131,9 +139,10 @@ interface Actions {
 		description: string,
 		assignedToTeamMember: string,
 		dueDate: string,
+		appointmentDate?: string,
 		appointmentTime?: string,
-		leadId?: number,
-		leadListId?: number,
+		leadId?: string,
+		leadListId?: string,
 	) => void;
 	addCol: (title: string) => void;
 	dragTask: (id: string | null) => void;
@@ -150,15 +159,16 @@ export const useTaskStore = create<KanbanState & Actions>()(
 			tasks: mockKanbanState.tasks,
 			columns: mockKanbanState.columns,
 			draggedTask: null,
-			// ! Updated to accept assignment, lead/link info, dueDate, and appointmentTime
+			// ! Updated to accept assignment, lead/link info, dueDate, appointmentDate, and appointmentTime
 			addTask: (
-				title: string,
-				description: string,
-				assignedToTeamMember: string,
-				dueDate: string,
-				appointmentTime?: string,
-				leadId?: number,
-				leadListId?: number,
+				title,
+				description,
+				assignedToTeamMember,
+				dueDate,
+				appointmentDate,
+				appointmentTime,
+				leadId,
+				leadListId,
 			) =>
 				set((state) => ({
 					tasks: [
@@ -168,11 +178,12 @@ export const useTaskStore = create<KanbanState & Actions>()(
 							title,
 							description,
 							status: "TODO",
-							assignedToTeamMember, // * assignment
-							leadId, // * optional lead
-							leadListId, // * optional lead list
-							dueDate, // ! required
-							...(appointmentTime ? { appointmentTime } : {}), // ! optional
+							assignedToTeamMember: assignedToTeamMember || undefined,
+							leadId: leadId || undefined,
+							leadListId: leadListId || undefined,
+							dueDate,
+							...(appointmentTime ? { appointmentTime } : {}),
+							...(appointmentDate ? { appointmentDate } : {}),
 						},
 					],
 				})),
@@ -184,10 +195,7 @@ export const useTaskStore = create<KanbanState & Actions>()(
 				})),
 			addCol: (title: string) =>
 				set((state) => ({
-					columns: [
-						...state.columns,
-						{ title, id: uuid() }, // ! Use a unique UUID for id, not the title
-					],
+					columns: [...state.columns, { title, id: uuid() }],
 				})),
 			dragTask: (id: string | null) => set({ draggedTask: id }),
 			removeTask: (id: string) =>

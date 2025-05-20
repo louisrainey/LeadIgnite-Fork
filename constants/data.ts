@@ -1,6 +1,7 @@
 import type { NavItem } from "@/types";
 import type { LeadTypeGlobal } from "@/types/_dashboard/leads";
 import { faker } from "@faker-js/faker";
+import { v4 as uuid } from "uuid";
 export const APP_TESTING_MODE = true;
 
 // Function to generate mock leads
@@ -11,7 +12,7 @@ export function generateMockLeads(count: number): LeadTypeGlobal[] {
 
 	for (let i = 0; i < count; i++) {
 		const lead: LeadTypeGlobal = {
-			id: i + 1,
+			id: uuid(),
 			firstName: faker.person.firstName(),
 			lastName: faker.person.lastName(),
 			email: faker.internet.email(),
@@ -53,7 +54,7 @@ export const mockGeneratedLeads = APP_TESTING_MODE && generateMockLeads(100);
 
 export const staticMockLeadData: LeadTypeGlobal[] = [
 	{
-		id: 1,
+		id: uuid(),
 		firstName: "Candice",
 		lastName: "Schiner",
 		phone: "(555) 123-4567",
@@ -68,7 +69,7 @@ export const staticMockLeadData: LeadTypeGlobal[] = [
 		address1: "123 Main St, Springfield, IL",
 	},
 	{
-		id: 2,
+		id: uuid(),
 		firstName: "John",
 		lastName: "Doe",
 		phone: "(555) 234-5678",
@@ -84,7 +85,7 @@ export const staticMockLeadData: LeadTypeGlobal[] = [
 		address1: "456 Oak St, Chicago, IL",
 	},
 	{
-		id: 3,
+		id: uuid(),
 		firstName: "Alice",
 		lastName: "Johnson",
 		phone: "(555) 345-6789",
@@ -100,7 +101,7 @@ export const staticMockLeadData: LeadTypeGlobal[] = [
 		address1: "789 Maple Ave, Austin, TX",
 	},
 	{
-		id: 4,
+		id: uuid(),
 		firstName: "David",
 		lastName: "Smith",
 		phone: "(555) 456-7890",
@@ -116,7 +117,7 @@ export const staticMockLeadData: LeadTypeGlobal[] = [
 		address1: "321 Birch St, Seattle, WA",
 	},
 	{
-		id: 5,
+		id: uuid(),
 		firstName: "Emma",
 		lastName: "Wilson",
 		phone: "(555) 567-8901",
@@ -132,7 +133,7 @@ export const staticMockLeadData: LeadTypeGlobal[] = [
 		address1: "654 Cedar Rd, Denver, CO",
 	},
 	{
-		id: 6,
+		id: uuid(),
 		firstName: "James",
 		lastName: "Brown",
 		phone: "(555) 678-9012",
@@ -148,7 +149,7 @@ export const staticMockLeadData: LeadTypeGlobal[] = [
 		address1: "987 Pine St, Boston, MA",
 	},
 	{
-		id: 7,
+		id: uuid(),
 		firstName: "Laura",
 		lastName: "White",
 		phone: "(555) 789-0123",
@@ -164,7 +165,7 @@ export const staticMockLeadData: LeadTypeGlobal[] = [
 		address1: "543 Oakwood Ln, Miami, FL",
 	},
 	{
-		id: 8,
+		id: uuid(),
 		firstName: "Michael",
 		lastName: "Lee",
 		phone: "(555) 890-1234",
@@ -180,7 +181,7 @@ export const staticMockLeadData: LeadTypeGlobal[] = [
 		address1: "111 Redwood St, San Francisco, CA",
 	},
 	{
-		id: 9,
+		id: uuid(),
 		firstName: "Olivia",
 		lastName: "Green",
 		phone: "(555) 901-2345",
@@ -196,7 +197,7 @@ export const staticMockLeadData: LeadTypeGlobal[] = [
 		address1: "222 Walnut St, Portland, OR",
 	},
 	{
-		id: 10,
+		id: uuid(),
 		firstName: "Robert",
 		lastName: "Taylor",
 		phone: "(555) 012-3456",

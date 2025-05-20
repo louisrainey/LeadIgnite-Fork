@@ -103,9 +103,9 @@ export interface KanbanTask {
 	dueDate?: string; // YYYY-MM-DD format
 	appointmentDate?: string;
 	appointmentTime?: string;
-	assignedToTeamMember?: TeamMember["id"];
-	leadId?: LeadTypeGlobal["id"];
-	leadListId?: LeadList["id"];
+	assignedToTeamMember?: string | undefined;
+	leadId?: string | undefined;
+	leadListId?: string | undefined;
 	activityLog?: TaskActivity[]; // Log of task activities
 	// ! Optional MCP workflow for AI/automation (used to trigger Play button)
 	mcpWorkflow?: MCPWorkflow;

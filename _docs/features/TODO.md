@@ -2,22 +2,20 @@
 
 
 
-# 🪳 Fix saving profile when editing
+# 🪳 Fix saving profile when editing oveerwriting typing 
 
-# 🪳 Fix multiple file uploads being able to be deleted
+# 🪳 Fix multiple file uploads being able to be deleted profile page 
 
-# 🪳 Fix Selects not able to be updated hydration error
+# 🪳 Fix Selects not able to be updated hydration error components\ui\select.tsx
 
-# 🪳 Fix dropdowns not able to be for campaing page 
+# 🪳 Fix dropdowns not able to be for campaing page  components\ui\dropdown-menu.tsx
 
 # 🖥️ Implemen upload lead list functionality
 # 🖥️ Fix Kanban creating to do to add priority due date 
 
 
 
-# 🏔️ Setup Go high level workflows with vapi
 
-# 🏔️ Setup Go high level workflows with phantombuster
 
 # 🧪 Create E2E tests for platform
 
