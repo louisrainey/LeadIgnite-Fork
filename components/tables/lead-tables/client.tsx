@@ -104,7 +104,7 @@ export const LeadClient: React.FC = () => {
 				</div>
 
 				{/* Help Button */}
-				<div className="flex justify-center lg:justify-center">
+				<div className="my-5 flex justify-center lg:justify-center">
 					<button
 						onClick={handleHelpOpenModal}
 						title="Get More help"

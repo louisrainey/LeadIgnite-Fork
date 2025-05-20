@@ -12,6 +12,32 @@ const SkipTraceModalMain = ({
 	const [step, setStep] = useState(0);
 	const [listName, setListName] = useState("");
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+	// Live validation for list name
+	const handleListNameChange = (value: string) => {
+		setListName(value);
+		setErrors((prev) => ({
+			...prev,
+			listName: {
+				message: !value.trim()
+					? "List name is required"
+					: value.trim().length < 3
+						? "List name must be at least 3 characters"
+						: "",
+			},
+		}));
+	};
+
+	// Live validation for file upload
+	const handleFileDrop = (file: File | null) => {
+		setUploadedFile(file);
+		setErrors((prev) => ({
+			...prev,
+			skipTracedFile: {
+				message: !file ? "File upload is required" : "",
+			},
+		}));
+	};
 	const [headers, setHeaders] = useState<string[]>([]);
 	const [selectedHeaders, setSelectedHeaders] = useState<
 		Record<string, string | undefined>
@@ -108,9 +134,9 @@ const SkipTraceModalMain = ({
 					{step === 0 && (
 						<ListNameAndUploadStep
 							listName={listName}
-							onListNameChange={setListName}
+							onListNameChange={handleListNameChange}
 							uploadedFile={uploadedFile}
-							onFileDrop={(file) => setUploadedFile(file)}
+							onFileDrop={handleFileDrop}
 							error={error}
 							listNameError={errors.listName?.message}
 							fileError={errors.skipTracedFile?.message}
@@ -140,7 +166,7 @@ const SkipTraceModalMain = ({
 				<div className="mt-6 flex items-center justify-between">
 					<button
 						type="button"
-						className="rounded-md bg-primary px-4 py-2 font-medium text-white hover:bg-primary/90"
+						className="rounded-md bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 						onClick={prevStep}
 						disabled={step === 0}
 					>
@@ -149,9 +175,15 @@ const SkipTraceModalMain = ({
 					{step < 2 ? (
 						<button
 							type="button"
-							className="rounded-md bg-primary px-4 py-2 font-medium text-white hover:bg-primary/90"
+							className="rounded-md bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 							onClick={nextStep}
-							disabled={step === 0 && (!listName.trim() || !uploadedFile)}
+							disabled={
+								step === 0 &&
+								(!!errors.listName?.message ||
+									!!errors.skipTracedFile?.message ||
+									!listName.trim() ||
+									!uploadedFile)
+							}
 						>
 							Next
 						</button>

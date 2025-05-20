@@ -1,3 +1,7 @@
+import type { TeamMember } from "../userProfile";
+import type { LeadList } from "./leadList";
+import type { LeadTypeGlobal } from "./leads";
+
 export interface KanbanColumn {
 	id: string;
 	title: string;
@@ -41,6 +45,55 @@ export interface TaskTracking {
 	assignedTasks: Record<string, KanbanTask[]>; // Tracks tasks by team member
 	taskHistory: TaskActivity[]; // History of all task actions
 }
+// * MCPWorkflow types for AI-driven task automation
+export interface MCPPrompt {
+	/** Instruction or context for this step */
+	text: string;
+	description: string;
+	/** Optional: role or system context (e.g., 'user', 'system', 'assistant') */
+	role?: string;
+}
+
+export interface MCPFunction {
+	/** Name of the function (for AI invocation) */
+	name: string;
+	/** Short description of what the function does */
+	description: string;
+	/** Function signature or type, e.g., '(input: string) => Promise<Result>' */
+	signature: string;
+	/** Optional: Example usage or parameters */
+	exampleArgs?: Record<string, unknown>; // ! Use unknown for biome compliance and type safety
+}
+
+export interface MCPResource {
+	/** URI or identifier for the resource */
+	uri: string;
+	/** Type of resource (e.g., 'doc', 'api', 'file') */
+	type: string;
+	/** Optional: Short description */
+	description?: string;
+}
+
+export type MCPWorkflowResult = string | number | boolean | object | null; // ! Extend as needed for workflow outputs
+export interface MCPWorkflowRating {
+	rating: number;
+	comment: string;
+}
+export interface MCPWorkflow {
+	id: string;
+	title: string;
+	prompts: MCPPrompt[];
+	functions: MCPFunction[];
+	resources: MCPResource[];
+	/** Optional: Status or last run result */
+	status?: "pending" | "running" | "success" | "error";
+	lastRunAt?: string; // ISO date
+	// ! Use MCPWorkflowResult instead of any for biome compliance
+	lastResult?: MCPWorkflowResult;
+	rating?: MCPWorkflowRating;
+}
+
+// * KanbanTask now supports optional AI workflow orchestration
 export interface KanbanTask {
 	id: string;
 	title: string;
@@ -48,8 +101,12 @@ export interface KanbanTask {
 	status: Status;
 	priority?: Priority;
 	dueDate?: string; // YYYY-MM-DD format
-	assignedToTeamMember?: string;
+	assignedToTeamMember?: TeamMember["id"];
+	leadId?: LeadTypeGlobal["id"];
+	leadListId?: LeadList["id"];
 	activityLog?: TaskActivity[]; // Log of task activities
+	// ! Optional MCP workflow for AI/automation (used to trigger Play button)
+	mcpWorkflow?: MCPWorkflow;
 }
 
 export type KanbanState = {

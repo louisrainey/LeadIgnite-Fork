@@ -6,10 +6,14 @@ import type {
 	Status,
 } from "@/types/_dashboard/kanban";
 import { faker } from "@faker-js/faker";
-import { APP_TESTING_MODE } from "../../data";
+import { APP_TESTING_MODE, mockGeneratedLeads } from "../../data";
 
 // Default column structure with status-based `id`
 const defaultCols: KanbanColumn[] = [
+	{
+		id: "Backlog",
+		title: "Backlog",
+	},
 	{
 		id: "TODO",
 		title: "To Do",
@@ -24,60 +28,80 @@ const defaultCols: KanbanColumn[] = [
 	},
 ];
 
-// Generate random task activities
-// const generateTaskActivity = (): TaskActivity => {
-//   const actions: TaskActivity['action'][] = ['created', 'updated', 'deleted'];
-//   const action = faker.helpers.arrayElement(actions); // Random action (created, updated, or deleted)
-//   const timestamp = faker.date.recent(); // Random recent timestamp
-//   const performedBy = faker.person.fullName(); // Random person performing the action
-
-//   return {
-//     action,
-//     timestamp,
-//     performedBy
-//   };
-// };
-
-// const generateMockTasksWithTracking = (
-//   count: number
-// ): { tasks: KanbanTask[]; taskActivities: TaskActivity[] } => {
-//   const statuses: KanbanTask['status'][] = ['TODO', 'IN_PROGRESS', 'DONE'];
-//   const teamMembers = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Lee'];
-//   const tasks: KanbanTask[] = [];
-//   const taskActivities: TaskActivity[] = [];
-
-//   // Create tasks and log activities
-//   for (let i = 0; i < count; i++) {
-//     const status = faker.helpers.arrayElement(statuses); // Random status
-//     const assignedToTeamMember = faker.helpers.arrayElement(teamMembers); // Random team member
-
-//     const task: KanbanTask = {
-//       id: faker.string.uuid(),
-//       title: faker.company.catchPhrase(),
-//       description: faker.lorem.sentences(2),
-//       status,
-//       priority: faker.helpers.arrayElement(['low', 'medium', 'high', ]), // Random priority
-//       dueDate: faker.date.future().toISOString().split('T')[0], // Due date in YYYY-MM-DD format
-//       assignedToTeamMember,
-//       activityLog: [] // Ensure this is always initialized
-//     };
-
-//     // Track the creation of the task in the activity log
-//     const activity = generateTaskActivity();
-//     task.activityLog && task.activityLog.push(activity); // Safely push to activityLog
-
-//     tasks.push(task);
-//     taskActivities.push(activity);
-//   }
-
-//   return { tasks, taskActivities };
-// };
-
-// Faker utility to generate mock tasks
+import type {
+	MCPWorkflow,
+	MCPPrompt,
+	MCPFunction,
+	MCPResource,
+	MCPWorkflowRating,
+} from "@/types/_dashboard/kanban";
+import { mockLeadListData } from "@/constants/dashboard/leadList";
 
 export const generateMockTasks = (count: number): KanbanTask[] => {
-	const statuses: Status[] = ["TODO", "IN_PROGRESS", "DONE"];
+	const statuses: Status[] = ["Backlog", "TODO", "IN_PROGRESS", "DONE"];
 	const priorities: Priority[] = ["low", "medium", "high"];
+	const workflowStatuses = ["pending", "running", "success", "error"] as const;
+
+	function randomPrompt(): MCPPrompt {
+		return {
+			text: faker.lorem.sentence(),
+			role: faker.helpers.arrayElement(["user", "assistant", "system"]),
+			description: faker.lorem.sentence(),
+		};
+	}
+
+	function randomFunction(): MCPFunction {
+		return {
+			name: faker.hacker.verb() + faker.string.alpha(3),
+			description: faker.company.catchPhrase(),
+			signature: "(input: string) => Promise<string>;",
+			exampleArgs: { input: faker.lorem.words(3) },
+		};
+	}
+
+	function randomResource(): MCPResource {
+		return {
+			uri: faker.internet.url(),
+			type: faker.helpers.arrayElement(["doc", "api", "file"]),
+			description: faker.lorem.words(5),
+		};
+	}
+
+	function randomRating(): MCPWorkflowRating {
+		return {
+			rating: faker.number.int({ min: 0, max: 5 }),
+			comment: faker.lorem.sentence(),
+		};
+	}
+
+	function maybeWorkflow(): MCPWorkflow | undefined {
+		if (Math.random() < 0.4) {
+			// 40% chance to include a workflow
+			return {
+				id: faker.string.uuid(),
+				title: faker.company.catchPhrase(),
+				prompts: Array.from(
+					{ length: faker.number.int({ min: 1, max: 3 }) },
+					randomPrompt,
+				),
+				functions: Array.from(
+					{ length: faker.number.int({ min: 1, max: 2 }) },
+					randomFunction,
+				),
+				resources: Array.from(
+					{ length: faker.number.int({ min: 1, max: 2 }) },
+					randomResource,
+				),
+				status: faker.helpers.arrayElement(workflowStatuses),
+
+				lastRunAt:
+					Math.random() > 0.5 ? faker.date.recent().toISOString() : undefined,
+				lastResult: Math.random() > 0.5 ? faker.lorem.sentence() : null,
+				rating: randomRating(),
+			};
+		}
+		return undefined;
+	}
 
 	return Array.from({ length: count }, () => {
 		const status = faker.helpers.arrayElement(statuses); // Random status for the task
@@ -93,6 +117,10 @@ export const generateMockTasks = (count: number): KanbanTask[] => {
 			priority,
 			dueDate,
 			assignedToTeamMember,
+			...(Math.random() > 0.5
+				? { leadId: faker.helpers.arrayElement(mockGeneratedLeads).id }
+				: { leadListId: faker.helpers.arrayElement(mockLeadListData).id }),
+			mcpWorkflow: maybeWorkflow(),
 		};
 	});
 };

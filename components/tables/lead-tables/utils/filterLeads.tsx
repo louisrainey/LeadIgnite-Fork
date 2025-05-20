@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { FormLabel } from "@/components/ui/form";
 import {
 	Popover,
 	PopoverContent,
@@ -62,12 +61,12 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 			<PopoverContent className="w-64 space-y-4 p-4">
 				{/* Campaign Select */}
 				<div>
-					<FormLabel
+					<label
 						htmlFor="campaign"
 						className="block font-medium text-gray-700 text-sm dark:text-gray-300"
 					>
 						Campaign
-					</FormLabel>
+					</label>
 					<Select
 						value={selectedCampaign || ""}
 						onValueChange={setSelectedCampaign}
@@ -106,12 +105,12 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 
 				{/* Status Select */}
 				<div>
-					<FormLabel
+					<label
 						htmlFor="status"
 						className="block font-medium text-gray-700 text-sm dark:text-gray-300"
 					>
 						Status
-					</FormLabel>
+					</label>
 					<Select
 						value={selectedStatus || ""}
 						onValueChange={(value) => setSelectedStatus(value as LeadStatus)}

@@ -15,6 +15,7 @@ import { skipTraceNestedSchema } from "@/types/zod/createLeadListSkip";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useForm, FormProvider } from "react-hook-form";
 
 type SkipTraceFormProps = {
 	leads: LeadTypeGlobal[]; // Simplified lead type
@@ -138,6 +139,14 @@ const SkipTraceDialog: React.FC<SkipTraceDialogProps> = ({
 }) => {
 	const [isOpen, setIsOpen] = useState(false); // Control dialog state
 
+	// --- Add React Hook Form context ---
+	const form = useForm({
+		defaultValues: {
+			recordsToSkip: leads.length,
+			redoSkipTrace: true,
+		},
+	});
+
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
@@ -153,11 +162,13 @@ const SkipTraceDialog: React.FC<SkipTraceDialogProps> = ({
 					</DialogTitle>
 				</DialogHeader>
 
-				<SkipTraceForm
-					leads={leads}
-					costPerRecord={costPerRecord}
-					onClose={() => setIsOpen(false)} // Pass close function to form
-				/>
+				<FormProvider {...form}>
+					<SkipTraceForm
+						leads={leads}
+						costPerRecord={costPerRecord}
+						onClose={() => setIsOpen(false)}
+					/>
+				</FormProvider>
 
 				<DialogFooter>
 					<DialogClose asChild>

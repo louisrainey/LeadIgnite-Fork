@@ -19,8 +19,8 @@ export const generateSampleSocialMediaCampaign = (
 		createdAt: faker.date.past().toISOString(),
 		startDate: faker.date.past().toISOString(),
 		endDate: faker.date.future().toISOString(),
-		senderHandle: faker.internet.userName(),
-		receiverHandle: faker.internet.userName(),
+		senderHandle: faker.internet.username(),
+		receiverHandle: faker.internet.username(),
 		hashtags: faker.lorem
 			.words(3)
 			.split(" ")

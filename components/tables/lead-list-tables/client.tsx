@@ -81,7 +81,7 @@ export const LeadListClient: React.FC = () => {
 						type="button"
 						onMouseDown={handleHelpOpenModal}
 						title="Get More help"
-						className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+						className="my-2 animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
 					>
 						<HelpCircle size={20} />
 					</button>

@@ -85,7 +85,7 @@ export const connectedAccounts = {
 				scope: "user_profile,user_media",
 				platform: "instagram",
 				id: faker.string.uuid(),
-				username: faker.internet.userName(),
+				username: faker.internet.username(),
 			}
 		: undefined, // Not connected if false
 
@@ -111,7 +111,7 @@ export const connectedAccounts = {
 				scope: "tweet.read,users.read",
 				platform: "twitter",
 				id: faker.string.uuid(),
-				handle: faker.internet.userName(),
+				handle: faker.internet.username(),
 			}
 		: undefined, // Not connected if false
 };

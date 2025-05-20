@@ -25,34 +25,39 @@ const LeadSocialsStep: FC<LeadSocialsStepProps> = ({
 	errors = {},
 }) => (
 	<div className="space-y-4">
-		<Input
-			label="Facebook"
-			value={facebook}
-			onChange={(e) => onFacebookChange(e.target.value)}
-			error={errors.facebook}
-			placeholder="Enter Facebook profile"
-		/>
-		<Input
-			label="LinkedIn"
-			value={linkedin}
-			onChange={(e) => onLinkedinChange(e.target.value)}
-			error={errors.linkedin}
-			placeholder="Enter LinkedIn profile"
-		/>
-		<Input
-			label="Instagram"
-			value={instagram}
-			onChange={(e) => onInstagramChange(e.target.value)}
-			error={errors.instagram}
-			placeholder="Enter Instagram profile"
-		/>
-		<Input
-			label="Twitter"
-			value={twitter}
-			onChange={(e) => onTwitterChange(e.target.value)}
-			error={errors.twitter}
-			placeholder="Enter Twitter profile"
-		/>
+		<div className="space-y-2">
+			<Input
+				label="Facebook"
+				value={facebook}
+				onChange={(e) => onFacebookChange(e.target.value)}
+				error={errors.facebook}
+				placeholder="Enter Facebook profile"
+			/>
+
+			<Input
+				label="LinkedIn"
+				value={linkedin}
+				onChange={(e) => onLinkedinChange(e.target.value)}
+				error={errors.linkedin}
+				placeholder="Enter LinkedIn profile"
+			/>
+
+			<Input
+				label="Instagram"
+				value={instagram}
+				onChange={(e) => onInstagramChange(e.target.value)}
+				error={errors.instagram}
+				placeholder="Enter Instagram profile"
+			/>
+
+			<Input
+				label="Twitter"
+				value={twitter}
+				onChange={(e) => onTwitterChange(e.target.value)}
+				error={errors.twitter}
+				placeholder="Enter Twitter profile"
+			/>
+		</div>
 	</div>
 );
 

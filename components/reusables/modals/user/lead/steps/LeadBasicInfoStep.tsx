@@ -26,10 +26,8 @@ const LeadBasicInfoStep: FC<LeadBasicInfoStepProps> = ({
 				value={firstName}
 				onChange={(e) => onFirstNameChange(e.target.value)}
 				placeholder="Enter first name"
+				error={errors.firstName}
 			/>
-			{errors.firstName && (
-				<span className="text-red-500 text-xs">{errors.firstName}</span>
-			)}
 		</div>
 		<div>
 			<label className="mb-1 block font-medium text-sm" htmlFor="lastName">
@@ -40,10 +38,8 @@ const LeadBasicInfoStep: FC<LeadBasicInfoStepProps> = ({
 				value={lastName}
 				onChange={(e) => onLastNameChange(e.target.value)}
 				placeholder="Enter last name"
+				error={errors.lastName}
 			/>
-			{errors.lastName && (
-				<span className="text-red-500 text-xs">{errors.lastName}</span>
-			)}
 		</div>
 	</div>
 );

@@ -33,7 +33,7 @@ export const generateInstagramOAuthData = (): InstagramOAuthData => ({
 	tokenType: "Bearer",
 	scope: "user_profile,user_media", // Instagram-specific scopes
 	id: faker.string.uuid(), // Instagram user ID
-	username: faker.internet.userName(), // Instagram username
+	username: faker.internet.username(), // Instagram username
 });
 
 export const generateTwitterOAuthData = (): TwitterOAuthData => ({
@@ -43,5 +43,5 @@ export const generateTwitterOAuthData = (): TwitterOAuthData => ({
 	tokenType: "Bearer",
 	scope: "read,write", // Twitter-specific scopes
 	id: faker.string.uuid(), // Twitter user ID
-	handle: `@${faker.internet.userName()}`, // Twitter handle
+	handle: `@${faker.internet.username()}`, // Twitter handle
 });

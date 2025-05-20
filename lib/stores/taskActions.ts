@@ -1,4 +1,4 @@
-import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
+import { mockKanbanState } from "@/constants/_faker/kanban";
 import type {
 	KanbanColumn,
 	KanbanState,
@@ -18,6 +18,68 @@ export const initialTasks: KanbanTask[] = [
 		priority: "high",
 		dueDate: "2024-09-20",
 		assignedToTeamMember: "team_member_1",
+		// * Demo MCPWorkflow for AI/automation
+		mcpWorkflow: {
+			id: "wf-landing-page-design-001",
+			title: "Landing Page Design Workflow",
+			prompts: [
+				{
+					text: "Analyze requirements and gather design inspiration for a SaaS product landing page.",
+					role: "system",
+					description:
+						"Analyze requirements and gather design inspiration for a SaaS product landing page.",
+				},
+				{
+					text: "Generate a wireframe and suggest a color palette based on modern UI/UX trends.",
+					role: "assistant",
+					description:
+						"Generate a wireframe and suggest a color palette based on modern UI/UX trends.",
+				},
+				{
+					text: "Export the wireframe as a Figma link and summarize the design rationale.",
+					role: "user",
+					description:
+						"Export the wireframe as a Figma link and summarize the design rationale.",
+				},
+			],
+			functions: [
+				{
+					name: "generateWireframe",
+					description:
+						"Creates a wireframe for a landing page based on provided requirements.",
+					signature:
+						"(requirements: string) => Promise<{ wireframeUrl: string }>;",
+					exampleArgs: {
+						requirements: "SaaS, hero section, signup form, testimonials",
+					},
+				},
+				{
+					name: "suggestColorPalette",
+					description:
+						"Suggests a modern color palette for SaaS landing pages.",
+					signature: "() => Promise<string[]>;",
+				},
+			],
+			resources: [
+				{
+					uri: "https://www.figma.com/community/file/12345-Landing-Page-Wireframe",
+					type: "file",
+					description: "Sample Figma wireframe for SaaS landing pages.",
+				},
+				{
+					uri: "https://refactoringui.com/book/",
+					type: "doc",
+					description: "UI/UX best practices reference.",
+				},
+			],
+			status: "pending",
+			lastRunAt: undefined,
+			lastResult: null,
+			rating: {
+				rating: 0,
+				comment: "Workflow not yet run.",
+			},
+		},
 	},
 	{
 		id: "task2",
@@ -75,8 +137,8 @@ export type Actions = {
 export const useTaskStore = create<KanbanState & Actions>()(
 	persist(
 		(set) => ({
-			tasks: mockUserProfile.companyInfo.KanbanTasks.tasks,
-			columns: mockUserProfile.companyInfo.KanbanTasks.columns,
+			tasks: mockKanbanState.tasks,
+			columns: mockKanbanState.columns,
 			draggedTask: null,
 			addTask: (title: string, description?: string) =>
 				set((state) => ({
