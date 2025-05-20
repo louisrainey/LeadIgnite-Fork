@@ -37,7 +37,13 @@ export function ColumnActions({
 	const { toast } = useToast();
 
 	return (
-		<>
+		<div
+			style={{
+				border: "2px solid red",
+				background: "rgba(255,0,0,0.1)",
+				padding: 2,
+			}}
+		>
 			{/* Only show the input when renaming (edit mode) */}
 			{!editDisable && (
 				<form
@@ -60,6 +66,7 @@ export function ColumnActions({
 					/>
 				</form>
 			)}
+			{/* Actions menu and dialogs */}
 			<DropdownMenu modal={false}>
 				<DropdownMenuTrigger asChild>
 					<Button variant="secondary" className="ml-1">
@@ -120,6 +127,6 @@ export function ColumnActions({
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
-		</>
+		</div>
 	);
 }
