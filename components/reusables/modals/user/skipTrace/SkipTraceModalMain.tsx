@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Papa from "papaparse"; // ! CSV parsing
+import * as XLSX from "xlsx"; // ! Excel parsing
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import FieldMappingStep from "./steps/FieldMappingStep";
@@ -48,31 +50,89 @@ const SkipTraceModalMain = ({
 		{},
 	);
 
-	// Dropzone setup
+	// ! Dropzone setup with robust header extraction for CSV and Excel
 	const onDrop = async (acceptedFiles: File[]) => {
 		if (acceptedFiles.length) {
 			const file = acceptedFiles[0];
 			setUploadedFile(file);
-			// Simulate header extraction (replace with real logic)
 			try {
-				// Replace this with your real header extraction logic
-				const extractedHeaders = [
-					"FirstName",
-					"LastName",
-					"Street",
-					"City",
-					"State",
-					"Zip",
-					"Phone1",
-					"Phone2",
-					"Email",
-					"Facebook",
-					"LinkedIn",
-					"Instagram",
-					"Twitter",
-				];
-				setHeaders(extractedHeaders);
-				setError(null);
+				let extractedHeaders: string[] = [];
+				const fileName = file.name.toLowerCase();
+				if (fileName.endsWith(".csv")) {
+					// Parse CSV file and extract headers
+					Papa.parse(file, {
+						complete: (results) => {
+							if (Array.isArray(results.data) && results.data.length > 0) {
+								// ! Preserve all columns, replace empty headers, trim whitespace
+								extractedHeaders = (results.data[0] as string[]).map((h, i) => {
+									if (typeof h === "string" && h.trim() !== "") return h.trim();
+									return `__EMPTY_${i}`;
+								});
+								console.log("Extracted CSV Headers:", extractedHeaders);
+								const headerSet = new Set<string>();
+								const duplicates = extractedHeaders.filter(
+									(h, i, arr) => arr.indexOf(h) !== i && h !== "",
+								);
+								if (duplicates.length > 0) {
+									setError(
+										`Duplicate headers detected: ${duplicates.join(", ")}`,
+									);
+								} else {
+									setError(null);
+								}
+								setHeaders(extractedHeaders);
+							} else {
+								setError("No headers found in CSV");
+								setHeaders([]);
+							}
+						},
+						header: false,
+						skipEmptyLines: true,
+					});
+				} else if (fileName.endsWith(".xlsx")) {
+					// Parse Excel file and extract headers
+					const reader = new FileReader();
+					reader.onload = (e) => {
+						const data = new Uint8Array(e.target?.result as ArrayBuffer);
+						const workbook = XLSX.read(data, { type: "array" });
+						const firstSheetName = workbook.SheetNames[0];
+						const worksheet = workbook.Sheets[firstSheetName];
+						const sheetJson = XLSX.utils.sheet_to_json(worksheet, {
+							header: 1,
+						});
+						if (Array.isArray(sheetJson) && sheetJson.length > 0) {
+							// ! Preserve all columns, replace empty headers, trim whitespace
+							extractedHeaders = (sheetJson[0] as string[]).map((h, i) => {
+								if (typeof h === "string" && h.trim() !== "") return h.trim();
+								return `__EMPTY_${i}`;
+							});
+							console.log("Extracted Excel Headers:", extractedHeaders);
+							const headerSet = new Set<string>();
+							const duplicates = extractedHeaders.filter(
+								(h, i, arr) => arr.indexOf(h) !== i && h !== "",
+							);
+							if (duplicates.length > 0) {
+								setError(
+									`Duplicate headers detected: ${duplicates.join(", ")}`,
+								);
+							} else {
+								setError(null);
+							}
+							setHeaders(extractedHeaders);
+						} else {
+							setError("No headers found in Excel sheet");
+							setHeaders([]);
+						}
+					};
+					reader.onerror = () => {
+						setError("Error reading Excel file");
+						setHeaders([]);
+					};
+					reader.readAsArrayBuffer(file);
+				} else {
+					setError("Unsupported file type. Please upload a CSV or Excel file.");
+					setHeaders([]);
+				}
 			} catch (err) {
 				setError("Error extracting headers from the file");
 				setHeaders([]);
@@ -145,12 +205,17 @@ const SkipTraceModalMain = ({
 						/>
 					)}
 					{step === 1 && (
-						<FieldMappingStep
-							headers={headers}
-							selectedHeaders={selectedHeaders}
-							onHeaderSelect={handleHeaderSelect}
-							errors={errors}
-						/>
+						<>
+							{/* FieldMappingStep allows mapping between internal fields and headers from uploaded file */}
+							{/* headers = headers detected from user file */}
+							{/* selectedHeaders = user mapping from internal field -> file header */}
+							<FieldMappingStep
+								headers={headers}
+								selectedHeaders={selectedHeaders}
+								onHeaderSelect={handleHeaderSelect}
+								errors={errors}
+							/>
+						</>
 					)}
 					{step === 2 && (
 						<ReviewAndSubmitStep

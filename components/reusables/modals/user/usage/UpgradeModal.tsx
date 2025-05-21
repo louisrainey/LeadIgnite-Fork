@@ -14,6 +14,7 @@ import { useModalStore } from "@/lib/stores/dashboard";
 import { ArrowUpCircle, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const FeatureList = () => {
 	return (
@@ -100,22 +101,22 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 		<div
 			className={`fixed inset-0 z-50 flex items-center justify-center bg-black/30 ${!isUpgradeModalOpen ? "hidden" : ""}`}
 			aria-modal="true"
-			role="dialog"
 			tabIndex={-1}
 		>
-			<div className="relative w-full max-w-lg rounded-xl bg-white shadow-2xl p-0 animate-fade-in max-h-[80vh] flex flex-col">
+			<div className="relative flex max-h-[80vh] w-full max-w-lg animate-fade-in flex-col rounded-xl bg-white p-0 shadow-2xl">
 				<div className="flex-1 overflow-y-auto p-8">
 					<button
 						aria-label="Close"
-						className="absolute right-4 top-4 text-gray-400 hover:text-gray-700"
+						type="button"
+						className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
 						onClick={closeUpgradeModal}
 					>
 						<X size={22} />
 					</button>
-					<h2 className="text-lg font-semibold mb-1">
+					<h2 className="mb-1 font-semibold text-lg">
 						AI Calling - Upgrade your plan
 					</h2>
-					<p className="text-2xl font-bold mb-2">{selectedPlan.name}</p>
+					<p className="mb-2 font-bold text-2xl">{selectedPlan.name}</p>
 					<p className="mb-4 text-gray-600">{selectedPlan.description}</p>
 
 					{/* Tier Switcher */}
@@ -124,7 +125,8 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 							{plans.map((plan) => (
 								<button
 									key={plan.id}
-									className={`rounded-full border px-4 py-1 text-sm font-medium transition-all duration-150 ${selectedPlanId === plan.id ? "bg-blue-600 text-white border-blue-600" : "bg-white text-blue-600 border-blue-600 hover:bg-blue-50"}`}
+									type="button"
+									className={`rounded-full border px-4 py-1 font-medium text-sm transition-all duration-150 ${selectedPlanId === plan.id ? "border-blue-600 bg-blue-600 text-white" : "border-blue-600 bg-white text-blue-600 hover:bg-blue-50"}`}
 									onClick={() => setSelectedPlanId(plan.id)}
 								>
 									{plan.name}
@@ -146,7 +148,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 								engagements using human-like voice models. Advanced calling
 								algorithms ensure optimal results and quality leads.
 							</p>
-							<div className="flex items-center gap-2 font-semibold mt-4">
+							<div className="mt-4 flex items-center gap-2 font-semibold">
 								<span role="img" aria-label="growth">
 									📈
 								</span>{" "}
@@ -173,25 +175,25 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 					</div>
 
 					<div className="my-6 border-t pt-5">
-						<div className="mb-3 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+						<div className="mb-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">
 							CREDITS / month
 						</div>
 						<ul className="mb-6 space-y-2 text-base">
 							{selectedPlan.features.map((feature, i) => (
-								<li key={i} className="flex items-center gap-2">
+								<li key={uuidv4()} className="flex items-center gap-2">
 									<span className="text-green-600">✔</span>{" "}
 									<span>{feature}</span>
 								</li>
 							))}
 						</ul>
-						<div className="flex items-center justify-between mb-4">
-							<span className="text-3xl font-bold">
+						<div className="mb-4 flex items-center justify-between">
+							<span className="font-bold text-3xl">
 								${selectedPlan.price.toLocaleString()}{" "}
-								<span className="text-base font-medium text-gray-500">
+								<span className="font-medium text-base text-gray-500">
 									{selectedPlan.priceSuffix}
 								</span>
 							</span>
-							<span className="text-xs text-gray-500">
+							<span className="text-gray-500 text-xs">
 								1 credit = 1 property record
 							</span>
 						</div>
@@ -199,7 +201,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 							href={selectedPlan.stripePaymentLink}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="block w-full rounded-lg bg-blue-600 py-3 text-center text-lg font-semibold text-white hover:bg-blue-700 transition"
+							className="block w-full rounded-lg bg-blue-600 py-3 text-center font-semibold text-lg text-white transition hover:bg-blue-700"
 						>
 							{selectedPlan.cta || "Upgrade now"}
 						</a>

@@ -29,10 +29,30 @@ const FieldMappingStep: FC<FieldMappingStepProps> = ({
 	onHeaderSelect,
 	errors,
 }) => {
+	// Build unique header options with index for duplicate headers
+	const headerOptions = headers.map((header, idx) => ({
+		key: `${header}__${idx}`,
+		label: `${header} `,
+		name: header,
+		idx,
+	}));
+
+	// Utility: Get all selected header keys except for the current field
+	const getAvailableHeaderOptions = (currentField: string) => {
+		const selected = Object.entries(selectedHeaders)
+			.filter(([field]) => field !== currentField)
+			.map(([, value]) => value)
+			.filter(Boolean);
+		return headerOptions.filter(
+			(h) =>
+				!selected.includes(h.key) || selectedHeaders[currentField] === h.key,
+		);
+	};
 	return (
 		<div className="grid grid-cols-2 gap-4">
 			{fields.map(({ name, label }) => {
 				const selectId = `field-mapping-select-${name}`;
+				const availableHeaderOptions = getAvailableHeaderOptions(name);
 				return (
 					<div key={name}>
 						<label
@@ -50,9 +70,9 @@ const FieldMappingStep: FC<FieldMappingStepProps> = ({
 							disabled={!headers.length}
 						>
 							<option value="">Select header</option>
-							{headers.map((header) => (
-								<option key={header} value={header}>
-									{header}
+							{availableHeaderOptions.map((opt) => (
+								<option key={opt.key} value={opt.key}>
+									{opt.label}
 								</option>
 							))}
 						</select>

@@ -115,7 +115,9 @@ const LeadSearchForm: React.FC<LeadSearchFormProps> = ({
 				control={control}
 				render={({ field }) => (
 					<div className="flex flex-col">
-						<Label htmlFor="propertyType">Property Type</Label>
+						<Label htmlFor="propertyType" className="mb-2">
+							Property Type
+						</Label>
 						<Select onValueChange={field.onChange} value={field.value || ""}>
 							<SelectTrigger id="propertyType">
 								<SelectValue placeholder="Select type" />
