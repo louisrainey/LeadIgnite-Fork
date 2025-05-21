@@ -22,13 +22,18 @@ const MIN_DRAWER_HEIGHT = 100; // Set a minimum height for the drawer to prevent
 const cardLoadOptions = [12, 24, 48, 96]; // You can add more options if needed
 // * PropertyListView now manages selected properties for list creation
 const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
+	const [searchTerm, setSearchTerm] = useState("");
+	const filteredProperties = properties.filter((property) =>
+		property.text?.toLowerCase().includes(searchTerm.toLowerCase()),
+	);
+
 	// ...existing hooks and state
 	const availableListNames = MockUserProfile.companyInfo.leadLists.map(
 		(list) => list.listName,
 	);
 	const openSkipTraceDialog = () => {
 		useModalStore.getState().openModal("skipTrace", {
-			properties: properties.filter((p) =>
+			properties: filteredProperties.filter((p) =>
 				selectedPropertyIds.includes(p.id ?? ""),
 			),
 			availableListNames,
@@ -129,6 +134,17 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 						style={{ height: drawerHeight - 60 }}
 					>
 						<div className="space-y-4">
+							{/* Search bar for filtering by description */}
+							<div className="mb-4 flex items-center">
+								<input
+									type="text"
+									placeholder="Search by description..."
+									value={searchTerm}
+									onChange={(e) => setSearchTerm(e.target.value)}
+									className="w-full rounded-md border border-gray-300 px-4 py-2 text-base shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+								/>
+							</div>
+
 							<div className="space-y-2">
 								<h3 className="font-semibold text-lg">
 									List Size ({listSizeLabel})
@@ -144,51 +160,52 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 										Your list is too broad.
 									</p>
 								)}
-								<div className="flex justify-center gap-4 py-2">
+								<div className="flex items-center gap-4">
 									<button
 										type="button"
-										className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-gray-700 text-sm shadow-sm transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
-										onClick={() =>
-											setSelectedPropertyIds(
-												properties
-													.map((p) => p.id)
-													.filter((id): id is string => typeof id === "string"),
-											)
-										}
-										disabled={selectedPropertyIds.length === properties.length}
+										className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-blue-600 text-sm shadow-sm transition hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-900 dark:text-blue-400 dark:hover:bg-gray-800"
+										onClick={() => {
+											// Select all logic
+											const allPropertyIds = filteredProperties
+												.filter((p) => p.id)
+												.map((p) => p.id as string);
+											setSelectedPropertyIds(allPropertyIds);
+										}}
 										aria-label="Select all properties"
 									>
 										Select All
 									</button>
-									<button
-										type="button"
-										className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-red-600 text-sm shadow-sm transition hover:bg-red-50 dark:border-gray-700 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800"
-										onClick={() => setSelectedPropertyIds([])}
-										disabled={selectedPropertyIds.length === 0}
-										aria-label="Clear all selected properties"
-									>
-										Clear Selected
-									</button>
-									<div className="flex items-center gap-4">
+									{selectedPropertyIds.length > 0 && (
 										<button
 											type="button"
-											className={`rounded-md bg-orange-600 px-6 py-2 font-semibold text-base text-white shadow-sm transition hover:bg-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600 ${selectedPropertyIds.length === 0 ? "cursor-not-allowed opacity-60" : ""}`}
-											disabled={selectedPropertyIds.length === 0}
-											aria-disabled={selectedPropertyIds.length === 0}
-											onClick={openSkipTraceDialog}
+											className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-red-600 text-sm shadow-sm transition hover:bg-red-50 dark:border-gray-700 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800"
+											onClick={() => setSelectedPropertyIds([])}
+											aria-label="Clear all selected properties"
 										>
-											Create List
-											{selectedPropertyIds.length > 0
-												? ` (${selectedPropertyIds.length} Selected)`
-												: ""}
+											Clear Selected
 										</button>
-									</div>
+									)}
+									<button
+										type="button"
+										className={`rounded-md bg-orange-600 px-6 py-2 font-semibold text-base text-white shadow-sm transition hover:bg-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600 ${
+											selectedPropertyIds.length === 0
+												? "cursor-not-allowed opacity-60"
+												: ""
+										}`}
+										disabled={selectedPropertyIds.length === 0}
+										aria-disabled={selectedPropertyIds.length === 0}
+										onClick={openSkipTraceDialog}
+									>
+										Create List
+										{selectedPropertyIds.length > 0 &&
+											` (${selectedPropertyIds.length} Selected)`}
+									</button>
 								</div>
 							</div>
 
 							{/* Property List */}
 							<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-								{visibleProperties.map((property) => {
+								{filteredProperties.map((property) => {
 									if (!property.id) return null; // skip properties without an ID
 									return (
 										<div key={property.id} className="p-4">

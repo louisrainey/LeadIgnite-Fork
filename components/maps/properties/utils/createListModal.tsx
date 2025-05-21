@@ -21,6 +21,8 @@ type SkipTraceFormProps = {
 	availableListNames: string[] | undefined;
 	costPerRecord: number;
 	onClose: () => void; // Pass close function from parent
+	useExistingList: boolean;
+	setUseExistingList: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
@@ -28,8 +30,10 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 	availableListNames,
 	costPerRecord,
 	onClose,
+	useExistingList,
+	setUseExistingList,
 }) => {
-	const [useExistingList, setUseExistingList] = useState<boolean>(false); // Switch state
+	console.log("SkipTraceForm rendered. useExistingList:", useExistingList); // * Debug: check for remounts
 	const [targetList, setTargetList] = useState<string | null>(null); // Selected or created list
 	const [newListName, setNewListName] = useState<string>(""); // New list name input
 	const [recordsToSkip, setRecordsToSkip] = useState<number>(properties.length); // Default to max records
@@ -76,14 +80,14 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 			</p>
 
 			{/* Switch for adding to an existing list */}
-			{availableListNames && availableListNames.length > 1 && (
+			{availableListNames && availableListNames.length >= 1 && (
 				<div className="mb-4">
 					<div className="flex items-center justify-between">
 						<label
 							htmlFor="use-existing-list"
 							className="font-medium text-gray-700 text-sm dark:text-gray-300"
 						>
-							Add to an existing list:
+							Add to an existing list({availableListNames.length}):
 						</label>
 
 						<label
@@ -93,15 +97,17 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 							<input
 								type="checkbox"
 								checked={useExistingList}
-								onChange={() => setUseExistingList(!useExistingList)}
-								className="peer sr-only"
+								onChange={() => {
+									setUseExistingList(!useExistingList);
+								}}
+								style={{
+									width: 24,
+									height: 24,
+									zIndex: 10,
+									position: "relative",
+								}}
 							/>
-							<div className="h-6 w-11 rounded-full bg-gray-200 transition-colors duration-200 peer-checked:bg-blue-500 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-700" />
-							<span
-								className={`absolute top-0.5 left-0.5 h-5 w-5 transform rounded-full bg-white transition-transform duration-200 ${
-									useExistingList ? "translate-x-5" : ""
-								}`}
-							/>
+							{/* REMOVE the custom <div> and <span> for now */}
 						</label>
 					</div>
 				</div>
@@ -109,7 +115,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 
 			{/* Conditionally render the target list selector or new list name input */}
 			{availableListNames &&
-			availableListNames.length > 1 &&
+			availableListNames.length >= 1 &&
 			useExistingList ? (
 				<div className="mb-4">
 					<label
@@ -119,25 +125,12 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 						Select a target list
 					</label>
 
-					{/* Updated select element */}
-					<select
+					<BareDropdown
 						value={targetList || ""}
-						onChange={(e) => setTargetList(e.target.value)}
-						className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
-					>
-						<option value="" disabled>
-							Select a list
-						</option>
-						{availableListNames.map((listName) => (
-							<option
-								key={listName}
-								value={listName}
-								className="cursor-pointer"
-							>
-								{listName}
-							</option>
-						))}
-					</select>
+						onChange={setTargetList}
+						options={availableListNames}
+						placeholder="Select a list"
+					/>
 				</div>
 			) : (
 				<div className="mb-4">
@@ -226,6 +219,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 };
 
 import { useModalStore } from "@/lib/stores/leadSearch/leadListStore";
+import BareDropdown from "@/components/ui/bareDropdown";
 
 export type SkipTraceDialogProps = {
 	properties: PropertyDetails[];
@@ -234,6 +228,7 @@ export type SkipTraceDialogProps = {
 };
 
 const SkipTraceDialog: React.FC = () => {
+	const [useExistingList, setUseExistingList] = useState(false);
 	const { activeModal, modalProps, closeModal } = useModalStore();
 	if (activeModal !== "skipTrace") return null;
 	const {
@@ -261,6 +256,8 @@ const SkipTraceDialog: React.FC = () => {
 					availableListNames={availableListNames}
 					costPerRecord={costPerRecord}
 					onClose={closeModal}
+					useExistingList={useExistingList}
+					setUseExistingList={setUseExistingList}
 				/>
 			</DialogContent>
 		</Dialog>
