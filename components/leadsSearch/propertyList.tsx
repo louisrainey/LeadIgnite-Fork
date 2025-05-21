@@ -128,24 +128,12 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 						</DrawerClose>
 					</div>
 
-					{/* Drawer content */}
 					<CardContent
 						className="overflow-auto"
 						style={{ height: drawerHeight - 60 }}
 					>
 						<div className="space-y-4">
-							{/* Search bar for filtering by description */}
-							<div className="mb-4 flex items-center">
-								<input
-									type="text"
-									placeholder="Search by description..."
-									value={searchTerm}
-									onChange={(e) => setSearchTerm(e.target.value)}
-									className="w-full rounded-md border border-gray-300 px-4 py-2 text-base shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-								/>
-							</div>
-
-							<div className="space-y-2">
+							<div className="my-5 space-y-2">
 								<h3 className="font-semibold text-lg">
 									List Size ({listSizeLabel})
 								</h3>
@@ -160,31 +148,48 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 										Your list is too broad.
 									</p>
 								)}
-								<div className="flex items-center gap-4">
-									<button
-										type="button"
-										className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-blue-600 text-sm shadow-sm transition hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-900 dark:text-blue-400 dark:hover:bg-gray-800"
-										onClick={() => {
-											// Select all logic
-											const allPropertyIds = filteredProperties
-												.filter((p) => p.id)
-												.map((p) => p.id as string);
-											setSelectedPropertyIds(allPropertyIds);
-										}}
-										aria-label="Select all properties"
-									>
-										Select All
-									</button>
-									{selectedPropertyIds.length > 0 && (
-										<button
-											type="button"
-											className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-red-600 text-sm shadow-sm transition hover:bg-red-50 dark:border-gray-700 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800"
-											onClick={() => setSelectedPropertyIds([])}
-											aria-label="Clear all selected properties"
-										>
-											Clear Selected
-										</button>
-									)}
+								{/* Controls: search + actions */}
+								<div className="mb-6 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-8">
+									{/* Search bar */}
+									<input
+										type="text"
+										placeholder="Search by description..."
+										value={searchTerm}
+										onChange={(e) => setSearchTerm(e.target.value)}
+										className="w-full max-w-xs rounded-md border border-gray-300 px-4 py-2 text-base shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+									/>
+									<div className="flex items-center gap-2">
+										{filteredProperties.length > 0 && (
+											<button
+												type="button"
+												className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-red-600 text-sm shadow-sm transition hover:bg-red-50 dark:border-gray-700 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800"
+												onClick={() => setSelectedPropertyIds([])}
+												aria-label="Clear all selected properties"
+											>
+												Clear Selected
+											</button>
+										)}
+									</div>
+									<div className="flex items-center gap-2">
+										{selectedPropertyIds.length !==
+											filteredProperties.filter((p) => p.id).length && (
+											<button
+												type="button"
+												className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-blue-600 text-sm shadow-sm transition hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-900 dark:text-blue-400 dark:hover:bg-gray-800"
+												onClick={() => {
+													const allPropertyIds = filteredProperties
+														.filter((p) => p.id)
+														.map((p) => p.id as string);
+													setSelectedPropertyIds(allPropertyIds);
+												}}
+												aria-label="Select all properties"
+											>
+												Select All
+											</button>
+										)}
+									</div>
+
+									{/* Create List button */}
 									<button
 										type="button"
 										className={`rounded-md bg-orange-600 px-6 py-2 font-semibold text-base text-white shadow-sm transition hover:bg-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600 ${
@@ -206,7 +211,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 							{/* Property List */}
 							<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
 								{filteredProperties.map((property) => {
-									if (!property.id) return null; // skip properties without an ID
+									if (!property.id) return null;
 									return (
 										<div key={property.id} className="p-4">
 											<PropertyCard
@@ -224,8 +229,8 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 							{/* Load More Button */}
 							<div className="flex justify-center py-4">
 								<Button
-									onClick={() => loadMoreProperties(maxCardsPerLoad)} // Pass the selected maxCardsPerLoad value
-									disabled={!hasMore || isLoading} // Disable when loading or no more properties
+									onClick={() => loadMoreProperties(maxCardsPerLoad)}
+									disabled={!hasMore || isLoading}
 								>
 									{isLoading ? "Loading..." : "Load More Properties"}
 								</Button>
