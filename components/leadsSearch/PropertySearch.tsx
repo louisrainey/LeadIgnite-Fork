@@ -29,6 +29,7 @@ import WalkThroughModal from "../reusables/tutorials/walkthroughModal";
 import { generateFakeProperties } from "@/constants/dashboard/properties";
 
 const PropertySearch: React.FC = () => {
+	const [hasResults, setHasResults] = useState(false);
 	const { properties, setProperties, isDrawerOpen, setIsDrawerOpen } =
 		usePropertyStore();
 
@@ -56,7 +57,13 @@ const PropertySearch: React.FC = () => {
 		useState<google.maps.drawing.OverlayType | null>(null);
 	const [shapeDrawn, setShapeDrawn] = useState(false);
 	const [boundaryApplied, setBoundaryApplied] = useState(false);
-	const shapeRef = useRef<any>(null);
+	const shapeRef = useRef<
+		| google.maps.Polygon
+		| google.maps.Rectangle
+		| google.maps.Circle
+		| google.maps.Polyline
+		| null
+	>(null);
 
 	const clearShape = () => {
 		if (shapeRef.current) {
@@ -101,7 +108,13 @@ const PropertySearch: React.FC = () => {
 		// Optionally: reset property filters
 	};
 
-	const handleShapeComplete = (shape: any) => {
+	const handleShapeComplete = (
+		shape:
+			| google.maps.Polygon
+			| google.maps.Rectangle
+			| google.maps.Circle
+			| google.maps.Polyline,
+	) => {
 		clearShape();
 		shapeRef.current = shape;
 		setDrawingMode(null);
@@ -153,9 +166,10 @@ const PropertySearch: React.FC = () => {
 			setCenter(newCenter);
 		}
 		// * Set new properties after search
-		setProperties(generateFakeProperties(12));
-		// * Open the drawer to show results
-		setIsDrawerOpen(true);
+		const newProperties = generateFakeProperties(12); // Replace with real API call in prod
+		setProperties(newProperties);
+		setHasResults(newProperties.length > 0);
+		// Do NOT open the drawer here
 	};
 
 	return (
@@ -180,6 +194,17 @@ const PropertySearch: React.FC = () => {
 						<Search className="h-4 w-4" /> Search
 					</Button>
 				</div>
+				{hasResults && (
+					<div className="mt-2 flex justify-center">
+						<Button
+							type="button"
+							className="w-full max-w-xs gap-2 md:w-auto"
+							onClick={() => setIsDrawerOpen(true)}
+						>
+							View Results
+						</Button>
+					</div>
+				)}
 			</form>
 			<AdvancedFiltersDialog
 				open={showAdvanced}
@@ -187,6 +212,7 @@ const PropertySearch: React.FC = () => {
 				control={control}
 				errors={errors}
 			/>
+			{console.log("[DEBUG] PropertySearch markers:", markers)}
 			<MapSection
 				markers={markers}
 				center={center}
