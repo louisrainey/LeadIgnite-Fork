@@ -111,7 +111,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 				<DrawerContent className="p-0" style={{ maxHeight: drawerHeight }}>
 					{/* Drawer header and resize bar */}
 					<div
-						className="flex cursor-ns-resize items-center justify-between bg-secondary p-4"
+						className="my-5 flex cursor-ns-resize items-center justify-between bg-secondary p-4"
 						onMouseDown={startResizing}
 					>
 						<h2 className="font-semibold text-lg">
@@ -159,7 +159,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 										className="w-full max-w-xs rounded-md border border-gray-300 px-4 py-2 text-base shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
 									/>
 									<div className="flex items-center gap-2">
-										{filteredProperties.length > 0 && (
+										{selectedPropertyIds.length > 0 && (
 											<button
 												type="button"
 												className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-red-600 text-sm shadow-sm transition hover:bg-red-50 dark:border-gray-700 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800"

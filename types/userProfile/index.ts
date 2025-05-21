@@ -40,6 +40,8 @@ export interface SavedSearch {
 	name: string; // Name of the saved search
 	searchCriteria: Record<string, unknown>; // The filters/criteria applied for this saved search
 	createdAt: Date; // Date the search was saved
+	updatedAt: Date;
+	priority?: boolean;
 }
 
 export interface Integration {

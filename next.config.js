@@ -13,6 +13,7 @@ const nextConfig = {
 			"loremflickr.com",
 			"picsum.photos",
 			"avatars.githubusercontent.com",
+			"placehold.co",
 		],
 	},
 };

@@ -10,6 +10,7 @@ import type { PropertyDetails } from "@/types/_dashboard/maps";
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
+import ImageCarousel from "../ui/ImageCarousel";
 
 // * PropertyCard component with selection checkbox for list creation
 // ! Accepts `selected` and `onSelect` for selection state management
@@ -60,33 +61,12 @@ const PropertyCard: React.FC<{
 				</button>
 
 				{/* Image/Carousel Section */}
-				<div className="relative mb-2 overflow-hidden rounded-t-2xl">
-					<Carousel className="w-full">
-						<CarouselContent className="w-full">
-							{[property.primary_photo, ...altPhotos].map((photo, index) => (
-								<CarouselItem key={photo} className="w-full">
-									<Image
-										src={photo}
-										alt={`Property Image ${index + 1}`}
-										width={600}
-										height={400}
-										className="h-60 w-full object-cover"
-										style={{ height: "240px" }}
-									/>
-								</CarouselItem>
-							))}
-						</CarouselContent>
-						<div className="-translate-x-1/2 absolute bottom-2 left-1/2 flex space-x-4">
-							<CarouselPrevious
-								type="button"
-								className="rounded-full bg-gray-900 p-2 text-white"
-							/>
-							<CarouselNext
-								type="button"
-								className="rounded-full bg-gray-900 p-2 text-white"
-							/>
-						</div>
-					</Carousel>
+				{/* Image/Carousel Section */}
+				<div className="relative mb-2 aspect-[3/2] overflow-hidden rounded-t-2xl bg-gray-100">
+					<ImageCarousel
+						images={[property.primary_photo, ...altPhotos]}
+						altPrefix="Property Image"
+					/>
 				</div>
 
 				{/* Divider */}
