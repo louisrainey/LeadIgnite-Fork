@@ -6,12 +6,14 @@ import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer";
 import { Progress } from "@/components/ui/progress";
 import { MockUserProfile } from "@/constants/_faker/profile/userProfile";
 import { usePropertyStore } from "@/lib/stores/leadSearch/drawer"; // Zustand store import
+import { useModalStore } from "@/lib/stores/leadSearch/leadListStore";
 import type { PropertyDetails } from "@/types/_dashboard/maps";
 import { X } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import PropertyCard from "./propertyCard";
 import SkipTraceDialog from "../maps/properties/utils/createListModal";
+
 interface PropertyListProps {
 	properties: PropertyDetails[];
 }
@@ -20,6 +22,19 @@ const MIN_DRAWER_HEIGHT = 100; // Set a minimum height for the drawer to prevent
 const cardLoadOptions = [12, 24, 48, 96]; // You can add more options if needed
 // * PropertyListView now manages selected properties for list creation
 const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
+	// ...existing hooks and state
+	const availableListNames = MockUserProfile.companyInfo.leadLists.map(
+		(list) => list.listName,
+	);
+	const openSkipTraceDialog = () => {
+		useModalStore.getState().openModal("skipTrace", {
+			properties: properties.filter((p) =>
+				selectedPropertyIds.includes(p.id ?? ""),
+			),
+			availableListNames,
+			costPerRecord: 0.1,
+		});
+	};
 	// todo: Move selection state to Zustand/global if needed for cross-component access
 	const [selectedPropertyIds, setSelectedPropertyIds] = useState<string[]>([]);
 
@@ -134,7 +149,11 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 										type="button"
 										className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-gray-700 text-sm shadow-sm transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
 										onClick={() =>
-											setSelectedPropertyIds(properties.map((p) => p.id))
+											setSelectedPropertyIds(
+												properties
+													.map((p) => p.id)
+													.filter((id): id is string => typeof id === "string"),
+											)
 										}
 										disabled={selectedPropertyIds.length === properties.length}
 										aria-label="Select all properties"
@@ -150,47 +169,39 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 									>
 										Clear Selected
 									</button>
-									{(() => {
-										const selectedProperties = properties.filter((p) =>
-											selectedPropertyIds.includes(p.id),
-										);
-										return (
-											<SkipTraceDialog
-												properties={selectedProperties}
-												availableListNames={MockUserProfile.companyInfo.leadLists.map(
-													(list) => list.listName,
-												)} // Extract and pass available list names
-												costPerRecord={0.1} // Example cost per record, you can change as needed
-												triggerButton={
-													<button
-														type="button"
-														className={`rounded-md bg-orange-600 px-6 py-2 font-semibold text-base text-white shadow-sm transition hover:bg-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600 ${selectedProperties.length === 0 ? "opacity-60 cursor-not-allowed" : ""}`}
-														disabled={selectedProperties.length === 0}
-														aria-disabled={selectedProperties.length === 0}
-													>
-														Create List
-														{selectedProperties.length > 0
-															? ` (${selectedProperties.length} Selected)`
-															: ""}
-													</button>
-												}
-											/>
-										);
-									})()}
+									<div className="flex items-center gap-4">
+										<button
+											type="button"
+											className={`rounded-md bg-orange-600 px-6 py-2 font-semibold text-base text-white shadow-sm transition hover:bg-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600 ${selectedPropertyIds.length === 0 ? "cursor-not-allowed opacity-60" : ""}`}
+											disabled={selectedPropertyIds.length === 0}
+											aria-disabled={selectedPropertyIds.length === 0}
+											onClick={openSkipTraceDialog}
+										>
+											Create List
+											{selectedPropertyIds.length > 0
+												? ` (${selectedPropertyIds.length} Selected)`
+												: ""}
+										</button>
+									</div>
 								</div>
 							</div>
 
 							{/* Property List */}
 							<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-								{visibleProperties.map((property) => (
-									<div key={property.id} className="p-4">
-										<PropertyCard
-											property={property}
-											selected={selectedPropertyIds.includes(property.id)}
-											onSelect={() => handlePropertySelect(property.id)}
-										/>
-									</div>
-								))}
+								{visibleProperties.map((property) => {
+									if (!property.id) return null; // skip properties without an ID
+									return (
+										<div key={property.id} className="p-4">
+											<PropertyCard
+												property={property}
+												selected={selectedPropertyIds.includes(property.id)}
+												onSelect={() =>
+													property.id && handlePropertySelect(property.id)
+												}
+											/>
+										</div>
+									);
+								})}
 							</div>
 
 							{/* Load More Button */}

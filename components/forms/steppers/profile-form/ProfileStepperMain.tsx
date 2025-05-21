@@ -171,7 +171,7 @@ export const ProfileStepper: React.FC = () => {
 				)}
 				<div className="mt-8 flex flex-col gap-2">
 					{stepError && (
-						<div className="text-red-500 text-sm mb-2">{stepError}</div>
+						<div className="mb-2 text-red-500 text-sm">{stepError}</div>
 					)}
 					<div className="flex justify-between">
 						<button

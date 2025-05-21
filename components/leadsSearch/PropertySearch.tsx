@@ -41,7 +41,7 @@ const normalizeFormValues = (values: unknown): unknown => {
 };
 const PropertySearch: React.FC = () => {
 	// * Debug: log form state every render
-	const formRef = React.useRef<any>(null);
+	const formRef = React.useRef<unknown>(null);
 	const [hasResults, setHasResults] = useState(false);
 	const { properties, setProperties, isDrawerOpen, setIsDrawerOpen } =
 		usePropertyStore();
@@ -234,7 +234,12 @@ const PropertySearch: React.FC = () => {
 							{Object.entries(errors).map(([field, error]) => (
 								<li key={field}>
 									{field.charAt(0).toUpperCase() + field.slice(1)}:{" "}
-									{error?.message || (error as any)?.root?.message}
+									{error?.message ||
+										(typeof error === "object" &&
+											error !== null &&
+											"root" in error &&
+											(error as unknown as { root: { message: string } }).root
+												?.message)}
 								</li>
 							))}
 						</ul>

@@ -32,7 +32,9 @@ const PropertyCard: React.FC<{
 					className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-white shadow transition-colors hover:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-600 dark:border-gray-600 dark:bg-gray-800"
 					onClick={(e) => {
 						e.stopPropagation();
-						onSelect(property.id);
+						if (property.id) {
+							onSelect(property.id);
+						}
 					}}
 					aria-pressed={selected}
 					tabIndex={0}

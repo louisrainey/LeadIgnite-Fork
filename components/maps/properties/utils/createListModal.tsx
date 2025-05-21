@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -11,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import type { PropertyDetails } from "@/types/_dashboard/maps";
 import { skipTraceSchema } from "@/types/zod/createListSkip";
-import React from "react";
+import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -69,7 +70,7 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 	};
 
 	return (
-		<div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+		<>
 			<p className="mb-4 text-gray-500 text-sm dark:text-gray-400">
 				Skip trace and create a list.
 			</p>
@@ -206,10 +207,10 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 				</label>
 			</div>
 
-			{/* Total price */}
+			{/* Total credits */}
 			<div className="mb-6">
 				<p className="font-medium text-lg dark:text-white">
-					Total Price: <span className="text-blue-500">${calculateCost()}</span>
+					Total Credits: <span className="text-blue-500">{recordsToSkip}</span>
 				</p>
 			</div>
 
@@ -220,69 +221,47 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 			>
 				Create List
 			</Button>
-		</div>
+		</>
 	);
 };
 
-type SkipTraceDialogProps = {
+import { useModalStore } from "@/lib/stores/leadSearch/leadListStore";
+
+export type SkipTraceDialogProps = {
 	properties: PropertyDetails[];
 	availableListNames?: string[];
 	costPerRecord: number;
-	triggerButton?: React.ReactNode;
 };
 
-const SkipTraceDialog: React.FC<SkipTraceDialogProps> = ({
-	properties,
-	availableListNames,
-	costPerRecord,
-	triggerButton,
-}) => {
-	const [isOpen, setIsOpen] = useState(false); // Control dialog state
+const SkipTraceDialog: React.FC = () => {
+	const { activeModal, modalProps, closeModal } = useModalStore();
+	if (activeModal !== "skipTrace") return null;
+	const {
+		properties = [],
+		availableListNames = [],
+		costPerRecord = 0,
+	} = modalProps as SkipTraceDialogProps;
 
 	// Prevent opening modal if no properties are selected
-	const handleOpen = () => {
-		if (properties.length === 0) {
-			toast.error("Please select at least one property to create a list.");
-			return;
-		}
-		setIsOpen(true);
-	};
+	if (!properties.length) {
+		closeModal();
+		return null;
+	}
 
 	return (
-		<Dialog open={isOpen} onOpenChange={setIsOpen}>
-			<DialogTrigger asChild>
-				{triggerButton ? (
-					React.cloneElement(triggerButton as React.ReactElement<any>, {
-						onClick: handleOpen,
-					})
-				) : (
-					<Button variant="outline" onClick={handleOpen}>
-						Create List ({properties.length})
-					</Button>
-				)}
-			</DialogTrigger>
-
+		<Dialog open onOpenChange={closeModal}>
 			<DialogContent className="-translate-x-1/2 -translate-y-1/2 fixed top-1/2 left-1/2 z-50 transform rounded-lg bg-white shadow-lg sm:max-w-[425px] dark:bg-gray-900 ">
-				<DialogHeader>
+				<DialogHeader className="flex w-full flex-row items-center justify-between">
 					<DialogTitle className="dark:text-white">
 						Create Your List
 					</DialogTitle>
 				</DialogHeader>
-
 				<SkipTraceForm
 					properties={properties}
 					availableListNames={availableListNames}
 					costPerRecord={costPerRecord}
-					onClose={() => setIsOpen(false)} // Pass close function to form
+					onClose={closeModal}
 				/>
-
-				<DialogFooter>
-					<DialogClose asChild>
-						<Button variant="secondary" onClick={() => setIsOpen(false)}>
-							Close
-						</Button>
-					</DialogClose>
-				</DialogFooter>
 			</DialogContent>
 		</Dialog>
 	);

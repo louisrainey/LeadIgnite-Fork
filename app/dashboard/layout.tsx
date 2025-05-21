@@ -1,6 +1,7 @@
 // import { fetchUserProfileData, getUserProfile } from "@/actions/auth";
 import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
+import SkipTraceDialog from "@/components/maps/properties/utils/createListModal";
 import BillingModalMain from "@/components/reusables/modals/user/billing/BillingModalMain";
 import { SecurityModal } from "@/components/reusables/modals/user/security";
 import AiUsageModal from "@/components/reusables/modals/user/usage";
@@ -62,6 +63,8 @@ export default async function DashboardLayout({
 			<SecurityModal />
 			<WebhookModal />
 			<UpgradeModal trial={false} />
+			<SkipTraceDialog />
+
 			<Toaster />
 		</div>
 	);
