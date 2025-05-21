@@ -155,7 +155,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 								Scale rapidly and dominate your market.
 							</div>
 							<p className="text-gray-500 text-sm">
-								Scaling your business used to take years; with Lead Ignite, you
+								Scaling your business used to take years; with Deal Scale, you
 								can scale in months.
 							</p>
 						</div>
@@ -164,10 +164,10 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 								<span role="img" aria-label="human">
 									👤
 								</span>{" "}
-								Human vs Lead Ignite.
+								Human vs Deal Scale.
 							</div>
 							<p className="text-gray-500 text-sm">
-								It takes a human on a dialer 3 years to do what Lead Ignite can
+								It takes a human on a dialer 3 years to do what Deal Scale can
 								do in one day. Let us do the heavy lifting while you focus on
 								closing deals.
 							</p>

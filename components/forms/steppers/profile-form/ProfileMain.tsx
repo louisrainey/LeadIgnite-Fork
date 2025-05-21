@@ -7,7 +7,7 @@ import { BaseSetupMain } from "./steps/base/BaseSetupMain";
 import { KnowledgeBaseMain } from "./steps/knowledge/KnowledgeBaseMain";
 import { PersonalInformationFormMain } from "./steps/personal_information/PersonalInformationFormMain";
 import type { AssistantVoice } from "@/types/vapiAi/api/assistant/create";
-
+import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
 // Example initial data (replace with real data as needed)
 const initialData = undefined;
 
@@ -21,11 +21,11 @@ export const ProfileStepper: React.FC = () => {
 			personalNum: "",
 			companyName: "",
 			companyLogo: undefined,
-			outreachEmailAddress: "",
+			// outreachEmailAddress: "",
 			companyAssets: [],
 			selectedVoice: "",
 			exampleSalesScript: "",
-			exampleEmailBody: "",
+			// exampleEmailBody: "",
 			voicemailRecordingId: "",
 			clonedVoiceId: "",
 			meta: undefined,
@@ -43,8 +43,11 @@ export const ProfileStepper: React.FC = () => {
 		mode: "onChange",
 	});
 
-	// Example props for KnowledgeBaseSetup and OAuthSetup
-	const voices: AssistantVoice[] = [];
+	// Get user profile from Zustand
+	const userProfile = mockUserProfile;
+	console.log("DEBUG userProfile", userProfile);
+	const voices = userProfile?.aIKnowledgebase?.recordings?.voices ?? [];
+	console.log("DEBUG voices", voices);
 	const handleVoiceSelect = (voiceId: string) => {};
 	const handleScriptUpload = (scriptContent: string) => {};
 	const handleEmailUpload = (emailContent: string) => {};

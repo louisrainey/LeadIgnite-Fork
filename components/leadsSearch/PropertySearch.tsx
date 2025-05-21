@@ -224,6 +224,7 @@ const PropertySearch: React.FC = () => {
 					control={control}
 					errors={errors}
 					onAdvancedOpen={() => setShowAdvanced(true)}
+					isValid={isValid}
 				/>
 
 				{/* Show validation errors above the Search button if form is invalid */}
@@ -245,18 +246,22 @@ const PropertySearch: React.FC = () => {
 						</ul>
 					</div>
 				)}
-				<div className="my-4 flex justify-center">
-					<Button
-						type="submit"
-						className="w-full max-w-xs gap-2 md:w-auto"
-						disabled={!isValid}
-					>
-						<Search className="h-4 w-4" /> Search
-					</Button>
-				</div>
-				{/* Show 'Show Results' button only when there are valid mock properties */}
-				{hasResults && properties && properties.length > 0 && (
-					<div className="mt-2 flex justify-center">
+				<div className="my-4 flex flex-col items-center gap-3 md:flex-row md:justify-center">
+					<div className="group relative w-full max-w-xs md:w-auto">
+						<Button
+							type="submit"
+							className="w-full gap-2 md:w-auto"
+							disabled={!isValid}
+						>
+							<Search className="h-4 w-4" /> Search
+						</Button>
+						{!isValid && (
+							<span className="-translate-x-1/2 -translate-y-full pointer-events-none absolute top-0 left-1/2 z-10 w-max rounded bg-gray-800 px-3 py-1 text-white text-xs opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+								Enter valid search criteria to save
+							</span>
+						)}
+					</div>
+					{hasResults && properties && properties.length > 0 && (
 						<Button
 							type="button"
 							className="w-full max-w-xs gap-2 md:w-auto"
@@ -264,14 +269,14 @@ const PropertySearch: React.FC = () => {
 								console.log(
 									"[DEBUG] Show Results clicked, properties:",
 									properties,
-								); // *
+								);
 								setIsDrawerOpen(true);
 							}}
 						>
 							Show Results
 						</Button>
-					</div>
-				)}
+					)}
+				</div>
 			</form>
 			<AdvancedFiltersDialog
 				open={showAdvanced}

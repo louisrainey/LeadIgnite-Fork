@@ -8,15 +8,15 @@ export const SubscriptionFeatures = [
 		icon: PhoneCall,
 	},
 	{
-		title: "Human vs Lead ignite.",
+		title: "Human vs Deal Scale.",
 		subtitle:
-			"It takes a human on a dialer 3 years to do what Lead ignite can do in one day. Let us do the heavy lifting while you focus on closing deals.",
+			"It takes a human on a dialer 3 years to do what Deal Scale can do in one day. Let us do the heavy lifting while you focus on closing deals.",
 		icon: UserCheck,
 	},
 	{
 		title: "Scale rapidly and dominate your market.",
 		subtitle:
-			"Scaling your business used to take years; with Lead ignite, you can scale in months.",
+			"Scaling your business used to take years; with Deal Scale, you can scale in months.",
 		icon: TrendingUp,
 	},
 ];

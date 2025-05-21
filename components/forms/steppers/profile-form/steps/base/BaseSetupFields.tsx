@@ -35,7 +35,7 @@ export const BaseSetupFields: React.FC<BaseSetupFieldsProps> = ({
 					</FormItem>
 				)}
 			/>
-			<div className="relative">
+			{/* <div className="relative">
 				<div className="pointer-events-auto absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/70 dark:bg-black/60">
 					<span className="font-medium text-gray-500 text-sm">Coming soon</span>
 				</div>
@@ -54,7 +54,7 @@ export const BaseSetupFields: React.FC<BaseSetupFieldsProps> = ({
 						</FormItem>
 					)}
 				/>
-			</div>
+			</div> */}
 			<FormField
 				control={control}
 				name="leadForwardingNumber"

@@ -1,6 +1,6 @@
-# API Security Plan for Lead Ignite
+# API Security Plan for Deal Scale
 
-This document outlines required and recommended security controls for all API endpoints in the Lead Ignite platform. It is based on a review of the current codebase, API structure, and best practices for SaaS, CRM, and AI-integrated applications.
+This document outlines required and recommended security controls for all API endpoints in the Deal Scale platform. It is based on a review of the current codebase, API structure, and best practices for SaaS, CRM, and AI-integrated applications.
 
 ---
 

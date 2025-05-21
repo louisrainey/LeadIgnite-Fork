@@ -20,6 +20,7 @@ import { mockKanbanState } from "../kanban";
 import { mockTeamMembers } from "./team/members";
 import { mockTrackingData } from "./team/tasks";
 import { mockSubscriptions } from "./userSubscription";
+import { generateMockAssistantVoice } from "../_api/vapi/assistant";
 
 // Updated aIKnowledgebase object with Faker.js dynamic values
 
@@ -36,6 +37,7 @@ const aIKnowledgebase: AIKnowledgebase = {
 			audioFile: faker.system.filePath(), // Path to cloned voice audio file (generated dynamically)
 			clonedVoiceID: faker.string.uuid(), // Unique ID for the cloned voice
 		},
+		voices: Array.from({ length: 3 }, generateMockAssistantVoice),
 		voicemailFile: faker.system.filePath(), // Path to voicemail audio file (generated dynamically)
 	},
 
@@ -144,6 +146,8 @@ export const mockUserProfile: UserProfile = {
 				location: faker.location.city(),
 			},
 			createdAt: faker.date.recent(),
+			updatedAt: faker.date.recent(),
+			priority: faker.datatype.boolean(),
 		},
 	],
 	notificationPreferences: {

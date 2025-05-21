@@ -19,7 +19,7 @@ interface BaseSetupAssetsProps {
 export const BaseSetupAssets: React.FC<BaseSetupAssetsProps> = ({
 	loading,
 }) => {
-	const { control, setValue, formState } = useFormContext<ProfileFormValues>();
+	const { control, setValue, trigger } = useFormContext<ProfileFormValues>();
 
 	return (
 		<div className="flex w-full flex-col items-center">
@@ -32,10 +32,10 @@ export const BaseSetupAssets: React.FC<BaseSetupAssetsProps> = ({
 							<FormControl>
 								<LogoUploader
 									value={field.value}
-									onChange={(file) => setValue("companyLogo", file)}
-									error={
-										formState.errors.companyLogo?.message as string | undefined
-									}
+									onChange={async (file) => {
+										setValue("companyLogo", file);
+										await trigger("companyLogo");
+									}}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -51,11 +51,6 @@ export const BaseSetupAssets: React.FC<BaseSetupAssetsProps> = ({
 								<AssetsUploader
 									value={field.value}
 									onChange={(files) => setValue("companyAssets", files)}
-									error={
-										formState.errors.companyAssets?.message as
-											| string
-											| undefined
-									}
 								/>
 							</FormControl>
 							<FormMessage />

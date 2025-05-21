@@ -9,43 +9,52 @@ import type { AssistantVoice } from "@/types/vapiAi/api/assistant/create";
 import { useFormContext } from "react-hook-form";
 import type React from "react";
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
+import {
+	AudioDropdown,
+	type AudioDropdownOption,
+} from "@/components/ui/AudioDropdown";
+
+import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
 
 interface KnowledgeVoiceSelectorProps {
 	loading: boolean;
-	voices: AssistantVoice[];
-	handleVoiceSelect: (voiceId: string) => void;
 }
 
 export const KnowledgeVoiceSelector: React.FC<KnowledgeVoiceSelectorProps> = ({
 	loading,
-	voices,
-	handleVoiceSelect,
 }) => {
+	// Fetch voices directly from mockUserProfile
+	const voices = mockUserProfile?.aIKnowledgebase?.recordings?.voices ?? [];
 	const { control } = useFormContext<ProfileFormValues>();
+	console.log("DEBUG KnowledgeVoiceSelector voices", voices);
+	const audioOptions: AudioDropdownOption[] = [
+		{ label: "Choose a voice...", value: "" },
+		...voices.map((voice) => ({
+			label: voice.name || voice.voiceId,
+			value: voice.voiceId,
+			audioUrl: voice.audioUrl, // Use audioUrl directly from mock data
+		})),
+	];
+	console.log("DEBUG KnowledgeVoiceSelector audioOptions", audioOptions);
+
 	return (
 		<FormField
 			control={control}
 			name="selectedVoice"
 			render={({ field }) => (
 				<FormItem>
-					<FormLabel>Select Voice (Optional)</FormLabel>
+					<FormLabel>
+						Select Voice (Optional): Personalize your agent's voice
+					</FormLabel>
 					<FormControl>
-						<select
+						<AudioDropdown
 							disabled={loading}
 							value={field.value ?? ""}
-							onChange={(e) => {
-								field.onChange(e.target.value);
-								handleVoiceSelect(e.target.value);
+							onChange={(val: string) => {
+								field.onChange(val);
 							}}
-							className="block w-full rounded border border-gray-300 bg-white px-3 py-2"
-						>
-							<option value="">Choose a voice...</option>
-							{voices.map((voice) => (
-								<option key={voice.voiceId} value={voice.voiceId}>
-									{voice.voiceId}
-								</option>
-							))}
-						</select>
+							options={audioOptions}
+						/>
 					</FormControl>
 					<FormMessage />
 				</FormItem>

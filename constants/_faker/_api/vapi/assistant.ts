@@ -3,7 +3,7 @@ import { APP_TESTING_MODE } from "../../../data";
 import type { AssistantVoice } from "@/types/vapiAi/api/assistant/create";
 
 // Function to generate mock AssistantVoice data
-function generateMockAssistantVoice(): AssistantVoice {
+export function generateMockAssistantVoice(): AssistantVoice {
 	const providers = ["azure", "aws", "google", "11labs"] as const;
 
 	return {
@@ -22,6 +22,7 @@ function generateMockAssistantVoice(): AssistantVoice {
 				numberToDigitsCutoff: faker.number.int({ min: 5, max: 20 }), // Correct method for generating integer number
 			},
 		},
+		audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
 	};
 }
 

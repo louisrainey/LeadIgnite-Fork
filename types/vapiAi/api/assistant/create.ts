@@ -82,6 +82,7 @@ export interface AssistantVoice {
 			numberToDigitsCutoff: number;
 		};
 	};
+	audioUrl: string;
 }
 
 // Type for the main CreateAssistantRequest

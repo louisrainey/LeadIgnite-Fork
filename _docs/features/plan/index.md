@@ -72,11 +72,11 @@
 
 ---
 
-# 🏗 MVP Development Plan – Lead Ignite(v2)
+# 🏗 MVP Development Plan – Deal Scale(v2)
 
 ## 🚀 Overview
 
-Lead Ignite automates lead generation, qualification, and contact for real estate professionals using voice AI (VAPI), CRM(GoHighLevel), OSINT tools, MLS data, and orchestrated backend flows(FastAPI + Supabase + MCP).
+Deal Scale automates lead generation, qualification, and contact for real estate professionals using voice AI (VAPI), CRM(GoHighLevel), OSINT tools, MLS data, and orchestrated backend flows(FastAPI + Supabase + MCP).
 
 ---
 

@@ -2,13 +2,14 @@
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
 import type React from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { profileSchema } from "@/types/zod/userSetup/profile-form-schema";
 import { OAuthMain } from "./steps/Oauth/OAuthMain";
 import { BaseSetupMain } from "./steps/base/BaseSetupMain";
 import { KnowledgeBaseMain } from "./steps/knowledge/KnowledgeBaseMain";
 import { PersonalInformationFormMain } from "./steps/personal_information/PersonalInformationFormMain";
 import type { AssistantVoice } from "@/types/vapiAi/api/assistant/create";
 import { useState } from "react";
-
 // * Step definitions: label and component for each step
 const steps = [
 	{ label: "Personal Info", component: PersonalInformationFormMain },
@@ -20,7 +21,10 @@ const steps = [
 export const ProfileStepper: React.FC = () => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [stepError, setStepError] = useState<string | null>(null); // * Error message for validation
+	// ! Use zodResolver for strict Zod schema validation (see user rules)
+
 	const form = useForm<ProfileFormValues>({
+		resolver: zodResolver(profileSchema),
 		defaultValues: {
 			firstName: "",
 			lastName: "",
@@ -28,11 +32,11 @@ export const ProfileStepper: React.FC = () => {
 			personalNum: "",
 			companyName: "",
 			companyLogo: undefined,
-			outreachEmailAddress: "",
+			// outreachEmailAddress: "",
 			companyAssets: [],
 			selectedVoice: "",
 			exampleSalesScript: "",
-			exampleEmailBody: "",
+			// exampleEmailBody: "",
 			voicemailRecordingId: "",
 			clonedVoiceId: "",
 			meta: undefined,
@@ -54,13 +58,35 @@ export const ProfileStepper: React.FC = () => {
 	// Only include required and rendered fields for each step
 	const stepFields: (keyof ProfileFormValues)[][] = [
 		["firstName", "lastName", "email", "personalNum", "state", "city"], // Step 0
-		["companyName", "companyLogo", "outreachEmailAddress", "companyAssets"], // Step 1
-		["selectedVoice", "exampleSalesScript", "exampleEmailBody"], // Step 2 (adjust if any are optional)
+		["companyName", "companyLogo", "companyAssets", "leadForwardingNumber"], // Step 1
+		["selectedVoice", "exampleSalesScript"], // Step 2 (adjust if any are optional)
 		[], // Step 3 (OAuth, add required fields if any)
 	];
 
+	// Helper to map field names to user-friendly labels for error hints
+	const fieldLabels: Record<string, string> = {
+		firstName: "First Name",
+		lastName: "Last Name",
+		email: "Email",
+		personalNum: "Personal Phone Number",
+		companyName: "Company Name",
+		leadForwardingNumber: "Lead Forwarding Number",
+		companyLogo: "Company Logo",
+		// outreachEmailAddress: "Outreach Email Address",
+		companyAssets: "Company Assets",
+		selectedVoice: "Selected Voice",
+		exampleSalesScript: "Sales Script",
+		// exampleEmailBody: "Email Body",
+		voicemailRecordingId: "Voicemail Recording",
+		clonedVoiceId: "Cloned Voice",
+		meta: "Meta",
+		socialMediaCampaignAccounts: "Social Media Accounts",
+		socialMediatags: "Social Media Tags",
+		state: "State",
+		city: "City",
+	};
+
 	const StepperHeader = () => {
-		const initialDataPresent = Boolean(initialData);
 		// Helper: check if all previous steps are valid
 		const allPrevStepsValid = (idx: number) => {
 			for (let i = 0; i < idx; i++) {
@@ -77,42 +103,35 @@ export const ProfileStepper: React.FC = () => {
 			<div className="mb-8 flex items-center">
 				{steps.map((step, idx) => {
 					let isDisabled = false;
-					if (!initialDataPresent) {
-						// Disable future steps unless all previous steps are valid
-						isDisabled = idx > currentStep && !allPrevStepsValid(idx);
-					}
+					// Disable future steps unless all previous steps are valid
+					isDisabled = idx > currentStep && !allPrevStepsValid(idx);
 					return (
 						<button
 							key={step.label}
 							type="button"
 							className={`flex items-center ${idx === currentStep ? "font-bold text-blue-600" : "text-gray-400"} ${isDisabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`}
 							onClick={async () => {
-								if (initialDataPresent) {
+								// Only allow navigation to previous or current step
+								if (idx <= currentStep) {
 									setStepError(null);
 									setCurrentStep(idx);
 								} else {
-									// Only allow navigation to previous or current step
-									if (idx <= currentStep) {
+									// Only allow navigating forward if all previous steps are valid
+									let allPrevValid = true;
+									for (let i = 0; i < idx; i++) {
+										const valid = await form.trigger(stepFields[i]);
+										if (!valid) {
+											allPrevValid = false;
+											break;
+										}
+									}
+									if (allPrevValid) {
 										setStepError(null);
 										setCurrentStep(idx);
 									} else {
-										// Only allow navigating forward if all previous steps are valid
-										let allPrevValid = true;
-										for (let i = 0; i < idx; i++) {
-											const valid = await form.trigger(stepFields[i]);
-											if (!valid) {
-												allPrevValid = false;
-												break;
-											}
-										}
-										if (allPrevValid) {
-											setStepError(null);
-											setCurrentStep(idx);
-										} else {
-											setStepError(
-												"Please complete all previous steps before proceeding.",
-											);
-										}
+										setStepError(
+											"Please complete all previous steps before proceeding.",
+										);
 									}
 								}
 							}}
@@ -149,6 +168,28 @@ export const ProfileStepper: React.FC = () => {
 			<div className="flex flex-col gap-8 p-8">
 				<h2 className="mb-4 font-bold text-xl">Profile Stepper</h2>
 				<StepperHeader />
+				{/* Show required fields for the current step at the top of the form */}
+				<div className="mb-4">
+					<span className="font-semibold">Required fields:</span>
+					<ul className="flex flex-wrap gap-2">
+						{stepFields[currentStep].map((field) => {
+							const hasError = !!form.getFieldState(field).error;
+							return (
+								<li
+									key={field}
+									className={
+										hasError
+											? "border-red-400 border-b-2 font-semibold text-red-500"
+											: "text-orange-400 dark:text-gray-200"
+									}
+								>
+									{fieldLabels[field] || field}
+									<span className="mx-2 font-bold text-gray-400">|</span>
+								</li>
+							);
+						})}
+					</ul>
+				</div>
 				{/* Render the current step's component with its props */}
 				{currentStep === 0 && <PersonalInformationFormMain loading={loading} />}
 				{currentStep === 1 && (
@@ -198,18 +239,23 @@ export const ProfileStepper: React.FC = () => {
 										!form.getFieldState(field).error
 									);
 								});
+
+							// Find invalid fields for the current step
+							const invalidFields = stepFields[currentStep].filter((field) => {
+								const state = form.getFieldState(field);
+								return state.error;
+							});
+
 							return (
-								<button
-									type="button"
-									className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
-									disabled={
-										currentStep === steps.length - 1 ||
-										(!initialData && !isCurrentStepValid)
-									}
-									onClick={async () => {
-										setStepError(null);
-										const initialDataPresent = Boolean(initialData);
-										if (!initialDataPresent) {
+								<div className="flex flex-col items-end">
+									<button
+										type="button"
+										className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
+										disabled={
+											currentStep === steps.length - 1 || !isCurrentStepValid
+										}
+										onClick={async () => {
+											setStepError(null);
 											const valid = await form.trigger(stepFields[currentStep]);
 											if (!valid) {
 												setStepError(
@@ -217,12 +263,23 @@ export const ProfileStepper: React.FC = () => {
 												);
 												return;
 											}
-										}
-										setCurrentStep((s) => Math.min(steps.length - 1, s + 1));
-									}}
-								>
-									Next
-								</button>
+											setCurrentStep((s) => Math.min(steps.length - 1, s + 1));
+										}}
+									>
+										Next
+									</button>
+									{/* Show invalid fields as a hint if Next is disabled */}
+									{!isCurrentStepValid && invalidFields.length > 0 && (
+										<div className="mt-2 text-right text-red-500 text-xs">
+											<span className="font-semibold">Fields to fix:</span>
+											<ul className="ml-4 list-disc">
+												{invalidFields.map((field) => (
+													<li key={field}>{fieldLabels[field] || field}</li>
+												))}
+											</ul>
+										</div>
+									)}
+								</div>
 							);
 						})()}
 					</div>

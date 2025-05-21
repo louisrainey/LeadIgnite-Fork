@@ -45,8 +45,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 					width={600}
 					height={400}
 					className={`h-full w-full object-cover object-center transition-opacity duration-300 ${fade ? "opacity-100" : "opacity-0"}`}
-					priority={current === 0}
-					loading="lazy"
+					{...(current === 0 ? { priority: true } : { loading: "lazy" })}
 					onLoad={() => setFade(true)}
 				/>
 			) : (

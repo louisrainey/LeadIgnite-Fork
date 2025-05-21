@@ -25,6 +25,8 @@ import type {
 	OAuthData,
 	TwitterOAuthData,
 } from "./connectedAccounts";
+import type { AssistantVoice } from "../vapiAi/api/assistant/create";
+import type { VoiceResponse } from "../elevenLabs/api/voices";
 
 type HexColor = `#${string}`;
 export interface LeadPreferences {
@@ -156,9 +158,17 @@ export interface AIKnowledgebase {
 			// Optional voice clone object
 			audioFile: string; // Path to the audio file for the voice clone
 			clonedVoiceID: string; // Unique identifier for the cloned voice
+			clonedVoiceResponse?: VoiceResponse;
+		};
+		voiceCreation?: {
+			// Optional voice creation object
+			createdVoiceID: string; // Unique identifier for the created voice
+			createdVoiceResponse?: VoiceResponse;
 		};
 		voicemailFile: string; // Path to the voicemail file
+		voices: AssistantVoice[];
 	};
+
 	aiAvatar?: {
 		// Optional AI avatar object
 		avatarKandidFile: string; // Path to the Kandid avatar file

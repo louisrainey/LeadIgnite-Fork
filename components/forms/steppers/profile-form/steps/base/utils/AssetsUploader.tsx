@@ -1,7 +1,7 @@
 import type React from "react";
 import { useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { z } from "zod";
+import { useFormContext } from "react-hook-form";
 
 export const assetsSchema = z
 	.array(
@@ -28,11 +28,19 @@ type AssetsUploaderProps = {
 	error?: string;
 };
 
+function truncateMiddle(str: string, maxLength = 18) {
+	if (str.length <= maxLength) return str;
+	const keep = Math.floor((maxLength - 3) / 2);
+	// biome-ignore lint/style/useTemplate: <explanation>
+	return str.slice(0, keep) + "..." + str.slice(-keep);
+}
+
 export const AssetsUploader: React.FC<AssetsUploaderProps> = ({
 	value,
 	onChange,
 	error,
 }) => {
+	const { trigger } = useFormContext();
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const handleFiles = (files: FileList | null) => {
@@ -41,13 +49,15 @@ export const AssetsUploader: React.FC<AssetsUploaderProps> = ({
 			.filter((file) => file.type.startsWith("image/"))
 			.map((file) => ({ id: uuidv4(), file }));
 		// Prevent exceeding 12
-		const allFiles = [...value, ...newItems].slice(0, 12);
-		onChange(allFiles);
+		const updatedFiles = [...value, ...newItems].slice(0, 12);
+		onChange(updatedFiles);
+		trigger("companyAssets");
 	};
 
 	const handleRemove = (id: string) => {
 		const newFiles = value.filter((item) => item.id !== id);
 		onChange(newFiles);
+		trigger("companyAssets");
 	};
 
 	return (
@@ -75,27 +85,27 @@ export const AssetsUploader: React.FC<AssetsUploaderProps> = ({
 				</span>
 			</button>
 			<div className="mb-2 grid grid-cols-2 items-start gap-4 md:grid-cols-4">
-				{value.map((asset, idx) => (
+				{value.map((item) => (
 					<div
-						key={asset.id}
-						className="group relative aspect-square w-full max-w-[120px] overflow-hidden rounded border"
+						key={item.id}
+						className="relative mr-4 mb-4 inline-block h-24 w-24 rounded border border-gray-200 bg-gray-900"
 					>
 						<img
-							src={URL.createObjectURL(asset.file)}
-							alt={`Asset ${idx + 1}`}
-							className="h-full w-full object-cover"
+							src={URL.createObjectURL(item.file)}
+							alt={item.file.name}
+							className="h-full w-full rounded object-cover"
 						/>
 						<button
 							type="button"
-							aria-label="Remove asset"
-							className="absolute top-1 right-1 rounded-full bg-white p-1 text-red-500 opacity-80 hover:opacity-100"
-							onClick={(e) => {
-								e.stopPropagation();
-								handleRemove(asset.id);
-							}}
+							className="absolute top-1 right-1 z-10 rounded-full bg-white p-1 text-red-500 hover:bg-gray-100"
+							onClick={() => handleRemove(item.id)}
+							aria-label="Remove image"
 						>
-							×
+							&times;
 						</button>
+						<div className="absolute bottom-0 left-0 w-full truncate rounded-b bg-black/70 px-1 py-0.5 text-center text-gray-100 text-xs">
+							{truncateMiddle(item.file.name, 18)}
+						</div>
 					</div>
 				))}
 			</div>

@@ -201,15 +201,15 @@ export const profileSchema = z.object({
 		)
 		.min(3, { message: "You must upload at least 3 assets." }) // Minimum of 3 assets required
 		.max(15, { message: "You can upload up to 15 assets." }), // Maximum of 15 files allowed
-	outreachEmailAddress: z
-		.string()
-		.email({ message: "Please enter a valid email address." })
-		.max(100, { message: "Email cannot exceed 100 characters." }),
+	// outreachEmailAddress: z
+	// 	.string()
+	// 	.email({ message: "Please enter a valid email address." })
+	// 	.max(100, { message: "Email cannot exceed 100 characters." }),
 
 	leadForwardingNumber: z
 		.string()
 		.min(10, { message: "Contact number must be at least 10 digits." })
-		.max(15, { message: "Contact number cannot exceed 15 digits." })
+		.max(12, { message: "Contact number cannot exceed 12 digits." })
 		.refine((value) => /^[0-9]+$/.test(value), {
 			message: "Contact number can only contain numbers.",
 		}),
@@ -237,14 +237,14 @@ export const profileSchema = z.object({
 		.min(10, { message: "Sales script must be at least 10 characters long." })
 		.max(1000, { message: "Sales script cannot exceed 1000 characters." })
 		.optional(),
-	exampleEmailBody: z
-		.string()
-		.min(10, { message: "Email body must be at least 10 characters long." })
-		.max(5000, { message: "Email body cannot exceed 5000 characters." }) // Optional, adjust as needed
-		.refine((value) => htmlRegex.test(value) || markdownRegex.test(value), {
-			message: "Email body must be valid Markdown or HTML.",
-		})
-		.optional(),
+	// exampleEmailBody: z
+	// 	.string()
+	// 	// .min(10, { message: "Email body must be at least 10 characters long." })
+	// 	.max(5000, { message: "Email body cannot exceed 5000 characters." }) // Optional, adjust as needed
+	// 	.refine((value) => htmlRegex.test(value) || markdownRegex.test(value), {
+	// 		message: "Email body must be valid Markdown or HTML.",
+	// 	})
+	// 	.optional(),
 
 	socialMediaCampaignAccounts: z.object({
 		oauthData: z.record(oAuthDataSchema),

@@ -18,10 +18,10 @@ import VoicemailModal from "./voice/VoicemailModal";
 import { useFormContext } from "react-hook-form";
 import { KnowledgeVoiceSelector } from "./KnowledgeVoiceSelector";
 import CloneModal from "./voice/CloneModal";
+import { FormLabel } from "@/components/ui/form";
 
 export interface KnowledgeBaseMainProps {
 	loading: boolean;
-	voices: AssistantVoice[];
 	handleVoiceSelect: (voiceId: string) => void;
 	handleScriptUpload: (scriptContent: string) => void;
 	selectedScriptFileName: string;
@@ -32,7 +32,6 @@ export interface KnowledgeBaseMainProps {
 
 export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 	loading,
-	voices,
 	handleVoiceSelect,
 	handleScriptUpload,
 	selectedScriptFileName,
@@ -48,7 +47,7 @@ export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 		if (initialData) {
 			form.setValue("selectedVoice", initialData.selectedVoice || "");
 			form.setValue("exampleSalesScript", initialData.exampleSalesScript || "");
-			form.setValue("exampleEmailBody", initialData.exampleEmailBody || "");
+			// form.setValue("exampleEmailBody", initialData.exampleEmailBody || "");
 			form.setValue(
 				"voicemailRecordingId",
 				initialData.voicemailRecordingId || "",
@@ -72,11 +71,7 @@ export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 			{/* Voice Features Group */}
 			<div className="flex flex-col gap-4 rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
 				<span className="mb-2 font-semibold text-lg">Voice Features</span>
-				<KnowledgeVoiceSelector
-					loading={loading}
-					voices={voices}
-					handleVoiceSelect={handleVoiceSelect}
-				/>
+				<KnowledgeVoiceSelector loading={loading} />
 				<div className="flex w-full flex-col items-center justify-center gap-4 md:flex-row">
 					<button
 						type="button"
@@ -99,15 +94,17 @@ export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 
 			{/* Script & Email Features Group */}
 			<div className="flex flex-col gap-4 rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
-				<span className="mb-2 font-semibold text-lg">
-					Script & Email Content
-				</span>
+				<span className="mb-2 font-semibold text-lg">Sales Script</span>
+				<FormLabel>
+					Select Voice (Optional): Personalize your agent's voice{" "}
+				</FormLabel>
+
 				<KnowledgeSalesScriptUpload
 					loading={loading}
 					handleScriptUpload={handleScriptUpload}
 					selectedScriptFileName={selectedScriptFileName}
 				/>
-				<div className="relative flex w-full flex-col items-center justify-center gap-2">
+				{/* <div className="relative flex w-full flex-col items-center justify-center gap-2">
 					<label
 						htmlFor="exampleEmailBody"
 						className="mb-1 font-medium text-base text-gray-700 dark:text-gray-200"
@@ -120,19 +117,21 @@ export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 						selectedEmailFileName={selectedEmailFileName}
 						disabled={true} // ! Feature flag for coming soon
 					/>
-					{/* ! Overlay only if disabled/coming soon */}
-				</div>
+					
+				</div> */}
 			</div>
 
 			{/* Modals */}
-			<VoicemailModal
-				open={showVoicemailModal}
-				onClose={() => setShowVoicemailModal(false)}
-				onSave={(audioBlob) => {
-					// todo: handle upload or save logic
-					setShowVoicemailModal(false);
-				}}
-			/>
+			{showVoiceCloneModal && (
+				<VoicemailModal
+					open={showVoicemailModal}
+					onClose={() => setShowVoicemailModal(false)}
+					onSave={(audioBlob) => {
+						// todo: handle upload or save logic
+						setShowVoicemailModal(false);
+					}}
+				/>
+			)}
 			{showVoiceCloneModal && (
 				<CloneModal
 					open={showVoiceCloneModal}

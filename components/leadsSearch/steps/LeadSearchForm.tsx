@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/select";
 import type { MapFormSchemaType } from "@/types/_dashboard/maps";
 import { useEffect, useState } from "react";
+import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
+import QuickSaveModal from "./QuickSaveModal";
 import SavedSearchModal from "@/components/reusables/modals/SavedSearchModal";
 import type { SavedSearch } from "@/types/userProfile";
 import { Save, Sliders } from "lucide-react";
@@ -19,39 +21,28 @@ interface LeadSearchFormProps {
 	control: Control<MapFormSchemaType>;
 	errors: FieldErrors<MapFormSchemaType>;
 	onAdvancedOpen: () => void;
+	isValid: boolean;
 }
 
 // todo: Move to utils
-function loadSavedSearches(): SavedSearch[] {
-	if (typeof window === "undefined") return [];
-	try {
-		const raw = localStorage.getItem("lead_saved_searches");
-		return raw ? JSON.parse(raw) : [];
-	} catch {
-		return [];
-	}
-}
-function saveSavedSearches(s: SavedSearch[]) {
-	if (typeof window === "undefined") return;
-	localStorage.setItem("lead_saved_searches", JSON.stringify(s));
-}
 
 const LeadSearchForm: React.FC<LeadSearchFormProps> = ({
 	control,
 	errors,
 	onAdvancedOpen,
+	isValid,
 }) => {
 	const [saveModalOpen, setSaveModalOpen] = useState(false);
-	const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
+	const [savedSearches, setSavedSearches] = useState<SavedSearch[]>(
+		mockUserProfile.savedSearches || [],
+	);
+	const [quickSaveOpen, setQuickSaveOpen] = useState(false);
 
-	useEffect(() => {
-		setSavedSearches(loadSavedSearches());
-	}, []);
-
-	const handleSaveSearch = () => {
-		const name = prompt("Name this search:");
-		if (!name) return;
-		const values = (control as any)._formValues || {};
+	// ! Fixes 'Object is of type unknown' by asserting correct type
+	const handleQuickSave = (name: string) => {
+		const values =
+			((control as unknown as { _formValues: MapFormSchemaType })
+				._formValues as MapFormSchemaType) || {};
 		const newSearch: SavedSearch = {
 			id: Date.now().toString(),
 			name,
@@ -62,14 +53,12 @@ const LeadSearchForm: React.FC<LeadSearchFormProps> = ({
 		};
 		const next = [newSearch, ...savedSearches];
 		setSavedSearches(next);
-		saveSavedSearches(next);
-		setSaveModalOpen(true);
+		setQuickSaveOpen(false);
 	};
 
 	const handleDeleteSearch = (id: string) => {
 		const next = savedSearches.filter((s) => s.id !== id);
 		setSavedSearches(next);
-		saveSavedSearches(next);
 	};
 
 	const handleSelectSearch = (search: SavedSearch) => {
@@ -186,39 +175,67 @@ const LeadSearchForm: React.FC<LeadSearchFormProps> = ({
 						</div>
 					)}
 				/>
-				<button
-					type="button"
-					className="flex items-center gap-2 rounded bg-gray-200 px-4 py-2 font-medium text-gray-800 text-sm shadow-sm transition hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
-					onClick={onAdvancedOpen}
-				>
-					<Sliders size={18} />
-					Advanced
-				</button>
+				<div className="mt-5 flex w-full flex-col">
+					<button
+						type="button"
+						className="flex h-11 w-full items-center justify-between gap-2 rounded bg-gray-200 px-4 py-2 font-medium text-gray-800 text-sm shadow-sm transition hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
+						style={{ minHeight: "44px" }}
+						onClick={onAdvancedOpen}
+					>
+						<span className="flex items-center gap-2">
+							<Sliders size={18} />
+							Advanced
+						</span>
+					</button>
+				</div>
 			</div>
 			{/* Action Buttons Below Form Fields */}
 			<div className="mt-6 flex w-full flex-row flex-wrap items-center justify-center gap-3">
-				<button
-					type="button"
-					className="flex items-center gap-2 rounded bg-gray-200 px-4 py-2 font-medium text-gray-800 text-sm shadow-sm transition hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
-					onClick={() => setSaveModalOpen(true)}
-				>
-					<Save size={18} />
-					Saved Searches
-				</button>
-				<button
-					type="button"
-					className="flex items-center gap-2 rounded bg-orange-600 px-4 py-2 font-medium text-sm text-white shadow-sm transition hover:bg-orange-700 dark:bg-orange-700 dark:text-white dark:hover:bg-orange-800"
-					onClick={handleSaveSearch}
-				>
-					<Save size={18} />
-					Quick Save
-				</button>
+				{/* Save Search Button with Validation */}
+				<div className="group relative flex">
+					<button
+						type="button"
+						className={`flex items-center gap-2 rounded bg-orange-600 px-4 py-2 font-medium text-sm text-white shadow-sm transition dark:bg-orange-700 dark:text-white dark:hover:bg-orange-800 ${!isValid ? "cursor-not-allowed opacity-60" : "hover:bg-orange-700"}`}
+						onClick={() => setQuickSaveOpen(true)}
+						disabled={!isValid}
+						aria-disabled={!isValid}
+					>
+						<Save size={18} />
+						Save Search
+					</button>
+					{!isValid && (
+						<span className="-bottom-8 -translate-x-1/2 pointer-events-none absolute left-1/2 z-10 w-max rounded bg-gray-800 px-3 py-1 text-white text-xs opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+							Enter valid search criteria to save
+						</span>
+					)}
+				</div>
+				{savedSearches.length > 0 && (
+					<button
+						type="button"
+						className="flex items-center gap-2 rounded bg-gray-200 px-4 py-2 font-medium text-gray-800 text-sm shadow-sm transition hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
+						onClick={() => setSaveModalOpen(true)}
+					>
+						<Save size={18} />
+						Saved Searches
+					</button>
+				)}
+
+				<QuickSaveModal
+					open={quickSaveOpen}
+					onClose={() => setQuickSaveOpen(false)}
+					onSave={handleQuickSave}
+				/>
 				<SavedSearchModal
 					open={saveModalOpen}
 					onClose={() => setSaveModalOpen(false)}
 					savedSearches={savedSearches}
 					onDelete={handleDeleteSearch}
 					onSelect={handleSelectSearch}
+					onSetPriority={(id) => {
+						setSavedSearches((prev) =>
+							prev.map((s) => ({ ...s, priority: s.id === id })),
+						);
+					}}
 				/>
 			</div>
 		</div>

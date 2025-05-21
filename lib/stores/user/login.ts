@@ -22,7 +22,7 @@ export const useKanbanStore = create<KanbanStore>((set) => ({
 			author: "Sofia Davis",
 		},
 		{
-			text: "Lead Ignite helped me scale my business by automating key processes, leaving me more time to focus on strategy and growth.",
+			text: "Deal Scale helped me scale my business by automating key processes, leaving me more time to focus on strategy and growth.",
 			author: "John Smith",
 		},
 		{

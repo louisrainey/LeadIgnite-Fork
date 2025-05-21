@@ -28,10 +28,10 @@ export const BaseSetupMain: React.FC<BaseSetupMainProps> = ({
 					? undefined
 					: initialData.companyLogo,
 			);
-			form.setValue(
-				"outreachEmailAddress",
-				initialData.outreachEmailAddress || "",
-			);
+			// form.setValue(
+			// 	"outreachEmailAddress",
+			// 	initialData.outreachEmailAddress || "",
+			// );
 			form.setValue(
 				"leadForwardingNumber",
 				initialData.leadForwardingNumber || "",

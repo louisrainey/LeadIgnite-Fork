@@ -9,9 +9,9 @@ import { auth } from "@/auth";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Lead Ignite | Real Estate Lead Generation",
+	title: "Deal Scale | Real Estate Lead Generation",
 	description:
-		"Accelerate your real estate business with Lead Ignite. Leverage proven strategies and powerful tools to attract, engage, and convert more qualified real estate leads into clients.",
+		"Accelerate your real estate business with Deal Scale. Leverage proven strategies and powerful tools to attract, engage, and convert more qualified real estate leads into clients.",
 };
 
 export default async function RootLayout({

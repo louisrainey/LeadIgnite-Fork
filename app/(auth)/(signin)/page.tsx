@@ -21,7 +21,7 @@ export default function AuthenticationPage() {
 				<div className="absolute inset-0 bg-zinc-900" />
 				<div className="relative z-20 flex items-center font-medium text-lg">
 					<FlameIcon className="mr-2 h-6 w-6" />
-					Lead Ignite
+					Deal Scale
 				</div>
 
 				<Carousel />

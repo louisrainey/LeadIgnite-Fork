@@ -114,7 +114,7 @@ const WalkThroughModal: FC<WalkThroughModalProps> = ({
 					{/* Conditionally render the Terms of Use clause */}
 					{termsUrl && (
 						<p className="mt-4 text-gray-400 text-sm dark:text-gray-400">
-							The use of the Lead ignite Property Search is subject to our{" "}
+							The use of the Deal Scale Property Search is subject to our{" "}
 							<a
 								href={termsUrl}
 								className="text-blue-500 underline dark:text-blue-400"

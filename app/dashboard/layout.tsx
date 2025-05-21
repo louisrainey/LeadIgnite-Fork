@@ -17,10 +17,9 @@ import { useSessionStore } from "@/lib/stores/user/useSessionStore";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title:
-		"Lead Ignite Dashboard | Real Estate Property Search & Market Analysis",
+	title: "Deal Scale Dashboard | Real Estate Property Search & Market Analysis",
 	description:
-		"Explore properties by location with the Lead Ignite Dashboard. Access in-depth market analysis and detailed property information to make informed decisions for your real estate business.",
+		"Explore properties by location with the Deal Scale Dashboard. Access in-depth market analysis and detailed property information to make informed decisions for your real estate business.",
 };
 
 export default async function DashboardLayout({
