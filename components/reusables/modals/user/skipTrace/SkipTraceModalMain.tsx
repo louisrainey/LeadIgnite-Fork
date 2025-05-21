@@ -11,6 +11,8 @@ const SkipTraceModalMain = ({
 	isOpen,
 	onClose,
 }: { isOpen: boolean; onClose: () => void }) => {
+	// * Track if all required fields are mapped in field mapping step
+	const [canProceedFieldMapping, setCanProceedFieldMapping] = useState(false);
 	const [step, setStep] = useState(0);
 	const [listName, setListName] = useState("");
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -205,17 +207,13 @@ const SkipTraceModalMain = ({
 						/>
 					)}
 					{step === 1 && (
-						<>
-							{/* FieldMappingStep allows mapping between internal fields and headers from uploaded file */}
-							{/* headers = headers detected from user file */}
-							{/* selectedHeaders = user mapping from internal field -> file header */}
-							<FieldMappingStep
-								headers={headers}
-								selectedHeaders={selectedHeaders}
-								onHeaderSelect={handleHeaderSelect}
-								errors={errors}
-							/>
-						</>
+						<FieldMappingStep
+							headers={headers}
+							selectedHeaders={selectedHeaders}
+							onHeaderSelect={handleHeaderSelect}
+							errors={errors}
+							onCanProceedChange={setCanProceedFieldMapping}
+						/>
 					)}
 					{step === 2 && (
 						<ReviewAndSubmitStep
@@ -227,32 +225,33 @@ const SkipTraceModalMain = ({
 							submitting={submitting}
 						/>
 					)}
-				</div>
-				<div className="mt-6 flex items-center justify-between">
-					<button
-						type="button"
-						className="rounded-md bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-						onClick={prevStep}
-						disabled={step === 0}
-					>
-						Back
-					</button>
-					{step < 2 ? (
-						<button
-							type="button"
-							className="rounded-md bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-							onClick={nextStep}
-							disabled={
-								step === 0 &&
-								(!!errors.listName?.message ||
-									!!errors.skipTracedFile?.message ||
-									!listName.trim() ||
-									!uploadedFile)
-							}
-						>
-							Next
-						</button>
-					) : null}
+					{step < 2 && (
+						<div className="mt-6 flex items-center justify-between gap-4">
+							<button
+								type="button"
+								className="rounded-md border bg-white px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+								onClick={prevStep}
+								disabled={step === 0}
+							>
+								Back
+							</button>
+							<button
+								type="button"
+								className="rounded-md bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+								onClick={nextStep}
+								disabled={
+									(step === 0 &&
+										(!!errors.listName?.message ||
+											!!errors.skipTracedFile?.message ||
+											!listName.trim() ||
+											!uploadedFile)) ||
+									(step === 1 && !canProceedFieldMapping)
+								}
+							>
+								Next
+							</button>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

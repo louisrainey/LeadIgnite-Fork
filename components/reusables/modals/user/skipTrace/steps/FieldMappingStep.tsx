@@ -1,5 +1,5 @@
 import type { FC } from "react";
-
+import React from "react";
 interface FieldMappingStepProps {
 	headers: string[];
 	selectedHeaders: Record<string, string | undefined>;
@@ -23,12 +23,31 @@ const fields = [
 	{ name: "twitterField", label: "Twitter (Optional)" },
 ];
 
-const FieldMappingStep: FC<FieldMappingStepProps> = ({
+const FieldMappingStep: FC<
+	FieldMappingStepProps & { onCanProceedChange?: (canProceed: boolean) => void }
+> = ({
 	headers,
 	selectedHeaders,
 	onHeaderSelect,
 	errors,
+	onCanProceedChange,
 }) => {
+	// * Identify required (non-optional) fields
+	const requiredFields = fields.filter((f) => !f.label.includes("Optional"));
+	// * Compute if all required fields are mapped
+	const allRequiredFieldsMapped = requiredFields.every(
+		(f) => !!selectedHeaders[f.name],
+	);
+
+	// * Notify parent if prop provided (for parent-controlled Next button)
+	React.useEffect(() => {
+		if (onCanProceedChange) onCanProceedChange(allRequiredFieldsMapped);
+	}, [allRequiredFieldsMapped, onCanProceedChange]);
+
+	// todo: If rendering Next button here, use allRequiredFieldsMapped to enable/disable
+	// ? Example usage (if needed):
+	// <Button disabled={!allRequiredFieldsMapped}>Next</Button>
+
 	// Build unique header options with index for duplicate headers
 	const headerOptions = headers.map((header, idx) => ({
 		key: `${header}__${idx}`,
