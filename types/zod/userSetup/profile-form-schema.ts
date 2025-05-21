@@ -183,24 +183,23 @@ export const profileSchema = z.object({
 
 	companyAssets: z
 		.array(
-			z
-				.any()
-				.refine((file) => file instanceof File, {
-					message: "You must upload a file.",
-				})
-				.refine(
-					(file) =>
-						file &&
-						["image/jpeg", "image/png", "image/webp"].includes(file.type),
-					{
-						message: "Asset must be a JPEG, PNG, or WebP image.",
-					},
-				)
-				.refine((file) => file && file.size <= 5 * 1024 * 1024, {
-					message: "Asset must be less than 5MB in size.",
-				}),
+			z.object({
+				id: z.string(),
+				file: z
+					.instanceof(File)
+					.refine(
+						(file) =>
+							["image/jpeg", "image/png", "image/webp"].includes(file.type),
+						{
+							message: "Asset must be a JPEG, PNG, or WebP image.",
+						},
+					)
+					.refine((file) => file.size <= 5 * 1024 * 1024, {
+						message: "Asset must be less than 5MB in size.",
+					}),
+			}),
 		)
-		.min(3, { message: "You must upload at least 3 assets." }) // Minimum of 3 files required
+		.min(3, { message: "You must upload at least 3 assets." }) // Minimum of 3 assets required
 		.max(15, { message: "You can upload up to 15 assets." }), // Maximum of 15 files allowed
 	outreachEmailAddress: z
 		.string()

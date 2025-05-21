@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form";
 import type { InitialBaseSetupData } from "../../../utils/const/getBasetProfile";
 import { BaseSetupAssets } from "./BaseSetupAssets";
 import { BaseSetupFields } from "./BaseSetupFields";
-import { BaseSetupLogo } from "./BaseSetupLogo";
+import { v4 as uuidv4 } from "uuid";
 
 export interface BaseSetupMainProps {
 	loading: boolean;
@@ -40,21 +40,42 @@ export const BaseSetupMain: React.FC<BaseSetupMainProps> = ({
 				"companyExplainerVideoUrl",
 				initialData.companyExplainerVideoUrl || "",
 			);
+			// Convert initial assets to AssetItem[]
 			form.setValue(
 				"companyAssets",
 				Array.isArray(initialData.companyAssets)
-					? initialData.companyAssets.filter((asset) => asset instanceof File)
+					? initialData.companyAssets
+							.filter((asset) => asset instanceof File)
+							.map((file) => ({ id: uuidv4(), file }))
 					: [],
 			);
 		}
 	}, [initialData, form]);
 
 	return (
-		<>
-			{/* * Children now use useFormContext for form state */}
-			<BaseSetupFields loading={loading} />
-			<BaseSetupLogo loading={loading} />
-			<BaseSetupAssets loading={loading} />
-		</>
+		<form className="space-y-10">
+			<section className="space-y-4">
+				<h2 className="text-xl font-bold mb-2">Company Information</h2>
+				<p className="text-gray-500 text-sm mb-4">
+					Enter your company details to get started.
+				</p>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+					<BaseSetupFields loading={loading} />
+				</div>
+			</section>
+
+			<div className="border-t border-gray-200 dark:border-gray-700 my-8" />
+
+			<section className="space-y-4">
+				<h2 className="text-xl font-bold mb-2">Branding Assets</h2>
+				<p className="text-gray-500 text-sm mb-4">
+					Upload your logo and company assets. Images should be clear and
+					professional.
+				</p>
+				<BaseSetupAssets loading={loading} />
+			</section>
+
+			<div className="border-t border-gray-200 dark:border-gray-700 my-8" />
+		</form>
 	);
 };

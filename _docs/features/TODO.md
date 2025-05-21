@@ -2,17 +2,15 @@
 
 
 
-# 🪳 Fix saving profile when editing oveerwriting typing 
 
-# 🪳 Fix multiple file uploads being able to be deleted profile page 
 
 # 🪳 Fix Selects not able to be updated hydration error components\ui\select.tsx
 
 # 🪳 Fix dropdowns not able to be for campaing page  components\ui\dropdown-menu.tsx
 
-# 🖥️ Implemen upload lead list functionality
-# 🖥️ Fix Kanban creating to do to add priority due date 
+# 🖥️ Implement upload lead list functionality
 
+# 🖥️ ReImplement profile field validation on type
 
 
 
@@ -57,7 +55,11 @@
         UserProfile.personalNum
 
 # 🔐 Enable RLS For tables
+<!-- # 🖥️✅ Fix Kanban creating to do to add priority due date  -->
 
+<!-- # ✅ 🪳 Fix multiple file uploads being able to be deleted profile page  -->
+
+<!-- # 🪳✅ Fix saving profile when editing oveerwriting typing  -->
 
 <!-- # ✅ 💾 Security add update password, enable 2fa -->
 

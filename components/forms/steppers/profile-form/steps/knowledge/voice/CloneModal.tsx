@@ -2,6 +2,8 @@ import type React from "react";
 import VoiceRecorderCore from "./VoiceRecorderCore";
 
 const MIN_RECORDING_LENGTH = 60;
+const MAX_RECORDING_LENGTH = 120;
+
 const scriptText = [
 	"This is the first line of the script.",
 	"Here is the second line.",
@@ -23,6 +25,7 @@ const CloneModal: React.FC<CloneModalProps> = ({ open, onClose, onSave }) => {
 			onClose={onClose}
 			onSave={onSave}
 			minRecordingLength={MIN_RECORDING_LENGTH}
+			maxRecordingLength={MAX_RECORDING_LENGTH}
 			scriptText={scriptText}
 			showTeleprompter={true}
 			modalTitle={"Clone Your Voice"}

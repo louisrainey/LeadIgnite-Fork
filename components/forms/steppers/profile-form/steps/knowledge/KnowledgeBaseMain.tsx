@@ -68,75 +68,81 @@ export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 	};
 
 	return (
-		<>
-			<KnowledgeVoiceSelector
-				loading={loading}
-				voices={voices}
-				handleVoiceSelect={handleVoiceSelect}
-			/>
-			<KnowledgeSalesScriptUpload
-				loading={loading}
-				handleScriptUpload={handleScriptUpload}
-				selectedScriptFileName={selectedScriptFileName}
-			/>
-			{/* Email Upload Section */}
-			<div className="relative my-4 flex flex-col items-center justify-center gap-2">
-				<label
-					htmlFor="exampleEmailBody"
-					className="mb-1 font-medium text-base text-gray-700 dark:text-gray-200"
-				>
-					Upload Email Body Content
-				</label>
-				<KnowledgeEmailUpload
+		<div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
+			{/* Voice Features Group */}
+			<div className="flex flex-col gap-4 rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
+				<span className="mb-2 font-semibold text-lg">Voice Features</span>
+				<KnowledgeVoiceSelector
 					loading={loading}
-					handleEmailUpload={handleEmailUpload}
-					selectedEmailFileName={selectedEmailFileName}
-					disabled={true} // ! Feature flag for coming soon
+					voices={voices}
+					handleVoiceSelect={handleVoiceSelect}
 				/>
-				{/* ! Overlay only if disabled/coming soon */}
+				<div className="flex w-full flex-col items-center justify-center gap-4 md:flex-row">
+					<button
+						type="button"
+						className="w-56 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
+						onClick={() => setShowVoicemailModal(true)}
+						aria-label="Record Voicemail"
+					>
+						+ Record Voicemail
+					</button>
+					<button
+						type="button"
+						className="w-56 rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white shadow hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
+						onClick={() => setShowVoiceCloneModal(true)}
+						aria-label="Clone Voice"
+					>
+						+ Clone Voice
+					</button>
+				</div>
 			</div>
 
-			{/* Action Buttons: Voicemail & Clone Voice */}
-			<div className="my-6 flex flex-col items-center justify-center gap-4 md:flex-row">
-				<button
-					type="button"
-					className="w-56 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
-					onClick={() => setShowVoicemailModal(true)}
-					aria-label="Record Voicemail"
-				>
-					+ Record Voicemail
-				</button>
-				<button
-					type="button"
-					className="w-56 rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white shadow hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
-					onClick={() => setShowVoiceCloneModal(true)}
-					aria-label="Clone Voice"
-				>
-					+ Clone Voice
-				</button>
+			{/* Script & Email Features Group */}
+			<div className="flex flex-col gap-4 rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
+				<span className="mb-2 font-semibold text-lg">
+					Script & Email Content
+				</span>
+				<KnowledgeSalesScriptUpload
+					loading={loading}
+					handleScriptUpload={handleScriptUpload}
+					selectedScriptFileName={selectedScriptFileName}
+				/>
+				<div className="relative flex w-full flex-col items-center justify-center gap-2">
+					<label
+						htmlFor="exampleEmailBody"
+						className="mb-1 font-medium text-base text-gray-700 dark:text-gray-200"
+					>
+						Upload Email Body Content
+					</label>
+					<KnowledgeEmailUpload
+						loading={loading}
+						handleEmailUpload={handleEmailUpload}
+						selectedEmailFileName={selectedEmailFileName}
+						disabled={true} // ! Feature flag for coming soon
+					/>
+					{/* ! Overlay only if disabled/coming soon */}
+				</div>
 			</div>
-			{/* New Voicemail Modal with Lottie Animation */}
+
+			{/* Modals */}
 			<VoicemailModal
 				open={showVoicemailModal}
 				onClose={() => setShowVoicemailModal(false)}
 				onSave={(audioBlob) => {
 					// todo: handle upload or save logic
-					// For now, just close the modal
 					setShowVoicemailModal(false);
 				}}
 			/>
-			{/* New Voice Clone Modal (advanced) */}
 			{showVoiceCloneModal && (
 				<CloneModal
 					open={showVoiceCloneModal}
 					onClose={() => setShowVoiceCloneModal(false)}
 					onSave={(audioBlob) => {
 						// todo: handle upload or save logic
-						// For now, just close the modal
 						setShowVoiceCloneModal(false);
 					}}
 				/>
 			)}
-		</>
+		</div>
 	);
 };

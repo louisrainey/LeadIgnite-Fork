@@ -112,64 +112,68 @@ export const OAuthMain: React.FC<OAuthMainProps> = ({
 	};
 
 	return (
-		<>
-			{/* Facebook/Meta OAuth */}
-			<OAuthButton
-				serviceData={metaData}
-				serviceName="meta"
-				buttonComponent={
-					<FacebookLoginButton onClick={() => handleOAuthLogin("meta")} />
-				}
-				onRefresh={() => handleOAuthLogin("meta")}
-				control={form.control}
-			/>
-			{/* Instagram OAuth */}
-			<OAuthButton
-				serviceData={instagramData}
-				serviceName="instagram"
-				buttonComponent={
-					<InstagramLoginButton onClick={() => handleOAuthLogin("instagram")} />
-				}
-				onRefresh={() => handleOAuthLogin("instagram")}
-				control={form.control}
-			/>
-			{/* Twitter OAuth */}
-			<OAuthButton
-				serviceData={twitterData}
-				serviceName="twitter"
-				buttonComponent={
-					<TwitterLoginButton onClick={() => handleOAuthLogin("twitter")} />
-				}
-				onRefresh={() => handleOAuthLogin("twitter")}
-				control={form.control}
-			/>
-			{/* LinkedIn OAuth */}
-			<OAuthButton
-				serviceData={linkedInData}
-				serviceName="linkedIn"
-				buttonComponent={
-					<LinkedInLoginButton onClick={() => handleOAuthLogin("linkedIn")} />
-				}
-				onRefresh={() => handleOAuthLogin("linkedIn")}
-				control={form.control}
-			/>
+		<div className="flex w-full flex-col items-center">
+			<div className="grid w-full max-w-2xl grid-cols-1 gap-4 md:grid-cols-2">
+				{[
+					{
+						key: "meta",
+						serviceData: metaData,
+						name: "meta",
+						button: (
+							<FacebookLoginButton
+								onClick={() => handleOAuthLogin("meta")}
+								style={{ width: "100%", minWidth: 200, maxWidth: 350 }}
+							/>
+						),
+					},
+
+					{
+						key: "linkedIn",
+						serviceData: linkedInData,
+						name: "linkedIn",
+						button: (
+							<LinkedInLoginButton
+								onClick={() => handleOAuthLogin("linkedIn")}
+								style={{ width: "100%", minWidth: 200, maxWidth: 350 }}
+							/>
+						),
+					},
+				].map(({ key, serviceData, name, button }) => (
+					<OAuthButton
+						key={key}
+						serviceData={serviceData}
+						serviceName={name}
+						buttonComponent={button}
+						onRefresh={() => handleOAuthLogin(name)}
+						control={form.control}
+					/>
+				))}
+			</div>
 			{/* Hashtag Input */}
-			<FormField
-				control={form.control}
-				name="socialMediatags"
-				render={({ field, fieldState: { error } }) => (
-					<FormItem>
-						<HashtagInput
-							form={form}
-							loading={loading}
-							minHashtags={5}
-							maxHashtags={10}
-							required={false}
-						/>
-						<FormMessage>{error?.message}</FormMessage>
-					</FormItem>
-				)}
-			/>
-		</>
+			<div className="relative my-6 w-full max-w-md">
+				{/* Overlay */}
+				<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-black/60">
+					<span className="font-semibold text-white text-xl drop-shadow-lg">
+						Coming Soon
+					</span>
+				</div>
+				<FormField
+					control={form.control}
+					name="socialMediatags"
+					render={({ field, fieldState: { error } }) => (
+						<FormItem>
+							<HashtagInput
+								form={form}
+								loading={loading}
+								minHashtags={5}
+								maxHashtags={10}
+								required={false}
+							/>
+							<FormMessage>{error?.message}</FormMessage>
+						</FormItem>
+					)}
+				/>
+			</div>
+		</div>
 	);
 };

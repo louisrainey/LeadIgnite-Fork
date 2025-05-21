@@ -6,7 +6,8 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
-import Image from "next/image";
+import { LogoUploader } from "./utils/LogoUploader";
+import { AssetsUploader } from "./utils/AssetsUploader";
 import type React from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -18,85 +19,50 @@ interface BaseSetupAssetsProps {
 export const BaseSetupAssets: React.FC<BaseSetupAssetsProps> = ({
 	loading,
 }) => {
-	const { control, watch, setValue } = useFormContext<ProfileFormValues>();
-	const assetsFromForm: Array<File | string> = watch("companyAssets") || [];
-
-	// Handle deleting an asset
-	const handleDeleteAsset = (index: number) => {
-		const updatedAssets = assetsFromForm.filter((_, i) => i !== index);
-		// Only keep File objects when updating form state
-		setValue(
-			"companyAssets",
-			updatedAssets.filter((asset) => asset instanceof File),
-		);
-	};
+	const { control, setValue, formState } = useFormContext<ProfileFormValues>();
 
 	return (
-		<FormField
-			control={control}
-			name="companyAssets"
-			render={({ field }) => (
-				<FormItem>
-					<FormLabel>Company Assets</FormLabel>
-					<FormControl>
-						<div>
-							<input
-								type="file"
-								accept="image/*"
-								multiple
-								disabled={loading}
-								onChange={(e) => {
-									if (e.target.files) {
-										const files = Array.from(e.target.files);
-										// Only pass File objects to form state
-										field.onChange([
-											...((assetsFromForm.filter(
-												(asset) => asset instanceof File,
-											) as File[]) || []),
-											...files,
-										]);
+		<div className="flex flex-col items-center w-full">
+			<div className="w-full max-w-xl space-y-8">
+				<FormField
+					control={control}
+					name="companyLogo"
+					render={({ field }) => (
+						<FormItem>
+							<FormControl>
+								<LogoUploader
+									value={field.value}
+									onChange={(file) => setValue("companyLogo", file)}
+									error={
+										formState.errors.companyLogo?.message as string | undefined
 									}
-								}}
-								className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-gray-900 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-							/>
-							{/* Preview selected assets */}
-							{assetsFromForm.length > 0 && (
-								<div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3">
-									{assetsFromForm.map((asset: File | string, index: number) => {
-										const assetKey =
-											asset instanceof File
-												? `${asset.name}-${index}`
-												: `${asset as string}-${index}`;
-										const assetSrc =
-											asset instanceof File
-												? URL.createObjectURL(asset)
-												: (asset as string);
-										return (
-											<div key={assetKey} className="relative inline-block">
-												<Image
-													src={assetSrc}
-													alt={`Asset ${index + 1}`}
-													className="mb-4 rounded-lg object-cover"
-													width={100}
-													height={100}
-												/>
-												<button
-													type="button"
-													onClick={() => handleDeleteAsset(index)}
-													className="absolute top-1 right-1 rounded bg-red-600 px-2 py-1 text-white text-xs hover:bg-red-700"
-												>
-													Delete
-												</button>
-											</div>
-										);
-									})}
-								</div>
-							)}
-						</div>
-					</FormControl>
-					<FormMessage />
-				</FormItem>
-			)}
-		/>
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={control}
+					name="companyAssets"
+					render={({ field }) => (
+						<FormItem>
+							<FormControl>
+								<AssetsUploader
+									value={field.value}
+									onChange={(files) => setValue("companyAssets", files)}
+									error={
+										formState.errors.companyAssets?.message as
+											| string
+											| undefined
+									}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+			</div>
+		</div>
 	);
 };

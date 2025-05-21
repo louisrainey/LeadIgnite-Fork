@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Search } from "lucide-react";
 // * PropertySearch.tsx
 // ! Main property search component combining all subcomponents for the leads search feature
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -52,7 +52,61 @@ const PropertySearch: React.FC = () => {
 		{ lat: 39.7392, lng: -104.9903 },
 		{ lat: 39.7294, lng: -104.8319 },
 	]);
+	const [drawingMode, setDrawingMode] =
+		useState<google.maps.drawing.OverlayType | null>(null);
+	const [shapeDrawn, setShapeDrawn] = useState(false);
+	const [boundaryApplied, setBoundaryApplied] = useState(false);
+	const shapeRef = useRef<any>(null);
 
+	const clearShape = () => {
+		if (shapeRef.current) {
+			shapeRef.current.setMap(null);
+			shapeRef.current = null;
+		}
+	};
+
+	const handleDrawPolygon = () => {
+		if (shapeDrawn && !boundaryApplied) handleCancelDrawing();
+		setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+	};
+	const handleDrawRectangle = () => {
+		if (shapeDrawn && !boundaryApplied) handleCancelDrawing();
+		setDrawingMode(google.maps.drawing.OverlayType.RECTANGLE);
+	};
+	const handleDrawCircle = () => {
+		if (shapeDrawn && !boundaryApplied) handleCancelDrawing();
+		setDrawingMode(google.maps.drawing.OverlayType.CIRCLE);
+	};
+	const handleDrawPolyline = () => {
+		if (shapeDrawn && !boundaryApplied) handleCancelDrawing();
+		setDrawingMode(google.maps.drawing.OverlayType.POLYLINE);
+	};
+
+	const handleCancelDrawing = () => {
+		clearShape();
+		setDrawingMode(null);
+		setShapeDrawn(false);
+	};
+
+	const handleApplyDrawing = () => {
+		if (!shapeRef.current) return;
+		setBoundaryApplied(true);
+		setShapeDrawn(false);
+		// Optionally: filter properties based on shapeRef.current
+	};
+
+	const handleRemoveBoundaries = () => {
+		clearShape();
+		setBoundaryApplied(false);
+		// Optionally: reset property filters
+	};
+
+	const handleShapeComplete = (shape: any) => {
+		clearShape();
+		shapeRef.current = shape;
+		setDrawingMode(null);
+		setShapeDrawn(true);
+	};
 	const handleOpenModal = () => setIsModalOpen(true);
 	const handleCloseModal = () => setIsModalOpen(false);
 
@@ -137,6 +191,17 @@ const PropertySearch: React.FC = () => {
 				markers={markers}
 				center={center}
 				mapKey={process.env.NEXT_PUBLIC_GMAPS_KEY}
+				drawingMode={drawingMode}
+				shapeDrawn={shapeDrawn}
+				boundaryApplied={boundaryApplied}
+				onDrawPolygon={handleDrawPolygon}
+				onDrawRectangle={handleDrawRectangle}
+				onDrawCircle={handleDrawCircle}
+				onDrawPolyline={handleDrawPolyline}
+				onCancelDrawing={handleCancelDrawing}
+				onApplyDrawing={handleApplyDrawing}
+				onRemoveBoundaries={handleRemoveBoundaries}
+				onShapeComplete={handleShapeComplete}
 			/>
 			<PropertiesList properties={properties} />
 			<WalkThroughModal

@@ -9,6 +9,7 @@ interface VoiceRecorderCoreProps {
 	onClose: () => void;
 	onSave: (audioBlob: Blob) => void;
 	minRecordingLength: number;
+	maxRecordingLength: number; // ! Required max length in seconds
 	scriptText?: string[];
 	showTeleprompter?: boolean;
 	modalTitle: React.ReactNode;
@@ -20,6 +21,7 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 	onClose,
 	onSave,
 	minRecordingLength,
+	maxRecordingLength,
 	scriptText,
 	showTeleprompter = false,
 	modalTitle,
@@ -30,6 +32,7 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 	const [isRecording, setIsRecording] = useState(false);
 	const [recordingError, setRecordingError] = useState<string | null>(null);
 	const [recordingDuration, setRecordingDuration] = useState<number>(0);
+	const [maxLengthReached, setMaxLengthReached] = useState<boolean>(false);
 	// * Indicates if a valid recording is available for finishing
 	const [showFinishButton, setShowFinishButton] = useState(false);
 	// * Holds the blob URL for playback
@@ -64,6 +67,7 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 		setIsRecording(true);
 		setRecordingDuration(0);
 		setRecordingError(null);
+		setMaxLengthReached(false);
 		audioChunksRef.current = [];
 		const mediaRecorder = new MediaRecorder(stream);
 		mediaRecorderRef.current = mediaRecorder;
@@ -72,7 +76,14 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 		};
 		mediaRecorder.start();
 		recordingIntervalRef.current = setInterval(() => {
-			setRecordingDuration((prev) => prev + 1);
+			setRecordingDuration((prev) => {
+				if (prev + 1 >= maxRecordingLength) {
+					setMaxLengthReached(true);
+					stopRecording();
+					return maxRecordingLength;
+				}
+				return prev + 1;
+			});
 		}, 1000);
 	};
 
@@ -138,6 +149,7 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 		onSave(audioBlob);
 		setShowFinishButton(false);
 		setRecordingDuration(0);
+		setMaxLengthReached(false);
 		if (audioUrl) {
 			URL.revokeObjectURL(audioUrl);
 			setAudioUrl(null);
@@ -192,8 +204,13 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 				</div>
 				{/* Duration display */}
 				<div className="mb-2 text-center text-gray-700 dark:text-gray-200">
-					Duration: {recordingDuration}s
+					Duration: {recordingDuration}s / {maxRecordingLength}s
 				</div>
+				{maxLengthReached && (
+					<p className="mb-2 text-center font-semibold text-orange-600 text-sm">
+						! Maximum recording length reached. Recording stopped automatically.
+					</p>
+				)}
 				{/* Teleprompter (optional) */}
 				{showTeleprompter && scriptText && (
 					<Teleprompter
