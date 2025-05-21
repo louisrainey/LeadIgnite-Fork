@@ -2,23 +2,23 @@
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
 import type React from "react";
 import { useEffect } from "react";
-import type { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import type { InitialBaseSetupData } from "../../../utils/const/getBasetProfile";
 import { BaseSetupAssets } from "./BaseSetupAssets";
 import { BaseSetupFields } from "./BaseSetupFields";
 import { BaseSetupLogo } from "./BaseSetupLogo";
 
 export interface BaseSetupMainProps {
-	form: UseFormReturn<ProfileFormValues>;
 	loading: boolean;
 	initialData?: InitialBaseSetupData;
 }
 
 export const BaseSetupMain: React.FC<BaseSetupMainProps> = ({
-	form,
 	loading,
 	initialData,
 }) => {
+	const form = useFormContext<ProfileFormValues>();
+
 	useEffect(() => {
 		if (initialData) {
 			form.setValue("companyName", initialData.companyName || "");
@@ -51,9 +51,10 @@ export const BaseSetupMain: React.FC<BaseSetupMainProps> = ({
 
 	return (
 		<>
-			<BaseSetupFields form={form} loading={loading} />
-			<BaseSetupLogo form={form} loading={loading} />
-			<BaseSetupAssets form={form} loading={loading} />
+			{/* * Children now use useFormContext for form state */}
+			<BaseSetupFields loading={loading} />
+			<BaseSetupLogo loading={loading} />
+			<BaseSetupAssets loading={loading} />
 		</>
 	);
 };

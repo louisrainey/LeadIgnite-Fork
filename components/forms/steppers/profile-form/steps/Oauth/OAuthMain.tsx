@@ -3,7 +3,7 @@ import { FormField, FormItem, FormMessage } from "@/components/ui/form";
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
 import type React from "react";
 import { useEffect, useState } from "react";
-import type { UseFormReturn } from "react-hook-form";
+import { useFormContext, type UseFormReturn } from "react-hook-form";
 import {
 	FacebookLoginButton,
 	InstagramLoginButton,
@@ -17,7 +17,6 @@ import { OAuthButton } from "./OAuthButton";
 import type { OAuthData } from "@/types/userProfile/connectedAccounts";
 
 export interface OAuthMainProps {
-	form: UseFormReturn<ProfileFormValues>;
 	loading: boolean;
 	initialData?: InitialOauthSetupData;
 }
@@ -32,10 +31,11 @@ const defaultOAuthData = {
 
 // * OAuthMain component for managing OAuth logins and social media tags
 export const OAuthMain: React.FC<OAuthMainProps> = ({
-	form,
 	loading,
 	initialData,
 }) => {
+	const form = useFormContext<ProfileFormValues>();
+
 	// * State for storing OAuth data
 	const [metaData, setMetaData] = useState<OAuthData | null>(null);
 	const [instagramData, setInstagramData] = useState<OAuthData | null>(null);

@@ -89,8 +89,8 @@ export default function MainUserAuthForm() {
 				<Form {...form}>
 					<form onSubmit={handleSubmit} className="space-y-4">
 						<UserAuthErrorMessage error={error} />
-						<UserAuthEmailField form={form} loading={loading} />
-						<UserAuthPasswordField form={form} loading={loading} />
+						<UserAuthEmailField loading={loading} />
+						<UserAuthPasswordField loading={loading} />
 						<UserAuthOAuthButtons />
 						<UserAuthSubmitButton loading={loading} isSignUp={isSignUp} />
 						<UserAuthToggle

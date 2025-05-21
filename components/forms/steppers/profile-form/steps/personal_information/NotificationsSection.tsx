@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/form";
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
 import type React from "react";
-import type { UseFormReturn } from "react-hook-form";
+import { useFormContext, type UseFormReturn } from "react-hook-form";
 
 type NotificationKey = keyof ProfileFormValues["notifications"];
 const notificationOptions: { name: NotificationKey; label: string }[] = [
@@ -17,41 +17,46 @@ const notificationOptions: { name: NotificationKey; label: string }[] = [
 ];
 
 interface NotificationsSectionProps {
-	form: UseFormReturn<ProfileFormValues>;
 	loading: boolean;
 }
 
 export const NotificationsSection: React.FC<NotificationsSectionProps> = ({
-	form,
 	loading,
-}) => (
-	<div className="space-y-4">
-		<h3 className="font-medium text-lg">Notifications</h3>
+}) => {
+	const form = useFormContext<ProfileFormValues>();
+
+	return (
 		<div className="space-y-4">
-			{notificationOptions.map((option) => (
-				<FormField
-					key={option.name}
-					control={form.control}
-					name={`notifications.${option.name}` as const}
-					render={({ field }) => (
-						<FormItem>
-							<div className="flex items-center justify-between space-x-4">
-								<FormLabel className="flex-shrink-0">{option.label}</FormLabel>
-								<input
-									type="checkbox"
-									checked={!!field.value}
-									onChange={field.onChange}
-									onBlur={field.onBlur}
-									name={field.name}
-									ref={field.ref}
-									disabled={loading}
-								/>
-							</div>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-			))}
+			<h3 className="font-medium text-lg">Notifications</h3>
+			<div className="space-y-4">
+				{/* * Render one FormField per notification option; fixed duplicate and invalid JSX */}
+				{notificationOptions.map((option) => (
+					<FormField
+						key={option.name}
+						control={form.control}
+						name={`notifications.${option.name}` as const}
+						render={({ field }) => (
+							<FormItem>
+								<div className="flex items-center justify-between space-x-4">
+									<FormLabel className="flex-shrink-0">
+										{option.label}
+									</FormLabel>
+									<input
+										type="checkbox"
+										checked={!!field.value}
+										onChange={field.onChange}
+										onBlur={field.onBlur}
+										name={field.name}
+										ref={field.ref}
+										disabled={loading}
+									/>
+								</div>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				))}
+			</div>
 		</div>
-	</div>
-);
+	);
+};

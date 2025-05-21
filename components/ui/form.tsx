@@ -5,7 +5,6 @@ import {
 	Controller,
 	type ControllerProps,
 	type FieldPath,
-	type FieldValues,
 	FormProvider,
 	useFormContext,
 } from "react-hook-form";
@@ -13,7 +12,29 @@ import {
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/_utils/kanban/utils";
 
-const Form = FormProvider;
+// * Form component: wraps children in FormProvider and <form>
+import type { UseFormReturn, FieldValues } from "react-hook-form";
+/**
+ * Form wrapper: Provides form context to all children via useFormContext().
+ * Passes only HTML attributes to <form>, and all form methods to FormProvider.
+ */
+export interface FormProps<T extends FieldValues = FieldValues>
+	extends React.FormHTMLAttributes<HTMLFormElement> {
+	children: React.ReactNode;
+	form: UseFormReturn<T>;
+}
+
+export function Form<T extends FieldValues = FieldValues>({
+	children,
+	form,
+	...formProps
+}: FormProps<T>) {
+	return (
+		<FormProvider {...form}>
+			<form {...formProps}>{children}</form>
+		</FormProvider>
+	);
+}
 
 type FormFieldContextValue<
 	TFieldValues extends FieldValues = FieldValues,
@@ -42,16 +63,18 @@ const FormField = <
 const useFormField = () => {
 	const fieldContext = React.useContext(FormFieldContext);
 	const itemContext = React.useContext(FormItemContext);
-	const { getFieldState, formState } = useFormContext();
-
-	const fieldState = getFieldState(fieldContext.name, formState);
-
+	const formContext = useFormContext();
+	if (!formContext) {
+		throw new Error(
+			"useFormField must be used within a <FormProvider> context. Are you missing a <FormProvider> or <Form> wrapper?",
+		);
+	}
 	if (!fieldContext) {
 		throw new Error("useFormField should be used within <FormField>");
 	}
-
+	const { getFieldState, formState } = formContext;
+	const fieldState = getFieldState(fieldContext.name, formState);
 	const { id } = itemContext;
-
 	return {
 		id,
 		name: fieldContext.name,
@@ -171,7 +194,6 @@ FormMessage.displayName = "FormMessage";
 
 export {
 	useFormField,
-	Form,
 	FormItem,
 	FormLabel,
 	FormControl,

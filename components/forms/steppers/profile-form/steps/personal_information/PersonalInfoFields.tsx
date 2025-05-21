@@ -16,17 +16,16 @@ import {
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
 import { City, State } from "country-state-city";
 import type React from "react";
-import type { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 interface PersonalInfoFieldsProps {
-	form: UseFormReturn<ProfileFormValues>;
 	loading: boolean;
 }
 
 export const PersonalInfoFields: React.FC<PersonalInfoFieldsProps> = ({
-	form,
 	loading,
 }) => {
+	const form = useFormContext<ProfileFormValues>();
 	const selectedState = form.watch("state");
 	const countryCode = "US";
 	const stateList =

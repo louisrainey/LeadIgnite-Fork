@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
+import { LockIcon, CheckCircle2 } from "lucide-react";
 
 interface UpdatePasswordSectionProps {
 	userId: string;
@@ -59,17 +60,41 @@ export const UpdatePasswordSection: React.FC<UpdatePasswordSectionProps> = ({
 		}
 	};
 
+	const [success, setSuccess] = useState(false);
+
 	return (
-		<Card className="mt-8 border bg-muted p-6 shadow-none">
+		<Card className="mt-8 border bg-card p-8 shadow-sm">
 			<form onSubmit={handleUpdate} autoComplete="off">
-				<div className="flex items-center justify-between">
-					<div>
-						<h3 className="font-semibold text-lg">Update Password</h3>
-						<p className="text-muted-foreground text-sm">
-							Set a new password for this team member. They will be required to
-							use it on next login.
-						</p>
+				<div className="flex items-center justify-between gap-6">
+					<div className="flex items-center gap-3">
+						<LockIcon className="h-6 w-6 text-primary" aria-hidden />
+						<div>
+							<h3 className="font-semibold text-lg">Update Password</h3>
+							<p className="text-muted-foreground text-sm">
+								Set a new password for this team member.
+								<br />
+								They will be required to use it on next login.
+							</p>
+						</div>
 					</div>
+					<Button
+						type="submit"
+						disabled={loading || success}
+						variant="default"
+						aria-label="Update password"
+					>
+						{loading ? (
+							<span className="flex items-center gap-2">
+								<span className="animate-spin">⏳</span> Updating...
+							</span>
+						) : success ? (
+							<span className="flex items-center gap-2 text-green-600">
+								<CheckCircle2 className="h-4 w-4" /> Updated!
+							</span>
+						) : (
+							"Update Password"
+						)}
+					</Button>
 				</div>
 				<Separator className="my-4" />
 				<div className="flex max-w-md flex-col gap-4">
@@ -119,11 +144,6 @@ export const UpdatePasswordSection: React.FC<UpdatePasswordSectionProps> = ({
 							</span>
 						)}
 					</div>
-				</div>
-				<div className="mt-6 flex justify-end">
-					<Button type="submit" disabled={loading} variant="secondary">
-						{loading ? "Updating..." : "Update Password"}
-					</Button>
 				</div>
 			</form>
 		</Card>

@@ -95,46 +95,44 @@ export const MainEmployeeForm: React.FC<MainEmployeeFormProps> = (props) => {
 				<Heading title={title} description={description} />
 			</div>
 			<Separator />
-			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(onSubmit)}
-					className="w-full space-y-8"
-				>
-					<EmployeeInfoFields form={form} loading={loading} />
-					<EmployeeRoleField form={form} loading={loading} />
-					{role !== "admin" ? (
-						<EmployeePermissionsSection
-							form={form}
-							loading={loading}
-							defaultValues={defaultValues}
-						/>
-					) : (
-						<div className="rounded-md border bg-muted p-4 text-muted-foreground">
-							This user is an <b>Admin</b> and automatically has all
-							permissions.
-						</div>
-					)}
-					<EmployeeTwoFactorSection form={form} loading={loading} />
-					{isEdit && initialData?.id && initialData?.email && (
-						<>
-							<ResetPasswordSection
-								userId={initialData.id}
-								userEmail={initialData.email}
-							/>
-							<UpdatePasswordSection userId={initialData.id} />
-						</>
-					)}
-					{isEdit && !initialData && (
-						<div className="mt-4 rounded-md border bg-red-50 p-4 text-red-600">
-							Error: No team member data provided for edit mode.
-						</div>
-					)}
-					<div className="flex justify-end">
-						<Button type="submit" disabled={loading}>
-							{action}
-						</Button>
+			<Form
+				form={form}
+				onSubmit={form.handleSubmit(onSubmit)}
+				className="w-full space-y-8"
+			>
+				<EmployeeInfoFields form={form} loading={loading} />
+				<EmployeeRoleField form={form} loading={loading} />
+				{role !== "admin" ? (
+					<EmployeePermissionsSection
+						form={form}
+						loading={loading}
+						defaultValues={defaultValues}
+					/>
+				) : (
+					<div className="rounded-md border bg-muted p-4 text-muted-foreground">
+						This user is an <b>Admin</b> and automatically has all permissions.
 					</div>
-				</form>
+				)}
+				<EmployeeTwoFactorSection form={form} loading={loading} />
+				{isEdit && initialData?.id && initialData?.email && (
+					<>
+						<ResetPasswordSection
+							userId={initialData.id}
+							userEmail={initialData.email}
+						/>
+						<UpdatePasswordSection userId={initialData.id} />
+					</>
+				)}
+				{isEdit && !initialData && (
+					<div className="mt-4 rounded-md border bg-red-50 p-4 text-red-600">
+						Error: No team member data provided for edit mode.
+					</div>
+				)}
+				<div className="flex justify-end">
+					<Button type="submit" disabled={loading}>
+						{action}
+					</Button>
+				</div>
 			</Form>
 		</>
 	);
