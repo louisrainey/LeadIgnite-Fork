@@ -18,7 +18,11 @@ interface PropertyListProps {
 
 const MIN_DRAWER_HEIGHT = 100; // Set a minimum height for the drawer to prevent it from being closed completely.
 const cardLoadOptions = [12, 24, 48, 96]; // You can add more options if needed
+// * PropertyListView now manages selected properties for list creation
 const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
+	// todo: Move selection state to Zustand/global if needed for cross-component access
+	const [selectedPropertyIds, setSelectedPropertyIds] = useState<string[]>([]);
+
 	const {
 		isDrawerOpen,
 		setIsDrawerOpen,
@@ -68,6 +72,17 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 		return null;
 	}
 
+	// Handle property selection
+	const handlePropertySelect = (propertyId: string) => {
+		if (selectedPropertyIds.includes(propertyId)) {
+			setSelectedPropertyIds(
+				selectedPropertyIds.filter((id) => id !== propertyId),
+			);
+		} else {
+			setSelectedPropertyIds([...selectedPropertyIds, propertyId]);
+		}
+	};
+
 	return (
 		<div
 			style={{ position: "absolute", right: 0, width: "400px", height: "100%" }}
@@ -114,16 +129,54 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 										Your list is too broad.
 									</p>
 								)}
-
-								{/* Replace "Create List" button with the SkipTraceDialog */}
-								<div className="flex justify-center">
-									<SkipTraceDialog
-										properties={properties}
-										availableListNames={MockUserProfile.companyInfo.leadLists.map(
-											(list) => list.listName,
-										)} // Extract and pass available list names
-										costPerRecord={0.1} // Example cost per record, you can change as needed
-									/>
+								<div className="flex justify-center gap-4 py-2">
+									<button
+										type="button"
+										className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-gray-700 text-sm shadow-sm transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+										onClick={() =>
+											setSelectedPropertyIds(properties.map((p) => p.id))
+										}
+										disabled={selectedPropertyIds.length === properties.length}
+										aria-label="Select all properties"
+									>
+										Select All
+									</button>
+									<button
+										type="button"
+										className="rounded-md border border-gray-200 bg-white px-4 py-2 font-medium text-red-600 text-sm shadow-sm transition hover:bg-red-50 dark:border-gray-700 dark:bg-gray-900 dark:text-red-400 dark:hover:bg-gray-800"
+										onClick={() => setSelectedPropertyIds([])}
+										disabled={selectedPropertyIds.length === 0}
+										aria-label="Clear all selected properties"
+									>
+										Clear Selected
+									</button>
+									{(() => {
+										const selectedProperties = properties.filter((p) =>
+											selectedPropertyIds.includes(p.id),
+										);
+										return (
+											<SkipTraceDialog
+												properties={selectedProperties}
+												availableListNames={MockUserProfile.companyInfo.leadLists.map(
+													(list) => list.listName,
+												)} // Extract and pass available list names
+												costPerRecord={0.1} // Example cost per record, you can change as needed
+												triggerButton={
+													<button
+														type="button"
+														className={`rounded-md bg-orange-600 px-6 py-2 font-semibold text-base text-white shadow-sm transition hover:bg-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600 ${selectedProperties.length === 0 ? "opacity-60 cursor-not-allowed" : ""}`}
+														disabled={selectedProperties.length === 0}
+														aria-disabled={selectedProperties.length === 0}
+													>
+														Create List
+														{selectedProperties.length > 0
+															? ` (${selectedProperties.length} Selected)`
+															: ""}
+													</button>
+												}
+											/>
+										);
+									})()}
 								</div>
 							</div>
 
@@ -131,7 +184,11 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 							<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
 								{visibleProperties.map((property) => (
 									<div key={property.id} className="p-4">
-										<PropertyCard property={property} />
+										<PropertyCard
+											property={property}
+											selected={selectedPropertyIds.includes(property.id)}
+											onSelect={() => handlePropertySelect(property.id)}
+										/>
 									</div>
 								))}
 							</div>

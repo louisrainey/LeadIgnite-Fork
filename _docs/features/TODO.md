@@ -8,10 +8,13 @@
 
 # 🪳 Fix dropdowns not able to be for campaing page  components\ui\dropdown-menu.tsx
 
+# 🪳 When creating a lead list from properties on last page get expected string receved null
+
 # 🖥️ Implement upload lead list functionality
 
 # 🖥️ ReImplement profile field validation on type
-
+# https://developers.google.com/maps/documentation/javascript/reference/3d-map
+# Implment Check Logic on Lead List so users can clcik the proeprties they want to add to the list creeat with(xNum)
 
 
 

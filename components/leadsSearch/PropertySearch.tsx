@@ -28,7 +28,20 @@ import WalkThroughModal from "../reusables/tutorials/walkthroughModal";
 // ! Use named import, not default
 import { generateFakeProperties } from "@/constants/dashboard/properties";
 
+const normalizeFormValues = (values: unknown): unknown => {
+	if (typeof values !== "object" || values === null) return values;
+	if (Array.isArray(values)) return values.map(normalizeFormValues);
+	return Object.entries(values).reduce(
+		(acc, [key, value]) => {
+			acc[key] = value === "" ? undefined : normalizeFormValues(value);
+			return acc;
+		},
+		{} as Record<string, unknown>,
+	);
+};
 const PropertySearch: React.FC = () => {
+	// * Debug: log form state every render
+	const formRef = React.useRef<any>(null);
 	const [hasResults, setHasResults] = useState(false);
 	const { properties, setProperties, isDrawerOpen, setIsDrawerOpen } =
 		usePropertyStore();
@@ -42,6 +55,8 @@ const PropertySearch: React.FC = () => {
 	}, []);
 	const [showAdvanced, setShowAdvanced] = useState(false);
 	const [isTourOpen, setIsTourOpen] = useState(false);
+	const [showAllErrors, setShowAllErrors] = React.useState(true);
+
 	const [center, setCenter] = useState<Coordinate>({
 		lat: 39.7392,
 		lng: -104.9903,
@@ -129,46 +144,63 @@ const PropertySearch: React.FC = () => {
 	const {
 		control,
 		handleSubmit,
-		formState: { errors },
+
+		formState: { errors, isValid },
+		getValues,
 	} = useForm<MapFormSchemaType>({
 		resolver: zodResolver(mapFormSchema),
+		mode: "onChange", // * Enable real-time validation
 		defaultValues: {
 			location: "",
-			marketStatus: "",
-			beds: "",
-			baths: "",
-			propertyType: "",
+			marketStatus: undefined,
+			beds: undefined,
+			baths: undefined,
+			propertyType: undefined,
 			advanced: {
-				radius: "",
-				pastDays: "",
-				dateFrom: "",
-				dateTo: "",
+				radius: undefined,
+				pastDays: undefined,
+				dateFrom: undefined,
+				dateTo: undefined,
 				mlsOnly: false,
 				foreclosure: false,
-				proxy: "",
+				proxy: undefined,
 				extraPropertyData: false,
 				excludePending: false,
-				limit: "",
+				limit: undefined,
 			},
 		},
 	});
 
 	const onSubmit = async (data: MapFormSchemaType) => {
+		// If form is invalid, show all errors
+		if (!isValid) {
+			setShowAllErrors(true);
+			return;
+		}
+		const normalizedData = normalizeFormValues(data);
+		console.log("[DEBUG] onSubmit normalizedData:", normalizedData);
+
+		console.log("[DEBUG] onSubmit called with data:", data); // *
 		toast("Submitted");
 		const fetchedCoordinates = await mockFetchAddressesFromApi([data.location]);
+		console.log("[DEBUG] fetchedCoordinates:", fetchedCoordinates); // *
 		const newMarkers = fetchedCoordinates.map((coord) => ({
 			lat: coord.lat,
 			lng: coord.lng,
 		}));
+		console.log("[DEBUG] newMarkers:", newMarkers); // *
 		if (newMarkers && newMarkers.length > 0) {
 			setMarkers(newMarkers);
 			const newCenter = calculateCenter(newMarkers);
+			console.log("[DEBUG] newCenter:", newCenter); // *
 			setCenter(newCenter);
 		}
 		// * Set new properties after search
 		const newProperties = generateFakeProperties(12); // Replace with real API call in prod
+		console.log("[DEBUG] newProperties:", newProperties); // *
 		setProperties(newProperties);
 		setHasResults(newProperties.length > 0);
+		console.log("[DEBUG] hasResults:", newProperties.length > 0); // *
 		// Do NOT open the drawer here
 	};
 
@@ -183,25 +215,55 @@ const PropertySearch: React.FC = () => {
 					mockUserProfile.subscription.aiCredits.used
 				}
 			/>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<form
+				onSubmit={handleSubmit(onSubmit, (errors) => {
+					console.log("[DEBUG] Form validation errors:", errors);
+				})}
+			>
 				<LeadSearchForm
 					control={control}
 					errors={errors}
 					onAdvancedOpen={() => setShowAdvanced(true)}
 				/>
+
+				{/* Show validation errors above the Search button if form is invalid */}
+				{!isValid && Object.keys(errors).length > 0 && (
+					<div className="mb-2 rounded border border-red-300 bg-red-50 p-3 text-red-700 text-sm">
+						<strong>Fix the following fields:</strong>
+						<ul className="mt-1 ml-5 list-disc">
+							{Object.entries(errors).map(([field, error]) => (
+								<li key={field}>
+									{field.charAt(0).toUpperCase() + field.slice(1)}:{" "}
+									{error?.message || (error as any)?.root?.message}
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
 				<div className="my-4 flex justify-center">
-					<Button type="submit" className="w-full max-w-xs gap-2 md:w-auto">
+					<Button
+						type="submit"
+						className="w-full max-w-xs gap-2 md:w-auto"
+						disabled={!isValid}
+					>
 						<Search className="h-4 w-4" /> Search
 					</Button>
 				</div>
-				{hasResults && (
+				{/* Show 'Show Results' button only when there are valid mock properties */}
+				{hasResults && properties && properties.length > 0 && (
 					<div className="mt-2 flex justify-center">
 						<Button
 							type="button"
 							className="w-full max-w-xs gap-2 md:w-auto"
-							onClick={() => setIsDrawerOpen(true)}
+							onClick={() => {
+								console.log(
+									"[DEBUG] Show Results clicked, properties:",
+									properties,
+								); // *
+								setIsDrawerOpen(true);
+							}}
 						>
-							View Results
+							Show Results
 						</Button>
 					</div>
 				)}
@@ -212,7 +274,6 @@ const PropertySearch: React.FC = () => {
 				control={control}
 				errors={errors}
 			/>
-			{console.log("[DEBUG] PropertySearch markers:", markers)}
 			<MapSection
 				markers={markers}
 				center={center}

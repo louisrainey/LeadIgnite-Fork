@@ -74,16 +74,16 @@ export const AssetsUploader: React.FC<AssetsUploaderProps> = ({
 					Drag & drop or click to upload (1-12 images)
 				</span>
 			</button>
-			<div className="mb-2 grid grid-cols-2 md:grid-cols-4 gap-4 items-start">
+			<div className="mb-2 grid grid-cols-2 items-start gap-4 md:grid-cols-4">
 				{value.map((asset, idx) => (
 					<div
 						key={asset.id}
-						className="relative aspect-square w-full max-w-[120px] rounded border overflow-hidden group"
+						className="group relative aspect-square w-full max-w-[120px] overflow-hidden rounded border"
 					>
 						<img
 							src={URL.createObjectURL(asset.file)}
 							alt={`Asset ${idx + 1}`}
-							className="object-cover w-full h-full"
+							className="h-full w-full object-cover"
 						/>
 						<button
 							type="button"

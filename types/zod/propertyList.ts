@@ -21,12 +21,21 @@ export const mapFormSchema = z.object({
 	advanced: z.object({
 		radius: z
 			.string()
-			.refine((val) => /^\d{1,6}(\.\d{1,5})?$/.test(val) && val.length <= 6, {
-				message: "Radius must be a number or a decimal up to 6 characters",
+			.optional()
+			.refine(
+				(val) =>
+					val === undefined ||
+					(/^\d{1,6}(\.\d{1,5})?$/.test(val) && val.length <= 6),
+				{
+					message: "Radius must be a number or a decimal up to 6 characters",
+				},
+			),
+		pastDays: z
+			.string()
+			.optional()
+			.refine((val) => val === undefined || /^\d{1,5}$/.test(val), {
+				message: "Past Days must be a number up to 5 digits",
 			}),
-		pastDays: z.string().refine((val) => /^\d{1,5}$/.test(val), {
-			message: "Past Days must be a number up to 5 digits",
-		}),
 		dateFrom: z
 			.string()
 			.max(10, "Date must be 10 characters or less")
@@ -36,8 +45,11 @@ export const mapFormSchema = z.object({
 		foreclosure: z.boolean().optional(),
 		proxy: z
 			.string()
+			.optional()
 			.refine(
-				(val) => /^(https?:\/\/)[^\s:@]+:[^\s:@]+@[^\s:@]+:\d{2,5}$/.test(val),
+				(val) =>
+					val === undefined ||
+					/^(https?:\/\/)[^\s:@]+:[^\s:@]+@[^\s:@]+:\d{2,5}$/.test(val),
 				{
 					message:
 						"Proxy must be in the format 'http://user:pass@host:port' or 'https://user:pass@host:port'",

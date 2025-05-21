@@ -55,27 +55,27 @@ export const BaseSetupMain: React.FC<BaseSetupMainProps> = ({
 	return (
 		<form className="space-y-10">
 			<section className="space-y-4">
-				<h2 className="text-xl font-bold mb-2">Company Information</h2>
-				<p className="text-gray-500 text-sm mb-4">
+				<h2 className="mb-2 font-bold text-xl">Company Information</h2>
+				<p className="mb-4 text-gray-500 text-sm">
 					Enter your company details to get started.
 				</p>
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 					<BaseSetupFields loading={loading} />
 				</div>
 			</section>
 
-			<div className="border-t border-gray-200 dark:border-gray-700 my-8" />
+			<div className="my-8 border-gray-200 border-t dark:border-gray-700" />
 
 			<section className="space-y-4">
-				<h2 className="text-xl font-bold mb-2">Branding Assets</h2>
-				<p className="text-gray-500 text-sm mb-4">
+				<h2 className="mb-2 font-bold text-xl">Branding Assets</h2>
+				<p className="mb-4 text-gray-500 text-sm">
 					Upload your logo and company assets. Images should be clear and
 					professional.
 				</p>
 				<BaseSetupAssets loading={loading} />
 			</section>
 
-			<div className="border-t border-gray-200 dark:border-gray-700 my-8" />
+			<div className="my-8 border-gray-200 border-t dark:border-gray-700" />
 		</form>
 	);
 };

@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import type { PropertyDetails } from "@/types/_dashboard/maps";
 import { skipTraceSchema } from "@/types/zod/createListSkip";
-import type React from "react";
+import React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -58,9 +58,9 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 
 		if (!validationResult.success) {
 			// Handle validation errors
-			validationResult.error.errors.forEach((error) => {
+			for (const error of validationResult.error.errors) {
 				toast.error(error.message); // Display each error message using toast notifications
-			});
+			}
 			return;
 		}
 
@@ -78,11 +78,17 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 			{availableListNames && availableListNames.length > 1 && (
 				<div className="mb-4">
 					<div className="flex items-center justify-between">
-						<label className="font-medium text-gray-700 text-sm dark:text-gray-300">
+						<label
+							htmlFor="use-existing-list"
+							className="font-medium text-gray-700 text-sm dark:text-gray-300"
+						>
 							Add to an existing list:
 						</label>
 
-						<label className="relative inline-flex cursor-pointer items-center">
+						<label
+							htmlFor="use-existing-list"
+							className="relative inline-flex cursor-pointer items-center"
+						>
 							<input
 								type="checkbox"
 								checked={useExistingList}
@@ -105,7 +111,10 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 			availableListNames.length > 1 &&
 			useExistingList ? (
 				<div className="mb-4">
-					<label className="block font-medium text-gray-700 text-sm dark:text-gray-300">
+					<label
+						htmlFor="target-list"
+						className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+					>
 						Select a target list
 					</label>
 
@@ -131,7 +140,10 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 				</div>
 			) : (
 				<div className="mb-4">
-					<label className="block font-medium text-gray-700 text-sm dark:text-gray-300">
+					<label
+						htmlFor="new-list-name"
+						className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+					>
 						New List Name
 					</label>
 					<Input
@@ -146,7 +158,10 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 
 			{/* Records to skip */}
 			<div className="mb-4">
-				<label className="block font-medium text-gray-700 text-sm dark:text-gray-300">
+				<label
+					htmlFor="records-to-skip"
+					className="block font-medium text-gray-700 text-sm dark:text-gray-300"
+				>
 					Records to skip
 				</label>
 				<div className="flex items-center space-x-2">
@@ -182,7 +197,10 @@ const SkipTraceForm: React.FC<SkipTraceFormProps> = ({
 					/>
 				</label>
 
-				<label className="ml-3 font-medium text-gray-700 text-sm dark:text-gray-300">
+				<label
+					htmlFor="redo-skip-trace"
+					className="ml-3 font-medium text-gray-700 text-sm dark:text-gray-300"
+				>
 					Don’t redo skip traces on data you’ve already purchased in the past 2
 					months
 				</label>
@@ -210,21 +228,38 @@ type SkipTraceDialogProps = {
 	properties: PropertyDetails[];
 	availableListNames?: string[];
 	costPerRecord: number;
+	triggerButton?: React.ReactNode;
 };
 
 const SkipTraceDialog: React.FC<SkipTraceDialogProps> = ({
 	properties,
 	availableListNames,
 	costPerRecord,
+	triggerButton,
 }) => {
 	const [isOpen, setIsOpen] = useState(false); // Control dialog state
+
+	// Prevent opening modal if no properties are selected
+	const handleOpen = () => {
+		if (properties.length === 0) {
+			toast.error("Please select at least one property to create a list.");
+			return;
+		}
+		setIsOpen(true);
+	};
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<Button variant="outline" onClick={() => setIsOpen(true)}>
-					Create List
-				</Button>
+				{triggerButton ? (
+					React.cloneElement(triggerButton as React.ReactElement<any>, {
+						onClick: handleOpen,
+					})
+				) : (
+					<Button variant="outline" onClick={handleOpen}>
+						Create List ({properties.length})
+					</Button>
+				)}
 			</DialogTrigger>
 
 			<DialogContent className="-translate-x-1/2 -translate-y-1/2 fixed top-1/2 left-1/2 z-50 transform rounded-lg bg-white shadow-lg sm:max-w-[425px] dark:bg-gray-900 ">

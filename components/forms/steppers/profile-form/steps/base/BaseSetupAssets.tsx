@@ -22,7 +22,7 @@ export const BaseSetupAssets: React.FC<BaseSetupAssetsProps> = ({
 	const { control, setValue, formState } = useFormContext<ProfileFormValues>();
 
 	return (
-		<div className="flex flex-col items-center w-full">
+		<div className="flex w-full flex-col items-center">
 			<div className="w-full max-w-xl space-y-8">
 				<FormField
 					control={control}
