@@ -1,7 +1,8 @@
 # @Tools https://docs.vapi.ai/examples/outbound-sales | https://gist.github.com/officialrobert/156a1cb6bdf42512f531df711ca36ef0
+# @Tools https://docs.vapi.ai/examples/inbound-supportB
+# Tools https://docs.vapi.ai/examples/pizza-website
 
-
-
+# https://developers.google.com/maps/documentation/javascript/reference/3d-map
 
 
 # 🪳 Fix Selects not able to be updated hydration error components\ui\select.tsx
@@ -10,10 +11,9 @@
 
 # 🪳 When creating a lead list from properties on last page get expected string receved null
 
-# 🖥️ Implement upload lead list functionality
+# 🖥️ ✅ Implement upload lead list functionality
 
-# 🖥️ ReImplement profile field validation on type
-# https://developers.google.com/maps/documentation/javascript/reference/3d-map
+# 🖥️ ✅ ReImplement profile field validation on type
 # Implment Check Logic on Lead List so users can clcik the proeprties they want to add to the list creeat with(xNum)
 
 

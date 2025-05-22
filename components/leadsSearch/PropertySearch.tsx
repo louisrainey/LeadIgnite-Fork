@@ -110,18 +110,16 @@ const PropertySearch: React.FC = () => {
 		setShapeDrawn(false);
 	};
 
-	const handleApplyDrawing = () => {
-		if (!shapeRef.current) return;
-		setBoundaryApplied(true);
-		setShapeDrawn(false);
-		// Optionally: filter properties based on shapeRef.current
-	};
-
 	const handleRemoveBoundaries = () => {
 		clearShape();
 		setBoundaryApplied(false);
 		// Optionally: reset property filters
 	};
+
+	// Store the most recent shape bounds for use on Apply
+	const [pendingMarkerBounds, setPendingMarkerBounds] = useState<
+		{ north: number; south: number; east: number; west: number } | undefined
+	>(undefined);
 
 	const handleShapeComplete = (
 		shape:
@@ -134,6 +132,74 @@ const PropertySearch: React.FC = () => {
 		shapeRef.current = shape;
 		setDrawingMode(null);
 		setShapeDrawn(true);
+
+		// Extract bounds and store for use on Apply
+		let bounds:
+			| { north: number; south: number; east: number; west: number }
+			| undefined = undefined;
+		if (shape instanceof window.google.maps.Rectangle) {
+			const b = shape.getBounds();
+			if (b) {
+				bounds = {
+					north: b.getNorthEast().lat(),
+					south: b.getSouthWest().lat(),
+					east: b.getNorthEast().lng(),
+					west: b.getSouthWest().lng(),
+				};
+			}
+		} else if (shape instanceof window.google.maps.Circle) {
+			const center = shape.getCenter();
+			const radius = shape.getRadius();
+			if (center && typeof radius === "number") {
+				const lat = center.lat();
+				const lng = center.lng();
+				const deltaDeg = radius / 111320; // rough meters to degrees
+				bounds = {
+					north: lat + deltaDeg,
+					south: lat - deltaDeg,
+					east: lng + deltaDeg,
+					west: lng - deltaDeg,
+				};
+			}
+		} else if (shape instanceof window.google.maps.Polygon) {
+			const path = shape.getPath();
+			if (path && path.getLength() > 0) {
+				let north = -90;
+				let south = 90;
+				let east = -180;
+				let west = 180;
+				for (let i = 0; i < path.getLength(); i++) {
+					const point = path.getAt(i);
+					north = Math.max(north, point.lat());
+					south = Math.min(south, point.lat());
+					east = Math.max(east, point.lng());
+					west = Math.min(west, point.lng());
+				}
+				bounds = { north, south, east, west };
+			}
+		}
+		setPendingMarkerBounds(bounds);
+	};
+
+	// Only fetch and set markers when user presses Apply
+	const handleApplyDrawing = async () => {
+		if (!shapeRef.current) return;
+		setBoundaryApplied(true);
+		setShapeDrawn(false);
+		if (!pendingMarkerBounds) return;
+		const { fetchFakeMapMarkers } = await import(
+			"@/constants/_faker/_api/google_maps/mockMapApi"
+		);
+		const fakeMarkers = await fetchFakeMapMarkers({
+			bounds: pendingMarkerBounds,
+			count: 10,
+		});
+		setMarkers(fakeMarkers);
+		// * If we have results, show the 'Show Results' button
+		setHasResults(fakeMarkers.length > 0);
+		if (fakeMarkers.length > 0) {
+			setCenter(fakeMarkers[0]);
+		}
 	};
 	const handleOpenModal = () => setIsModalOpen(true);
 	const handleCloseModal = () => setIsModalOpen(false);
