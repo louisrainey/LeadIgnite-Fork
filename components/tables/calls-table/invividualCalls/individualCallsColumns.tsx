@@ -1,4 +1,4 @@
-import { PlayButtonTimeLine } from "@/components/reusables/calls/playButtonTimeLine";
+import { PlayButtonTimeLine } from "@/components/reusables/audio/playButtonTimeLine";
 import type { GetCallResponse } from "@/types/vapiAi/api/calls/get";
 import type { ColumnDef } from "@tanstack/react-table";
 import { DownloadIcon } from "lucide-react"; // Assuming you use an icon library like Lucide

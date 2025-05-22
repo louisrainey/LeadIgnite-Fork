@@ -5,7 +5,9 @@ import type {
 	GenerateSpeechRequest,
 } from "@/types/elevenLabs/api/clone";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import type { PlayButtonTimeLineHandle } from "@/components/reusables/audio/playButtonTimeLine";
+
 import type { InitialKnowledgeBaseData } from "../../../utils/const/getKnowledgeBase";
 
 import type { ProfileFormValues } from "@/types/zod/userSetup/profile-form-schema";
@@ -14,6 +16,8 @@ import { KnowledgeEmailUpload } from "./KnowledgeEmailUpload";
 import { KnowledgeSalesScriptUpload } from "./KnowledgeSalesScriptUpload";
 
 import VoicemailModal from "./voice/VoicemailModal";
+import VoiceFeatureTabs from "./voice/utils/VoiceFeatureTabs";
+import CreateVoiceModal from "./voice/CreateVoiceModal";
 
 import { useFormContext } from "react-hook-form";
 import { KnowledgeVoiceSelector } from "./KnowledgeVoiceSelector";
@@ -42,6 +46,8 @@ export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 	const form = useFormContext<ProfileFormValues>();
 	const [showVoiceCloneModal, setShowVoiceCloneModal] = useState(false);
 	const [showVoicemailModal, setShowVoicemailModal] = useState(false);
+	const [showCreateVoiceModal, setShowCreateVoiceModal] = useState(false);
+	const createVoiceTimelineRef = useRef<PlayButtonTimeLineHandle>(null);
 
 	useEffect(() => {
 		if (initialData) {
@@ -56,14 +62,27 @@ export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 		}
 	}, [initialData, form]);
 
-	const handleVoicemailRecording = (recordingId: string) => {
-		form.setValue("voicemailRecordingId", recordingId);
+	const handleVoicemailAudio = async (audioBlob: Blob) => {
+		// Simulate upload and generate a fake ID for testing
+		console.log("Received audio blob for voicemail:", audioBlob);
+		const fakeRecordingId = `test-voicemail-${Date.now()}`;
+		form.setValue("voicemailRecordingId", fakeRecordingId);
 		setShowVoicemailModal(false);
 	};
-
-	const handleVoiceCloneRecording = (recordingId: string) => {
-		form.setValue("clonedVoiceId", recordingId);
+	const handleVoiceCloneAudio = async (audioBlob: Blob) => {
+		// Simulate upload and generate a fake ID for testing
+		console.log("Received audio blob for voicemail:", audioBlob);
+		const fakeRecordingId = `test-voicemail-${Date.now()}`;
+		form.setValue("clonedVoiceId", fakeRecordingId);
 		setShowVoiceCloneModal(false);
+	};
+
+	const handleCreatedVoiceAudio = async (audioBlob: Blob) => {
+		// Simulate upload and generate a fake ID for testing
+		console.log("Received audio blob for voicemail:", audioBlob);
+		const fakeRecordingId = `test-voicemail-${Date.now()}`;
+		form.setValue("createdVoiceId", fakeRecordingId);
+		setShowVoicemailModal(false);
 	};
 
 	return (
@@ -72,24 +91,71 @@ export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 			<div className="flex flex-col gap-4 rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
 				<span className="mb-2 font-semibold text-lg">Voice Features</span>
 				<KnowledgeVoiceSelector loading={loading} />
-				<div className="flex w-full flex-col items-center justify-center gap-4 md:flex-row">
-					<button
-						type="button"
-						className="w-56 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
-						onClick={() => setShowVoicemailModal(true)}
-						aria-label="Record Voicemail"
-					>
-						+ Record Voicemail
-					</button>
-					<button
-						type="button"
-						className="w-56 rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white shadow hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
-						onClick={() => setShowVoiceCloneModal(true)}
-						aria-label="Clone Voice"
-					>
-						+ Clone Voice
-					</button>
-				</div>
+				<VoiceFeatureTabs
+					tabs={[
+						{
+							label: "Record Voicemail",
+							content: (
+								<button
+									type="button"
+									className="w-56 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
+									onClick={() => setShowVoicemailModal(true)}
+									aria-label="Record Voicemail"
+								>
+									+ Record Voicemail
+								</button>
+							),
+						},
+						{
+							label: "Clone Voice",
+							content: (
+								<button
+									type="button"
+									className="w-56 rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white shadow hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
+									onClick={() => setShowVoiceCloneModal(true)}
+									aria-label="Clone Voice"
+								>
+									+ Clone Voice
+								</button>
+							),
+						},
+						{
+							label: "Create Voice",
+							audioSrc:
+								"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+							timelineRef: createVoiceTimelineRef,
+							content: (
+								<button
+									type="button"
+									className="w-56 rounded-lg bg-yellow-600 px-4 py-2 font-semibold text-white shadow hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 dark:bg-yellow-500 dark:hover:bg-yellow-600"
+									onClick={() => {
+										createVoiceTimelineRef.current?.play();
+										setShowCreateVoiceModal(true);
+									}}
+									aria-label="Create Voice"
+								>
+									+ Create Voice
+								</button>
+							),
+						},
+					]}
+					className="w-full"
+				/>
+				<VoicemailModal
+					open={showVoicemailModal}
+					onClose={() => setShowVoicemailModal(false)}
+					onSave={handleVoicemailAudio}
+				/>
+				<CloneModal
+					open={showVoiceCloneModal}
+					onClose={() => setShowVoiceCloneModal(false)}
+					onSave={handleVoiceCloneAudio}
+				/>
+				<CreateVoiceModal
+					open={showCreateVoiceModal}
+					onClose={() => setShowCreateVoiceModal(false)}
+					onSave={handleCreatedVoiceAudio}
+				/>
 			</div>
 
 			{/* Script & Email Features Group */}

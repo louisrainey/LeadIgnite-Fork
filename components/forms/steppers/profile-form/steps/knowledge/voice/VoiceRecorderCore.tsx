@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Lottie, { type LottieRefCurrentProps } from "lottie-react";
 import VoiceClone from "@/public/lottie/RecordingButton.json";
 import Teleprompter, { type TeleprompterHandle } from "./utils/Teleprompter";
+import type { ScriptLine } from "@/constants/_faker/_api/eleven_labs/scripts";
 
 interface VoiceRecorderCoreProps {
 	open: boolean;
@@ -10,7 +11,7 @@ interface VoiceRecorderCoreProps {
 	onSave: (audioBlob: Blob) => void;
 	minRecordingLength: number;
 	maxRecordingLength: number; // ! Required max length in seconds
-	scriptText?: string[];
+	scriptText?: ScriptLine[];
 	showTeleprompter?: boolean;
 	modalTitle: React.ReactNode;
 	extraContent?: React.ReactNode;
@@ -51,6 +52,13 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 			setTeleprompterScrolling(false); // Stop auto-scroll when recording stops
 		} else {
 			try {
+				// Always reset teleprompter to top when starting recording
+				if (
+					teleprompterRef.current &&
+					typeof teleprompterRef.current.scrollToTop === "function"
+				) {
+					teleprompterRef.current.scrollToTop();
+				}
 				const stream = await navigator.mediaDevices.getUserMedia({
 					audio: true,
 				});
@@ -160,7 +168,7 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-			<div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+			<div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800 max-h-[90vh] overflow-y-auto">
 				{/* Close Button */}
 				<button
 					type="button"

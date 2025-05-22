@@ -26,9 +26,9 @@ const VoicemailModal: React.FC<VoicemailModalProps> = ({
 			extraContent={
 				<div className="mb-4 text-center font-medium text-blue-600 text-xs dark:text-blue-300">
 					We recommend a recording length of{" "}
-					<span className="font-bold">1-2 minutes</span>.<br />
-					More than 3 minutes won't necessarily improve the clone, and can even
-					be detrimental in some cases.
+					<span className="font-bold">20-30 seconds</span>.<br />
+					Keep it short and focused, highlighting a key benefit and making it
+					easy for the prospect to take action by calling you back.
 					<br />
 					<span className="font-bold">Focus on quality!</span>
 				</div>

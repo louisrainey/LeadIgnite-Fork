@@ -228,6 +228,11 @@ export const profileSchema = z.object({
 		.min(1, { message: "VoiceMail ID is required if provided." })
 		.max(100, { message: "Voice ID cannot exceed 100 characters." })
 		.optional(),
+	createdVoiceId: z
+		.string()
+		.min(1, { message: "Voice ID is required if provided." })
+		.max(100, { message: "Voice ID cannot exceed 100 characters." })
+		.optional(),
 	// Optional metadata about the user signup
 	meta: z.record(z.any()).optional().nullable(),
 

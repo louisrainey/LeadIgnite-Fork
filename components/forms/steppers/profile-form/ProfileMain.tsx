@@ -45,9 +45,7 @@ export const ProfileStepper: React.FC = () => {
 
 	// Get user profile from Zustand
 	const userProfile = mockUserProfile;
-	console.log("DEBUG userProfile", userProfile);
-	const voices = userProfile?.aIKnowledgebase?.recordings?.voices ?? [];
-	console.log("DEBUG voices", voices);
+
 	const handleVoiceSelect = (voiceId: string) => {};
 	const handleScriptUpload = (scriptContent: string) => {};
 	const handleEmailUpload = (emailContent: string) => {};

@@ -1,4 +1,4 @@
-import { PlayButtonSkip } from "@/components/reusables/calls/playButton";
+import { PlayButtonSkip } from "@/components/reusables/audio/playButton";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { CallCampaign, CallInfo } from "@/types/_dashboard/campaign";
 import type { ColumnDef } from "@tanstack/react-table";
