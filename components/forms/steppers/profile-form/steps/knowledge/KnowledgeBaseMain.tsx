@@ -128,10 +128,7 @@ export const KnowledgeBaseMain: React.FC<KnowledgeBaseMainProps> = ({
 								<button
 									type="button"
 									className="w-56 rounded-lg bg-yellow-600 px-4 py-2 font-semibold text-white shadow hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 dark:bg-yellow-500 dark:hover:bg-yellow-600"
-									onClick={() => {
-										createVoiceTimelineRef.current?.play();
-										setShowCreateVoiceModal(true);
-									}}
+									onClick={() => setShowCreateVoiceModal(true)}
 									aria-label="Create Voice"
 								>
 									+ Create Voice

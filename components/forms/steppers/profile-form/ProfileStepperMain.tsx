@@ -9,8 +9,16 @@ import { BaseSetupMain } from "./steps/base/BaseSetupMain";
 import { KnowledgeBaseMain } from "./steps/knowledge/KnowledgeBaseMain";
 import { PersonalInformationFormMain } from "./steps/personal_information/PersonalInformationFormMain";
 import type { AssistantVoice } from "@/types/vapiAi/api/assistant/create";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 // * Step definitions: label and component for each step
+const stepHashes = [
+	"profile-info", // Step 0
+	"company-info", // Step 1
+	"voice-script", // Step 2
+	"oauth", // Step 3
+];
+
 const steps = [
 	{ label: "Personal Info", component: PersonalInformationFormMain },
 	{ label: "Base Setup", component: BaseSetupMain },
@@ -19,7 +27,25 @@ const steps = [
 ];
 
 export const ProfileStepper: React.FC = () => {
+	const router = useRouter();
+	const pathname = usePathname();
 	const [currentStep, setCurrentStep] = useState(0);
+
+	// Helper to navigate to a step and update the hash
+	const goToStep = (stepIdx: number) => {
+		setCurrentStep(stepIdx);
+		const hash = stepHashes[stepIdx];
+		// Use shallow routing to update only the hash
+		router.replace(`${pathname}#${hash}`);
+	};
+
+	// On mount, read the hash and set the step
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+		const hash = window.location.hash.replace("#", "");
+		const idx = stepHashes.indexOf(hash);
+		if (idx !== -1) setCurrentStep(idx);
+	}, []);
 	const [stepError, setStepError] = useState<string | null>(null); // * Error message for validation
 	// ! Use zodResolver for strict Zod schema validation (see user rules)
 
@@ -198,7 +224,6 @@ export const ProfileStepper: React.FC = () => {
 				{currentStep === 2 && (
 					<KnowledgeBaseMain
 						loading={loading}
-						voices={voices}
 						handleVoiceSelect={handleVoiceSelect}
 						handleScriptUpload={handleScriptUpload}
 						selectedScriptFileName={selectedScriptFileName}
@@ -221,7 +246,7 @@ export const ProfileStepper: React.FC = () => {
 							disabled={currentStep === 0}
 							onClick={() => {
 								setStepError(null);
-								setCurrentStep((s) => Math.max(0, s - 1));
+								goToStep(Math.max(0, currentStep - 1));
 							}}
 						>
 							Back
@@ -263,7 +288,7 @@ export const ProfileStepper: React.FC = () => {
 												);
 												return;
 											}
-											setCurrentStep((s) => Math.min(steps.length - 1, s + 1));
+											goToStep(Math.min(steps.length - 1, currentStep + 1));
 										}}
 									>
 										Next
