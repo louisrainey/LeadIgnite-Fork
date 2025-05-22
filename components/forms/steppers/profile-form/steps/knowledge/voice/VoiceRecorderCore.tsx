@@ -38,6 +38,8 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 	const [showFinishButton, setShowFinishButton] = useState(false);
 	// * Holds the blob URL for playback
 	const [audioUrl, setAudioUrl] = useState<string | null>(null);
+	// * Ref for auto-playing audio
+	const audioRef = useRef<HTMLAudioElement | null>(null);
 
 	const lottieRef = useRef<LottieRefCurrentProps | null>(null);
 	const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -87,6 +89,7 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 			setRecordingDuration((prev) => {
 				if (prev + 1 >= maxRecordingLength) {
 					setMaxLengthReached(true);
+					setTeleprompterScrolling(false); // Stop auto-scroll at max duration
 					stopRecording();
 					return maxRecordingLength;
 				}
@@ -98,26 +101,16 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 	const stopRecording = () => {
 		const mediaRecorder = mediaRecorderRef.current;
 		if (mediaRecorder && mediaRecorder.state === "recording") {
-			mediaRecorder.stop();
-			setIsRecording(false);
-			if (recordingIntervalRef.current) {
-				clearInterval(recordingIntervalRef.current);
-				recordingIntervalRef.current = null;
-			}
-			lottieRef.current?.pause();
+			// Set onstop handler BEFORE stopping
 			mediaRecorder.onstop = () => {
-				// After recording stops, allow user to preview and finish or re-record
-
 				const audioBlob = new Blob(audioChunksRef.current, {
 					type: "audio/wav",
 				});
 				if (recordingDuration >= minRecordingLength) {
 					setRecordingError(null);
-					// Clean up previous blob URL if any
 					if (audioUrl) {
 						URL.revokeObjectURL(audioUrl);
 					}
-					// * Set the new blob URL for playback (blob listening)
 					const url = URL.createObjectURL(audioBlob);
 					setAudioUrl(url);
 					setShowFinishButton(true);
@@ -132,15 +125,21 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 					}
 				}
 			};
+			mediaRecorder.stop();
+			setIsRecording(false);
+			if (recordingIntervalRef.current) {
+				clearInterval(recordingIntervalRef.current);
+				recordingIntervalRef.current = null;
+			}
+			lottieRef.current?.pause();
 		}
 	};
 
 	// Pause Lottie at start
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (lottieRef.current) {
-			lottieRef.current.goToAndStop(0, true);
-		}
+		lottieRef.current?.goToAndStop(0, true);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open]);
 
 	// Clean up audio URL on modal close
@@ -151,7 +150,14 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 		}
 	}, [open, audioUrl]);
 
-	// Finish/save
+	// Auto-play audio for preview
+	useEffect(() => {
+		if (audioUrl && showFinishButton && audioRef.current) {
+			audioRef.current.currentTime = 0;
+			audioRef.current.play().catch(() => {});
+		}
+	}, [audioUrl, showFinishButton]);
+
 	const handleFinishRecording = () => {
 		const audioBlob = new Blob(audioChunksRef.current, { type: "audio/wav" });
 		onSave(audioBlob);
@@ -168,12 +174,12 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-			<div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800 max-h-[90vh] overflow-y-auto">
-				{/* Close Button */}
+			<div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
 				<button
 					type="button"
 					onClick={onClose}
 					className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+					aria-label="Close"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +202,6 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 				</h2>
 				{extraContent}
 				<div className="mb-4 flex justify-center">
-					{/* Lottie button */}
 					<button
 						type="button"
 						onClick={handleRecordingToggle}
@@ -205,12 +210,11 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 						<Lottie
 							lottieRef={lottieRef}
 							animationData={VoiceClone}
-							loop={true}
+							loop
 							autoplay={false}
 						/>
 					</button>
 				</div>
-				{/* Duration display */}
 				<div className="mb-2 text-center text-gray-700 dark:text-gray-200">
 					Duration: {recordingDuration}s / {maxRecordingLength}s
 				</div>
@@ -219,7 +223,6 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 						! Maximum recording length reached. Recording stopped automatically.
 					</p>
 				)}
-				{/* Teleprompter (optional) */}
 				{showTeleprompter && scriptText && (
 					<Teleprompter
 						ref={teleprompterRef}
@@ -227,18 +230,23 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 						isScrolling={teleprompterScrolling}
 						onPauseChange={setTeleprompterScrolling}
 						scrollSpeed={2000}
+						showPauseResume={isRecording}
 					/>
 				)}
-				{/* Blob listening: show preview and finish if a valid recording exists */}
 				{audioUrl && showFinishButton && (
 					<div className="mb-2 flex flex-col items-center">
-						<audio src={audioUrl} controls className="w-full">
+						<audio
+							ref={audioRef}
+							src={audioUrl}
+							controls
+							className="w-full"
+							autoPlay
+						>
 							<track kind="captions" label="English captions" srcLang="en" />
 						</audio>
 						<span className="mt-1 text-gray-500 text-xs">
 							Preview your recording before saving.
 						</span>
-						{/* Re-record button: lets the user discard and try again */}
 						<button
 							type="button"
 							onClick={() => {
@@ -254,7 +262,6 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 						</button>
 					</div>
 				)}
-				{/* Start/Stop Recording Button: only show if not previewing a finished recording */}
 				{!(audioUrl && showFinishButton) && (
 					<button
 						type="button"
@@ -269,7 +276,6 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 						{isRecording ? "Stop Recording" : "Start Recording"}
 					</button>
 				)}
-				{/* Finish Recording Button */}
 				{showFinishButton && (
 					<button
 						type="button"
@@ -279,7 +285,6 @@ const VoiceRecorderCore: React.FC<VoiceRecorderCoreProps> = ({
 						Finish Recording
 					</button>
 				)}
-				{/* Error message for microphone access or short recording */}
 				{recordingError && (
 					<p className="mt-2 text-center text-red-500 text-sm">
 						{recordingError}

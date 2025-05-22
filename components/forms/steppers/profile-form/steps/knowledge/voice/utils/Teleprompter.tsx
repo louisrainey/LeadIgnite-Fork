@@ -14,6 +14,7 @@ export interface TeleprompterProps {
 	className?: string;
 	paused?: boolean;
 	onPauseChange?: (paused: boolean) => void;
+	showPauseResume?: boolean;
 }
 
 export interface TeleprompterHandle {
@@ -29,6 +30,7 @@ const Teleprompter = forwardRef<TeleprompterHandle, TeleprompterProps>(
 			scrollSpeed = 2000,
 			className = "",
 			onPauseChange,
+			showPauseResume,
 		},
 		ref,
 	) => {
@@ -86,19 +88,21 @@ const Teleprompter = forwardRef<TeleprompterHandle, TeleprompterProps>(
 
 		return (
 			<div className="relative">
-				<button
-					type="button"
-					className=" -top-3 ute absolute rounded bg-blue-500 px-3 py-1 font-semibold text-white text-xs shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-					style={{ transform: "translateY(-100%)" }}
-					onClick={() => {
-						onPauseChange?.(!isScrolling);
-					}}
-					aria-label={
-						isScrolling ? "Pause Teleprompter" : "Resume Teleprompter"
-					}
-				>
-					{isScrolling ? "Pause" : "Resume"}
-				</button>
+				{showPauseResume && (
+					<button
+						type="button"
+						className=" -top-3 ute absolute rounded bg-blue-500 px-3 py-1 font-semibold text-white text-xs shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+						style={{ transform: "translateY(-100%)" }}
+						onClick={() => {
+							onPauseChange?.(!isScrolling);
+						}}
+						aria-label={
+							isScrolling ? "Pause Teleprompter" : "Resume Teleprompter"
+						}
+					>
+						{isScrolling ? "Pause" : "Resume"}
+					</button>
+				)}
 				<div
 					className={`min-h-24 w-full overflow-y-auto border bg-white p-2 dark:border-gray-600 dark:bg-gray-900 ${className}`}
 					style={{ height: "auto", maxHeight: "32rem" }}
@@ -111,7 +115,7 @@ const Teleprompter = forwardRef<TeleprompterHandle, TeleprompterProps>(
 									// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 									key={idx}
 									ref={(el) => {
-										if (idx === currentIndex && el) {
+										if (idx === currentIndex && el && isScrolling) {
 											el.scrollIntoView({
 												behavior: "smooth",
 												block: "center",

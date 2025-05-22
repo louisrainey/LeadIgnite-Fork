@@ -24,31 +24,24 @@ const CloneModal: React.FC<CloneModalProps> = ({ open, onClose, onSave }) => {
 				showTeleprompter={true}
 				modalTitle={"Clone Your Voice"}
 				extraContent={
-					<div className="mb-4 text-center font-medium text-blue-600 text-xs dark:text-blue-300">
-						We recommend a recording length of "
-						<span className="font-bold">1-2 minutes</span>.<br />
-						More than 3 minutes won't necessarily improve the clone, and can
-						even be destructive in some cases.
-						<br />
-						<span className="font-bold">Focus on quality!</span>
-						<div className="mb-4 text-muted-foreground text-sm">
-							<strong>Guidelines for best results:</strong>
-							<ul className="mt-2 list-disc pl-5">
-								Create an original, realistic voice by specifying age,
-								accent/nationality, gender, tone, pitch, intonation, speed, and
-								emotion.
-								<li className="mt-2">
-									<a
-										href="https://elevenlabs.io/docs/product-guides/voices/voice-design"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-blue-600 hover:underline dark:text-blue-400"
-									>
-										Read full documentation
-									</a>
-								</li>
-							</ul>
-						</div>
+					<div className="mb-4 text-muted-foreground text-sm">
+						<strong>Guidelines for best results:</strong>
+						<ul className="mt-2 list-disc pl-5">
+							Approximately 1-2 minutes of clear audio without any reverb,
+							artifacts, or background noise of any kind is recommended. When we
+							speak of “audio or recording quality,” we do not mean the codec,
+							such as MP3 or WAV; we mean how the audio was captured
+							<li className="mt-2">
+								<a
+									href="https://elevenlabs.io/docs/product-guides/voices/voice-cloning/instant-voice-cloning#record-at-least-1-minute-of-audio"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-blue-600 hover:underline dark:text-blue-400"
+								>
+									Read full documentation
+								</a>
+							</li>
+						</ul>
 					</div>
 				}
 			/>

@@ -56,7 +56,7 @@ const CreateVoiceModal: React.FC<CreateVoiceModalProps> = ({
 				<div className="mb-4 text-muted-foreground text-sm">
 					<strong>Guidelines for best results:</strong>
 					<ul className="mt-2 list-disc pl-5">
-						Cresate an original, realistic voice by specifying age,
+						Create an original, realistic voice by specifying age,
 						accent/nationality, gender, tone, pitch, intonation, speed, and
 						emotion.
 						<li className="mt-2">
