@@ -89,7 +89,7 @@ export const AudioRecorderWithVisualizer = ({
 	const animationRef = useRef<any>(null);
 
 	function startRecording() {
-		if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+		if (navigator.mediaDevices?.getUserMedia) {
 			navigator.mediaDevices
 				.getUserMedia({
 					audio: true,
@@ -173,7 +173,9 @@ export const AudioRecorderWithVisualizer = ({
 			analyser.disconnect();
 		}
 		if (stream) {
-			stream.getTracks().forEach((track) => track.stop());
+			for (const track of stream.getTracks()) {
+				track.stop();
+			}
 		}
 		if (audioContext) {
 			audioContext.close();
@@ -230,7 +232,7 @@ export const AudioRecorderWithVisualizer = ({
 			const numBars = Math.floor(WIDTH / (barWidth + spacing));
 
 			for (let i = 0; i < numBars; i++) {
-				const barHeight = Math.pow(dataArray[i] / 128.0, 8) * maxBarHeight;
+				const barHeight = (dataArray[i] / 128.0) ** 8 * maxBarHeight;
 				const x = (barWidth + spacing) * i;
 				const y = HEIGHT / 2 - barHeight / 2;
 				canvasCtx.fillRect(x, y, barWidth, barHeight);

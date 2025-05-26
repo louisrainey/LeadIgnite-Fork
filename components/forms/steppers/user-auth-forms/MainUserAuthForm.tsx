@@ -1,7 +1,7 @@
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import * as z from "zod";
 import { UserAuthEmailField } from "./steps/UserAuthEmailField";
 import { UserAuthErrorMessage } from "./steps/UserAuthErrorMessage";
@@ -70,24 +70,27 @@ export default function MainUserAuthForm() {
 		}, 1200);
 	};
 
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const onSubmit = async (data: UserFormValue) => {
 		setLoading(true);
 		setError(null);
-		// TODO: API call for login/signup
-		setTimeout(() => {
-			setLoading(false);
+		try {
+			// TODO: API call for login/signup
+			console.log("Form submitted:", data);
 			if (isSignUp) setAuthState("verify");
 			// else redirect to dashboard
-		}, 1200);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "An error occurred");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	// Render based on authState
 	return (
 		<div className="mx-auto w-full max-w-md space-y-6">
 			{authState === "login" && (
-				<Form {...form}>
-					<form onSubmit={handleSubmit} className="space-y-4">
+				<Form form={form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 						<UserAuthErrorMessage error={error} />
 						<UserAuthEmailField loading={loading} />
 						<UserAuthPasswordField loading={loading} />

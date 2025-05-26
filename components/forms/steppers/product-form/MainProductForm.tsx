@@ -84,7 +84,7 @@ export const MainProductForm: React.FC<MainProductFormProps> = ({
 				<Heading title={title} description={description} />
 			</div>
 			<Separator />
-			<Form {...form}>
+			<Form form={form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="w-full space-y-8"

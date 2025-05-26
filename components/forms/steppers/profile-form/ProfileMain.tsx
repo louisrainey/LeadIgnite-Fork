@@ -61,7 +61,6 @@ export const ProfileStepper: React.FC = () => {
 				<BaseSetupMain loading={loading} initialData={initialData} />
 				<KnowledgeBaseMain
 					loading={loading}
-					voices={voices}
 					handleVoiceSelect={handleVoiceSelect}
 					handleScriptUpload={handleScriptUpload}
 					selectedScriptFileName={selectedScriptFileName}

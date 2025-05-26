@@ -6,7 +6,6 @@ import type {
 } from "@/types/elevenLabs/api/clone";
 import type React from "react";
 import { useEffect, useState, useRef } from "react";
-import type { PlayButtonTimeLineHandle } from "@/components/reusables/audio/playButtonTimeLine";
 
 import type { InitialKnowledgeBaseData } from "../../../utils/const/getKnowledgeBase";
 
@@ -23,6 +22,7 @@ import { useFormContext } from "react-hook-form";
 import { KnowledgeVoiceSelector } from "./KnowledgeVoiceSelector";
 import CloneModal from "./voice/CloneModal";
 import { FormLabel } from "@/components/ui/form";
+import type { PlayButtonTimeLineHandle } from "@/components/reusables/audio/timeline/types";
 
 export interface KnowledgeBaseMainProps {
 	loading: boolean;

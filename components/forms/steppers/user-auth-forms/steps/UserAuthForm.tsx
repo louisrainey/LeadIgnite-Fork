@@ -54,7 +54,7 @@ export default function UserAuthForm() {
 	};
 
 	return (
-		<Form {...form}>
+		<Form form={form}>
 			<form onSubmit={handleSubmit} className="w-full space-y-4">
 				<UserAuthErrorMessage error={error} />
 				<UserAuthEmailField loading={loading} />

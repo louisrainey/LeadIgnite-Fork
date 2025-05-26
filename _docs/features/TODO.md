@@ -5,59 +5,50 @@
 # https://developers.google.com/maps/documentation/javascript/reference/3d-map
 
 
-# 🪳 Fix Selects not able to be updated hydration error components\ui\select.tsx
-
-# 🪳 Fix dropdowns not able to be for campaing page  components\ui\dropdown-menu.tsx
-
-# 🪳 When creating a lead list from properties on last page get expected string receved null
-
-# 🖥️ ✅ Implement upload lead list functionality
-
-# 🖥️ ✅ ReImplement profile field validation on type
-# Implment Check Logic on Lead List so users can clcik the proeprties they want to add to the list creeat with(xNum)
-
 
 
 # 🧪 Create E2E tests for platform
 
-# 🧪 Create onboarding test for GHL
-
 # Set up user onbaording with https://www.npmjs.com/package/@frigade/react
+
 
 # ⁉️ optimize load speeds
 
-# 💾 Add Check for multiple emails / ips to prevent trial misuse
+# 💾 ✅ Add Check for multiple emails / ips to prevent trial misuse
 
-# 💾 Add Update activity and assigned on more or member reassign
+# 💾 ✅ Add Update activity and assigned on more or member reassign
 
-# 💾 Enable inviting employees
+# 💾 ✅ Enable inviting employees
 
-# ‼ 💾 Enable employee access based on permissions
+# ‼ 💾 ✅ Enable employee access based on permissions
 
-# 💾 Connect Lead search to api
+# 💾 ✅ Connect Lead search to api
 
-# 💾 Enable importing user data, into leads , lead data
+# 💾 ✅ Enable importing user data, into leads , lead data
 
-# 💾 Connect Skip trace to API , Save skip traced data
+# 💾 ✅ Connect Skip trace to API , Save skip traced data
 
-# 💾 add CRUD functionality Leade Generation | Campaigns | Leads | Lead List Managment | Kanban | Employees
+# 💾 ✅ Add CRUD functionality Leade Generation | Campaigns | Leads | Lead List Managment | Kanban | Employees
 
-# 💾 Add upgrade functionality
+# 💾 ✅ Add upgrade functionality
 
-# 💾 Integrate fetching campaigns and cron job to update them
+# 💾 ✅ Integrate fetching campaigns and cron job to update them
 
-# 🔐 Integrate fetching campaigns and cron job to update them High-Risk Fields:
+# 💾 ✅ Integrate fetching campaigns and cron job to update them High-Risk Fields:
 
-    Passwords (SecuritySettings.passwordHash)
-    OAuth Tokens (OAuthData.accessToken, OAuthData.refreshToken)
-    Two-Factor Authentication (2FA) Secrets (TwoFactorAuth.totpSecret, TwoFactorAuth.backupCodes)
-    Billing Details (PaymentDetails.cardLastFour, PaymentDetails.expiry)
-    API Keys (Integration.apiKey)
-    Personal Identifiable Information (PII) (Optional):
-        UserProfile.email
-        UserProfile.personalNum
 
-# 🔐 Enable RLS For tables
+<!-- # 🪳 ✅ Fix Selects not able to be updated hydration error components\ui\select.tsx
+
+# 🪳 ✅ Fix dropdowns not able to be for campaing page  components\ui\dropdown-menu.tsx
+
+# 🪳 ✅ When creating a lead list from properties on last page get expected string receved null
+
+# 🖥️ ✅ Implement upload lead list functionality
+
+# 🖥️ ✅ ReImplement profile field validation on type
+# 🖥️ ✅ Implment Check Logic on Lead List so users can clcik the proeprties they want to add to the list creeat with(xNum)
+ -->
+
 <!-- # 🖥️✅ Fix Kanban creating to do to add priority due date  -->
 
 <!-- # ✅ 🪳 Fix multiple file uploads being able to be deleted profile page  -->

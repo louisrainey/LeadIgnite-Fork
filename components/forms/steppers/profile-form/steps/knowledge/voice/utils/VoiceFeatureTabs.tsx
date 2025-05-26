@@ -1,9 +1,7 @@
 import type React from "react";
 import { useState, useRef, type ReactNode } from "react";
-import {
-	PlayButtonTimeLine,
-	type PlayButtonTimeLineHandle,
-} from "@/components/reusables/audio/playButtonTimeLine";
+import { PlayButtonTimeLine } from "@/components/reusables/audio/timeline/useAudioPlayer";
+import type { PlayButtonTimeLineHandle } from "@/components/reusables/audio/timeline/types";
 
 interface Tab {
 	label: string;
