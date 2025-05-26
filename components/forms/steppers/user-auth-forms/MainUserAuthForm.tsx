@@ -89,7 +89,7 @@ export default function MainUserAuthForm() {
 	return (
 		<div className="mx-auto w-full max-w-md space-y-6">
 			{authState === "login" && (
-				<Form form={form}>
+				<FormProvider {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 						<UserAuthErrorMessage error={error} />
 						<UserAuthEmailField loading={loading} />
@@ -110,7 +110,7 @@ export default function MainUserAuthForm() {
 							Forgot password?
 						</button>
 					</form>
-				</Form>
+				</FormProvider>
 			)}
 			{authState === "forgot" && (
 				<UserAuthForgotPassword

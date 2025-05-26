@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 
 const Drawer = ({
 	shouldScaleBackground = true,

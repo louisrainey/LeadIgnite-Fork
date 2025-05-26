@@ -10,7 +10,7 @@ import {
 } from "react-hook-form";
 
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 
 // * Form component: wraps children in FormProvider and <form>
 import type { UseFormReturn, FieldValues } from "react-hook-form";

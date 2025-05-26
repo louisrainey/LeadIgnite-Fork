@@ -3,7 +3,7 @@
 // import { signOut } from "@/actions/auth";
 import { Icons } from "@/components/icons";
 import { useSidebar } from "@/hooks/useSidebar";
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 import type { NavItem } from "@/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Download, Mic, Trash } from "lucide-react";
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 
 type Props = {
 	className?: string;

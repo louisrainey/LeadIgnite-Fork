@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 import { FlameIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";

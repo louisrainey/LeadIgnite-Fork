@@ -28,50 +28,58 @@ export function TimingPreferencesStep({
 	const handleDateSelection = (
 		range: { from?: Date; to?: Date } | undefined,
 	) => {
+		// Clear previous errors
+		setDateError("");
+
+		// If no range is provided, clear the dates and show error
 		if (!range) {
 			setStartDate(new Date());
 			setEndDate(null);
 			setDateError("Please select both a start and end date.");
 			return;
 		}
-		let { from, to } = range;
+
+		const { from, to } = range;
+
+		// If either date is missing, show error but don't update the dates
 		if (!from || !to) {
-			setStartDate(from ?? new Date());
-			setEndDate(to ?? null);
 			setDateError("Please select both a start and end date.");
 			return;
 		}
-		// If weekends are not allowed, snap to nearest valid weekday range
+
+		// Create new Date objects to ensure we're working with fresh instances
+		const fromDate = new Date(from);
+		const toDate = new Date(to);
+
+		// Ensure the end date is after the start date
+		if (fromDate >= toDate) {
+			setDateError("End date must be after start date.");
+			return;
+		}
+
+		// If weekends are not allowed, validate the dates
 		if (!reachOnWeekend) {
-			// Helper to check if a date is weekend
 			const isWeekend = (date: Date) =>
 				date.getDay() === 0 || date.getDay() === 6;
-			// Move from forward if it's a weekend
-			while (from && isWeekend(from) && from < to) {
-				from = new Date(from);
-				from.setDate(from.getDate() + 1);
-			}
-			// Move to backward if it's a weekend
-			while (to && isWeekend(to) && to > from) {
-				to = new Date(to);
-				to.setDate(to.getDate() - 1);
-			}
-			// If after snapping, either endpoint is still a weekend, range is invalid
-			if ((from && isWeekend(from)) || (to && isWeekend(to))) {
+
+			// Check if either date is a weekend
+			if (isWeekend(fromDate) || isWeekend(toDate)) {
 				setDateError(
-					"Selected range cannot start or end on a weekend when weekend outreach is disabled.",
+					"Selected range cannot include weekends when weekend outreach is disabled.",
 				);
-				setStartDate(null);
-				setEndDate(null);
 				return;
 			}
 		}
-		setStartDate(from);
-		setEndDate(to);
-		setDateError("");
+
+		// Only update the dates if all validations pass
+		setStartDate(fromDate);
+		setEndDate(toDate);
 	};
 
-	const isNextEnabled = !!startDate && !!endDate && !dateError;
+	// Ensure the next button is only enabled when we have valid start and end dates
+	const isNextEnabled = Boolean(
+		startDate && endDate && !dateError && startDate < endDate,
+	);
 
 	return (
 		<div className="text-center">
@@ -119,7 +127,10 @@ export function TimingPreferencesStep({
 			<div className="mb-4 w-full max-w-lg overflow-auto">
 				<Calendar
 					mode="range"
-					selected={{ from: startDate ?? undefined, to: endDate ?? undefined }}
+					selected={{
+						from: startDate,
+						to: endDate ?? undefined,
+					}}
 					onSelect={handleDateSelection}
 					numberOfMonths={2}
 					fromDate={new Date()}

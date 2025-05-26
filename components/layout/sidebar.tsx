@@ -2,7 +2,7 @@
 // import { getUserProfile } from "@/actions/auth";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { navItems } from "@/constants/data";
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 import { useNavbarStore } from "@/lib/stores/dashboard/navbarStore";
 import { useSessionStore } from "@/lib/stores/user/useSessionStore";
 import { useUserProfileStore } from "@/lib/stores/user/userProfile";

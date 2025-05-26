@@ -10,7 +10,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 import type { TeamMember } from "@/types/userProfile";
 import { HelpCircle, Plus } from "lucide-react";
 import Link from "next/link";

@@ -9,6 +9,7 @@ export const mockAssistantVoices: AssistantVoice[] = [
 		provider: faker.helpers.arrayElement(["azure", "aws", "google", "11labs"]),
 		voiceId: faker.string.uuid(),
 		speed: faker.number.float({ min: 0.8, max: 1.2 }),
+		audioUrl: faker.internet.url(),
 		chunkPlan: {
 			enabled: faker.datatype.boolean(),
 			minCharacters: faker.number.int({ min: 20, max: 100 }),

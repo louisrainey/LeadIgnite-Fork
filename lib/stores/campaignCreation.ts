@@ -18,14 +18,16 @@ export interface CampaignCreationState {
 	campaignArea: string;
 	setCampaignArea: (area: string) => void;
 	leadCount: number;
+	includeWeekends: boolean;
+	setIncludeWeekends: (v: boolean) => void;
 	setLeadCount: (count: number) => void;
 
 	// Step 3: Timing Preferences
 	daysSelected: number;
 	setDaysSelected: (days: number) => void;
 
-	startDate: Date | null;
-	setStartDate: (date: Date | null) => void;
+	startDate: Date;
+	setStartDate: (date: Date) => void;
 	endDate: Date | null;
 	setEndDate: (date: Date | null) => void;
 	reachBeforeBusiness: boolean;
@@ -53,10 +55,12 @@ export const useCampaignCreationStore = create<CampaignCreationState>(
 		setCampaignArea: (campaignArea) => set({ campaignArea }),
 		leadCount: 0,
 		setLeadCount: (leadCount) => set({ leadCount }),
+		includeWeekends: false,
+		setIncludeWeekends: (includeWeekends) => set({ includeWeekends }),
 		daysSelected: 7,
 		setDaysSelected: (daysSelected) => set({ daysSelected }),
 
-		startDate: null,
+		startDate: new Date(),
 		setStartDate: (startDate) => set({ startDate }),
 		endDate: null,
 		setEndDate: (endDate) => set({ endDate }),
@@ -77,7 +81,7 @@ export const useCampaignCreationStore = create<CampaignCreationState>(
 				leadCount: 0,
 				daysSelected: 7,
 
-				startDate: null,
+				startDate: new Date(),
 				endDate: null,
 				reachBeforeBusiness: false,
 				reachAfterBusiness: false,

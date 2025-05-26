@@ -23,13 +23,13 @@ export default function Component() {
 				</div>
 				<div className="mb-4 flex items-center justify-between">
 					<div className="flex items-center space-x-2">
-						<Button variant="icon">
+						<Button variant="default">
 							<ArrowLeftIcon className="h-6 w-6" />
 						</Button>
-						<Button variant="icon">
+						<Button variant="default">
 							<ImagePlayIcon className="h-8 w-8" />
 						</Button>
-						<Button variant="icon">
+						<Button variant="default">
 							<ArrowRightIcon className="h-6 w-6" />
 						</Button>
 					</div>
@@ -43,7 +43,7 @@ export default function Component() {
 	);
 }
 
-function ArrowLeftIcon(props) {
+function ArrowLeftIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			{...props}
@@ -57,13 +57,14 @@ function ArrowLeftIcon(props) {
 			strokeLinecap="round"
 			strokeLinejoin="round"
 		>
+			<title>Arrow Left</title>
 			<path d="m12 19-7-7 7-7" />
 			<path d="M19 12H5" />
 		</svg>
 	);
 }
 
-function ArrowRightIcon(props) {
+function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			{...props}
@@ -77,13 +78,14 @@ function ArrowRightIcon(props) {
 			strokeLinecap="round"
 			strokeLinejoin="round"
 		>
+			<title>Arrow Right</title>
 			<path d="M5 12h14" />
 			<path d="m12 5 7 7-7 7" />
 		</svg>
 	);
 }
 
-function ImagePlayIcon(props) {
+function ImagePlayIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			{...props}
@@ -97,6 +99,7 @@ function ImagePlayIcon(props) {
 			strokeLinecap="round"
 			strokeLinejoin="round"
 		>
+			<title>Play</title>
 			<path d="m11 16-5 5" />
 			<path d="M11 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6.5" />
 			<path d="M15.765 22a.5.5 0 0 1-.765-.424V13.38a.5.5 0 0 1 .765-.424l5.878 3.674a1 1 0 0 1 0 1.696z" />
@@ -105,7 +108,7 @@ function ImagePlayIcon(props) {
 	);
 }
 
-function PauseIcon(props) {
+function PauseIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			{...props}
@@ -119,13 +122,14 @@ function PauseIcon(props) {
 			strokeLinecap="round"
 			strokeLinejoin="round"
 		>
+			<title>Pause</title>
 			<rect x="14" y="4" width="4" height="16" rx="1" />
 			<rect x="6" y="4" width="4" height="16" rx="1" />
 		</svg>
 	);
 }
 
-function VolumeIcon(props) {
+function VolumeIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			{...props}
@@ -139,6 +143,7 @@ function VolumeIcon(props) {
 			strokeLinecap="round"
 			strokeLinejoin="round"
 		>
+			<title>Volume</title>
 			<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
 		</svg>
 	);

@@ -1,8 +1,7 @@
 import { Slot } from "@radix-ui/react-slot";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
-
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/_utils";
 
 const spinnerVariants = cva("relative block opacity-65", {
 	variants: {
@@ -18,7 +17,7 @@ const spinnerVariants = cva("relative block opacity-65", {
 });
 
 export interface SpinnerProps
-	extends React.ComponentProps<"span">,
+	extends Omit<React.ComponentPropsWithoutRef<"span">, "ref">,
 		VariantProps<typeof spinnerVariants> {
 	loading?: boolean;
 	asChild?: boolean;
@@ -26,50 +25,54 @@ export interface SpinnerProps
 
 const SPINNER_LEAVES = Array.from({ length: 8 }, (_, i) => `spinner-leaf-${i}`);
 
-function Spinner({
-	className,
-	size,
-	loading = true,
-	asChild = false,
-	...props
-}: SpinnerProps) {
-	const Comp = asChild ? Slot : "span";
-	const [bgColorClass, filteredClassName] = React.useMemo(() => {
-		const bgClass = className?.match(/(?:dark:bg-|bg-)\S+/g) || ["bg-current"];
-		const filteredClasses = className
-			?.replace(/(?:dark:bg-|bg-)\S+/g, "")
-			.trim();
-		return [bgClass, filteredClasses];
-	}, [className]);
+const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
+	({ className, size, loading = true, asChild = false, ...props }, ref) => {
+		const Comp = asChild ? Slot : "span";
 
-	if (!loading) {
-		return null;
-	}
+		const [bgColorClass, filteredClassName] = React.useMemo(() => {
+			const bgClass = className?.match(/(?:dark:bg-|bg-)\S+/g) || [
+				"bg-current",
+			];
+			const filteredClasses = className
+				?.replace(/(?:dark:bg-|bg-)\S+/g, "")
+				.trim();
+			return [bgClass, filteredClasses];
+		}, [className]);
 
-	return (
-		<div className="relative">
-			<Comp
-				className={cn(spinnerVariants({ size, className: filteredClassName }))}
-				{...props}
-			>
-				{SPINNER_LEAVES.map((_, i) => (
-					<span
-						key={SPINNER_LEAVES[i]}
-						className="absolute left-1/2 top-0 h-full w-[12.5%] animate-spinner-leaf-fade"
-						style={{
-							transform: `rotate(${i * 45}deg)`,
-							animationDelay: `${-(7 - i) * 100}ms`,
-							transformOrigin: "0% 50%",
-						}}
-					>
+		if (!loading) {
+			return null;
+		}
+
+		return (
+			<div className="relative">
+				<Comp
+					ref={ref}
+					className={cn(
+						spinnerVariants({ size, className: filteredClassName }),
+					)}
+					{...props}
+				>
+					{SPINNER_LEAVES.map((leafId, i) => (
 						<span
-							className={cn("block h-[30%] w-full rounded-full", bgColorClass)}
-						/>
-					</span>
-				))}
-			</Comp>
-		</div>
-	);
-}
+							key={leafId}
+							className="absolute top-0 left-1/2 h-full w-[12.5%] animate-spinner-leaf-fade"
+							style={{
+								transform: `rotate(${i * 45}deg)`,
+								animationDelay: `${-(7 - i) * 100}ms`,
+								transformOrigin: "0% 50%",
+							}}
+						>
+							<span
+								className={cn("block h-full w-full rounded-full", bgColorClass)}
+							/>
+						</span>
+					))}
+				</Comp>
+			</div>
+		);
+	},
+);
+
+Spinner.displayName = "Spinner";
 
 export { Spinner };

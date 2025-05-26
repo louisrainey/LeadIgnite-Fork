@@ -1,5 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 import Link from "next/link";
 
 // ✅ Define the expected props type

@@ -12,7 +12,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 
 interface DatePickerWithRangeProps
 	extends React.HTMLAttributes<HTMLDivElement> {

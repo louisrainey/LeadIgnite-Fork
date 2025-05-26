@@ -222,7 +222,7 @@ export default async function PropertyPage({
 		<PageContainer scrollable={true}>
 			<div className=" h-auto w-full space-y-4">
 				{/* Full-width container */}
-				<PropertyHeader property={property} />
+				<PropertyHeader property={property} onLeadActivity={() => {}} />
 
 				{/* Google Maps replacing Placeholder Image */}
 				<div className="relative mb-4 h-64 w-full">

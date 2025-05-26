@@ -2,7 +2,7 @@ import type React from "react";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { cn } from "@/lib/_utils/kanban/utils";
+import { cn } from "@/lib/_utils";
 
 export const logoSchema = z
 	.instanceof(File)

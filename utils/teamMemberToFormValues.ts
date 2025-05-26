@@ -18,9 +18,14 @@ export function teamMemberToFormValues(
 		email: member.email,
 		role: member.role,
 		permissions: { ...member.permissions },
-		twoFactorAuth: member.twoFactorAuth ?? {
-			isEnabled: false,
-			methods: { sms: false, email: false, authenticatorApp: false },
+		twoFactorAuth: {
+			isEnabled: member.twoFactorAuth?.isEnabled ?? false,
+			methods: {
+				email: member.twoFactorAuth?.methods?.email ?? false,
+				sms: member.twoFactorAuth?.methods?.sms ?? false,
+				authenticatorApp:
+					member.twoFactorAuth?.methods?.authenticatorApp ?? false,
+			},
 		},
 	};
 }

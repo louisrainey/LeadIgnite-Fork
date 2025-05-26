@@ -30,7 +30,7 @@
 // import { Switch } from "@/components/ui/switch";
 // import { mockVoices } from "@/constants/_faker/_api/vapi/assistant";
 // import { mockUserProfile } from "@/constants/_faker/profile/userProfile";
-// import { cn } from "@/lib/_utils/kanban/utils";
+// import { cn } from "@/lib/_utils";
 // import { useUserProfileStore } from "@/lib/stores/user/userProfile";
 // import {
 // 	NotificationPreferences,
