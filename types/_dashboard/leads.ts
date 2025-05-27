@@ -1,26 +1,170 @@
-export type LeadStatus = "New Lead" | "Contacted" | "Closed" | "Lost";
+import type { PropertyRecord, PropertyFeatures } from "./rentcast";
+
+export type LeadStatus =
+	| "New Lead"
+	| "Contacted"
+	| "Qualified"
+	| "Proposal Sent"
+	| "Negotiation"
+	| "Closed Won"
+	| "Closed Lost"
+	| "Nurture";
+
+export type LeadSource =
+	| "Website"
+	| "Referral"
+	| "Cold Call"
+	| "Social Media"
+	| "Email Campaign"
+	| "Events"
+	| "Direct Mail"
+	| "Paid Ads"
+	| "Other";
+
+export type CommunicationPreference = "Email" | "Phone" | "Text" | "Mail";
 
 export type SocialLinks = {
-	facebook: string;
-	linkedin: string;
-	instagram: string;
-	twitter: string;
+	facebook?: string;
+	linkedin?: string;
+	instagram?: string;
+	twitter?: string;
+	zillow?: string;
+	redfin?: string;
+	realtor?: string;
+};
+
+export type LeadAddress = {
+	street: string;
+	street2?: string;
+	city: string;
+	state: string;
+	zipCode: string;
+	county?: string;
+	country?: string;
+	latitude?: number;
+	longitude?: number;
+	fullAddress?: string;
+};
+
+export type LeadProperty = {
+	// Basic property info
+	id: string;
+	address: LeadAddress;
+	propertyType?: string;
+	yearBuilt?: number;
+	lotSize?: number; // in square feet
+	livingArea?: number; // in square feet
+	bedrooms?: number;
+	bathrooms?: number;
+
+	// Property features from RentCast
+	features?: Partial<PropertyFeatures>;
+
+	// Ownership details
+	isOwnerOccupied?: boolean;
+	currentOwner?: {
+		name: string;
+		phone?: string;
+		email?: string;
+		mailingAddress?: LeadAddress;
+	};
+
+	// Financials
+	estimatedValue?: number;
+	lastSalePrice?: number;
+	lastSaleDate?: string; // ISO date string
+	estimatedRent?: number;
+	estimatedTaxes?: number;
+	hoaFee?: number;
+
+	// Additional metadata
+	mlsNumber?: string;
+	parcelId?: string;
+	notes?: string;
+
+	// Raw RentCast data if available
+	rentCastData?: Partial<PropertyRecord>;
+};
+
+export type LeadActivity = {
+	id: string;
+	type: "Call" | "Email" | "Meeting" | "Note" | "SMS" | "Task" | "Other";
+	timestamp: string; // ISO date string
+	title: string;
+	description?: string;
+	user: {
+		id: string;
+		name: string;
+		email: string;
+	};
+	metadata?: Record<string, unknown>;
 };
 
 export type LeadTypeGlobal = {
-	id: string; // Unique identifier for the lead
-	firstName: string; // First name of the lead
-	lastName: string; // Last name of the lead
-	email: string;
-	phone: string; // Phone number
-	summary: string; // Summary of the interaction or lead
-	bed: number; // Number of bedrooms in the property
-	bath: number; // Number of bathrooms in the property
-	sqft: number; // Square footage of the property
-	status: LeadStatus; // Lead status (e.g., "New Lead", "Contacted", "Closed", "Lost")
-	followUp: string | null; // Follow-up date (can be null if none is set)
-	lastUpdate: string; // Last update timestamp
-	address1: string; // Address of the lead (optional)
-	campaignID?: string;
-	socials?: SocialLinks; // Social media links
+	// Core lead information
+	id: string;
+	createdAt: string; // ISO date string
+	updatedAt: string; // ISO date string
+
+	// Contact information
+	firstName: string;
+	lastName: string;
+	email?: string;
+	phone?: string;
+	alternatePhone?: string;
+	company?: string;
+	title?: string;
+	preferredContactMethod?: CommunicationPreference[];
+	doNotContact?: boolean;
+
+	// Lead details
+	status: LeadStatus;
+	source: LeadSource;
+	sourceDetails?: string;
+	assignedTo?: {
+		id: string;
+		name: string;
+		email: string;
+	};
+
+	// Property information
+	properties: LeadProperty[];
+	preferredPropertyTypes?: string[];
+	preferredLocations?: string[];
+	budgetRange?: {
+		min?: number;
+		max?: number;
+	};
+
+	// Timeline
+	lastContacted?: string; // ISO date string
+	followUpDate?: string; // ISO date string
+
+	// Communication history
+	activities: LeadActivity[];
+
+	// Notes and tags
+	notes?: string;
+	tags: string[];
+
+	// Social and online presence
+	socialLinks?: SocialLinks;
+
+	// Additional metadata
+	customFields?: Record<string, unknown>;
+	metadata?: {
+		ipAddress?: string;
+		userAgent?: string;
+		campaign?: {
+			name?: string;
+			source?: string;
+			medium?: string;
+			term?: string;
+			content?: string;
+			id?: string; // campaignID moved here
+		};
+		// Legacy fields for backward compatibility
+		lastUpdate?: string; // Last update timestamp
+		address1?: string; // Address of the lead (deprecated, use properties[0].address instead)
+	};
 };
