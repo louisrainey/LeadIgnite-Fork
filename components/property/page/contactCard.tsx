@@ -13,7 +13,7 @@ interface ContactCardProps {
 	property: PropertyDetails; // The property data passed as a prop
 }
 
-const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
+export const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
 	const { agent, agent_email, agent_phones } = property;
 
 	// State to handle modal visibility for both AddContact and SkipTrace

@@ -1,12 +1,32 @@
-import PageContainer from "@/components/layout/page-container";
+"use server";
+
+import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
+// Dynamic imports for client components
+const PropertyHeaderWrapper = dynamic(
+	() => import("@/components/property/page/PropertyHeaderWrapper"),
+	{ ssr: false },
+);
+
+// Static imports
+import { detailed_properties_saved } from "@/constants/dashboard/properties";
+import {
+	calculateOwnershipLength,
+	convertSqftToAcres,
+} from "@/constants/utility/property";
+import type { PropertyDetails } from "@/types/_dashboard/maps";
 import PropertyMap from "@/components/maps/properties/propertyMap";
+import PageContainer from "@/components/layout/page-container";
+import { Skeleton } from "@/components/ui/skeleton";
+import AmortizationCalculator from "@/components/property/page/calculations/amortizationCalculator";
 import WholesaleCalculator from "@/components/property/page/calculations/wholesale";
-import ContactInformationCard from "@/components/property/page/contactCard";
 import ForeclosuresComponent from "@/components/property/page/forclusureLiens";
 import LandLocationInformationComponent from "@/components/property/page/landLocationInformation";
 import {
-	CurrentMortgageTable,
 	LastSaleTable,
+	CurrentMortgageTable,
 } from "@/components/property/page/lastSaleCurrentMortgage";
 import LinkedPropertiesComponent from "@/components/property/page/linkedProperties";
 import MLSTableComponent from "@/components/property/page/mlsData";
@@ -16,37 +36,46 @@ import {
 } from "@/components/property/page/mortgageHistory";
 import OwnershipInformationComponent from "@/components/property/page/ownerInformation";
 import PropertyCardDataComponent from "@/components/property/page/propertyDetailsCard";
-import PropertyHeader from "@/components/property/page/propertyHeader";
+
 import PropertyOverviewCard from "@/components/property/page/propertyOverviewCard";
 import TaxInformationComponent from "@/components/property/page/taxInformation";
 import {
 	exampleLinkedPropertyData,
 	foreclosureData,
 	liensData,
-	mortgageData,
 	saleData,
+	mortgageData,
 	saleHistoryData,
 } from "@/constants/dashboard/profileInfo";
-import { detailed_properties_saved } from "@/constants/dashboard/properties";
 import { emptyAgentProperty } from "@/constants/dashboard/testProperties";
-import {
-	calculateOwnershipLength,
-	convertSqftToAcres,
-} from "@/constants/utility/property";
-import type { PropertyDetails } from "@/types/_dashboard/maps";
-import { notFound } from "next/navigation";
-import AmortizationCalculator from "../../../../components/property/page/calculations/amortizationCalculator";
 import PropertyTabsList from "./utils/propertyTabs";
+import ContactCard from "@/components/property/page/contactCard";
+
+// Dynamically import the client component with no SSR
+const PropertyPageClient = dynamic(
+	() => import("@/components/property/page/PropertyPageClient"),
+	{
+		ssr: false,
+		loading: () => <Skeleton className="h-64 w-full" />,
+	},
+);
+
 // Async function to fetch property data
 async function fetchProperty(id: string): Promise<PropertyDetails | null> {
 	try {
-		const response = await fetch(`https://api.example.com/properties/${id}`, {
+		// First try to get the base URL from environment variables
+		const baseUrl =
+			process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+		const response = await fetch(`${baseUrl}/properties/${id}`, {
 			headers: {
 				"Content-Type": "application/json",
 			},
+			// Add caching for better performance
+			next: { revalidate: 60 * 60 }, // Revalidate every hour
 		});
 
 		if (!response.ok) {
+			console.warn(`Failed to fetch property ${id}: ${response.statusText}`);
 			return null;
 		}
 
@@ -77,6 +106,8 @@ export default async function PropertyPage({
 	if (!property) {
 		notFound();
 	}
+
+	// Calculate property metrics
 	const equity =
 		property.estimated_value && property.mortgage_balance
 			? property.estimated_value - property.mortgage_balance
@@ -86,19 +117,41 @@ export default async function PropertyPage({
 		? (equity / property.estimated_value) * 100
 		: 0;
 
-	let equityStatus = "Low";
-	if (equityPercentage > 70) {
-		equityStatus = "High";
-	} else if (equityPercentage > 40) {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		equityStatus = "Medium";
+	const equityStatus =
+		equityPercentage > 70 ? "High" : equityPercentage > 40 ? "Medium" : "Low";
+
+	// Define the ownership data with proper types
+	interface PropertyWithOwners extends PropertyDetails {
+		owner1_name?: string;
+		owner2_name?: string;
 	}
 
+	const propertyWithOwners = property as PropertyWithOwners;
+
 	const ownershipData = {
-		owner1_name: "Not Available", // Placeholder if owner information is not available
-		owner2_name: "Not Available", // Placeholder if owner information is not available
+		owner1_name:
+			typeof propertyWithOwners.owner1_name === "string"
+				? propertyWithOwners.owner1_name
+				: "Not Available",
+		owner2_name:
+			typeof propertyWithOwners.owner2_name === "string"
+				? propertyWithOwners.owner2_name
+				: "Not Available",
 		ownership_length: calculateOwnershipLength(property.last_sold_date),
-		mailing_address: `${property.full_street_line}, ${property.city}, ${property.state} ${property.zip_code}`,
+		mailing_address:
+			`${property.full_street_line || ""}, ${property.city || ""} ${property.state || ""} ${property.zip_code || ""}`
+				.replace(/\s*,\s*$/, "")
+				.replace(/\s+/g, " ")
+				.trim(),
+	};
+
+	// Prepare property data with calculated fields
+	const enhancedProperty = {
+		...property,
+		equity,
+		equityPercentage,
+		equityStatus,
+		ownershipData,
 	};
 
 	const landLocationData = {
@@ -154,7 +207,7 @@ export default async function PropertyPage({
 			label: "Overview",
 			content: (
 				<>
-					<ContactInformationCard property={emptyAgentProperty} />
+					<ContactCard property={emptyAgentProperty} />
 					<WholesaleCalculator />
 					<AmortizationCalculator />
 				</>
@@ -165,7 +218,9 @@ export default async function PropertyPage({
 			label: "Property Details",
 			content: (
 				<>
-					<OwnershipInformationComponent ownership={ownershipData} />
+					<OwnershipInformationComponent
+						ownership={enhancedProperty.ownershipData}
+					/>
 					<PropertyCardDataComponent property={property} />
 					<LandLocationInformationComponent landLocation={landLocationData} />
 				</>
@@ -222,7 +277,7 @@ export default async function PropertyPage({
 		<PageContainer scrollable={true}>
 			<div className=" h-auto w-full space-y-4">
 				{/* Full-width container */}
-				<PropertyHeader property={property} onLeadActivity={() => {}} />
+				<PropertyHeaderWrapper property={property} />
 
 				{/* Google Maps replacing Placeholder Image */}
 				<div className="relative mb-4 h-64 w-full">
