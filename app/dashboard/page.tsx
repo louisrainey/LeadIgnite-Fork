@@ -5,7 +5,7 @@ import PropertySearch from "@/components/leadsSearch/PropertySearch";
 export default function Page() {
 	return (
 		<PageContainer scrollable={true}>
-			<PropertySearch />
+			<div />
 		</PageContainer>
 	);
 }
