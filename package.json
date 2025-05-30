@@ -12,7 +12,12 @@
 		"start": "next start",
 		"lint": "biome check lib types hooks components app api actions",
 		"format": "biome format --write lib types hooks components app api actions",
-		"prepare": "husky"
+		"prepare": "husky",
+		"clean": "rimraf .next .vercel .swc coverage",
+		"clean:all": "pnpm clean && rimraf node_modules",
+		"clean:install": "pnpm clean:all && pnpm install",
+		"clean:build": "pnpm clean && pnpm build",
+		"clean:all:build": "pnpm clean:all && pnpm install && pnpm build"
 	},
 	"lint-staged": {
 		"**/*.{js,jsx,ts,tsx,json,css,md,html,scss,tsx,ts,js,jsx}": [
@@ -120,6 +125,7 @@
 		"husky": "^9.0.11",
 		"lint-staged": "^15.2.7",
 		"prisma": "^5.20.0",
+		"rimraf": "^6.0.1",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.6.2"
 	}
