@@ -5,7 +5,11 @@ import {
 	mockFetchAddressesFromApi,
 } from "@/constants/utility/maps";
 import { usePropertyStore } from "@/lib/stores/leadSearch/drawer";
-import type { Coordinate, MapFormSchemaType } from "@/types/_dashboard/maps";
+import type {
+	Coordinate,
+	MapFormSchemaType,
+	PropertyDetails,
+} from "@/types/_dashboard/maps";
 import { mapFormSchema } from "@/types/zod/propertyList";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -110,9 +114,28 @@ const PropertySearch: React.FC<PropertySearchProps> = ({
 		async (count: number) => {
 			try {
 				setIsLoading(true);
-				const initialProperties = generateFakeProperties(count);
+
+				// Load a small initial set of properties first
+				const initialBatch = Math.min(3, count);
+				const initialProperties = generateFakeProperties(initialBatch);
 				setProperties(initialProperties);
 				setHasResults(initialProperties.length > 0);
+
+				// Load remaining properties in the background
+				if (count > initialBatch) {
+					setTimeout(() => {
+						try {
+							const remainingProperties = generateFakeProperties(
+								count - initialBatch,
+							);
+							// Get current properties and merge with new ones
+							const currentProperties = usePropertyStore.getState().properties;
+							setProperties([...currentProperties, ...remainingProperties]);
+						} catch (err) {
+							console.error("Error loading additional properties:", err);
+						}
+					}, 0);
+				}
 			} catch (error) {
 				console.error("Error loading properties:", error);
 				toast.error("Failed to load properties. Please try again.");
@@ -124,9 +147,13 @@ const PropertySearch: React.FC<PropertySearchProps> = ({
 		[setProperties],
 	);
 
-	// Load initial data on mount
+	// Load initial data on mount with a small delay to prevent blocking the main thread
 	useEffect(() => {
-		loadInitialProperties(initialPropCount);
+		const timer = setTimeout(() => {
+			loadInitialProperties(initialPropCount);
+		}, 100);
+
+		return () => clearTimeout(timer);
 	}, [loadInitialProperties, initialPropCount]);
 
 	// Tour handlers
