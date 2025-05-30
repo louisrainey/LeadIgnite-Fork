@@ -88,7 +88,7 @@ export const LeadClient: React.FC = () => {
 			.map((lead) => lead.metadata?.campaign?.id) // Updated to use the new path
 			.filter((campaignID): campaignID is string => !!campaignID); // Filter out undefined/null
 		return Array.from(new Set(campaignIds)); // Return only unique campaign IDs
-	}, [allLeads]); // Changed dependency to allLeads since we're using it directly
+	}, [allLeads]); // Changed dependency to allLeads since we're using it directlyaa
 
 	return (
 		<>
