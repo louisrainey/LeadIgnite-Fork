@@ -195,4 +195,4 @@ export function generateMockLeads(count: number): LeadTypeGlobal[] {
 	});
 }
 
-export const mockGeneratedLeads = APP_TESTING_MODE && generateMockLeads(100);
+export const mockGeneratedLeads = APP_TESTING_MODE && generateMockLeads(10);
