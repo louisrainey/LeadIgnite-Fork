@@ -107,9 +107,29 @@ export const generateFakeProperty = (): PropertyDetails => {
 	};
 };
 
-// Generate a list of fake properties
+// Cache for generated properties to avoid regeneration
+const propertyCache = new Map<number, PropertyDetails[]>();
+
+// Generate a list of fake properties with chunking for better performance
 export const generateFakeProperties = (count: number): PropertyDetails[] => {
-	return Array.from({ length: count }, generateFakeProperty);
+	// Return cached properties if available
+	if (propertyCache.has(count)) {
+		return [...(propertyCache.get(count) || [])];
+	}
+
+	// Generate properties in smaller chunks to avoid blocking
+	const chunkSize = 5;
+	const result: PropertyDetails[] = [];
+
+	for (let i = 0; i < count; i += chunkSize) {
+		const chunkCount = Math.min(chunkSize, count - i);
+		const chunk = Array.from({ length: chunkCount }, generateFakeProperty);
+		result.push(...chunk);
+	}
+
+	// Cache the result
+	propertyCache.set(count, [...result]);
+	return result;
 };
 
 export const MockInHouseLeadAgrigator =
