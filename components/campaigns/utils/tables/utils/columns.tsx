@@ -14,7 +14,7 @@ import type {
 import type { EmailCampaign } from "@/types/goHighLevel/email";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 
 // Define the column configuration for SocialMediaCampaign
 export const socialMediaColumns: ColumnDef<SocialMediaCampaign>[] = [

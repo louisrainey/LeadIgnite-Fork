@@ -1,6 +1,6 @@
 import type { UserProfile } from "@/types/userProfile";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface UserProfileState {
 	userProfile: UserProfile | null;
@@ -34,7 +34,7 @@ export const useUserProfileStore = create<UserProfileState>()(
 		}),
 		{
 			name: "user-profile-store", // Local storage key
-			getStorage: () => localStorage, // Can use sessionStorage instead
+			storage: createJSONStorage(() => localStorage),
 		},
 	),
 );

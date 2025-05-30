@@ -6,7 +6,7 @@ import type {
 	CommunicationPreference,
 } from "@/types/_dashboard/leads";
 import { faker } from "@faker-js/faker";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import {
 	leadSources,
 	leadStatus,
