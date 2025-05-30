@@ -10,7 +10,8 @@ import {
 import { mockSocialMediaCampaigns } from "@/constants/_faker/social/socialCampaigns";
 import { mockTextCampaigns } from "@/constants/_faker/texts/textCampaign";
 import { mockLeadListData } from "@/constants/dashboard/leadList";
-import { APP_TESTING_MODE, mockGeneratedLeads } from "@/constants/data";
+import { APP_TESTING_MODE } from "../../data";
+import { mockGeneratedLeads } from "@/constants/_faker/leads/mockLeads";
 import type { EmailCampaignAnalytics } from "@/types/goHighLevel/email";
 import type { TextMessageCampaignAnalytics } from "@/types/goHighLevel/text";
 import type { AIKnowledgebase, UserProfile } from "@/types/userProfile";

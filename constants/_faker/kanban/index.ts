@@ -6,7 +6,8 @@ import type {
 	Status,
 } from "@/types/_dashboard/kanban";
 import { faker } from "@faker-js/faker";
-import { APP_TESTING_MODE, mockGeneratedLeads } from "../../data";
+import { APP_TESTING_MODE } from "../../data";
+import { mockGeneratedLeads } from "@/constants/_faker/leads/mockLeads";
 
 // Default column structure with status-based `id`
 export const defaultCols: KanbanColumn[] = [

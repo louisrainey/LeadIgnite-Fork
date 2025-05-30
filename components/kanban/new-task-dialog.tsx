@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
-import { mockGeneratedLeads } from "@/constants/data";
+import { mockGeneratedLeads } from "@/constants/_faker/leads/mockLeads";
 import { mockLeadListData } from "@/constants/dashboard/leadList";
 import { useTaskStore } from "@/lib/stores/taskActions";
 

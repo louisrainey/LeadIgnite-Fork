@@ -1,11 +1,9 @@
 import type { LeadList } from "@/types/_dashboard/leadList";
 import { faker } from "@faker-js/faker";
-import {
-	APP_TESTING_MODE,
-	generateMockLeads,
-	staticMockLeadData,
-} from "../data";
+import { APP_TESTING_MODE } from "../data";
 import { v4 as uuidv4 } from "uuid";
+import { generateMockLeads } from "../_faker/leads/mockLeads";
+import { staticMockLeadData } from "./leads";
 
 export function generateMockLeadLists(count: number): LeadList[] {
 	const leadLists: LeadList[] = [];

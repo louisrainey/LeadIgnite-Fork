@@ -2,12 +2,12 @@ import type { LeadTypeGlobal } from "@/types/_dashboard/leads";
 import type { CellContext } from "@tanstack/react-table";
 
 export function SocialsCell({ row }: CellContext<LeadTypeGlobal, unknown>) {
-	const { socials } = row.original;
+	const { socialLinks } = row.original;
 	return (
 		<div className="flex flex-col space-y-2">
-			{socials?.facebook && (
+			{socialLinks?.facebook && (
 				<a
-					href={socials.facebook}
+					href={socialLinks.facebook}
 					target="_blank"
 					className="text-blue-500 hover:underline"
 					rel="noreferrer"
@@ -15,9 +15,9 @@ export function SocialsCell({ row }: CellContext<LeadTypeGlobal, unknown>) {
 					Facebook
 				</a>
 			)}
-			{socials?.linkedin && (
+			{socialLinks?.linkedin && (
 				<a
-					href={socials.linkedin}
+					href={socialLinks.linkedin}
 					target="_blank"
 					className="text-blue-500 hover:underline"
 					rel="noreferrer"
@@ -25,9 +25,9 @@ export function SocialsCell({ row }: CellContext<LeadTypeGlobal, unknown>) {
 					LinkedIn
 				</a>
 			)}
-			{socials?.instagram && (
+			{socialLinks?.instagram && (
 				<a
-					href={socials.instagram}
+					href={socialLinks.instagram}
 					target="_blank"
 					className="text-blue-500 hover:underline"
 					rel="noreferrer"

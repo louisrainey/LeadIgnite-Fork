@@ -16,7 +16,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { mockGeneratedLeads } from "@/constants/data";
+import { mockGeneratedLeads } from "@/constants/_faker/leads/mockLeads";
 import type { PropertyDetails } from "@/types/_dashboard/maps"; // Ensure you import the PropertyDetails type
 import {
 	CalendarIcon,

@@ -36,15 +36,23 @@ export async function exportLeadsToExcel(
 			phone: lead.phone,
 			email: lead.email,
 			status: lead.status,
-			followUp: lead.followUp,
-			campaignID: lead.campaignID,
-			address1: lead.address1,
+			followUp: lead.metadata?.campaign?.id,
+			campaignID: lead.metadata?.campaign?.id,
+			address1: lead.properties[0].address.street,
 			socials:
 				[
-					lead.socials?.facebook ? `Facebook: ${lead.socials.facebook}` : "",
-					lead.socials?.linkedin ? `LinkedIn: ${lead.socials.linkedin}` : "",
-					lead.socials?.instagram ? `Instagram: ${lead.socials.instagram}` : "",
-					lead.socials?.twitter ? `Twitter: ${lead.socials.twitter}` : "",
+					lead.socialLinks?.facebook
+						? `Facebook: ${lead.socialLinks.facebook}`
+						: "",
+					lead.socialLinks?.linkedin
+						? `LinkedIn: ${lead.socialLinks.linkedin}`
+						: "",
+					lead.socialLinks?.instagram
+						? `Instagram: ${lead.socialLinks.instagram}`
+						: "",
+					lead.socialLinks?.twitter
+						? `Twitter: ${lead.socialLinks.twitter}`
+						: "",
 				]
 					.filter(Boolean)
 					.join(", ") || "No Social Profiles",
@@ -82,7 +90,7 @@ export async function exportLeadListsToExcel(
 			{ header: "Bathrooms", key: "bath", width: 10 },
 			{ header: "Square Footage", key: "sqft", width: 15 },
 			{ header: "Status", key: "status", width: 15 },
-			{ header: "Follow Up", key: "followUp", width: 20 },
+			{ header: "Follow Up", key: "followUpDate", width: 20 },
 			{ header: "Last Update", key: "lastUpdate", width: 20 },
 			{ header: "Address", key: "address1", width: 30 },
 			{ header: "Campaign ID", key: "campaignID", width: 20 },
@@ -108,18 +116,18 @@ export async function exportLeadListsToExcel(
 				email: lead.email,
 				phone: lead.phone,
 				summary: lead.summary,
-				bed: lead.bed,
-				bath: lead.bath,
-				sqft: lead.sqft,
+				bed: lead.properties[0].bedrooms,
+				bath: lead.properties[0].bathrooms,
+				sqft: lead.properties[0].livingArea,
 				status: lead.status,
-				followUp: lead.followUp,
-				lastUpdate: lead.lastUpdate,
-				address1: lead.address1,
-				campaignID: lead.campaignID,
-				facebook: lead.socials?.facebook || "N/A",
-				linkedin: lead.socials?.linkedin || "N/A",
-				instagram: lead.socials?.instagram || "N/A",
-				twitter: lead.socials?.twitter || "N/A",
+				followUpDate: lead.followUpDate,
+				lastUpdate: lead.metadata?.lastUpdate,
+				address1: lead.properties[0].address.street,
+				campaignID: lead.metadata?.campaign?.id,
+				facebook: lead.socialLinks?.facebook || "N/A",
+				linkedin: lead.socialLinks?.linkedin || "N/A",
+				instagram: lead.socialLinks?.instagram || "N/A",
+				twitter: lead.socialLinks?.twitter || "N/A",
 			});
 		}
 	}
@@ -181,18 +189,18 @@ export async function exportLeadListsToZip(
 				email: lead.email,
 				phone: lead.phone,
 				summary: lead.summary,
-				bed: lead.bed,
-				bath: lead.bath,
-				sqft: lead.sqft,
+				bed: lead.properties[0].bedrooms,
+				bath: lead.properties[0].bathrooms,
+				sqft: lead.properties[0].livingArea,
 				status: lead.status,
-				followUp: lead.followUp,
-				lastUpdate: lead.lastUpdate,
-				address1: lead.address1,
-				campaignID: lead.campaignID,
-				facebook: lead.socials?.facebook || "N/A",
-				linkedin: lead.socials?.linkedin || "N/A",
-				instagram: lead.socials?.instagram || "N/A",
-				twitter: lead.socials?.twitter || "N/A",
+				followUpDate: lead.followUpDate,
+				lastUpdate: lead.metadata?.lastUpdate,
+				address1: lead.properties[0].address.street,
+				campaignID: lead.metadata?.campaign?.id,
+				facebook: lead.socialLinks?.facebook || "N/A",
+				linkedin: lead.socialLinks?.linkedin || "N/A",
+				instagram: lead.socialLinks?.instagram || "N/A",
+				twitter: lead.socialLinks?.twitter || "N/A",
 			});
 		}
 		const excelBuffer = await workbook.xlsx.writeBuffer();

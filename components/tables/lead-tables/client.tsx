@@ -7,7 +7,6 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { useLeadStore } from "@/lib/stores/lead";
 import searchAnimation from "@/public/lottie/SearchPing.json"; // Lottie JSON file path
-import type { LeadStatus } from "@/types/_dashboard/leads";
 import { endOfToday, formatISO, startOfToday } from "date-fns"; // Ensure you import these utilities
 import Lottie from "lottie-react";
 import { Calendar, Download, HelpCircle, Plus } from "lucide-react";
@@ -16,6 +15,7 @@ import { useMemo, useRef, useState } from "react";
 import { leadListColumns } from "./LeadColumns";
 import { LeadTables } from "./LeadTables";
 import FilterDropdown from "./utils/filterLeads";
+import type { LeadStatus } from "@/types/_dashboard/leads";
 
 export const LeadClient: React.FC = () => {
 	// State for modal visibility
@@ -83,14 +83,12 @@ export const LeadClient: React.FC = () => {
 	};
 
 	// Memoize the unique campaign IDs from filtered leads
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const availableCampaigns = useMemo(() => {
 		const campaignIds = allLeads
-			.map((lead) => lead.campaignID) // Extract campaign IDs
-			.filter((campaignID): campaignID is string => !!campaignID); // Filter out undefined/null and cast to string
+			.map((lead) => lead.metadata?.campaign?.id) // Updated to use the new path
+			.filter((campaignID): campaignID is string => !!campaignID); // Filter out undefined/null
 		return Array.from(new Set(campaignIds)); // Return only unique campaign IDs
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [leads]);
+	}, [allLeads]); // Changed dependency to allLeads since we're using it directly
 
 	return (
 		<>

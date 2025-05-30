@@ -313,6 +313,27 @@ interface PropertyRecord {
 	[key: string]: unknown;
 }
 
+export type RentCastOffMarketProperty = {
+	property: PropertyRecord;
+	features?: PropertyFeatures;
+	taxAssessments?: { [year: string]: TaxAssessment };
+	propertyTaxes?: { [year: string]: PropertyTax };
+	history?: { [date: string]: PropertyHistoryEvent };
+	owner?: PropertyOwner;
+	propertyType: PropertyType;
+	architectureType?: ArchitectureType;
+	coolingType?: CoolingType;
+	exteriorType?: ExteriorType;
+	fireplaceType?: FireplaceType;
+	foundationType?: FoundationType;
+	garageType?: GarageType;
+	heatingType?: HeatingType;
+	poolType?: PoolType;
+	roofType?: RoofType;
+	viewType?: ViewType;
+	address: MailingAddress;
+};
+
 export type {
 	PropertyRecord,
 	PropertyFeatures,

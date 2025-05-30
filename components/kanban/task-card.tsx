@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { mockGeneratedLeads } from "@/constants/data";
+import { mockGeneratedLeads } from "@/constants/_faker/leads/mockLeads";
 import { mockLeadListData } from "@/constants/dashboard/leadList";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { mockTeamMembers } from "@/constants/_faker/profile/team/members";

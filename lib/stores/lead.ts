@@ -1,5 +1,5 @@
 import { MockUserProfile } from "@/constants/_faker/profile/userProfile";
-import type { LeadTypeGlobal } from "@/types/_dashboard/leads";
+import type { LeadTypeGlobal, LeadStatus } from "@/types/_dashboard/leads";
 import { toast } from "sonner";
 import { create } from "zustand";
 
@@ -9,9 +9,7 @@ import { leadExcelColumns } from "@/components/tables/lead-tables/LeadColumns"; 
 interface LeadState {
 	leads: LeadTypeGlobal[]; // Holds the lead data
 	filteredLeads: LeadTypeGlobal[]; // Holds the filtered lead data
-	filterByStatus: (
-		status: "all" | "New Lead" | "Contacted" | "Closed" | "Lost",
-	) => void; // Filter by status
+	filterByStatus: (status: LeadStatus) => void; // Filter by status
 	filterByFollowUp: (startDate: string, endDate: string) => void; // Filter by follow-up date range
 	filterByCampaignID: (campaignID: string) => void; // Filter by campaign ID
 	resetFilters: () => void; // Reset all filters
@@ -51,7 +49,7 @@ export const useLeadStore = create<LeadState>((set, get) => ({
 	filteredLeads: MockUserProfile.companyInfo.leads, // Start with no filter applied, showing all leads
 
 	// Filter leads by status (New Lead, Contacted, Closed, Lost)
-	filterByStatus: (status) => {
+	filterByStatus: (status: LeadStatus | "all") => {
 		const { leads } = get();
 		let filteredLeads = leads;
 
@@ -63,32 +61,27 @@ export const useLeadStore = create<LeadState>((set, get) => ({
 	},
 
 	// Filter leads by follow-up date range (inclusive)
-	filterByFollowUp: (startDate, endDate) => {
+	filterByFollowUp: (startDate: string, endDate: string) => {
 		const { leads } = get();
+		const start = new Date(startDate);
+		const end = new Date(endDate);
+
 		const filteredLeads = leads.filter((lead) => {
-			if (lead.followUp) {
-				const followUpDate = new Date(lead.followUp);
-				const start = new Date(startDate);
-				const end = new Date(endDate);
+			if (lead.followUpDate) {
+				const followUpDate = new Date(lead.followUpDate);
 				return followUpDate >= start && followUpDate <= end;
 			}
 			return false; // Exclude leads without follow-up dates
 		});
 
-		// Check if no leads were found for today
-		if (filteredLeads.length === 0) {
-			toast("No leads found for today's follow-ups.");
-			return;
-		}
-
 		set({ filteredLeads });
 	},
 
 	// Filter leads by campaign ID
-	filterByCampaignID: (campaignID) => {
+	filterByCampaignID: (campaignID: string) => {
 		const { leads } = get();
 		const filteredLeads = leads.filter(
-			(lead) => lead.campaignID === campaignID,
+			(lead) => lead.metadata?.campaign?.id === campaignID,
 		);
 
 		set({ filteredLeads });

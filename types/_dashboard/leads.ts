@@ -1,4 +1,5 @@
-import type { PropertyRecord, PropertyFeatures } from "./rentcast";
+import type { RealtorOnMarketProperty } from "./realtor_com";
+import type { RentCastOffMarketProperty } from "./rentcast";
 
 export type LeadStatus =
 	| "New Lead"
@@ -58,7 +59,6 @@ export type LeadProperty = {
 	bathrooms?: number;
 
 	// Property features from RentCast
-	features?: Partial<PropertyFeatures>;
 
 	// Ownership details
 	isOwnerOccupied?: boolean;
@@ -83,7 +83,8 @@ export type LeadProperty = {
 	notes?: string;
 
 	// Raw RentCast data if available
-	rentCastData?: Partial<PropertyRecord>;
+	rentCastOffMarketData?: RentCastOffMarketProperty;
+	realtorOnMarketData?: RealtorOnMarketProperty;
 };
 
 export type LeadActivity = {
@@ -116,7 +117,7 @@ export type LeadTypeGlobal = {
 	title?: string;
 	preferredContactMethod?: CommunicationPreference[];
 	doNotContact?: boolean;
-
+	summary?: string;
 	// Lead details
 	status: LeadStatus;
 	source: LeadSource;
