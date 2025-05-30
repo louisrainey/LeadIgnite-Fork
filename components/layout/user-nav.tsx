@@ -103,7 +103,10 @@ export function UserNav() {
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
+				<DropdownMenuItem
+					className="cursor-pointer"
+					onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+				>
 					Log out
 					<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
 				</DropdownMenuItem>

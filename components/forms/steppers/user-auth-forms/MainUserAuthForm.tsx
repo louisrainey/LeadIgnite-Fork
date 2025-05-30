@@ -3,6 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import * as z from "zod";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { UserAuthEmailField } from "./steps/UserAuthEmailField";
 import { UserAuthErrorMessage } from "./steps/UserAuthErrorMessage";
 import { UserAuthForgotPassword } from "./steps/UserAuthForgotPassword";
@@ -11,7 +15,7 @@ import { UserAuthPasswordField } from "./steps/UserAuthPasswordField";
 import { UserAuthSubmitButton } from "./steps/UserAuthSubmitButton";
 import { UserAuthToggle } from "./steps/UserAuthToggle";
 import { UserAuthTwoFactorSetup } from "./steps/UserAuthTwoFactorSetup";
-import { UserAuthVerifyCode } from "./steps/UserAuthVerifyCode";
+import { UserAuthVerifyCode } from "./steps/UserAuthVerifyCode"; // ! Added test user sign-in dependencies
 
 const formSchema = z.object({
 	email: z.string().email({ message: "Enter a valid email address" }),
@@ -24,12 +28,48 @@ type UserFormValue = z.infer<typeof formSchema>;
 
 type AuthState = "login" | "signup" | "forgot" | "verify" | "2fa";
 
+// * Test user credentials (for dev/demo)
+const TEST_USER = {
+	email: process.env.NEXT_PUBLIC_TEST_USER_EMAIL,
+	password: process.env.NEXT_PUBLIC_TEST_USER_PASSWORD,
+};
+
 export default function MainUserAuthForm() {
+	const router = useRouter();
 	const [authState, setAuthState] = useState<AuthState>("login");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [isSignUp, setIsSignUp] = useState(false);
 	const [qrCodeUrl, setQrCodeUrl] = useState<string | undefined>(undefined);
+
+	// ! Test user login handler with tooltip on success
+	const [showTooltip, setShowTooltip] = useState(false);
+	const handleTestUserLogin = async () => {
+		setLoading(true);
+		setError(null);
+		try {
+			const result = await signIn("credentials", {
+				redirect: false,
+				email: TEST_USER.email,
+				password: TEST_USER.password,
+				callbackUrl: "/dashboard",
+			});
+			if (result?.error) {
+				setError("Test user login failed: " + result.error);
+			} else {
+				// Set a mockAuthToken cookie for demo auth (expires in 1 day, path=/)
+				document.cookie = `mockAuthToken=1; path=/; max-age=${60 * 60 * 24}`;
+				setShowTooltip(true);
+				setTimeout(() => setShowTooltip(false), 2000);
+				// Redirect after short delay so tooltip is visible
+				setTimeout(() => router.push("/dashboard"), 1200);
+			}
+		} catch (err) {
+			setError("Test user login failed. Please try again.");
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const form = useForm<UserFormValue>({
 		resolver: zodResolver(formSchema),
@@ -87,7 +127,13 @@ export default function MainUserAuthForm() {
 
 	// Render based on authState
 	return (
-		<div className="mx-auto w-full max-w-md space-y-6">
+		<div className="mx-auto w-full max-w-md space-y-6 relative">
+			{/* Login success tooltip */}
+			{showTooltip && (
+				<div className="absolute left-1/2 -translate-x-1/2 top-2 z-40 bg-green-600 text-white px-4 py-2 rounded shadow-lg animate-fade-in-out">
+					Login successful!
+				</div>
+			)}
 			{authState === "login" && (
 				<FormProvider {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -95,6 +141,20 @@ export default function MainUserAuthForm() {
 						<UserAuthEmailField loading={loading} />
 						<UserAuthPasswordField loading={loading} />
 						<UserAuthOAuthButtons />
+
+						{/* ! Test User Sign-In Button */}
+						<Button
+							type="button"
+							onClick={handleTestUserLogin}
+							disabled={loading}
+							variant="outline"
+							className="w-full mt-2"
+						>
+							{loading ? (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							) : null}
+							Sign in as Test User
+						</Button>
 						<UserAuthSubmitButton loading={loading} isSignUp={isSignUp} />
 						<UserAuthToggle
 							isSignUp={isSignUp}
