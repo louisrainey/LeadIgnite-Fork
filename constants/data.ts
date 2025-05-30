@@ -16,7 +16,7 @@ export function generateMockLeads(count: number): LeadTypeGlobal[] {
 			firstName: faker.person.firstName(),
 			lastName: faker.person.lastName(),
 			email: faker.internet.email(),
-			phone: faker.phone.number(), // Generate North American style phone number
+			phone: faker.phone.number(), // Generate North American style phone numbers
 			summary: faker.lorem.sentence(), // Random summary
 			bed: faker.number.int({ min: 1, max: 5 }), // Random number of bedrooms (1-5)
 			bath: faker.number.int({ min: 1, max: 4 }), // Random number of bathrooms (1-4)
