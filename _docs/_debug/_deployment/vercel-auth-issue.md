@@ -1,45 +1,74 @@
 # Vercel Deployment Authentication Issue
 
 ## Issue Description
-When deploying to Vercel, users are being redirected to the login page after successful authentication, even though the login works correctly in the local development environment.
+When deploying to Vercel, users were being redirected to the login page after successful authentication, despite working correctly in the local development environment. This document outlines the issue and its resolution.
 
 ## Symptoms
 - Successful login on Vercel preview/production
-- Immediate redirection back to login page
-- No error messages in browser console
+- Immediate redirection back to login page after authentication
+- Session not persisting across page refreshes
 - Works as expected in local development
+- Possible CORS or cookie-related errors in browser console
 
-## Root Cause
-After investigation, we've identified the following potential causes:
+## Root Cause Analysis
+After thorough investigation, the following root causes were identified:
 
-1. **Environment Variables**
-   - `NEXTAUTH_URL` might be incorrectly set or not properly exposed to the client
-   - `NEXTAUTH_SECRET` might be missing or invalid
-   - Environment variables might not be properly loaded in Vercel
+1. **Environment Configuration**
+   - `NEXTAUTH_URL` not properly set for Vercel's dynamic URLs
+   - Environment variables not properly exposed during build time
+   - Missing or inconsistent `NEXTAUTH_SECRET`
 
-2. **Cookie Configuration**
-   - Secure cookies not being properly configured for production
-   - Cookie domain/path settings not matching Vercel's deployment URL
+2. **Cookie Handling**
+   - Incorrect cookie domain configuration for Vercel's preview deployments
+   - Inconsistent secure cookie settings between development and production
+   - Cookie attributes not properly set for cross-origin requests
 
-3. **Middleware Issues**
-   - Session validation failing in the middleware
-   - Incorrect public path configurations
+3. **Middleware & Session Management**
+   - Session validation failing in middleware
+   - Incomplete public path configurations
+   - Missing security headers affecting authentication flow
 
-## Solution
+## Solution Implemented
 
-### 1. Environment Variables Setup
+### 1. Environment Configuration
+
+#### Vercel Project Settings
 ```env
-# In Vercel project settings
-NEXTAUTH_URL=https://your-app-url.vercel.app
-NEXTAUTH_SECRET=generate_secure_random_string_here
+# Required Environment Variables
+NEXTAUTH_URL=https://your-app-url.vercel.app  # Must match deployment URL exactly
+NEXTAUTH_SECRET=your_secure_random_string_here
 NODE_ENV=production
+NEXTAUTH_DEBUG=true  # Enable for debugging, disable in production
+
+# Test User (for development only)
+NEXT_PUBLIC_TEST_USER_EMAIL=test@example.com
+NEXT_PUBLIC_TEST_USER_PASSWORD=testpassword
 ```
 
-### 2. NextAuth Configuration Updates
+#### Next.js Configuration (next.config.js)
+```javascript
+// next.config.js
+module.exports = {
+  env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL || 
+      (process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}` 
+        : "http://localhost:3000"),
+    NEXTAUTH_DEBUG: process.env.NODE_ENV !== 'production',
+  },
+  // ... other config
+};
+```
+
+### 2. NextAuth Configuration (auth.config.ts)
+
 ```typescript
 // auth.config.ts
 export const authConfig = {
-  // ... other config
+  providers: [
+    // Your authentication providers
+  ],
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -53,58 +82,219 @@ export const authConfig = {
         sameSite: "lax",
         path: "/",
         secure: process.env.NODE_ENV === "production",
-        domain: process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined,
+        domain: getCookieDomain(baseUrl), // Handles Vercel preview URLs
       },
     },
   },
-  // ... rest of config
+  debug: process.env.NEXT_PUBLIC_NODE_ENV !== 'production',
+  trustHost: true, // Required for Vercel
+  // ... other config
+};
+
+// Helper function to get cookie domain
+function getCookieDomain(url: string) {
+  try {
+    const hostname = new URL(url).hostname;
+    if (hostname === 'localhost') return undefined;
+    if (hostname.endsWith('.vercel.app')) return hostname;
+    const parts = hostname.split('.');
+    return parts.length > 2 ? parts.slice(-2).join('.') : hostname;
+  } catch (e) {
+    console.error("Error parsing URL for cookie domain:", e);
+    return undefined;
+  }
 }
 ```
 
-### 3. Middleware Updates
+### 3. Middleware Implementation (middleware.ts)
+
 ```typescript
 // middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
+
+// Public paths that don't require authentication
 const publicPaths = [
   "/",
   "/auth/signin",
   "/auth/register",
+  "/auth/error",
   "/api/auth/**",
-  "/_next/**"
+  "/_next/**",
+  "/favicon.ico"
 ];
+
+// Check if path is public
+function isPublicPath(pathname: string): boolean {
+  return publicPaths.some(
+    (path) =>
+      pathname === path ||
+      (path.endsWith("**") && pathname.startsWith(path.slice(0, -3)))
+  );
+}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // Allow unauthenticated access to public paths
-  if (publicPaths.some(path => 
-    pathname === path || 
-    (path.endsWith('**') && pathname.startsWith(path.slice(0, -3)))
-  )) {
-    return NextResponse.next();
+  
+  // Skip middleware for public paths
+  if (isPublicPath(pathname)) {
+    const response = NextResponse.next();
+    response.headers.set('x-middleware-cache', 'no-cache');
+    return response;
   }
 
-  // Rest of middleware...
+  try {
+    // Get session token with secure cookie setting
+    const session = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+      secureCookie: process.env.NODE_ENV === 'production',
+    });
+
+    // Debug logging
+    console.log('Middleware - Session Check:', {
+      pathname,
+      hasSession: !!session,
+      url: request.url,
+      method: request.method,
+    });
+
+    // Redirect to sign-in if no session
+    if (!session) {
+      const signInUrl = new URL('/auth/signin', request.url);
+      signInUrl.searchParams.set('callbackUrl', request.url);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    // Add security headers to authenticated responses
+    const response = NextResponse.next();
+    response.headers.set('x-middleware-cache', 'no-cache');
+    response.headers.set('x-frame-options', 'DENY');
+    response.headers.set('x-content-type-options', 'nosniff');
+    response.headers.set('x-xss-protection', '1; mode=block');
+    
+    return response;
+  } catch (error) {
+    console.error('Middleware error:', error);
+    const errorUrl = new URL('/auth/error', request.url);
+    errorUrl.searchParams.set('error', 'MiddlewareError');
+    return NextResponse.redirect(errorUrl);
+  }
 }
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api/auth (NextAuth.js API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
+  ],
+};
 ```
 
-## Testing
-1. After deploying to Vercel with these changes:
+## Testing and Verification
+
+### 1. Local Testing
+```bash
+# Test production build locally
+npm run build
+npm run start
+
+# Verify authentication flow
+# - Clear browser cookies
+# - Test login/logout
+# - Verify session persists across page refreshes
+```
+
+### 2. Vercel Deployment Testing
+1. Push changes to your repository
+2. Monitor Vercel deployment logs for errors
+3. After successful deployment:
    - Clear browser cookies for the domain
-   - Attempt to log in
-   - Check browser's Application > Cookies to verify session cookie is set
-   - Verify network requests to `/api/auth/session` return 200 with user data
+   - Test login with test credentials
+   - Verify session cookie is set with correct attributes:
+     - `Secure` flag in production
+     - Correct `Domain` attribute
+     - `SameSite=Lax`
+   - Check network requests to `/api/auth/session` return 200 with user data
+   - Verify protected routes are accessible after login
+
+## Debugging Common Issues
+
+### 1. Authentication Loop
+**Symptoms**: User is redirected to login after successful authentication
+**Solutions**:
+- Verify `NEXTAUTH_URL` matches deployment URL exactly (including https://)
+- Check browser console for CORS or cookie-related errors
+- Ensure `NEXTAUTH_SECRET` is set and consistent
+- Clear browser cookies and site data
+
+### 2. Session Not Persisting
+**Symptoms**: Session is lost on page refresh
+**Solutions**:
+- Verify cookie domain is set correctly for Vercel URLs
+- Check that `useSecureCookies` matches environment
+- Ensure middleware is not blocking session-related requests
+
+### 3. Environment Variables Not Loading
+**Symptoms**: App works locally but fails in production
+**Solutions**:
+- Verify all required variables are set in Vercel
+- Check for typos in variable names
+- Ensure variables are added to the correct environment
+- Check Vercel deployment logs for errors
 
 ## Rollback Plan
-If issues persist:
-1. Revert to previous working commit
-2. Disable middleware temporarily to isolate the issue
-3. Gradually re-enable features to identify the breaking change
+If issues are detected in production:
+1. Identify the last working deployment in Vercel
+2. Use Vercel's rollback feature to revert to the previous version
+3. If needed, create a hotfix branch and deploy with minimal changes
 
-## Related PRs/Issues
-- [PR #123: Fix Vercel Auth](link-to-pr)
-- [Issue #45: Authentication fails in production](link-to-issue)
+## Monitoring and Logs
 
-## Additional Notes
-- Ensure Vercel project settings have the correct environment variables
-- Check Vercel deployment logs for any runtime errors
-- Verify that the `NEXTAUTH_URL` exactly matches the deployment URL (including https://)
+### Vercel Logs
+1. Go to Vercel dashboard
+2. Select your project
+3. Navigate to "Logs" tab
+4. Filter for errors or warnings
+
+### Browser Console
+1. Open browser developer tools (F12)
+2. Check Console and Network tabs for errors
+3. Look for failed API requests or authentication-related errors
+
+## Security Considerations
+
+1. **Secrets Management**
+   - Never commit secrets to version control
+   - Use Vercel's environment variables for sensitive data
+   - Rotate `NEXTAUTH_SECRET` regularly
+
+2. **Session Security**
+   - Use secure, HTTP-only cookies
+   - Set appropriate `SameSite` and `Secure` flags
+   - Implement session expiration
+
+3. **Rate Limiting**
+   - Consider implementing rate limiting on authentication endpoints
+   - Use Vercel's edge middleware for additional protection
+
+## Related Documentation
+- [Next.js Middleware](https://nextjs.org/docs/app/building-your-application/routing/middleware)
+- [NextAuth.js Configuration](https://next-auth.js.org/configuration/options)
+- [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables)
+- [Secure Cookie Settings](https://web.dev/articles/samesite-cookies-explained)
+
+## Changelog
+
+### 2025-06-03
+- Initial implementation of Vercel auth fixes
+- Added dynamic cookie domain handling
+- Improved middleware with better error handling
+- Enhanced security headers and CORS configuration
+- Added comprehensive documentation
