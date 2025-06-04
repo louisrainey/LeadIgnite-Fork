@@ -81,7 +81,7 @@ export const exampleSocialMediaActions: {
 			attempt: 2,
 			successful: 0,
 			failed: 2,
-			viewLink: "https://linkedin.com/view/groups/2", // Added
+			viewLink: "https://linkedin.com/view/groups/2", // Add ed
 		},
 		{
 			type: "Connect & Follow Up",
