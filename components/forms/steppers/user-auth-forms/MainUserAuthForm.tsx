@@ -55,10 +55,8 @@ export default function MainUserAuthForm() {
 				callbackUrl: "/dashboard",
 			});
 			if (result?.error) {
-				setError("Test user login failed: " + result.error);
+				setError(`Test user login failed: ${result.error}`);
 			} else {
-				// Set a mockAuthToken cookie for demo auth (expires in 1 day, path=/)
-				document.cookie = `mockAuthToken=1; path=/; max-age=${60 * 60 * 24}`;
 				setShowTooltip(true);
 				setTimeout(() => setShowTooltip(false), 2000);
 				// Redirect after short delay so tooltip is visible
@@ -127,10 +125,10 @@ export default function MainUserAuthForm() {
 
 	// Render based on authState
 	return (
-		<div className="mx-auto w-full max-w-md space-y-6 relative">
+		<div className="relative mx-auto w-full max-w-md space-y-6">
 			{/* Login success tooltip */}
 			{showTooltip && (
-				<div className="absolute left-1/2 -translate-x-1/2 top-2 z-40 bg-green-600 text-white px-4 py-2 rounded shadow-lg animate-fade-in-out">
+				<div className="-translate-x-1/2 absolute top-2 left-1/2 z-40 animate-fade-in-out rounded bg-green-600 px-4 py-2 text-white shadow-lg">
 					Login successful!
 				</div>
 			)}
@@ -148,7 +146,7 @@ export default function MainUserAuthForm() {
 							onClick={handleTestUserLogin}
 							disabled={loading}
 							variant="outline"
-							className="w-full mt-2"
+							className="mt-2 w-full"
 						>
 							{loading ? (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />

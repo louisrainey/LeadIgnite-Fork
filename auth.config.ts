@@ -15,9 +15,10 @@ const baseUrl = getBaseUrl();
 const authConfig: NextAuthConfig = {
 	providers: [
 		CredentialProvider({
+			name: "credentials",
 			credentials: {
-				email: { type: "email" },
-				password: { type: "password" },
+				email: { type: "email", label: "Email" },
+				password: { type: "password", label: "Password" },
 			},
 			async authorize(credentials) {
 				const testEmail = process.env.NEXT_PUBLIC_TEST_USER_EMAIL;
@@ -26,29 +27,53 @@ const authConfig: NextAuthConfig = {
 				// DEBUG LOGGING
 				console.log("DEBUG AUTH", {
 					credentialsEmail: credentials?.email,
-					credentialsPassword: credentials?.password,
 					testEmail,
-					testPassword,
 					emailMatch: credentials?.email === testEmail,
 					passwordMatch: credentials?.password === testPassword,
 				});
+
+				if (!testEmail || !testPassword) {
+					console.error(
+						"Missing test user credentials in environment variables",
+					);
+					return null;
+				}
 
 				if (
 					credentials?.email === testEmail &&
 					credentials?.password === testPassword
 				) {
-					return {
+					const user = {
 						id: "test-user",
 						email: testEmail,
 						name: "Test User",
 						role: "tester",
 					};
+					console.log("User authenticated successfully:", user.email);
+					return user;
 				}
+				console.log("Authentication failed: Invalid credentials");
 				return null;
 			},
 		}),
 	],
 	secret: process.env.NEXTAUTH_SECRET,
+	session: {
+		strategy: "jwt",
+		maxAge: 30 * 24 * 60 * 60, // 30 days
+	},
+	useSecureCookies: process.env.NODE_ENV === "production",
+	cookies: {
+		sessionToken: {
+			name: `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.session-token`,
+			options: {
+				httpOnly: true,
+				sameSite: "lax",
+				path: "/",
+				secure: process.env.NODE_ENV === "production",
+			},
+		},
+	},
 	trustHost: true,
 	theme: {
 		logo: `${baseUrl}/logo.png`, // Example of using baseUrl
