@@ -1,5 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	// Enable standalone output for Vercel
+	output: "standalone",
+
+	// Enable React's experimental features
+	experimental: {
+		// Enable server actions
+		serverActions: {
+			bodySizeLimit: "2mb",
+		},
+		// Improve build performance
+		optimizeCss: true,
+		// Enable Turbopack in development (optional)
+		// turbo: {},
+	},
+
+	// Enable SWC minification
+	swcMinify: true,
 	// Enable React strict mode
 	reactStrictMode: true,
 
@@ -36,10 +53,14 @@ const nextConfig = {
 
 		// Debug mode based on environment
 		NEXTAUTH_DEBUG: process.env.NODE_ENV !== "production" ? "true" : "false",
+
+		// Vercel specific variables
+		VERCEL_ENV: process.env.VERCEL_ENV || "development",
+		VERCEL_URL: process.env.VERCEL_URL || "localhost:3000",
 	},
 
 	// Custom headers
-	async headers() {
+	headers() {
 		return [
 			{
 				// Apply these headers to all routes
@@ -81,10 +102,18 @@ const nextConfig = {
 };
 
 // Log important configuration at build time
-console.log("Next.js Configuration:");
-console.log("- NODE_ENV:", process.env.NODE_ENV);
-console.log("- NEXTAUTH_URL:", nextConfig.env.NEXTAUTH_URL);
-console.log("- VERCEL_ENV:", process.env.VERCEL_ENV || "development");
-console.log("- VERCEL_URL:", process.env.VERCEL_URL || "localhost");
+if (process.env.NODE_ENV !== "production") {
+	console.log("\n=== Next.js Configuration ===");
+	console.log("- NODE_ENV:", process.env.NODE_ENV);
+	console.log("- NEXTAUTH_URL:", process.env.NEXTAUTH_URL || "Not set");
+	console.log("- VERCEL:", process.env.VERCEL || "Not in Vercel");
+	console.log("- VERCEL_ENV:", process.env.VERCEL_ENV || "development");
+	console.log("- VERCEL_URL:", process.env.VERCEL_URL || "Not in Vercel");
+	console.log("===========================\n");
+}
 
-module.exports = nextConfig;
+// Add TypeScript type checking in development
+const withPlugins = require("next-compose-plugins");
+const withTM = require("next-transpile-modules")([]);
+
+module.exports = withPlugins([withTM], nextConfig);

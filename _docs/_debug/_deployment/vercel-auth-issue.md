@@ -197,7 +197,74 @@ export const config = {
 };
 ```
 
+## Troubleshooting: What Worked and What Didn't
+
+### ✅ What Worked
+
+1. **Environment Configuration**
+   - Setting `NEXTAUTH_URL` explicitly in Vercel environment variables
+   - Using `VERCEL_URL` as a fallback for dynamic preview URLs
+   - Enabling debug mode in development and production
+
+2. **Cookie Handling**
+   - Dynamic cookie domain detection for Vercel preview URLs
+   - Setting `secureCookie: process.env.NODE_ENV === "production"`
+   - Using `__Secure-` prefix for production cookies
+
+3. **Middleware Improvements**
+   - Detailed request logging
+   - Proper handling of public paths
+   - Secure session validation with `getToken`
+   - Comprehensive error handling and redirection
+
+4. **Security Headers**
+   - Setting `x-frame-options: DENY`
+   - Enabling `x-content-type-options: nosniff`
+   - Configuring `x-xss-protection: 1; mode=block`
+
+### ❌ What Didn't Work
+
+1. **Cookie Domain Configuration**
+   - Hardcoding cookie domains
+   - Not handling Vercel preview URLs specially
+   - Using `localhost` as a cookie domain
+
+2. **Environment Variables**
+   - Relying solely on `NEXTAUTH_URL` without fallbacks
+   - Not exposing necessary variables to the browser
+   - Inconsistent variable naming between environments
+
+3. **Middleware Issues**
+   - Not properly handling all public paths
+   - Missing error boundaries in middleware
+   - Incomplete session validation
+
+### Common Pitfalls and Solutions
+
+1. **Authentication Loop**
+   - ❌ **Problem**: Infinite redirects between login and callback
+   - ✅ **Solution**: 
+     - Verify `NEXTAUTH_URL` matches exactly (including https://)
+     - Ensure all auth-related routes are in `publicPaths`
+     - Check for cookie domain mismatches
+
+2. **Session Not Persisting**
+   - ❌ **Problem**: Session lost on page refresh
+   - ✅ **Solution**:
+     - Verify cookie settings in `auth.config.ts`
+     - Check for mixed content issues (HTTP vs HTTPS)
+     - Ensure `secureCookie` matches environment
+
+3. **CORS Errors**
+   - ❌ **Problem**: Blocked by CORS policy
+   - ✅ **Solution**:
+     - Verify `NEXTAUTH_URL` includes correct protocol
+     - Check middleware CORS headers
+     - Ensure API routes handle OPTIONS requests
+
 ## Testing and Verification
+
+### 1. Local Testing
 
 ### 1. Local Testing
 ```bash

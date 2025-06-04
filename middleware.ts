@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
+// Debug logging for Vercel
+console.log("Vercel Environment:", {
+	VERCEL: process.env.VERCEL,
+	VERCEL_ENV: process.env.VERCEL_ENV,
+	VERCEL_URL: process.env.VERCEL_URL,
+	NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+	NODE_ENV: process.env.NODE_ENV,
+});
+
 // Public paths that don't require authentication
 const publicPaths = [
 	"/",
@@ -34,7 +43,17 @@ function isPublicPath(pathname: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
-	const { pathname } = request.nextUrl;
+	const { pathname, searchParams } = request.nextUrl;
+
+	// Debug log for each request in development
+	if (process.env.NODE_ENV !== "production") {
+		console.log("Request:", {
+			url: request.url,
+			pathname,
+			method: request.method,
+			headers: Object.fromEntries(request.headers.entries()),
+		});
+	}
 
 	// Log environment on first request for debugging
 	if (process.env.NODE_ENV === "development") {
@@ -49,12 +68,28 @@ export async function middleware(request: NextRequest) {
 	}
 
 	try {
-		// Get the session token
-		const session = await getToken({
-			req: request,
-			secret: process.env.NEXTAUTH_SECRET,
-			secureCookie: process.env.NODE_ENV === "production",
-		});
+		// Get the session token with enhanced error handling
+		let session: Awaited<ReturnType<typeof getToken>>;
+		try {
+			session = await getToken({
+				req: request,
+				secret: process.env.NEXTAUTH_SECRET,
+				secureCookie: process.env.NODE_ENV === "production",
+			});
+
+			if (process.env.NODE_ENV !== "production") {
+				console.log("Session check:", { hasSession: !!session });
+			}
+		} catch (error) {
+			console.error("Error getting session:", error);
+			// In production, you might want to handle this differently
+			if (process.env.NODE_ENV === "production") {
+				return NextResponse.redirect(
+					new URL("/auth/error?error=SessionError", request.url),
+				);
+			}
+			throw error; // Re-throw in development for better debugging
+		}
 
 		// Debug logging
 		console.log("Middleware - Session Check:", {

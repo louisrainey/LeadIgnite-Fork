@@ -1,6 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
+import { NextResponse } from "next/server";
 
 // Get the base URL based on the environment
 const getBaseUrl = () => {
@@ -47,6 +48,8 @@ export const authTrustedHosts = [
 	// /yourdomain\.com$/,
 ];
 
+// Auth configuration for NextAuth
+export // Auth configuration for NextAuth with App Router support
 const authConfig: NextAuthConfig = {
 	providers: [
 		CredentialProvider({
@@ -56,39 +59,63 @@ const authConfig: NextAuthConfig = {
 				password: { type: "password", label: "Password" },
 			},
 			async authorize(credentials) {
-				const testEmail = process.env.NEXT_PUBLIC_TEST_USER_EMAIL;
-				const testPassword = process.env.NEXT_PUBLIC_TEST_USER_PASSWORD;
+				try {
+					const testEmail = process.env.NEXT_PUBLIC_TEST_USER_EMAIL;
+					const testPassword = process.env.NEXT_PUBLIC_TEST_USER_PASSWORD;
 
-				// DEBUG LOGGING
-				console.log("DEBUG AUTH", {
-					credentialsEmail: credentials?.email,
-					testEmail,
-					emailMatch: credentials?.email === testEmail,
-					passwordMatch: credentials?.password === testPassword,
-				});
+					if (!testEmail || !testPassword) {
+						console.error(
+							"Missing test user credentials in environment variables",
+						);
+						return null;
+					}
 
-				if (!testEmail || !testPassword) {
-					console.error(
-						"Missing test user credentials in environment variables",
-					);
-					return null;
-				}
+					// DEBUG LOGGING
+					console.log("AUTH_DEBUG: Authorization attempt", {
+						hasCredentials: !!credentials,
+						emailProvided: !!credentials?.email,
+						passwordProvided: !!credentials?.password,
+						testEmailConfigured: !!testEmail,
+						testPasswordConfigured: !!testPassword,
+						environment: process.env.NODE_ENV,
+						baseUrl: process.env.NEXTAUTH_URL || process.env.VERCEL_URL,
+					});
 
-				if (
-					credentials?.email === testEmail &&
-					credentials?.password === testPassword
-				) {
+					if (!credentials?.email || !credentials?.password) {
+						console.error("Missing email or password in credentials");
+						return null;
+					}
+
+					if (
+						credentials.email !== testEmail ||
+						credentials.password !== testPassword
+					) {
+						console.warn("AUTH_FAILED: Invalid credentials", {
+							email: credentials.email,
+							timestamp: new Date().toISOString(),
+						});
+						return null;
+					}
+
 					const user = {
 						id: "test-user",
 						email: testEmail,
 						name: "Test User",
 						role: "tester",
 					};
-					console.log("User authenticated successfully:", user.email);
+					console.log("AUTH_SUCCESS: User authenticated successfully", {
+						email: user.email,
+						timestamp: new Date().toISOString(),
+					});
 					return user;
+				} catch (error) {
+					console.error("AUTH_ERROR: Unexpected error during authentication", {
+						error: error instanceof Error ? error.message : "Unknown error",
+						stack: error instanceof Error ? error.stack : undefined,
+						timestamp: new Date().toISOString(),
+					});
+					return null;
 				}
-				console.log("Authentication failed: Invalid credentials");
-				return null;
 			},
 		}),
 	],
@@ -119,7 +146,32 @@ const authConfig: NextAuthConfig = {
 	},
 	callbacks: {
 		async redirect({ url, baseUrl }) {
-			return url.startsWith(baseUrl) ? url : baseUrl;
+			// Ensure we don't redirect to external URLs
+			if (url.startsWith(baseUrl)) {
+				return url;
+			}
+			// Redirect to the base URL if the URL is not relative
+			return baseUrl;
+		},
+
+		// Add session callback to ensure user is included in the session
+		async session({ session, token }) {
+			if (token?.user) {
+				// Safely type the user object
+				session.user = {
+					...session.user,
+					...(token.user as Record<string, unknown>),
+				};
+			}
+			return session;
+		},
+
+		// Add JWT callback to handle user data
+		async jwt({ token, user }) {
+			if (user) {
+				token.user = user;
+			}
+			return token;
 		},
 	},
 	pages: {
@@ -127,4 +179,5 @@ const authConfig: NextAuthConfig = {
 	},
 } satisfies NextAuthConfig;
 
+// Export the config for use in the auth route handler
 export default authConfig;
