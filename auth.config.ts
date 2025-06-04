@@ -7,10 +7,14 @@ const getBaseUrl = () => {
 	if (process.env.VERCEL_URL) {
 		return `https://${process.env.VERCEL_URL}`;
 	}
+	if (process.env.NEXTAUTH_URL) {
+		return process.env.NEXTAUTH_URL;
+	}
 	return "http://localhost:3000";
 };
 
 const baseUrl = getBaseUrl();
+console.log("Auth Config - Base URL:", baseUrl);
 
 const authConfig: NextAuthConfig = {
 	providers: [
@@ -71,9 +75,14 @@ const authConfig: NextAuthConfig = {
 				sameSite: "lax",
 				path: "/",
 				secure: process.env.NODE_ENV === "production",
+				domain:
+					process.env.NODE_ENV === "production"
+						? new URL(baseUrl).hostname.replace("www.", "")
+						: undefined,
 			},
 		},
 	},
+	debug: process.env.NODE_ENV === "development",
 	trustHost: true,
 	theme: {
 		logo: `${baseUrl}/logo.png`, // Example of using baseUrl

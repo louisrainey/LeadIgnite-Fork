@@ -2,51 +2,63 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const publicPaths = ["/", "/auth/signin", "/auth/register", "/api/auth/**"];
+const publicPaths = [
+	"/",
+	"/auth/signin",
+	"/auth/register",
+	"/api/auth/**",
+	"/_next/**",
+];
 
 export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
+	const isPublicPath = publicPaths.some(
+		(path) =>
+			pathname === path ||
+			(path.endsWith("**") && pathname.startsWith(path.slice(0, -3))),
+	);
 
 	// Allow unauthenticated access to public paths
-	if (
-		publicPaths.some(
-			(path) =>
-				pathname === path ||
-				(path.endsWith("**") && pathname.startsWith(path.slice(0, -3))),
-		)
-	) {
+	if (isPublicPath) {
 		return NextResponse.next();
 	}
 
-	// Get the session token
-	const sessionToken = await getToken({
-		req: request,
-		secret: process.env.NEXTAUTH_SECRET,
-	});
+	try {
+		// Get the session token
+		const session = await getToken({
+			req: request,
+			secret: process.env.NEXTAUTH_SECRET,
+		});
 
-	// Debug logging
-	console.log("Middleware - Session Check:", {
-		pathname,
-		hasSession: !!sessionToken,
-		token: sessionToken ? "***" : "none",
-		env: {
-			NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET ? "set" : "not set",
-			NODE_ENV: process.env.NODE_ENV,
-		},
-	});
+		// Debug logging
+		console.log("Middleware - Session Check:", {
+			pathname,
+			hasSession: !!session,
+			isPublicPath,
+			env: {
+				NODE_ENV: process.env.NODE_ENV,
+				NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+			},
+		});
 
-	if (!sessionToken) {
-		// Not authenticated, redirect to sign-in
-		const signinUrl = new URL("/auth/signin", request.url);
-		signinUrl.searchParams.set("callbackUrl", encodeURI(request.url));
-		return NextResponse.redirect(signinUrl);
+		// If no session and not a public path, redirect to sign-in
+		if (!session) {
+			const signInUrl = new URL("/auth/signin", request.url);
+			signInUrl.searchParams.set("callbackUrl", request.url);
+			return NextResponse.redirect(signInUrl);
+		}
+
+		// Add security headers
+		const response = NextResponse.next();
+		response.headers.set("x-middleware-cache", "no-cache");
+		return response;
+	} catch (error) {
+		console.error("Middleware error:", error);
+		// In case of error, redirect to sign-in
+		const signInUrl = new URL("/auth/error", request.url);
+		signInUrl.searchParams.set("error", "SessionError");
+		return NextResponse.redirect(signInUrl);
 	}
-
-	// Add security headers
-	const response = NextResponse.next();
-	response.headers.set("x-middleware-cache", "no-cache");
-
-	return response;
 }
 
 export const config = {
