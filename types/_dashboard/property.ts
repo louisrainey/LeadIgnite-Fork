@@ -45,6 +45,7 @@ export interface BaseProperty {
 
 // Property metadata interface
 export interface PropertyMetadata {
+	// Listing information
 	listPrice: number;
 	pricePerSqft: number;
 	status: string;
@@ -57,12 +58,8 @@ export interface PropertyMetadata {
 	parkingGarage: number;
 	nearbySchools: string;
 	neighborhoods: string;
-}
 
-// Forward declarations to avoid circular dependencies
-export interface RealtorProperty extends Omit<BaseProperty, "source"> {
-	source: "realtor";
-	metadata: PropertyMetadata;
+	// Agent information
 	agent: {
 		name: string;
 		email: string;
@@ -74,6 +71,13 @@ export interface RealtorProperty extends Omit<BaseProperty, "source"> {
 		}>;
 		broker: string;
 	};
+}
+
+// Forward declarations to avoid circular dependencies
+export interface RealtorProperty extends Omit<BaseProperty, "source"> {
+	source: "realtor";
+	metadata: PropertyMetadata;
+
 	media: {
 		images: Array<{
 			url: string;
@@ -150,7 +154,7 @@ export function createBaseProperty(
 
 export function createRealtorProperty(
 	overrides: Partial<RealtorProperty> &
-		Pick<RealtorProperty, "metadata" | "agent" | "media" | "description">,
+		Pick<RealtorProperty, "metadata" | "media" | "description">,
 ): RealtorProperty {
 	const base = createBaseProperty(overrides);
 	return {
@@ -159,7 +163,6 @@ export function createRealtorProperty(
 		...overrides,
 	} as RealtorProperty;
 }
-
 export function createRentCastProperty(
 	overrides: Partial<RentCastProperty> = {},
 ): RentCastProperty {

@@ -190,20 +190,23 @@ const generateMockProperty = () => {
 				realtorProperty.address.city,
 				realtorProperty.address.state,
 			].join(", "),
+			// Added agent and broker info to metadata
+			agent: {
+				name: realtorProperty.showing.contactName || "Agent Name",
+				email: faker.internet.email(),
+				phones: [
+					{
+						number:
+							realtorProperty.showing.contactPhone || faker.phone.number(),
+						primary: true,
+						type: "Mobile",
+						ext: null,
+					},
+				],
+				broker: faker.company.name(),
+			},
 		},
-		agent: {
-			name: realtorProperty.showing.contactName || "Agent Name",
-			email: faker.internet.email(),
-			phones: [
-				{
-					number: realtorProperty.showing.contactPhone || faker.phone.number(),
-					primary: true,
-					type: "Mobile",
-					ext: null,
-				},
-			],
-			broker: faker.company.name(),
-		},
+
 		media: {
 			images:
 				realtorProperty.media?.photos?.map((photo) => ({
@@ -221,7 +224,6 @@ const generateMockProperty = () => {
 		description: faker.lorem.paragraphs(3, "\n\n"),
 		lastUpdated: new Date().toISOString(),
 	});
-
 	return property;
 };
 
