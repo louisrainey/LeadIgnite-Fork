@@ -43,8 +43,16 @@ export interface BaseProperty {
 	lastUpdated: string;
 }
 
-// Property metadata interface
-export interface PropertyMetadata {
+// Base property metadata interface
+export interface BasePropertyMetadata {
+	// Common metadata fields can go here
+	lastUpdated: string;
+	source: "realtor" | "rentcast";
+}
+
+// Realtor-specific metadata
+export interface PropertyRealtorMetadata extends BasePropertyMetadata {
+	source: "realtor";
 	// Listing information
 	listPrice: number;
 	pricePerSqft: number;
@@ -73,10 +81,45 @@ export interface PropertyMetadata {
 	};
 }
 
+// RentCast-specific metadata
+export interface PropertyRentCastMetadata extends BasePropertyMetadata {
+	source: "rentcast";
+	// RentCast specific fields
+	lastSaleDate?: string;
+	lastSalePrice?: number;
+	assessorID?: string;
+	legalDescription?: string;
+	subdivision?: string;
+	zoning?: string;
+	ownerOccupied?: boolean;
+	hoa?: {
+		fee: number;
+		[key: string]: unknown;
+	};
+	taxAssessments?: {
+		[year: string]: {
+			year: number;
+			value: number;
+			land: number;
+			improvements: number;
+		};
+	};
+	propertyTaxes?: {
+		[year: string]: {
+			year: number;
+			total: number;
+		};
+	};
+}
+
 // Forward declarations to avoid circular dependencies
+export type PropertyMetadata =
+	| PropertyRealtorMetadata
+	| PropertyRentCastMetadata;
+
 export interface RealtorProperty extends Omit<BaseProperty, "source"> {
 	source: "realtor";
-	metadata: PropertyMetadata;
+	metadata: PropertyRealtorMetadata;
 
 	media: {
 		images: Array<{
@@ -93,9 +136,10 @@ export interface RealtorProperty extends Omit<BaseProperty, "source"> {
 	description: string;
 }
 
-export interface RentCastProperty extends BaseProperty {
+export interface RentCastProperty extends Omit<BaseProperty, "source"> {
 	source: "rentcast";
-	// RentCast-specific fields will be defined in rentcast_off_market.ts
+	metadata: PropertyRentCastMetadata;
+	// Additional RentCast specific fields
 }
 
 export type Property = RealtorProperty | RentCastProperty;
@@ -164,13 +208,14 @@ export function createRealtorProperty(
 	} as RealtorProperty;
 }
 export function createRentCastProperty(
-	overrides: Partial<RentCastProperty> = {},
+	overrides: Partial<Omit<RentCastProperty, "metadata">> &
+		Pick<RentCastProperty, "metadata">,
 ): RentCastProperty {
 	const base = createBaseProperty(overrides);
 	return {
 		...base,
 		source: "rentcast",
-		// RentCast-specific fields will be added by the caller
+
 		...overrides,
 	};
 }

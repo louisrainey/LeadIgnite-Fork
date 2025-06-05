@@ -170,6 +170,8 @@ const generateMockProperty = () => {
 			parking: realtorProperty.details.parking,
 		},
 		metadata: {
+			source: "realtor", // Required by PropertyRealtorMetadata
+			lastUpdated: new Date().toISOString(),
 			listPrice: realtorProperty.mls.originalListPrice,
 			pricePerSqft: Math.round(
 				(realtorProperty.mls.originalListPrice || 0) /
