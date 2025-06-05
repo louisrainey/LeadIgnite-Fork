@@ -1,17 +1,28 @@
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
 	calculateCenter,
 	mockFetchAddressesFromApi,
 } from "@/constants/utility/maps";
 import { usePropertyStore } from "@/lib/stores/leadSearch/drawer";
-// * Import mock property data generator
-import type { Coordinate, MapFormSchemaType } from "@/types/_dashboard/maps";
+import type {
+	Coordinate,
+	MapFormSchemaType,
+	PropertyDetails,
+} from "@/types/_dashboard/maps";
 import { mapFormSchema } from "@/types/zod/propertyList";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Search } from "lucide-react";
-// * PropertySearch.tsx
-// ! Main property search component combining all subcomponents for the leads search feature
-import React, { useRef } from "react";
+import {
+	Search,
+	MapPin,
+	Home,
+	Bed,
+	Bath,
+	Ruler,
+	DollarSign,
+} from "lucide-react";
+import type React from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -25,8 +36,25 @@ import LeadSearchHeader from "./steps/LeadSearchHeader";
 import MapSection from "./steps/MapSection";
 import PropertiesList from "./propertyList";
 import WalkThroughModal from "../reusables/tutorials/walkthroughModal";
-// ! Use named import, not default
 import { generateFakeProperties } from "@/constants/dashboard/properties";
+
+// Skeleton Loader Component
+const PropertyCardSkeleton = () => (
+	<div className="rounded-lg border bg-card p-4 shadow-sm">
+		<Skeleton className="h-48 w-full rounded-md" />
+		<div className="mt-4 space-y-2">
+			<Skeleton className="h-6 w-3/4" />
+			<Skeleton className="h-4 w-1/2" />
+			<div className="flex space-x-4 pt-2">
+				<Skeleton className="h-4 w-1/4" />
+				<Skeleton className="h-4 w-1/4" />
+				<Skeleton className="h-4 w-1/4" />
+			</div>
+			<Skeleton className="h-4 w-full" />
+			<Skeleton className="h-4 w-2/3" />
+		</div>
+	</div>
+);
 
 const normalizeFormValues = (values: unknown): unknown => {
 	if (typeof values !== "object" || values === null) return values;
@@ -39,31 +67,25 @@ const normalizeFormValues = (values: unknown): unknown => {
 		{} as Record<string, unknown>,
 	);
 };
-const PropertySearch: React.FC = () => {
-	// * Debug: log form state every render
-	const formRef = React.useRef<unknown>(null);
-	const [hasResults, setHasResults] = useState(false);
-	const { properties, setProperties, isDrawerOpen, setIsDrawerOpen } =
-		usePropertyStore();
+interface PropertySearchProps {
+	initialProperties?: number;
+}
 
-	// * Set default properties on mount
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	React.useEffect(() => {
-		// ! Populate with mock properties initially (replace with API call in production)
-		setProperties(generateFakeProperties(12));
-		// * Do NOT open the drawer on initial load
-	}, []);
+const PropertySearch: React.FC<PropertySearchProps> = ({
+	initialProperties: initialPropCount = 6,
+}) => {
+	// State management
+	const [isLoading, setIsLoading] = useState(false);
+	const [isSearching, setIsSearching] = useState(false);
+	const [hasResults, setHasResults] = useState(false);
 	const [showAdvanced, setShowAdvanced] = useState(false);
 	const [isTourOpen, setIsTourOpen] = useState(false);
-	const [showAllErrors, setShowAllErrors] = React.useState(true);
-
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [showAllErrors, setShowAllErrors] = useState(true);
 	const [center, setCenter] = useState<Coordinate>({
 		lat: 39.7392,
 		lng: -104.9903,
 	});
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	const handleStartTour = () => setIsTourOpen(true);
-	const handleCloseTour = () => setIsTourOpen(false);
 	const [markers, setMarkers] = useState<Coordinate[]>([
 		{ lat: 39.7392, lng: -104.9903 },
 		{ lat: 39.7294, lng: -104.8319 },
@@ -72,6 +94,9 @@ const PropertySearch: React.FC = () => {
 		useState<google.maps.drawing.OverlayType | null>(null);
 	const [shapeDrawn, setShapeDrawn] = useState(false);
 	const [boundaryApplied, setBoundaryApplied] = useState(false);
+
+	// Refs
+	const formRef = useRef<HTMLFormElement>(null);
 	const shapeRef = useRef<
 		| google.maps.Polygon
 		| google.maps.Rectangle
@@ -80,12 +105,147 @@ const PropertySearch: React.FC = () => {
 		| null
 	>(null);
 
-	const clearShape = () => {
+	// Store
+	const { properties, setProperties, isDrawerOpen, setIsDrawerOpen } =
+		usePropertyStore();
+
+	// Reset properties when component mounts
+	useEffect(() => {
+		setProperties([]);
+		setHasResults(false);
+	}, [setProperties]);
+
+	// Tour handlers
+	const handleStartTour = useCallback(() => setIsTourOpen(true), []);
+	const handleCloseTour = useCallback(() => setIsTourOpen(false), []);
+
+	// Define form default values based on the schema
+	const defaultValues = {
+		location: "",
+		advanced: {
+			radius: "10",
+			pastDays: "30",
+			dateFrom: "",
+			dateTo: "",
+			mlsOnly: false,
+			foreclosure: false,
+			proxy: "",
+			extraPropertyData: false,
+			excludePending: false,
+			limit: "100",
+		},
+		marketStatus: "for_sale",
+		beds: "",
+		baths: "",
+		minPrice: "",
+		maxPrice: "",
+		propertyType: "all",
+	};
+
+	// Form handling with proper typing
+	const form = useForm<typeof defaultValues>({
+		resolver: zodResolver(mapFormSchema),
+		defaultValues,
+		mode: "onChange",
+	});
+
+	const {
+		control: formControl,
+		handleSubmit: submitForm,
+		formState: { errors: formErrors, isValid: isFormValid },
+		reset,
+		watch,
+	} = form;
+
+	// Watch location for map updates
+	const location = watch("location");
+
+	// Handle form submission
+	const handleSearch = useCallback(
+		async (data: typeof defaultValues) => {
+			try {
+				setIsSearching(true);
+				console.log("[PropertySearch] Form submitted:", data);
+
+				// Simulate API call with loading state
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+
+				// Generate new properties based on search criteria
+				const searchResults = generateFakeProperties(8);
+				setProperties(searchResults);
+				setHasResults(searchResults.length > 0);
+
+				// Update map center if location is provided
+				if (data.location) {
+					const coordinates = await mockFetchAddressesFromApi([data.location]);
+					if (coordinates.length > 0) {
+						setCenter(coordinates[0]);
+						setMarkers(coordinates);
+					}
+				}
+
+				toast.success("Search completed successfully!");
+			} catch (error) {
+				console.error("Search error:", error);
+				toast.error("Failed to complete search. Please try again.");
+			} finally {
+				setIsSearching(false);
+			}
+		},
+		[setProperties],
+	);
+
+	// Handle map drawing actions
+	const clearShape = useCallback(() => {
 		if (shapeRef.current) {
 			shapeRef.current.setMap(null);
 			shapeRef.current = null;
 		}
-	};
+	}, []);
+
+	// Handle shape completion from map
+	const onShapeComplete = useCallback(
+		(
+			shape: google.maps.Polygon | google.maps.Rectangle | google.maps.Circle,
+		) => {
+			shapeRef.current = shape;
+			setShapeDrawn(true);
+		},
+		[],
+	);
+
+	// Handle applying drawing to search
+	const applyDrawing = useCallback(() => {
+		setBoundaryApplied(true);
+		toast.info("Boundary filter applied");
+	}, []);
+
+	// Handle removing boundaries
+	const removeBoundaries = useCallback(() => {
+		clearShape();
+		setBoundaryApplied(false);
+		setShapeDrawn(false);
+		toast.info("Boundary filter removed");
+	}, [clearShape]);
+
+	// Handle opening/closing the help modal
+	const openModal = useCallback(() => setIsModalOpen(true), []);
+	const closeModal = useCallback(() => setIsModalOpen(false), []);
+
+	// Handle tour actions
+	const startTour = useCallback(() => {
+		setIsTourOpen(true);
+		setIsModalOpen(false);
+	}, []);
+
+	// Handle search form submission
+	const handleFormSubmit = useCallback(
+		(e: React.FormEvent) => {
+			e.preventDefault();
+			submitForm(handleSearch)();
+		},
+		[submitForm, handleSearch],
+	);
 
 	const handleDrawPolygon = () => {
 		if (shapeDrawn && !boundaryApplied) handleCancelDrawing();
@@ -238,36 +398,58 @@ const PropertySearch: React.FC = () => {
 	});
 
 	const onSubmit = async (data: MapFormSchemaType) => {
-		// If form is invalid, show all errors
-		if (!isValid) {
-			setShowAllErrors(true);
-			return;
-		}
-		const normalizedData = normalizeFormValues(data);
-		console.log("[DEBUG] onSubmit normalizedData:", normalizedData);
+		try {
+			setIsLoading(true);
+			setIsSearching(true);
 
-		console.log("[DEBUG] onSubmit called with data:", data); // *
-		toast("Submitted");
-		const fetchedCoordinates = await mockFetchAddressesFromApi([data.location]);
-		console.log("[DEBUG] fetchedCoordinates:", fetchedCoordinates); // *
-		const newMarkers = fetchedCoordinates.map((coord) => ({
-			lat: coord.lat,
-			lng: coord.lng,
-		}));
-		console.log("[DEBUG] newMarkers:", newMarkers); // *
-		if (newMarkers && newMarkers.length > 0) {
-			setMarkers(newMarkers);
-			const newCenter = calculateCenter(newMarkers);
-			console.log("[DEBUG] newCenter:", newCenter); // *
-			setCenter(newCenter);
+			// If form is invalid, show all errors
+			if (!isValid) {
+				setShowAllErrors(true);
+				return;
+			}
+
+			// Clear previous results
+			setProperties([]);
+			setHasResults(false);
+
+			// Show loading state
+			const searchToast = toast.loading("Searching for properties...");
+
+			// Simulate API call with a small delay
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+
+			// Get coordinates for the search location
+			const fetchedCoordinates = await mockFetchAddressesFromApi([
+				data.location,
+			]);
+
+			if (fetchedCoordinates && fetchedCoordinates.length > 0) {
+				// Update map markers and center
+				const newMarkers = fetchedCoordinates.map((coord) => ({
+					lat: coord.lat,
+					lng: coord.lng,
+				}));
+				setMarkers(newMarkers);
+				setCenter(calculateCenter(newMarkers));
+
+				// Generate and set properties
+				const newProperties = generateFakeProperties(12);
+				setProperties(newProperties);
+				setHasResults(newProperties.length > 0);
+
+				toast.success("Search completed!", { id: searchToast });
+			} else {
+				toast.error("No results found for the specified location", {
+					id: searchToast,
+				});
+			}
+		} catch (error) {
+			console.error("Search error:", error);
+			toast.error("Failed to complete search. Please try again.");
+		} finally {
+			setIsLoading(false);
+			setIsSearching(false);
 		}
-		// * Set new properties after search
-		const newProperties = generateFakeProperties(12); // Replace with real API call in prod
-		console.log("[DEBUG] newProperties:", newProperties); // *
-		setProperties(newProperties);
-		setHasResults(newProperties.length > 0);
-		console.log("[DEBUG] hasResults:", newProperties.length > 0); // *
-		// Do NOT open the drawer here
 	};
 
 	return (
