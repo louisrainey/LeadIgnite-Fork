@@ -1,11 +1,11 @@
-import type { PropertyDetails } from "@/types/_dashboard/maps";
+import type { Property } from "@/types/_dashboard/property";
 import { create } from "zustand";
 
 interface PropertyStoreState {
 	isDrawerOpen: boolean;
 	drawerHeight: number;
-	properties: PropertyDetails[];
-	visibleProperties: PropertyDetails[];
+	properties: Property[];
+	visibleProperties: Property[];
 	progressValue: number;
 	listSizeLabel: string;
 	hasMore: boolean;
@@ -14,7 +14,7 @@ interface PropertyStoreState {
 	setIsDrawerOpen: (open: boolean) => void;
 	setDrawerHeight: (height: number) => void;
 	loadMoreProperties: (maxCardsPerLoad: number) => void;
-	setProperties: (properties: PropertyDetails[]) => void;
+	setProperties: (properties: Property[]) => void;
 }
 
 const MAX_CARDS_PER_LOAD = 12;

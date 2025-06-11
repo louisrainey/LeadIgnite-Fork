@@ -3,26 +3,40 @@
 import { AddContactInfoModal } from "@/components/reusables/modals/addContactInfo";
 import SkipTraceModalMain from "@/components/reusables/modals/user/skipTrace/SkipTraceModalMain";
 import { Button } from "@/components/ui/button";
-import searchAnimation from "@/public/lottie/SearchPing.json"; // Lottie JSON file path
-import type { PropertyDetails } from "@/types/_dashboard/maps";
+import searchAnimation from "@/public/lottie/SearchPing.json";
+import type { Property, RealtorProperty } from "@/types/_dashboard/property";
+import { isRealtorProperty } from "@/types/_dashboard/property";
 import Lottie from "lottie-react";
 import type React from "react";
 import { useState } from "react";
 
 interface ContactCardProps {
-	property: PropertyDetails; // The property data passed as a prop
+	property: Property; // The property data passed as a prop
 }
 
 export const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
-	const { agent, agent_email, agent_phones } = property;
+	// Extract contact info based on property type
+	const getContactInfo = () => {
+		if (isRealtorProperty(property)) {
+			const agent = property.metadata.agent;
+			return {
+				name: agent?.name || null,
+				email: agent?.email || null,
+				phones: agent?.phones || [],
+			};
+		}
+		// RentCast properties don't have agent info in the current schema
+		return { name: null, email: null, phones: [] };
+	};
+
+	const { name, email, phones } = getContactInfo();
 
 	// State to handle modal visibility for both AddContact and SkipTrace
 	const [isAddContactModalOpen, setIsAddContactModalOpen] = useState(false);
 	const [isSkipTraceModalOpen, setIsSkipTraceModalOpen] = useState(false);
 
 	// Check if contact info is available
-	const isContactInfoAvailable =
-		agent || agent_email || (agent_phones && agent_phones.length > 0);
+	const isContactInfoAvailable = name || email || (phones && phones.length > 0);
 
 	// Handlers to open and close the modals
 	const openAddContactModal = () => setIsAddContactModalOpen(true);
@@ -82,16 +96,16 @@ export const ContactCard: React.FC<ContactCardProps> = ({ property }) => {
 						<tbody>
 							<tr className="border-b">
 								<td className="p-2 text-gray-900 dark:text-gray-100">
-									{agent || "N/A"}
+									{name || "N/A"}
 								</td>
 								<td className="p-2 text-gray-900 dark:text-gray-100">
-									{agent_email || "N/A"}
+									{email || "N/A"}
 								</td>
 								<td className="p-2 text-gray-900 dark:text-gray-100">
-									{agent_phones?.length ? (
+									{phones?.length ? (
 										<ul>
-											{agent_phones.map((phone) => (
-												<li key={phone.number}>
+											{phones.map((phone, index) => (
+												<li key={`${phone.number}-${index}`}>
 													{phone.number
 														? `${phone.number} (${phone.type || "N/A"})`
 														: "N/A"}

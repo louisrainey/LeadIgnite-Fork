@@ -7,7 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { MockUserProfile } from "@/constants/_faker/profile/userProfile";
 import { usePropertyStore } from "@/lib/stores/leadSearch/drawer"; // Zustand store import
 import { useModalStore } from "@/lib/stores/leadSearch/leadListStore";
-import type { PropertyDetails } from "@/types/_dashboard/maps";
+import type { Property } from "@/types/_dashboard/property";
+import { isRealtorProperty } from "@/types/_dashboard/property";
 import { X } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
@@ -15,7 +16,7 @@ import PropertyCard from "./propertyCard";
 import SkipTraceDialog from "../maps/properties/utils/createListModal";
 
 interface PropertyListProps {
-	properties: PropertyDetails[];
+	properties: Property[];
 }
 
 const MIN_DRAWER_HEIGHT = 100; // Set a minimum height for the drawer to prevent it from being closed completely.
@@ -23,9 +24,29 @@ const cardLoadOptions = [12, 24, 48, 96]; // You can add more options if needed
 // * PropertyListView now manages selected properties for list creation
 const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 	const [searchTerm, setSearchTerm] = useState("");
-	const filteredProperties = properties.filter((property) =>
-		property.text?.toLowerCase().includes(searchTerm.toLowerCase()),
-	);
+	const filteredProperties = properties.filter((property) => {
+		if (isRealtorProperty(property)) {
+			const searchText =
+				`${property.address.street || ""} ${property.address.city || ""}`.toLowerCase();
+			return searchText.includes(searchTerm.toLowerCase());
+		}
+
+		// For RentCastProperty, use address fields for search
+		const rentCastProperty = property;
+		const searchText = [
+			rentCastProperty.address.street,
+			rentCastProperty.address.city,
+			rentCastProperty.address.state,
+			rentCastProperty.address.zipCode,
+			rentCastProperty.metadata.legalDescription,
+			rentCastProperty.metadata.subdivision,
+			rentCastProperty.metadata.zoning,
+		]
+			.filter(Boolean)
+			.join(" ")
+			.toLowerCase();
+		return searchText.includes(searchTerm.toLowerCase());
+	});
 
 	// ...existing hooks and state
 	const availableListNames = MockUserProfile.companyInfo.leadLists.map(
@@ -179,7 +200,7 @@ const PropertyListView: React.FC<PropertyListProps> = ({ properties }) => {
 												onClick={() => {
 													const allPropertyIds = filteredProperties
 														.filter((p) => p.id)
-														.map((p) => p.id as string);
+														.map((p) => p.id);
 													setSelectedPropertyIds(allPropertyIds);
 												}}
 												aria-label="Select all properties"

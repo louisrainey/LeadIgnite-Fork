@@ -5,13 +5,13 @@ import {
 	mockFetchAddressesFromApi,
 } from "@/constants/utility/maps";
 import { usePropertyStore } from "@/lib/stores/leadSearch/drawer";
-import type {
-	Coordinate,
-	MapFormSchemaType,
-	PropertyDetails,
-} from "@/types/_dashboard/maps";
+import type { Coordinate } from "@/types/_dashboard/maps";
+import type { Property } from "@/types/_dashboard/property";
 import { mapFormSchema } from "@/types/zod/propertyList";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+
+type MapFormSchemaType = z.infer<typeof mapFormSchema>;
 import {
 	Search,
 	MapPin,
@@ -94,6 +94,9 @@ const PropertySearch: React.FC<PropertySearchProps> = ({
 		useState<google.maps.drawing.OverlayType | null>(null);
 	const [shapeDrawn, setShapeDrawn] = useState(false);
 	const [boundaryApplied, setBoundaryApplied] = useState(false);
+	const [selectedProperty, setSelectedProperty] = useState<Property | null>(
+		null,
+	); // Update type to use the new Property type
 
 	// Refs
 	const formRef = useRef<HTMLFormElement>(null);
@@ -480,17 +483,23 @@ const PropertySearch: React.FC<PropertySearchProps> = ({
 					<div className="mb-2 rounded border border-red-300 bg-red-50 p-3 text-red-700 text-sm">
 						<strong>Fix the following fields:</strong>
 						<ul className="mt-1 ml-5 list-disc">
-							{Object.entries(errors).map(([field, error]) => (
-								<li key={field}>
-									{field.charAt(0).toUpperCase() + field.slice(1)}:{" "}
-									{error?.message ||
-										(typeof error === "object" &&
-											error !== null &&
-											"root" in error &&
-											(error as unknown as { root: { message: string } }).root
-												?.message)}
-								</li>
-							))}
+							{Object.entries(errors).map(([field, error]) => {
+								const errorMessage =
+									typeof error === "object" && error !== null
+										? "message" in error
+											? (error as { message: string }).message
+											: "root" in error
+												? (error as { root: { message: string } }).root?.message
+												: "Validation error"
+										: "Validation error";
+
+								return (
+									<li key={field}>
+										{field.charAt(0).toUpperCase() + field.slice(1)}:{" "}
+										{errorMessage}
+									</li>
+								);
+							})}
 						</ul>
 					</div>
 				)}

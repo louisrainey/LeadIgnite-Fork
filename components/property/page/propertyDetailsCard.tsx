@@ -1,318 +1,349 @@
 "use client";
 
-import React from "react";
-
-import type { PropertyDetails } from "@/types/_dashboard/maps";
-import { v4 as uuidv4 } from "uuid";
+import type React from "react";
+import { useMemo, useState } from "react";
+import type {
+	Property,
+	RealtorProperty,
+	RentCastProperty,
+} from "@/types/_dashboard/property";
+import {
+	isRealtorProperty,
+	isRentCastProperty,
+} from "@/types/_dashboard/property";
 
 interface PropertyCardProps {
-	property: PropertyDetails;
+	property: Property;
 }
 
-const handlePrimaryImgError = (
-	e: React.SyntheticEvent<HTMLImageElement, Event>,
-) => {
-	e.currentTarget.style.display = "none";
+// Helper to safely access nested property values, useful for fields not strictly typed.
+const getNestedValue = <T = unknown>(
+	obj: unknown,
+	path: string | string[],
+	fallback: T | null = null,
+): T | null => {
+	if (!obj || typeof obj !== "object") return fallback;
+
+	const pathArray = Array.isArray(path) ? path : path.split(".");
+	let result: unknown = obj;
+
+	for (const key of pathArray) {
+		if (result === null || result === undefined || typeof result !== "object") {
+			return fallback;
+		}
+		result = (result as Record<string, unknown>)[key];
+	}
+
+	return (result as T) ?? fallback;
 };
 
 const PropertyCardDataComponent: React.FC<PropertyCardProps> = ({
 	property,
 }) => {
-	// Helper function to format keys for better readability
-	// const formatKey = (key: string) => {
-	//   return key
-	//     .replace(/_/g, ' ') // Replace underscores with spaces
-	//     .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
-	// };
+	const [lightboxOpen, setLightboxOpen] = useState(false);
+	const [activePhoto, setActivePhoto] = useState<string | null>(null);
 
-	// Function to render the property details with labels and values
-	const renderPropertyDetails = (label: string, value: string | null) => {
+	// Centralized and type-safe logic for handling photos
+	const { primaryPhotoUrl, otherPhotoUrls } = useMemo<{
+		primaryPhotoUrl: string | null;
+		otherPhotoUrls: string[];
+	}>(() => {
+		let primaryUrl: string | null = null;
+		let allUrls: string[] = [];
+
+		if (isRealtorProperty(property)) {
+			const images = property.media?.images ?? [];
+			const primaryImage = images.find((img) => img.isPrimary);
+			primaryUrl = primaryImage?.url ?? images[0]?.url ?? null;
+			allUrls = images.map((img) => img.url);
+		} else if (isRentCastProperty(property)) {
+			// Note: RentCastProperty type does not officially include images.
+			// This safely attempts to retrieve them from metadata if the API provides them.
+			const images = getNestedValue<string[]>(property.metadata, "images", []);
+			primaryUrl =
+				getNestedValue<string>(property.metadata, "primaryPhoto") ??
+				images?.[0] ??
+				null;
+			allUrls = images ?? [];
+		}
+
+		const otherUrls = allUrls.filter((url) => url && url !== primaryUrl);
+		return { primaryPhotoUrl: primaryUrl, otherPhotoUrls: otherUrls };
+	}, [property]);
+
+	// --- Helper Functions ---
+
+	// Helper for consistently formatting numbers
+	const formatNumber = (value: number | null | undefined): string => {
+		if (value === null || value === undefined) return "-";
+		return value.toLocaleString();
+	};
+
+	// Helper for consistently formatting currency
+	const formatCurrency = (value: number | null | undefined): string => {
+		if (value === null || value === undefined) return "-";
+		return `$${value.toLocaleString()}`;
+	};
+
+	// Helper for consistently formatting square feet
+	const formatSqft = (value: number | null | undefined): string => {
+		if (value === null || value === undefined) return "-";
+		return `${value.toLocaleString()} sq ft`;
+	};
+
+	// Function to render a property detail item
+	const renderPropertyDetails = (
+		label: string,
+		value: string | number | null | undefined,
+		highlight = false,
+	) => {
+		const displayValue =
+			value !== null && value !== undefined && value !== "" ? value : "-";
 		return (
-			<div className="mb-4 flex flex-col items-start">
+			<div key={label} className="mb-4 flex flex-col items-start">
 				<span className="font-semibold text-gray-500 dark:text-gray-400">
 					{label}
 				</span>
-				<span>
-					{value !== null && value !== undefined && value !== "" ? value : "-"}
+				<span
+					className={`break-words ${highlight ? "font-medium text-blue-600 dark:text-blue-400" : ""}`}
+				>
+					{displayValue}
 				</span>
 			</div>
 		);
 	};
 
+	// --- Derived Properties for Rendering ---
+
+	// Get assessed value for RentCast properties from the latest tax year available
+	const assessedValue = isRentCastProperty(property)
+		? (() => {
+				const assessments = property.metadata.taxAssessments;
+				if (!assessments || Object.keys(assessments).length === 0) return null;
+				const latestYear = Math.max(...Object.keys(assessments).map(Number));
+				return assessments[latestYear]?.value ?? null;
+			})()
+		: null;
+
+	const hoaFee = isRealtorProperty(property)
+		? property.metadata.hoaFee
+		: isRentCastProperty(property)
+			? property.metadata.hoa?.fee
+			: null;
+
+	const lastSoldDate = isRealtorProperty(property)
+		? property.metadata.lastSoldDate
+		: isRentCastProperty(property)
+			? property.metadata.lastSaleDate
+			: null;
+
+	const soldPrice = isRentCastProperty(property)
+		? property.metadata.lastSalePrice
+		: null; // Not available on RealtorProperty type
+
+	const description = isRealtorProperty(property)
+		? property.description
+		: getNestedValue<string>(property.metadata, "text"); // Fallback for RentCast
+
 	return (
-		<div className="my-2 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-lg">
+		<div className="roundedte my-2 p-6 font-bold shadow-md dark:bg-gray-800 dark:shadow-lg">
 			<h2 className="mb-4 font-bold text-xl dark:text-white">
 				Property Information
 			</h2>
-			<div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-				{renderPropertyDetails("Agent", property.agent)}
-				{/* * Render Agent Email as clickable mailto link with wrapping */}
-				<div className="mb-4 flex flex-col items-start break-all">
-					<span className="font-semibold text-gray-500 dark:text-gray-400">
-						Agent Email
-					</span>
-					{property.agent_email ? (
-						<a
-							href={`mailto:${property.agent_email}`}
-							className="break-all text-blue-600 underline"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{property.agent_email}
-						</a>
-					) : (
-						<span>-</span>
-					)}
-				</div>
-				{/* * Render Alt Photos as thumbnails with lightbox modal preview */}
-				{(() => {
-					const [lightboxOpen, setLightboxOpen] = React.useState(false);
-					const [activePhoto, setActivePhoto] = React.useState<string | null>(
-						null,
-					);
-					const photos: string[] = Array.isArray(property.alt_photos)
-						? property.alt_photos
-						: property.alt_photos
-							? [property.alt_photos]
-							: [];
+			<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				{/* Agent Information */}
+				{isRealtorProperty(property) && (
+					<div className="mb-4 flex flex-col items-start">
+						<span className="font-semibold text-gray-500 dark:text-gray-400">
+							Agent
+						</span>
+						<span>{property.metadata.agent.name || "-"}</span>
+						{property.metadata.agent.email && (
+							<a
+								href={`mailto:${property.metadata.agent.email}`}
+								className="break-all text-blue-600 underline"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								{property.metadata.agent.email}
+							</a>
+						)}
+						{property.metadata.agent.phones?.[0]?.number && (
+							<a
+								href={`tel:${property.metadata.agent.phones[0].number.replace(/[^\d+]/g, "")}`}
+								className="text-blue-600"
+							>
+								{property.metadata.agent.phones[0].number}
+								{property.metadata.agent.phones[0].type &&
+									` (${property.metadata.agent.phones[0].type})`}
+							</a>
+						)}
+					</div>
+				)}
 
-					return (
-						<div className="mb-4 flex flex-col items-start">
-							<span className="font-semibold text-gray-500 dark:text-gray-400">
-								Alt Photos
-							</span>
-							{photos.length > 0 ? (
-								<div className="mt-2 flex max-w-full space-x-2 overflow-x-auto">
-									{photos.slice(0, 5).map((url, idx) => (
-										<button
-											key={url}
-											type="button"
-											className="focus:outline-none"
-											onClick={() => {
-												setActivePhoto(url);
-												setLightboxOpen(true);
-											}}
-										>
-											<img
-												src={url}
-												alt={`Property ${idx + 1} ${property.latitude} ${property.longitude}`}
-												className="h-16 w-24 rounded border object-cover transition-transform hover:scale-105"
-												loading="lazy"
-											/>
-										</button>
-									))}
-									{photos.length > 5 && (
-										<span className="self-center text-gray-400 text-xs">
-											+{photos.length - 5} more
-										</span>
-									)}
-								</div>
-							) : (
-								<div className="flex h-16 w-24 items-center justify-center rounded bg-gray-200">
-									<span className="text-gray-400">No Photos</span>
-								</div>
-							)}
-
-							{/* Lightbox modal */}
-							{lightboxOpen && activePhoto && (
-								<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-									<div className="relative">
-										<img
-											src={activePhoto}
-											alt="Full property view"
-											className="max-h-[80vh] max-w-[90vw] rounded shadow-lg"
-										/>
-										<button
-											type="button"
-											onClick={() => setLightboxOpen(false)}
-											className="absolute top-2 right-2 rounded-full bg-white p-1 shadow"
-											aria-label="Close"
-										>
-											&#10005;
-										</button>
-									</div>
-								</div>
-							)}
-						</div>
-					);
-				})()}
-
-				{renderPropertyDetails(
-					"Assessed Value",
-					property.assessed_value?.toLocaleString?.() ??
-						property.assessed_value?.toString?.() ??
-						"-",
-				)}
-				{renderPropertyDetails("Bedrooms", property.beds?.toString() ?? "-")}
-				{renderPropertyDetails("Broker", property.broker ?? "-")}
-				{renderPropertyDetails("Broker Phone", property.broker_phone ?? "-")}
-				{renderPropertyDetails(
-					"Broker Website",
-					property.broker_website ?? "-",
-				)}
-				{renderPropertyDetails("City", property.city)}
-				{renderPropertyDetails("County", property.county)}
-				{renderPropertyDetails(
-					"Days on MLS",
-					property.days_on_mls?.toString() ?? "-",
-				)}
-				{renderPropertyDetails(
-					"Estimated Value",
-					property.estimated_value?.toLocaleString?.() ??
-						property.estimated_value?.toString?.() ??
-						"-",
-				)}
-				{renderPropertyDetails("FIPS Code", property.fips_code)}
-				{renderPropertyDetails(
-					"Full Bathrooms",
-					property.full_baths?.toString() ?? "-",
-				)}
-				{renderPropertyDetails("Full Street Line", property.full_street_line)}
-				{renderPropertyDetails(
-					"Partial Bathrooms",
-					property.half_baths?.toString() ?? "-",
-				)}
-				{renderPropertyDetails(
-					"HOA Fee",
-					property.hoa_fee?.toLocaleString?.() ??
-						property.hoa_fee?.toString?.() ??
-						"-",
-				)}
-				{renderPropertyDetails("Last Sold Date", property.last_sold_date)}
-				{renderPropertyDetails(
-					"Latitude",
-					property.latitude?.toString() ?? "-",
-				)}
-				{renderPropertyDetails("List Date", property.list_date)}
-				{renderPropertyDetails(
-					"List Price",
-					property.list_price?.toLocaleString?.() ??
-						property.list_price?.toString?.() ??
-						"-",
-				)}
-				{renderPropertyDetails(
-					"Longitude",
-					property.longitude?.toString() ?? "-",
-				)}
-				{renderPropertyDetails(
-					"Lot Sqft",
-					property.lot_sqft?.toLocaleString?.() ??
-						property.lot_sqft?.toString?.() ??
-						"-",
-				)}
-				{renderPropertyDetails("MLS", property.mls)}
-				{renderPropertyDetails("MLS ID", property.mls_id)}
-				{renderPropertyDetails("Nearby Schools", property.nearby_schools)}
-				{renderPropertyDetails("Neighborhoods", property.neighborhoods)}
-				{renderPropertyDetails(
-					"Parking Garage",
-					property.parking_garage?.toString() ?? "-",
-				)}
-				{renderPropertyDetails(
-					"Price Per Sqft",
-					property.price_per_sqft?.toLocaleString?.() ??
-						property.price_per_sqft?.toString?.() ??
-						"-",
-				)}
-				{/* * Render Primary Photo as an embedded image if available, else show placeholder */}
+				{/* Photo Gallery */}
 				<div className="mb-4 flex flex-col items-start">
 					<span className="font-semibold text-gray-500 dark:text-gray-400">
-						Primary Photo
+						Photos
 					</span>
-					{property.primary_photo ? (
-						<img
-							src={property.primary_photo}
-							alt="Primary property"
-							className="mt-2 h-24 w-36 rounded border object-cover"
-							loading="lazy"
-							onError={handlePrimaryImgError}
-						/>
+					{primaryPhotoUrl ? (
+						<div className="relative mt-2 aspect-video w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
+							<img
+								alt="Primary property"
+								className="h-full w-full object-cover"
+								height={400}
+								src={primaryPhotoUrl}
+								width={600}
+							/>
+						</div>
 					) : (
-						<span className="text-gray-400">No Photo</span>
+						<div className="mt-2 flex aspect-video w-full items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+							<span className="text-gray-500 dark:text-gray-400">
+								No image available
+							</span>
+						</div>
+					)}
+					{otherPhotoUrls.length > 0 && (
+						<div className="mt-2 flex max-w-full space-x-2 overflow-x-auto">
+							{otherPhotoUrls.slice(0, 4).map((url, idx) => (
+								<button
+									key={url}
+									type="button"
+									className="focus:outline-none"
+									onClick={() => {
+										setActivePhoto(url);
+										setLightboxOpen(true);
+									}}
+								>
+									<img
+										src={url}
+										alt={`Property thumbnail ${idx + 1}`}
+										className="h-16 w-24 rounded border object-cover transition-transform hover:scale-105"
+										loading="lazy"
+									/>
+								</button>
+							))}
+							{otherPhotoUrls.length > 4 && (
+								<span className="self-center text-gray-400 text-xs">
+									+{otherPhotoUrls.length - 4} more
+								</span>
+							)}
+						</div>
 					)}
 				</div>
-				{renderPropertyDetails("Property URL", property.property_url)}
+
+				{/* Lightbox modal */}
+				{lightboxOpen && activePhoto && (
+					<dialog
+						open
+						className="fixed inset-0 z-50 flex cursor-pointer items-center justify-center bg-black bg-opacity-70"
+						onClick={() => setLightboxOpen(false)}
+						onKeyDown={(e) => e.key === "Escape" && setLightboxOpen(false)}
+					>
+						<div
+							className="relative"
+							role="presentation"
+							onClick={(e) => e.stopPropagation()}
+							onKeyDown={(e) => e.stopPropagation()}
+						>
+							<img
+								src={activePhoto}
+								alt="Full property view"
+								className="max-h-[80vh] max-w-[90vw] rounded shadow-lg"
+							/>
+							<button
+								type="button"
+								onClick={() => setLightboxOpen(false)}
+								className="-top-2 -right-2 absolute rounded-full bg-white p-2 text-black shadow-lg"
+								aria-label="Close"
+							>
+								✕
+							</button>
+						</div>
+					</dialog>
+				)}
+
+				{/* Property Details */}
+				{isRentCastProperty(property) &&
+					renderPropertyDetails(
+						"Assessed Value",
+						formatCurrency(assessedValue),
+					)}
+				{renderPropertyDetails("Bedrooms", formatNumber(property.details.beds))}
 				{renderPropertyDetails(
-					"Sold Price",
-					property.sold_price?.toLocaleString?.() ??
-						property.sold_price?.toString?.() ??
-						"-",
+					"Full Bathrooms",
+					formatNumber(property.details.fullBaths),
+				)}
+				{renderPropertyDetails(
+					"Partial Bathrooms",
+					formatNumber(property.details.halfBaths),
 				)}
 				{renderPropertyDetails(
 					"Living Area",
-					property.sqft !== null && property.sqft !== undefined
-						? `${property.sqft.toLocaleString()} SqFt.`
-						: "-",
+					formatSqft(property.details.sqft),
 				)}
-				{renderPropertyDetails("State", property.state)}
-				{renderPropertyDetails("Status", property.status)}
-				{renderPropertyDetails("Stories", property.stories?.toString() ?? "-")}
-				{renderPropertyDetails("Street", property.street)}
-				{renderPropertyDetails("Style", property.style)}
-				{renderPropertyDetails("Unit", property.unit ?? "-")}
+				{renderPropertyDetails(
+					"Lot Size",
+					formatSqft(property.details.lotSqft),
+				)}
 				{renderPropertyDetails(
 					"Year Built",
-					property.year_built?.toString() ?? "-",
+					formatNumber(property.details.yearBuilt),
 				)}
-				{renderPropertyDetails("Zip Code", property.zip_code)}
 				{renderPropertyDetails(
-					"Mortgage Balance",
-					property.mortgage_balance?.toLocaleString?.() ??
-						property.mortgage_balance?.toString?.() ??
-						"-",
+					"Stories",
+					formatNumber(property.details.stories),
 				)}
-				<div className="col-span-2 mb-4 flex flex-col items-start sm:col-span-3 lg:col-span-4">
-					<span className="font-semibold text-gray-500 dark:text-gray-400">
-						Text
-					</span>
-					<span className="whitespace-pre-line break-words">
-						{property.text ? property.text : "-"}
-					</span>
-				</div>
+				{renderPropertyDetails("Style", property.details.style)}
+				{renderPropertyDetails("Property Type", property.details.propertyType)}
 
-				{/* --- Attributes below are not in PropertyDetails type, kept as comments for future reference --- */}
-				{/* // {renderPropertyDetails("Property Use", property.property_use)}
-  // {renderPropertyDetails("Residential Units", property.residential_units)}
-  // {renderPropertyDetails("Basement", property.basement)}
-  // {renderPropertyDetails("Basement Size", property.basement_size)}
-  // {renderPropertyDetails("Fireplaces", property.fireplaces)}
-  // {renderPropertyDetails("Air Conditioning", property.air_conditioning)}
-  // {renderPropertyDetails("Heating", property.heating)}
-  // {renderPropertyDetails("Heating Fuel", property.heating_fuel)}
-  // {renderPropertyDetails("Water Source", property.water_source)}
-  // {renderPropertyDetails("Garage", property.garage)}
-  // {renderPropertyDetails("Garage Size", property.garage_size)}
-  // {renderPropertyDetails("Carport", property.carport)}
-  // {renderPropertyDetails("Porch", property.porch)}
-  // {renderPropertyDetails("Patio", property.patio)}
-  // {renderPropertyDetails("Pool", property.pool)}
-				{renderPropertyDetails("Bedrooms", property.beds)}
-				{renderPropertyDetails("Full Bathrooms", property.full_baths)}
-				{renderPropertyDetails("Partial Bathrooms", property.half_baths ?? "-")}
-				{renderPropertyDetails(
-					"Living Area",
-					`${property.sqft?.toLocaleString()} SqFt.`,
+				{/* Address Details */}
+				{renderPropertyDetails("Full Address", property.address.fullStreetLine)}
+				{renderPropertyDetails("City", property.address.city)}
+				{renderPropertyDetails("State", property.address.state)}
+				{renderPropertyDetails("Zip Code", property.address.zipCode)}
+				{renderPropertyDetails("Latitude", property.address.latitude)}
+				{renderPropertyDetails("Longitude", property.address.longitude)}
+
+				{/* Listing / Sale Details */}
+				{renderPropertyDetails("HOA Fee", formatCurrency(hoaFee))}
+				{renderPropertyDetails("Last Sold Date", lastSoldDate)}
+				{renderPropertyDetails("Last Sold Price", formatCurrency(soldPrice))}
+
+				{/* Realtor-Specific Details */}
+				{isRealtorProperty(property) && (
+					<>
+						{renderPropertyDetails("Status", property.metadata.status, true)}
+						{renderPropertyDetails(
+							"List Price",
+							formatCurrency(property.metadata.listPrice),
+							true,
+						)}
+						{renderPropertyDetails(
+							"Price Per SqFt",
+							formatCurrency(property.metadata.pricePerSqft),
+						)}
+						{renderPropertyDetails(
+							"Days on Market",
+							formatNumber(property.metadata.daysOnMarket),
+						)}
+						{renderPropertyDetails("List Date", property.metadata.listDate)}
+						{renderPropertyDetails("MLS ID", property.metadata.mlsId)}
+						{renderPropertyDetails("Broker", property.metadata.agent.broker)}
+					</>
 				)}
-				{renderPropertyDetails("Stories", property.stories)}
-				{renderPropertyDetails("Property Use", property.property_use)}
-				{renderPropertyDetails("Residential Units", property.residential_units)}
-				{renderPropertyDetails("Basement", property.basement)}
-				{renderPropertyDetails("Basement Size", property.basement_size)}
-				{renderPropertyDetails("Parking Spaces", property.parking_garage)}
-				{renderPropertyDetails("Fireplaces", property.fireplaces)}
-				{renderPropertyDetails("Air Conditioning", property.air_conditioning)}
-				{renderPropertyDetails("Heating", property.heating)}
-				{renderPropertyDetails("Heating Fuel", property.heating_fuel)}
-				{renderPropertyDetails("Water Source", property.water_source ?? "-")}
-				{renderPropertyDetails(
-					"Garage",
-					property.garage ?? "Type Not Specified",
+
+				{/* Description */}
+				{description && (
+					<div className="col-span-1 mb-4 flex flex-col items-start sm:col-span-2 lg:col-span-4">
+						<span className="font-semibold text-gray-500 dark:text-gray-400">
+							Description
+						</span>
+						<p className="mt-1 whitespace-pre-line break-words">
+							{description}
+						</p>
+					</div>
 				)}
-				{renderPropertyDetails("Garage Size", property.garage_size)}
-				{renderPropertyDetails("Carport", property.carport ?? "No")}
-				{renderPropertyDetails("Porch", property.porch)}
-				{renderPropertyDetails("Patio", property.patio)}
-				{renderPropertyDetails("Pool", property.pool ?? "No")} */}
 			</div>
 		</div>
 	);

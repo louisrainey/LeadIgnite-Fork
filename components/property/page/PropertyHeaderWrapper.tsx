@@ -1,10 +1,10 @@
 "use client";
 
-import type { PropertyDetails } from "@/types/_dashboard/maps";
+import type { Property } from "@/types/_dashboard/property";
 import PropertyHeader from "./propertyHeader";
 
 interface PropertyHeaderWrapperProps {
-	property: PropertyDetails;
+	property: Property;
 }
 
 export default function PropertyHeaderWrapper({

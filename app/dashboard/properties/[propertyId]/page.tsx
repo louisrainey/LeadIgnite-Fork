@@ -11,12 +11,18 @@ const PropertyHeaderWrapper = dynamic(
 );
 
 // Static imports
-import { detailed_properties_saved } from "@/constants/dashboard/properties";
 import {
 	calculateOwnershipLength,
 	convertSqftToAcres,
 } from "@/constants/utility/property";
-import type { PropertyDetails } from "@/types/_dashboard/maps";
+import type { Property } from "@/types/_dashboard/property";
+import { isRealtorProperty } from "@/types/_dashboard/property";
+import {
+	createEmptyProperty,
+	formatPropertyAddress,
+	formatPropertyDetails,
+	getPrimaryImage,
+} from "@/lib/utils/propertyUtils";
 import PropertyMap from "@/components/maps/properties/propertyMap";
 import PageContainer from "@/components/layout/page-container";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -47,7 +53,8 @@ import {
 	mortgageData,
 	saleHistoryData,
 } from "@/constants/dashboard/profileInfo";
-import { emptyAgentProperty } from "@/constants/dashboard/testProperties";
+import { emptyAgentProperty as testProperty } from "@/constants/dashboard/testProperties";
+import { createRealtorProperty } from "@/types/_dashboard/property";
 import PropertyTabsList from "./utils/propertyTabs";
 import ContactCard from "@/components/property/page/contactCard";
 
@@ -61,7 +68,7 @@ const PropertyPageClient = dynamic(
 );
 
 // Async function to fetch property data
-async function fetchProperty(id: string): Promise<PropertyDetails | null> {
+async function fetchProperty(id: string): Promise<Property | null> {
 	try {
 		// First try to get the base URL from environment variables
 		const baseUrl =
@@ -79,7 +86,7 @@ async function fetchProperty(id: string): Promise<PropertyDetails | null> {
 			return null;
 		}
 
-		const property: PropertyDetails = await response.json();
+		const property: Property = await response.json();
 		return property;
 	} catch (error) {
 		console.error("Failed to fetch property data:", error);
@@ -97,52 +104,89 @@ export default async function PropertyPage({
 	// Fetch property data
 	let property = await fetchProperty(id);
 
-	// If property data is not found, use the default one
+	// If property data is not found, use the test property
 	if (!property) {
-		property = detailed_properties_saved[0];
-	}
-
-	// If still no property data, render a 404 page
-	if (!property) {
-		notFound();
+		// Transform test property to match Property type
+		property = createRealtorProperty({
+			address: {
+				street: testProperty.street,
+				unit: testProperty.unit || undefined,
+				city: testProperty.city,
+				state: testProperty.state,
+				zipCode: testProperty.zip_code,
+				fullStreetLine: testProperty.full_street_line,
+				latitude: testProperty.latitude,
+				longitude: testProperty.longitude,
+			},
+			details: {
+				beds: testProperty.beds,
+				fullBaths: testProperty.full_baths,
+				halfBaths: testProperty.half_baths || null,
+				sqft: testProperty.sqft,
+				yearBuilt: testProperty.year_built,
+				lotSqft: testProperty.lot_sqft,
+				propertyType: testProperty.style,
+				stories: testProperty.stories || 1,
+				style: testProperty.style,
+				construction: "Unknown",
+				roof: "Unknown",
+				parking: "Unknown",
+			},
+			metadata: {
+				source: "realtor",
+				lastUpdated: new Date().toISOString(),
+				listPrice: testProperty.list_price,
+				pricePerSqft: testProperty.price_per_sqft,
+				status: testProperty.status,
+				mlsId: testProperty.mls_id,
+				mls: testProperty.mls,
+				listDate: testProperty.list_date,
+				lastSoldDate: testProperty.last_sold_date,
+				daysOnMarket: testProperty.days_on_mls,
+				hoaFee: testProperty.hoa_fee,
+				parkingGarage: testProperty.parking_garage || 0,
+				nearbySchools: testProperty.nearby_schools,
+				neighborhoods: testProperty.neighborhoods,
+				agent: {
+					name: testProperty.agent || "",
+					email: testProperty.agent_email || "",
+					phones: testProperty.agent_phones || [],
+					broker: testProperty.broker || "",
+				},
+			},
+			media: {
+				images: [
+					{
+						url: testProperty.primary_photo || "",
+						isPrimary: true,
+					},
+					...(testProperty.alt_photos?.split(", ").map((url: string) => ({
+						url: url.trim(),
+						isPrimary: false,
+					})) || []),
+				],
+				virtualTours: [],
+			},
+			description: testProperty.text || "",
+		});
 	}
 
 	// Calculate property metrics
-	const equity =
-		property.estimated_value && property.mortgage_balance
-			? property.estimated_value - property.mortgage_balance
-			: 0;
-
-	const equityPercentage = property.estimated_value
-		? (equity / property.estimated_value) * 100
+	const listPrice = isRealtorProperty(property)
+		? property.metadata.listPrice
 		: 0;
+	const equity = listPrice; // Simplified for now, update with actual calculation when mortgage data is available
+	const equityPercentage = listPrice ? 100 : 0; // Simplified for now
 
 	const equityStatus =
 		equityPercentage > 70 ? "High" : equityPercentage > 40 ? "Medium" : "Low";
 
-	// Define the ownership data with proper types
-	interface PropertyWithOwners extends PropertyDetails {
-		owner1_name?: string;
-		owner2_name?: string;
-	}
-
-	const propertyWithOwners = property as PropertyWithOwners;
-
+	// Ownership data
 	const ownershipData = {
-		owner1_name:
-			typeof propertyWithOwners.owner1_name === "string"
-				? propertyWithOwners.owner1_name
-				: "Not Available",
-		owner2_name:
-			typeof propertyWithOwners.owner2_name === "string"
-				? propertyWithOwners.owner2_name
-				: "Not Available",
-		ownership_length: calculateOwnershipLength(property.last_sold_date),
-		mailing_address:
-			`${property.full_street_line || ""}, ${property.city || ""} ${property.state || ""} ${property.zip_code || ""}`
-				.replace(/\s*,\s*$/, "")
-				.replace(/\s+/g, " ")
-				.trim(),
+		owner1_name: "Not Available", // Will be updated with actual owner data
+		owner2_name: "Not Available",
+		ownership_length: "Unknown",
+		mailing_address: `${property.address.street}, ${property.address.city}, ${property.address.state} ${property.address.zipCode}`,
 	};
 
 	// Prepare property data with calculated fields
@@ -155,50 +199,57 @@ export default async function PropertyPage({
 	};
 
 	const landLocationData = {
-		lot_size: `${convertSqftToAcres(property.lot_sqft)} acres`, // Convert sqft to acres
-		lot_area: property.lot_sqft
-			? `${property.lot_sqft.toLocaleString()} sqft`
-			: "N/A", // Safe handling for lot_sqft
-		property_class: property.style,
-		// apn: property.apn,
-		// zoning: property.zoning,
-		census_tract: "-", // Placeholder if not available
-		block: "-", // Placeholder if not available
-		lot_number: "-", // Placeholder if not available
-		neighborhood_name: property.neighborhoods,
-		neighborhood_type: "Subdivision", // Assumed from the property type
-		// legal_description: property.legal_description,
+		lot_size: property.details.lotSqft
+			? `${convertSqftToAcres(property.details.lotSqft)} acres`
+			: "N/A",
+		lot_area: property.details.lotSqft
+			? `${property.details.lotSqft.toLocaleString()} sqft`
+			: "N/A",
+		property_class: property.details.style,
+		census_tract: "-",
+		block: "-",
+		lot_number: "-",
+		neighborhood_name: isRealtorProperty(property)
+			? property.metadata.neighborhoods
+			: "",
+		neighborhood_type: "Subdivision",
 	};
 
-	const mlsData = {
-		mls: property.mls,
-		mls_id: property.mls_id,
-		list_date: property.list_date,
-		list_price: property.list_price,
-		sold_price: property.sold_price,
-		status: property.status,
-		property_url: property.property_url,
-	};
+	const mlsData = isRealtorProperty(property)
+		? {
+				mls: property.metadata.mls,
+				mls_id: property.metadata.mlsId,
+				list_date: property.metadata.listDate,
+				list_price: property.metadata.listPrice,
+				sold_price: 0, // Will be updated when sold
+				status: property.metadata.status,
+				property_url: "#", // Will be updated with actual URL
+			}
+		: {
+				mls: "N/A",
+				mls_id: "N/A",
+				list_date: "N/A",
+				list_price: 0,
+				sold_price: 0,
+				status: "N/A",
+				property_url: "#",
+			};
 	const taxInfo = {
-		// apn: property.apn,
-		tax_year: 2024, // Hardcoded or dynamically set
-		tax_amount: property.hoa_fee
-			? `$${property.hoa_fee.toLocaleString()}`
+		tax_year: new Date().getFullYear(),
+		tax_amount:
+			isRealtorProperty(property) && property.metadata.hoaFee
+				? `$${property.metadata.hoaFee.toLocaleString()}`
+				: "N/A",
+		assessment_year: new Date().getFullYear(),
+		total_assessed_value: "N/A",
+		market_land_value: "N/A",
+		market_value: isRealtorProperty(property)
+			? `$${property.metadata.listPrice.toLocaleString()}`
 			: "N/A",
-		assessment_year: 2024, // Hardcoded or dynamically set
-		total_assessed_value: property.assessed_value
-			? `$${property.assessed_value.toLocaleString()}`
-			: "N/A",
-		market_land_value: property.assessed_value
-			? `$${property.assessed_value.toLocaleString()}`
-			: "N/A",
-		market_value: property.estimated_value
-			? `$${property.estimated_value.toLocaleString()}`
-			: "N/A",
-		market_improvement_value: "-", // Placeholder
-		assessed_land_value: "-", // Placeholder
-		assessed_improvement_value: "-", // Placeholder
-		county: property.county ?? "N/A",
+		market_improvement_value: "N/A",
+		assessed_land_value: "N/A",
+		assessed_improvement_value: "N/A",
+		county: property.address.city ?? "N/A",
 	};
 
 	const tabsData = [
@@ -207,7 +258,7 @@ export default async function PropertyPage({
 			label: "Overview",
 			content: (
 				<>
-					<ContactCard property={emptyAgentProperty} />
+					<ContactCard property={property} />
 					<WholesaleCalculator />
 					<AmortizationCalculator />
 				</>
@@ -282,10 +333,10 @@ export default async function PropertyPage({
 				{/* Google Maps replacing Placeholder Image */}
 				<div className="relative mb-4 h-64 w-full">
 					<PropertyMap
-						latitude={property.latitude}
-						longitude={property.longitude}
-						address={`${property.street}, ${property.city}, ${property.state} ${property.zip_code}`}
-						details={`${property.beds} bed | ${property.full_baths} bath | ${property.sqft} sqft | ${property.year_built} year built`}
+						latitude={property.address.latitude}
+						longitude={property.address.longitude}
+						address={formatPropertyAddress(property)}
+						details={formatPropertyDetails(property)}
 					/>
 				</div>
 

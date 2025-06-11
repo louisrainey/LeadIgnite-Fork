@@ -10,14 +10,14 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import type { PropertyDetails } from "@/types/_dashboard/maps";
+import type { Property } from "@/types/_dashboard/property";
 import { skipTraceSchema } from "@/types/zod/createListSkip";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 type SkipTraceFormProps = {
-	properties: PropertyDetails[];
+	properties: Property[];
 	availableListNames: string[] | undefined;
 	costPerRecord: number;
 	onClose: () => void; // Pass close function from parent
@@ -222,9 +222,9 @@ import { useModalStore } from "@/lib/stores/leadSearch/leadListStore";
 import BareDropdown from "@/components/ui/bareDropdown";
 
 export type SkipTraceDialogProps = {
-	properties: PropertyDetails[];
+	properties?: Property[];
 	availableListNames?: string[];
-	costPerRecord: number;
+	costPerRecord?: number;
 };
 
 const SkipTraceDialog: React.FC = () => {

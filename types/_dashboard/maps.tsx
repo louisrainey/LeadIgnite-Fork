@@ -14,7 +14,7 @@ export type Coordinate = {
 };
 export type LeadLocationPhone = {
 	ext: string | null;
-	number: string | null;
-	primary: boolean | null;
-	type: "Office" | "Mobile" | "Home" | "Fax" | null; // Assuming these are possible values
+	number: string;
+	primary: boolean;
+	type: "Office" | "Mobile" | "Home" | "Fax";
 };

@@ -3,7 +3,7 @@
 
 "use client";
 import { usePropertyStore } from "@/lib/stores/leadSearch/drawer";
-import type { PropertyDetails } from "@/types/_dashboard/maps";
+import type { Property } from "@/types/_dashboard/property";
 import {
 	DrawingManager,
 	GoogleMap,
@@ -258,9 +258,7 @@ const MainMap: React.FC<MainMapProps> = ({ apiKey, center, markers, zoom }) => {
 							className="absolute bottom-0 left-0 z-50 w-full"
 							style={{ maxWidth: "100%", overflow: "hidden" }}
 						>
-							<PropertyListView
-								properties={visibleProperties as PropertyDetails[]}
-							/>
+							<PropertyListView properties={visibleProperties as Property[]} />
 							{hasMore && !isLoading && (
 								<div className="flex justify-center p-4">
 									<button

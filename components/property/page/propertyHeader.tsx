@@ -17,7 +17,8 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { mockGeneratedLeads } from "@/constants/data";
-import type { PropertyDetails } from "@/types/_dashboard/maps"; // Ensure you import the PropertyDetails type
+import type { Property } from "@/types/_dashboard/property";
+import { isRealtorProperty } from "@/types/_dashboard/property";
 import {
 	CalendarIcon,
 	ChevronDownIcon,
@@ -28,7 +29,7 @@ import {
 import { useState } from "react";
 
 interface PropertyHeaderProps {
-	property: PropertyDetails;
+	property: Property;
 	initialDate?: Date; // Optional prop for initial date
 	initialStatus?: string; // Optional prop for initial status
 	onLeadActivity: () => void;
@@ -81,24 +82,27 @@ export default function PropertyHeader({
 					{/* Top row: Title + Help */}
 					<div className="flex w-full items-center justify-center gap-2">
 						<h1 className="flex items-center gap-2 text-center font-semibold text-gray-900 text-xl dark:text-gray-100">
-							{property.full_street_line}, {property.city}, {property.state}{" "}
-							{property.zip_code}
+							{property.address?.fullStreetLine || "N/A"},{" "}
+							{property.address?.city || "N/A"},{" "}
+							{property.address?.state || "N/A"}{" "}
+							{property.address?.zipCode || ""}
 						</h1>
 						<button
 							type="button"
 							onClick={handleOpenModal}
 							title="Get More help"
-							className=" animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
+							className="animate-bounce rounded-full bg-blue-500 p-2 text-white hover:animate-none dark:bg-green-700 dark:text-gray-300"
 						>
 							<HelpCircle size={20} />
 						</button>
 					</div>
 					{/* Second row: Metadata */}
 					<p className="text-center text-gray-600 text-sm dark:text-gray-300">
-						{property.beds} bed | {property.full_baths} bath |{" "}
-						{formatNumber(property.sqft)} sqft |{" "}
-						{formatNumber(property.lot_sqft)} lot sqft | {property.year_built}{" "}
-						year built
+						{property.details.beds || "N/A"} bed |{" "}
+						{property.details.fullBaths || "N/A"} bath |{" "}
+						{formatNumber(property.details.sqft)} sqft |{" "}
+						{formatNumber(property.details.lotSqft)} sqft lot |{" "}
+						{property.details.yearBuilt || "N/A"} year built
 					</p>
 					{/* Third row: Controls */}
 					<div className="mt-2 flex flex-wrap items-center justify-center gap-2">

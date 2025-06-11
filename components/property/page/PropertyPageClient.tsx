@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PropertyHeader from "./propertyHeader";
-import type { PropertyDetails } from "@/types/_dashboard/maps";
+import type { Property } from "@/types/_dashboard/property";
 
 interface PropertyPageClientProps {
-	initialProperty: PropertyDetails;
+	initialProperty: Property;
 }
 
 export default function PropertyPageClient({
