@@ -13,7 +13,7 @@
 #🖥️ Dashboard > Lead Search > Create Your list > Fix Dropdown usage top use new dropdown in ui usining regular jsx not shad cn && Make the creatye list button false if no list is selected or name is empty
 #🖥️ Dashboard > Lead Search > Property List > Update maps and enable 3D / Street View
 #🖥️ Set up user onbaording with https://www.npmjs.com/package/@frigade/react
-
+#🖥️ Dashboard > Map Component >  Edit the map componnet to take in area and pass to fetch data with drawing
 
 # ⁉️ optimize load speeds
 
