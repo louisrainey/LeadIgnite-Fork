@@ -26,7 +26,7 @@ export default async function updatePassword(
       where: { id: userId },
       data: {
         securitySettings: {
-          update: { password: hashedPassword }
+          update: { passwordHash: hashedPassword }
         }
       }
     });

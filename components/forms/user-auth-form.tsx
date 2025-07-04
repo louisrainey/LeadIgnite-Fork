@@ -69,9 +69,11 @@ export default function UserAuthForm() {
             : 'Login successful!'
         }`
       );
-    } catch (err) {
-      setError(err.message);
-      console.error('Authentication Error:', err);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      setError(errorMessage);
+      console.error('Authentication Error:', error);
     } finally {
       setLoading(false);
     }
@@ -87,16 +89,17 @@ export default function UserAuthForm() {
         options: {
           redirectTo: `${window.location.origin}/dashboard`, // ✅ Ensure correct redirect URL
           skipBrowserRedirect: false, // ✅ Ensure Supabase handles redirection
-          scopes: 'openid profile email', // ✅ Ensure LinkedIn scopes are correct
-          pkce: true // ✅ Enable PKCE flow
+          scopes: 'openid profile email' // ✅ Ensure LinkedIn scopes are correct
         }
       });
 
       if (error) throw error;
       console.log('✅ LinkedIn Login Data:', data);
     } catch (err) {
-      setError(err.message);
-      console.error('❌ LinkedIn Login Error:', err);
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unknown error occurred';
+      setError(errorMessage);
+      console.error('❌ LinkedIn Login Error:', errorMessage);
     } finally {
       setLoading(false);
     }

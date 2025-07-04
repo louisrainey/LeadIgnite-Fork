@@ -2,7 +2,13 @@ import Link from 'next/link';
 import { cn } from '@/lib/_utils/kanban/utils';
 import { buttonVariants } from '@/components/ui/button';
 
-export default function AuthToggle({ isSignUp, setIsSignUp }) {
+export default function AuthToggle({
+  isSignUp,
+  setIsSignUp
+}: {
+  isSignUp: boolean;
+  setIsSignUp: (value: boolean) => void;
+}) {
   return (
     <Link
       href="/examples/authentication"

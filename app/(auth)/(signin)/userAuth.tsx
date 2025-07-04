@@ -3,7 +3,12 @@ import UserAuthForm from '@/components/forms/user-auth-form';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-export default function AuthForm({ isSignUp, setIsSignUp }) {
+interface AuthFormProps {
+  isSignUp: boolean;
+  setIsSignUp: (value: boolean) => void;
+}
+
+export default function AuthForm({ isSignUp, setIsSignUp }: AuthFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

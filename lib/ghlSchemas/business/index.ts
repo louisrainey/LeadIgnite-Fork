@@ -24,8 +24,9 @@ const getBusiness = async (accessToken: string, id: string) => {
       headers: headers(accessToken)
     });
     if (response.status !== 200) {
-      throw new HTTPException(response.status as StatusCode, {
-        message: `Failed to get business: ${response.statusText}`
+      // Use 500 as a fallback status code and include the original status in the message
+      throw new HTTPException(500, {
+        message: `Failed to get business: ${response.statusText} (Status: ${response.status})`
       });
     }
     const data = await response.json();
@@ -47,8 +48,9 @@ const getBusinessesByLocation = async (
       headers: headers(accessToken)
     });
     if (response.status !== 200) {
-      throw new HTTPException(response.status as StatusCode, {
-        message: `Failed to get business: ${response.statusText}`
+      // Use 500 as a fallback status code and include the original status in the message
+      throw new HTTPException(500, {
+        message: `Failed to get business: ${response.statusText} (Status: ${response.status})`
       });
     }
     const data = await response.json();
@@ -70,8 +72,9 @@ const createBusiness = async (
       body: JSON.stringify(validatedPayload)
     });
     if (response.status !== 201) {
-      throw new HTTPException(response.status as StatusCode, {
-        message: `Failed to create business: ${response.statusText}`
+      // Use 500 as a fallback status code and include the original status in the message
+      throw new HTTPException(500, {
+        message: `Failed to create business: ${response.statusText} (Status: ${response.status})`
       });
     }
     const data = await response.json();
@@ -101,8 +104,9 @@ const updateBusiness = async (
     });
 
     if (response.status !== 200) {
-      throw new HTTPException(response.status as StatusCode, {
-        message: `Failed to update business: ${response.statusText}`
+      // Use 500 as a fallback status code and include the original status in the message
+      throw new HTTPException(500, {
+        message: `Failed to update business: ${response.statusText} (Status: ${response.status})`
       });
     }
     const data = await response.json();
@@ -121,8 +125,9 @@ const deleteBusiness = async (accessToken: string, id: string) => {
       headers: headers(accessToken)
     });
     if (response.status !== 200) {
-      throw new HTTPException(response.status as StatusCode, {
-        message: `Failed to delete business: ${response.statusText}`
+      // Use 500 as a fallback status code and include the original status in the message
+      throw new HTTPException(500, {
+        message: `Failed to delete business: ${response.statusText} (Status: ${response.status})`
       });
     }
     const data = await response.json();

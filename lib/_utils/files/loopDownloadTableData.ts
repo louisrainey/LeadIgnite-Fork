@@ -43,8 +43,9 @@ export async function exportEmailCampaignBulkToExcel(
     worksheet.addRow(rowData); // Add each email as a row in the sheet
   });
 
-  // Return Uint8Array instead of Buffer
-  return workbook.xlsx.writeBuffer() as Promise<Uint8Array>;
+  // Generate Excel file in memory and convert to Uint8Array
+  const buffer = await workbook.xlsx.writeBuffer();
+  return new Uint8Array(buffer);
 }
 
 // Export campaign messages to Excel
@@ -75,8 +76,9 @@ export async function exportCampaignMessagesBulkToExcel(
     worksheet.addRow(rowData);
   });
 
-  // Return Uint8Array
-  return workbook.xlsx.writeBuffer() as Promise<Uint8Array>;
+  // Generate Excel file in memory and convert to Uint8Array
+  const buffer = await workbook.xlsx.writeBuffer();
+  return new Uint8Array(buffer);
 }
 
 // Export social campaign data to Excel
@@ -135,8 +137,9 @@ export async function exportSocialTableBulkToExcel(
     }
   });
 
-  // Return Uint8Array for zip creation
-  return workbook.xlsx.writeBuffer() as Promise<Uint8Array>;
+  // Generate Excel file in memory and convert to Uint8Array
+  const buffer = await workbook.xlsx.writeBuffer();
+  return new Uint8Array(buffer);
 }
 
 export async function exportCallCampaignsToExcel(
@@ -226,8 +229,9 @@ export async function exportCallCampaignsToExcel(
     }
   });
 
-  // Create and return the Excel buffer for download
-  return workbook.xlsx.writeBuffer() as Promise<Uint8Array>;
+  // Generate Excel file in memory and convert to Uint8Array
+  const buffer = await workbook.xlsx.writeBuffer();
+  return new Uint8Array(buffer);
 }
 
 // export async function exportLeadsBulkToZip(
