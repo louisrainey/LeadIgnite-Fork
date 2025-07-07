@@ -8,10 +8,10 @@ export async function middleware(req: NextRequest) {
   const hasActiveSubscription = mockCheckSubscription(req); // Simulated subscription check
 
   // If the user is not authenticated, redirect to the logout page
-  // if (!isAuthenticated) {
-  //   const logoutUrl = new URL('/logout', req.url); // Redirect to logout if not authenticated
-  //   return NextResponse.redirect(logoutUrl);
-  // }
+  if (!isAuthenticated) {
+    const logoutUrl = new URL('/logout', req.url); // Redirect to logout if not authenticated
+    return NextResponse.redirect(logoutUrl);
+  }
 
   // // If the user is authenticated but has no active subscription, redirect to the profile page
   // if (!hasActiveSubscription) {
